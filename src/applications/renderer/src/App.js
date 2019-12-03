@@ -14,7 +14,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Widget Editor <code>{testAdapter.print()}</code> from RWAdapter.
+          App Renderer <code>{testAdapter.print()}</code> from RWAdapter.
         </p>
       </header>
     </div>

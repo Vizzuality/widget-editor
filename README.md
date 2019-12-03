@@ -1,31 +1,38 @@
 # Widget editor V2
 
-This is the new version of the widget editor following the MVP pattern. The project is split into two sections `applications` and `packages` packages is holding all of our core logic consumed by our `applications`. Currently we have two applications using `react`. All of our `packages` are written in typescript.
+This is the new version of the widget editor following the MVP pattern. The project is split into two sections `applications` and `packages` packages are holding all of our core logic consumed by our `applications`. Currently, we have two applications using `react`. All of our `packages` are written in typescript.
 
 ## Getting started
 
-We are using a `monorepo` structure using `yarn workspaces` combined with `lerna`.
+We are using a `mono repo` structure using `yarn workspaces` combined with `lerna`. The project is split into two categories `applications` & `packages`.
 
-1. Install packages by in root writing `yarn` in the terminal.
-2. Start an individual application by running `yarn start:[widget-editor|renderer]`.
-3. Run tests globaly by running `yarn test` run them localy by running `yarn test:[package]`
+#### Applications
 
-### What are the different packages?
+This is code that will be directly served and interacted with a user, these apps are using react and they are consuming the `packages`
 
-1. `applications` any front end application consuming our `packages`
-2. `packages` all of the core logic for the widget editor (written in typescript)
+#### Managing packages
 
-### Adding and managing packages
+All core logic consumed by the applications. These are all written in `typescript`
+
+1. Install packages by in root writing `yarn` in the terminal. This will add all dependencies for all of the packages.
+2. Start an application by running `yarn start:{widget-editor|renderer}`.
+3. Run tests globally by running `yarn test` run them locally by running `yarn test:{@applications|@packages}/{package}`
+
+#### Adding and managing packages
 
 1. In applications `yarn workspace @applications/{package} add {package}`
 2. In packages `yarn workspace @packages/{package} add {package}`
 
-We recommend not adding packages in the global view (unless its for building or compiling in development), but if you have to you can run: `yarn add {package} --dev -W`
+We recommend not adding packages globally (unless it's for building or dev dependencies), but if you have to you can run: `yarn add {package} --dev -W`
 
-### Referencing packages
+#### Referencing packages within an application
 
 You can reference packages by using this import format:
 
 ```
 import package from "@packages/{package}";
 ```
+
+### General notes
+
+If you're working with an application and update a package, you need to re-run the start application command so all the TS code will be re-compiled and understood by the react application.
