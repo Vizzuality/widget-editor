@@ -1,0 +1,21 @@
+{
+  "name": "widget-editor",
+  "version": "2.0.0",
+  "main": "index.js",
+  "private": true,
+  "engines": {
+    "yarn": ">=1.17.3"
+  },
+  "workspaces": [
+    "src/applications/*",
+    "src/packages/*"
+  ],
+  "scripts": {
+    "start:renderer": "lerna run tsc && lerna run start --scope @applications/renderer --stream",
+    "start:widget-editor": "lerna run tsc && lerna run start --scope @applications/widget-editor --stream"
+  },
+  "devDependencies": {
+    "lerna": "latest",
+    "typescript": "^3.7.2"
+  }
+}

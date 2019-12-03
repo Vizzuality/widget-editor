@@ -1,0 +1,9 @@
+{
+  "name": "@packages/rw-adapter",
+  "version": "1.0.0",
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "main": "lib/index.js"
+}
