@@ -39,14 +39,14 @@ import package from "@packages/{package}";
 
 #### Applications
 
-- [@applications/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/renderer/README.md)
-- [@applications/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/widget-editor/README.md)
+- [@applications/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/renderer)
+- [@applications/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/widget-editor)
 
 #### Packages
 
-- [@packages/core](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/core/README.md)
-- [@packages/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter/README.md)
-- [@packages/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types/README.md)
+- [@packages/core](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/core)
+- [@packages/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter)
+- [@packages/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types)
 
 ## General notes
 
