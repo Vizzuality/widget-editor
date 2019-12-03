@@ -33,6 +33,21 @@ You can reference packages by using this import format:
 import package from "@packages/{package}";
 ```
 
-### General notes
+---
+
+## Packages documentation
+
+#### Applications
+
+- [@applications/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/renderer/README.md)
+- [@applications/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/widget-editor/README.md)
+
+#### Packages
+
+- [@packages/core](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/core/README.md)
+- [@packages/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter/README.md)
+- [@packages/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types/README.md)
+
+## General notes
 
 If you're working with an application and update a package, you need to re-run the start application command so all the TS code will be re-compiled and understood by the react application.
