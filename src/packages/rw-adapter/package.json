@@ -5,5 +5,15 @@
     "tsc": "tsc",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "main": "lib/index.js"
+  "directories": {
+    "build": "build",
+    "test": "__tests__"
+  },
+  "files": [
+    "build"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "@packages/types": "^1.0.0"
+  }
 }
