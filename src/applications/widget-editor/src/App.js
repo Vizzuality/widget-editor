@@ -1,31 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
+import { Provider } from "react-redux";
+import configureStore from "store";
+
 import logo from "./logo.svg";
 import "./App.css";
 
-import RwAdapter from "@packages/rw-adapter";
+import Editor from "components/editor";
 
 function App() {
-  const testAdapter = new RwAdapter(
-    {
-      applications: ["rw"],
-      env: "production",
-      locale: "en",
-      includes: ["metadata", "vocabulary", "widget", "layer"]
-    },
-    "a86d906d-9862-4783-9e30-cdb68cd808b8"
-  );
-
-  testAdapter.resolveAdapterState(null).then(data => {
-    console.log("get data", data);
-  });
-
+  const { store } = configureStore();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Widget Editor from RWAdapter.</p>
-      </header>
-    </div>
+    <Provider store={store}>
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>Widget Editor from RWAdapter.</p>
+          <Editor />
+        </header>
+      </div>
+    </Provider>
   );
 }
 
