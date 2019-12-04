@@ -1,16 +1,23 @@
+import "isomorphic-fetch";
+
 import { Adapter } from "@packages/types";
+
+import { DatasetService } from "@packages/core";
 
 import ConfigHelper from "./helpers/config";
 
 export default class RwAdapter implements Adapter {
   config = null;
-  constructor(params: object | {}) {
+  endpoint = "https://api.resourcewatch.org/v1/";
+  datasetService = null;
+  constructor(params: object | {}, datasetId: string) {
     this.config = ConfigHelper(params);
+    this.datasetService = new DatasetService(datasetId, this.config);
   }
-  getDataset() {
-    return null;
+  async getDataset(datasetId: string) {
+    return await this.datasetService.getDataset(datasetId);
   }
-  getWidget() {
+  getWidget(widgetId: string) {
     return null;
   }
 }
