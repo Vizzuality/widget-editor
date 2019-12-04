@@ -1,11 +1,16 @@
-import Say from "@packages/types";
+import { Adapter } from "@packages/types";
 
-export default class RwAdapter implements Say {
-  message: string;
-  constructor(m: string) {
-    this.message = m || "Hello world";
+import ConfigHelper from "./helpers/config";
+
+export default class RwAdapter implements Adapter {
+  config = null;
+  constructor(params: object | {}) {
+    this.config = ConfigHelper(params);
   }
-  print(): String {
-    return this.message;
+  getDataset() {
+    return null;
+  }
+  getWidget() {
+    return null;
   }
 }

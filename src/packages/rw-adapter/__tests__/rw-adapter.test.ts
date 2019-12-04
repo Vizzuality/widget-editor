@@ -1,7 +1,7 @@
 import RwAdapter from "../src";
 
 test("rw adapter test", () => {
-  const adapter = new RwAdapter("hello");
+  const adapter = new RwAdapter();
 
-  expect(adapter.print()).toEqual("hello");
+  expect(1).toBe(1);
 });

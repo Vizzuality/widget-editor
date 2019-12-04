@@ -15,6 +15,7 @@
     "start:widget-editor": "lerna run tsc && lerna run start --scope @applications/widget-editor --stream",
     "test:widget-editor": "cd src/applications/widget-editor && yarn test --watchAll=false",
     "test:renderer": "cd src/applications/renderer && yarn test --watchAll=false",
+    "test:packages": "jest --verbose ./src/packages",
     "test": "jest --verbose ./src/packages && (cd src/applications/renderer && yarn test --watchAll=false) && (cd src/applications/widget-editor && yarn test --watchAll=false)"
   },
   "devDependencies": {

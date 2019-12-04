@@ -1,5 +1,4 @@
-type Message = string;
+import Adapter from "./adapter";
+import Config from "./config";
 
-export default interface Say {
-  message: Message;
-}
+export { Adapter, Config };
