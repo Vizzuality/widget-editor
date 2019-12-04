@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 
@@ -7,7 +7,6 @@ import RwAdapter from "@packages/rw-adapter";
 function App() {
   const testAdapter = new RwAdapter(
     {
-      url: "https://api.resourcewatch.org/v1",
       applications: ["rw"],
       env: "production",
       locale: "en",
@@ -15,7 +14,8 @@ function App() {
     },
     "a86d906d-9862-4783-9e30-cdb68cd808b8"
   );
-  testAdapter.getData().then(data => {
+
+  testAdapter.resolveAdapterState(null).then(data => {
     console.log("get data", data);
   });
 

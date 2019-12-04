@@ -8,9 +8,15 @@ type Endpoint = string;
 interface Dataset {
   id: Id;
 }
+
 interface Widget {
   id: Id;
   dataset: Id;
+}
+
+interface AdapterState {
+  dataset: Dataset;
+  widget: Widget;
 }
 
 export default interface Adapter {
@@ -18,5 +24,6 @@ export default interface Adapter {
   endpoint: Endpoint;
   datasetId: Id;
   getDataset(datasetId: DatasetId): Promise<Dataset>;
-  getWidget(widgetId: WidgetId): Widget;
+  getWidget(widgetId: WidgetId): Promise<Widget>;
+  resolveAdapterState(): Promise<AdapterState>;
 }
