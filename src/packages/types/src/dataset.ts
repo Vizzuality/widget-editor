@@ -1,16 +1,11 @@
-type Id = string | number;
-type DatasetId = Id;
-
-type Includes = string;
-type Applications = [string];
+type Url = string;
 type Query = string;
 type ColumnName = string;
 type TableName = string;
 type Geostore = string;
 
 export default interface Dataset {
-  datasetId: DatasetId;
-  fetchData(includes: Includes, applications: Applications): Promise<[object]>;
+  fetchData(url: Url): Promise<[object]>;
   fetchFilteredData?(query: Query): [object];
   getFields?(): [object];
   getLayers?(): [object];

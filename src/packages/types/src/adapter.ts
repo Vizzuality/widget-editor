@@ -16,6 +16,7 @@ interface Widget {
 export default interface Adapter {
   config: Config;
   endpoint: Endpoint;
+  datasetId: Id;
   getDataset(datasetId: DatasetId): Promise<Dataset>;
   getWidget(widgetId: WidgetId): Widget;
 }

@@ -1,22 +1,15 @@
 import { Dataset, Config } from "@packages/types";
 
 export default class DatasetService implements Dataset {
-  datasetId: string;
   config: Config;
 
-  constructor(datasetId: string, config: Config) {
-    this.datasetId = datasetId;
+  constructor(config: Config) {
     this.config = config;
   }
 
-  async fetchData(includes: string | "", applications: [String] | [""]) {
-    const { url, env, locale } = this.config.getConfig();
+  async fetchData(url: string) {
     try {
-      const response = await fetch(
-        `${url}/dataset/${this.datasetId}?application=${applications.join(
-          ","
-        )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`
-      );
+      const response = await fetch(url);
 
       if (response.status >= 400) {
         throw new Error(response.statusText);

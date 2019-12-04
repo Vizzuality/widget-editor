@@ -1,4 +1,4 @@
-import pick from "lodash/pick";
+import { pick } from "lodash";
 
 import { Config } from "@packages/types";
 
@@ -24,6 +24,7 @@ class ConfigHelper implements Config {
     ]);
     this.config = { ...this.config, ...acceptedParams };
   }
+
   getConfig() {
     return this.config;
   }

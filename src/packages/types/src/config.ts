@@ -1,6 +1,7 @@
 type Url = string | null;
 type Env = string | null;
 type Applications = [string] | null;
+type Includes = [string] | null;
 type AuthUrl = string | null;
 type AssetsPath = string | null;
 type UserToken = string | null;
