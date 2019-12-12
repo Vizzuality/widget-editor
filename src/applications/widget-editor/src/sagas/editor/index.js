@@ -6,17 +6,10 @@ import { Chart } from "@packages/core";
 console.log(sagaEvents.DATA_FLOW_DATA_READY);
 
 function* preloadData() {
-  const {
-    editor: { dataset, widget, fields, layers }
-  } = yield select();
-  const chart = new Chart();
-
-  console.log(
-    "Widget editor is ready to render",
-    chart.getVisualisation(dataset, widget, fields, layers)
-  );
+  const { editor } = yield select();
+  console.log("widget data is ready so do something with:", editor);
 }
 
-export default function* data() {
-  yield takeLatest(sagaEvents.DATA_FLOW_DATA_READY, preloadData);
+export default function* baseSaga() {
+  yield takeLatest(sagaEvents.DATA_FLOW_WIDGET_DATA_READY, preloadData);
 }

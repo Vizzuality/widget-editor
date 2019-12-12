@@ -14,11 +14,13 @@ class Editor extends React.Component {
     const dataset = await adapter.getDataset();
     const widget = await adapter.getWidget(dataset);
 
-    const widgetData = await adapter.getWidgetData(dataset, widget);
-    console.log("widget data in front end", widgetData);
-
     setEditor({ dataset, widget });
     dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
+
+    const widgetData = await adapter.getWidgetData(dataset, widget);
+
+    setEditor({ widgetData });
+    dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
   }
 
   async getFieldsAndLayers() {

@@ -1,4 +1,5 @@
 export default {
   dataset: null,
-  widget: null
+  widget: null,
+  widgetData: null
 };
