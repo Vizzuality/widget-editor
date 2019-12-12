@@ -1,6 +1,10 @@
-import RwAdapter from "@packages/rw-adapter";
+import Datasets from "./services/dataset";
+import Widget from "./services/widget";
+import Chart from "./chart";
 
-export default function core(message: string): void {
-  const adapter = new RwAdapter("hello world");
-  adapter.print();
-}
+import getQueryByFilters from "./sql/getQueryByFilters";
+
+export { Datasets as DatasetService };
+export { Widget as WidgetService };
+export { Chart };
+export { getQueryByFilters };

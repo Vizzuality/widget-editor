@@ -7,10 +7,12 @@
   },
   "directories": {
     "build": "build",
+    "src": "src",
     "test": "__tests__"
   },
   "files": [
-    "build"
+    "build",
+    "src"
   ],
   "main": "build/index.js"
 }

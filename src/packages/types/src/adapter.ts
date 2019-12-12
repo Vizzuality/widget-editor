@@ -1,12 +1,14 @@
-import { Config } from "@packages/types";
+import Config from "./config";
 
 type Id = string | number;
 type DatasetId = Id;
 type WidgetId = Id;
+type Endpoint = string;
 
 interface Dataset {
   id: Id;
 }
+
 interface Widget {
   id: Id;
   dataset: Id;
@@ -14,6 +16,9 @@ interface Widget {
 
 export default interface Adapter {
   config: Config;
-  getDataset(datasetId: DatasetId): Dataset;
-  getWidget(widgetId: WidgetId): Widget;
+  endpoint: Endpoint;
+  datasetId: Id;
+  getDataset(datasetId: DatasetId): Promise<Dataset>;
+  getWidget(widgetId: WidgetId): Promise<Widget>;
+  getWidgetData(dataset: any, widget: any): Promise<[object]>;
 }
