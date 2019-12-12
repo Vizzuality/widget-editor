@@ -24,7 +24,7 @@ export default function getQueryByFilters(
   arrColumns = [],
   arrOrder = [],
   sortOrder: string = "asc"
-) {
+): string {
   // We compute the WHERE part of the query which corresponds
   // to the filters
   const filtersQuery = filters

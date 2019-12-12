@@ -1,6 +1,6 @@
 import { find } from "lodash";
 
-import { Widget, Config } from "@packages/types";
+import { Widget, Config, Payloads } from "@packages/types";
 
 import getQueryByFilters from "../sql/getQueryByFilters";
 
@@ -11,14 +11,14 @@ export default class WidgetService implements Widget {
     this.config = config;
   }
 
-  fromDataset(dataset: any) {
+  fromDataset(dataset: Payloads.Dataset): Payloads.Widget {
     return find(
       dataset.attributes.widget,
       widget => !!widget.attributes.defaultEditableWidget
     );
   }
 
-  getDataSqlQuery(dataset: any, widget: any) {
+  getDataSqlQuery(dataset: Payloads.Dataset, widget: Payloads.Widget): string {
     const { provider, tableName } = dataset.attributes;
     // tableName: string,
     // provider: string,
@@ -31,7 +31,7 @@ export default class WidgetService implements Widget {
     return `${query} LIMIT 10`;
   }
 
-  async fetchWidgetData(url: string) {
+  async fetchWidgetData(url: string): Promise<[object]> {
     try {
       const response = await fetch(url);
 
@@ -45,7 +45,7 @@ export default class WidgetService implements Widget {
     }
   }
 
-  async fetchWidget(url: string) {
+  async fetchWidget(url: string): Promise<Payloads.Widget> {
     try {
       const response = await fetch(url);
 
