@@ -1,4 +1,4 @@
-import { Adapter } from "@packages/types";
+import { Adapter, Payloads } from "@packages/types";
 
 import { DatasetService, WidgetService } from "@packages/core";
 
@@ -52,7 +52,7 @@ export default class RwAdapter implements Adapter {
     return widget;
   }
 
-  async getWidgetData(dataset: any, widget: any) {
+  async getWidgetData(dataset: Payloads.Dataset, widget: Payloads.Widget) {
     const sql = this.widgetService.getDataSqlQuery(dataset, widget);
 
     const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;
