@@ -9,5 +9,10 @@ export default connect(
   state => ({
     editor: state.editor
   }),
-  { setEditor }
+  dispatch => {
+    return {
+      dispatch,
+      setEditor: data => dispatch(setEditor(data))
+    };
+  }
 )(EditorComponent);

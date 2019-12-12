@@ -31,10 +31,18 @@ export default class RwAdapter implements Adapter {
     return dataset;
   }
 
-  async getWidget(widgetId: string | number) {
+  async getFields() {
+    const url = `${this.endpoint}/fields/${this.datasetId}`;
+
+    const { fields } = await this.datasetService.fetchData(url);
+    return fields;
+  }
+
+  async getWidget(datasetId: string | number) {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata";
 
+    const widgetId = this.widgetService.fromDataset(datasetId).id;
     const url = `${this.endpoint}/widget/${widgetId}?${applications.join(
       ","
     )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
@@ -44,20 +52,24 @@ export default class RwAdapter implements Adapter {
     return widget;
   }
 
-  // TODO: pass redux state into this function
-  // Then we can restore and verify state is up to date
-  async resolveAdapterState() {
-    // Step 1: Get dataset and widgets
-    const dataset = await this.getDataset();
-    const widget = await this.getWidget(
-      this.widgetService.fromDataset(dataset).id
-    );
+  async getWidgetData(dataset: any, widget: any) {
+    const sql = this.widgetService.getDataSqlQuery(dataset, widget);
 
-    // Step 2: Fetch layers and fields
+    const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;
 
-    return {
-      dataset,
-      widget
-    };
+    const { data } = await this.widgetService.fetchWidgetData(url);
+    return data;
+  }
+
+  async getLayers() {
+    const { applications, env, locale } = this.config.getConfig();
+
+    const url = `${this.endpoint}/dataset/${
+      this.datasetId
+    }/layer?app=${applications.join(",")}&env=${env}&page[size]=9999`;
+
+    const { data } = await this.datasetService.fetchData(url);
+
+    return data;
   }
 }

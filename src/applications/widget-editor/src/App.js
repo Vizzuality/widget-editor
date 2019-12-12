@@ -1,24 +1,29 @@
 import React from "react";
-import { Provider } from "react-redux";
-import configureStore from "store";
 
-import logo from "./logo.svg";
 import "./App.css";
 
-import Editor from "components/editor";
+// TODO: these would be combined
+import RwAdapter from "@packages/rw-adapter";
+import WidgetEditor from "components/widget-editor";
 
 function App() {
-  const { store } = configureStore();
+  const adapter = new RwAdapter(
+    {
+      applications: ["rw"],
+      env: "production",
+      locale: "en",
+      includes: ["metadata", "vocabulary", "widget", "layer"]
+    },
+    "a86d906d-9862-4783-9e30-cdb68cd808b8"
+  );
+
   return (
-    <Provider store={store}>
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>Widget Editor from RWAdapter.</p>
-          <Editor />
-        </header>
+    <div className="App">
+      <header className="App-header">Widget editor V2</header>
+      <div className="widget-editor-wrapper">
+        <WidgetEditor adapter={adapter} />
       </div>
-    </Provider>
+    </div>
   );
 }
 
