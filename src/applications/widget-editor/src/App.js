@@ -4,7 +4,7 @@ import "./App.css";
 
 // TODO: these would be combined
 import RwAdapter from "@packages/rw-adapter";
-import WidgetEditor from "components/widget-editor";
+import WidgetEditor from "@packages/widget-editor";
 
 function App() {
   const adapter = new RwAdapter(

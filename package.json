@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "start:renderer": "lerna run tsc && lerna run start --scope @applications/renderer --stream",
-    "start:widget-editor": "lerna run tsc && lerna run start --scope @applications/widget-editor --stream",
+    "start:widget-editor": "cd src/packages/widget-editor && yarn compile && lerna run tsc && lerna run start --scope @applications/widget-editor --stream",
+    "build:widget-editor": "cd src/packages/widget-editor && yarn compile",
     "test:widget-editor": "cd src/applications/widget-editor && yarn test --watchAll=false",
     "test:renderer": "cd src/applications/renderer && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
