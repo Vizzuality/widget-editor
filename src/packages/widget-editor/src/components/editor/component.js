@@ -8,7 +8,6 @@ import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 
 const StyledContainer = styled.div`
-  background: #fff;
   width: 100%;
   height: 100%;
   display: flex;

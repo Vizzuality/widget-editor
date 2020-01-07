@@ -7,6 +7,7 @@ import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
 const StyledContainer = styled.div`
   flex: 1;
+  background: #fff;
   height: calc(100% - ${FOOTER_HEIGHT} - 20px);
   padding: 0 30px;
   margin: 10px 0;
