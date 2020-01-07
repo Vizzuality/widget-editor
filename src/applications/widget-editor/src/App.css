@@ -23,7 +23,7 @@
 
 .widget-editor-wrapper {
   height: calc(100vh - 100px);
-  width: 100%;
+  width: calc(100vw - 40px);
   padding: 20px;
   background-color: #424448;
 }

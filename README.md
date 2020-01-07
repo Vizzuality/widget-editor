@@ -48,6 +48,10 @@ import package from "@packages/{package}";
 - [@packages/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter)
 - [@packages/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types)
 
+### Components
+
+For our components we are using `styled-components` [documentation](https://www.styled-components.com/) More to be documented.
+
 ## General notes
 
 If you're working with an application and update a package, you need to re-run the start application command so all the TS code will be re-compiled and understood by the react application.

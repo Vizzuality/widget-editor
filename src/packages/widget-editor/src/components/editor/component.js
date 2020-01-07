@@ -1,6 +1,14 @@
 import React from "react";
+import styled from "styled-components";
 
 import sagaEvents from "sagas/events";
+import EditorOptions from "components/editor-options";
+
+const StyledContainer = styled.div`
+  background: #fff;
+  width: 100%;
+  height: 100%;
+`;
 
 class Editor extends React.Component {
   constructor(props) {
@@ -34,7 +42,11 @@ class Editor extends React.Component {
   }
 
   render() {
-    return <p>Im an editor</p>;
+    return (
+      <StyledContainer>
+        <EditorOptions />
+      </StyledContainer>
+    );
   }
 }
 
