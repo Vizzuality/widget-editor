@@ -6,7 +6,7 @@ import Editor from "components/editor";
 import configureStore from "store";
 
 // XXX: This would be the public facing component
-const WidgetEditor = ({ adapter }) => {
+const WidgetEditor = ({ adapter, theme }) => {
   const { store } = configureStore();
 
   if (typeof adapter === "undefined") {
@@ -15,7 +15,7 @@ const WidgetEditor = ({ adapter }) => {
 
   return (
     <Provider store={store}>
-      <Editor adapter={adapter} />
+      <Editor adapter={adapter} theme={theme} />
     </Provider>
   );
 };

@@ -11,12 +11,14 @@ import { handleModule } from "vizzuality-redux-tools";
 
 // Modules
 import * as editor from "modules/editor";
+import * as theme from "modules/theme";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const initStore = (initialState = {}) => {
   const reducers = combineReducers({
-    editor: handleModule(editor)
+    editor: handleModule(editor),
+    theme: handleModule(theme)
   });
 
   const middlewares = applyMiddleware(thunk, sagaMiddleware);

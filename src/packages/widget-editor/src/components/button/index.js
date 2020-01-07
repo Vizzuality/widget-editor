@@ -1,3 +1,8 @@
+import { connect } from "react-redux";
+
+// Components
 import ButtonComponent from "./component";
 
-export default ButtonComponent;
+export default connect(state => ({
+  theme: state.theme
+}))(ButtonComponent);

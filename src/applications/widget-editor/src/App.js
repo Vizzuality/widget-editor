@@ -21,7 +21,7 @@ function App() {
     <div className="App">
       <header className="App-header">Widget editor V2</header>
       <div className="widget-editor-wrapper">
-        <WidgetEditor adapter={adapter} />
+        <WidgetEditor adapter={adapter} theme={{ color: "#C32D7B" }} />
       </div>
     </div>
   );

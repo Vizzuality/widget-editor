@@ -2,12 +2,18 @@ import React from "react";
 import styled from "styled-components";
 
 import sagaEvents from "sagas/events";
+
+import Renderer from "components/renderer";
 import EditorOptions from "components/editor-options";
+import Footer from "components/footer";
 
 const StyledContainer = styled.div`
   background: #fff;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
 `;
 
 class Editor extends React.Component {
@@ -15,6 +21,14 @@ class Editor extends React.Component {
     super(props);
     this.getDatasetAndWidgets();
     this.getFieldsAndLayers();
+    this.resolveTheme();
+  }
+
+  resolveTheme() {
+    const { theme, setTheme } = this.props;
+    if (theme) {
+      setTheme(theme);
+    }
   }
 
   async getDatasetAndWidgets() {
@@ -44,7 +58,9 @@ class Editor extends React.Component {
   render() {
     return (
       <StyledContainer>
+        <Renderer />
         <EditorOptions />
+        <Footer />
       </StyledContainer>
     );
   }
