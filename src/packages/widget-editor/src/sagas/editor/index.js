@@ -1,13 +1,19 @@
 import { takeLatest, put, select } from "redux-saga/effects";
-import sagaEvents from "sagas/events";
 
-import { Chart } from "@packages/core";
+import { setConfiguration } from "modules/configuration/actions";
 
 function* preloadData() {
-  const { editor } = yield select();
-  console.log("widget data is ready so do something with:", editor);
+  const {
+    editor: {
+      widget: {
+        attributes: { widgetConfig }
+      }
+    }
+  } = yield select();
+
+  yield put(setConfiguration(widgetConfig.paramsConfig));
 }
 
 export default function* baseSaga() {
-  yield takeLatest(sagaEvents.DATA_FLOW_WIDGET_DATA_READY, preloadData);
+  yield takeLatest("EDITOR/setEditor", preloadData);
 }
