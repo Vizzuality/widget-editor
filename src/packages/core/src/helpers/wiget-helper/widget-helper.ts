@@ -1,5 +1,7 @@
 import { WidgetHelpers } from "@packages/types";
 
+import ChartService from "../../charts";
+
 import { defaultVegaSchema } from "./constants";
 
 class WidgetHelper implements WidgetHelpers.WidgetHelper {
@@ -17,6 +19,8 @@ class WidgetHelper implements WidgetHelpers.WidgetHelper {
     this.configuration = configuration;
     this.data = data;
     this.schema = this.defaultTemplate();
+
+    const test = new ChartService(this.schema);
   }
 
   private defaultTemplate() {
@@ -24,10 +28,11 @@ class WidgetHelper implements WidgetHelpers.WidgetHelper {
   }
 
   private setScale() {
-    const { value } = this.configuration;
+    const { value, chartType } = this.configuration;
     const { name } = value;
     const scale = this.widgetConfig.scales[0];
-    if (scale.type === "ordinal") {
+
+    if (chartType === "pie") {
       this.schema = {
         ...this.schema,
         scales: [
@@ -44,30 +49,78 @@ class WidgetHelper implements WidgetHelpers.WidgetHelper {
         ]
       };
     }
+
+    if (chartType === "bars") {
+      this.schema = {
+        ...this.schema,
+        scales: [
+          {
+            name: "xscale",
+            type: "band",
+            domain: { data: "table", field: "name" },
+            range: "width",
+            padding: 0.05,
+            round: true
+          },
+          {
+            name: "yscale",
+            domain: { data: "table", field: "estimated_generation_gwh" },
+            nice: true,
+            range: "height"
+          }
+        ]
+      };
+    }
   }
 
   private setMarks() {
-    const { value } = this.configuration;
+    const { value, chartType } = this.configuration;
 
-    this.schema = {
-      ...this.schema,
-      marks: this.widgetConfig.marks.map(mark => {
-        return {
-          ...mark,
-          encode: {
-            ...mark.encode,
-            enter: {
-              ...mark.encode.enter,
-              fill: {
-                ...mark.encode.fill,
-                scale: this.schema.scales[0].name,
-                field: value.name
+    if (chartType === "bars") {
+      this.schema = {
+        ...this.schema,
+        marks: [
+          {
+            type: "rect",
+            from: { data: "table" },
+            encode: {
+              enter: {
+                x: { scale: "xscale", field: "name" },
+                width: { scale: "xscale", band: 1 },
+                y: { scale: "yscale", field: "estimated_generation_gwh" },
+                y2: { scale: "yscale", value: 0 }
+              },
+              update: {
+                fill: { value: "steelblue" }
+              },
+              hover: {
+                fill: { value: "red" }
               }
             }
           }
-        };
-      })
-    };
+        ]
+      };
+    } else {
+      this.schema = {
+        ...this.schema,
+        marks: this.widgetConfig.marks.map(mark => {
+          return {
+            ...mark,
+            encode: {
+              ...mark.encode,
+              enter: {
+                ...mark.encode.enter,
+                fill: {
+                  ...mark.encode.fill,
+                  scale: this.schema.scales[0].name,
+                  field: value.name
+                }
+              }
+            }
+          };
+        })
+      };
+    }
   }
 
   private setLegend() {
@@ -81,9 +134,16 @@ class WidgetHelper implements WidgetHelpers.WidgetHelper {
   private setData() {
     const { chartType, value } = this.configuration;
 
-    const transform = this.widgetConfig.data[0].transform.find(
+    let transform = this.widgetConfig.data[0].transform.find(
       t => t.type === chartType
     );
+
+    if (!transform) {
+      transform = {
+        type: "pie",
+        field: value.name
+      };
+    }
 
     this.schema = {
       ...this.schema,
@@ -97,7 +157,22 @@ class WidgetHelper implements WidgetHelpers.WidgetHelper {
     };
   }
 
+  private setAxes() {
+    const { value, chartType } = this.configuration;
+
+    if (chartType === "bars") {
+      this.schema = {
+        ...this.schema,
+        axes: [
+          { orient: "bottom", scale: "xscale" },
+          { orient: "left", scale: "yscale" }
+        ]
+      };
+    }
+  }
+
   getVegaConfig() {
+    this.setAxes();
     this.setScale();
     this.setMarks();
     this.setLegend();

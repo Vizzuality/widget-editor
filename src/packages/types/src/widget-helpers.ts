@@ -3,6 +3,7 @@ interface WidgetPayloadData {
   transform: [
     {
       type: string;
+      field?: string;
     }
   ];
   url: string;
@@ -28,10 +29,17 @@ interface WidgetParamsConfigPayload {
 }
 
 interface MarkPayload {
+  type: string;
+  from: {
+    data: string;
+  };
   encode: {
     enter: object;
     fill: {
       field: string;
+    };
+    update: {
+      fill: { value: string };
     };
   };
 }
@@ -60,13 +68,17 @@ export namespace WidgetHelpers {
   export interface Schema {
     scales: Array<{
       name: string;
-      type: string;
-      domain: { field: string };
-      range: { scheme: string };
+      type?: string;
+      domain?: object;
+      range: { scheme: string } | string;
+      padding?: number;
+      round?: boolean;
+      nice?: boolean;
     }>;
     config: object;
     legend: Array<object>;
     marks: Array<object>;
+    axes: Array<object>;
     data: Array<object>;
   }
 

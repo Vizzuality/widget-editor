@@ -16,6 +16,6 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@packages/rw-adapter": "^1.0.0"
+    "@packages/types": "^1.0.0"
   }
 }

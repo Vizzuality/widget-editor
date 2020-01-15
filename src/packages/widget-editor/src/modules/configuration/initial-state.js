@@ -1,4 +1,8 @@
 export default {
   visualizationType: "chart",
-  chartType: "pie"
+  chartType: "pie",
+  availableCharts: [
+    { value: "pie", label: "pie" },
+    { value: "bars", label: "Bars" }
+  ]
 };
