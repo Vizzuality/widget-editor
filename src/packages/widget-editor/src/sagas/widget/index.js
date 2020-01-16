@@ -1,12 +1,17 @@
 import { takeLatest, put, select } from "redux-saga/effects";
 import sagaEvents from "sagas/events";
 
+import { getAction } from "helpers/redux";
+
 import { WidgetHelper } from "@packages/core";
 
 import { setWidget } from "modules/widget/actions";
 
 function* preloadData() {
-  const { editor, configuration } = yield select();
+  const {
+    widgetEditor: { editor, configuration }
+  } = yield select();
+
   const { widgetData } = editor;
   const { widgetConfig } = editor.widget.attributes;
 
@@ -21,7 +26,9 @@ function* preloadData() {
 }
 
 function* updateWidget() {
-  const { editor, configuration } = yield select();
+  const {
+    widgetEditor: { editor, configuration }
+  } = yield select();
   const { widgetData } = editor;
   const { widgetConfig } = editor.widget.attributes;
 
@@ -30,13 +37,13 @@ function* updateWidget() {
     widgetData,
     configuration
   );
+
   const vegaConfig = widgetHelper.getVegaConfig();
-  console.log("updating widget", vegaConfig);
 
   yield put(setWidget(vegaConfig));
 }
 
 export default function* baseSaga() {
   yield takeLatest(sagaEvents.DATA_FLOW_VISUALISATION_READY, preloadData);
-  yield takeLatest("CONFIGURATION/patchConfiguration", updateWidget);
+  yield takeLatest(getAction("CONFIGURATION/patchConfiguration"), updateWidget);
 }

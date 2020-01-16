@@ -1,4 +1,4 @@
-import { connect } from "react-redux";
+import { connectState } from "helpers/redux";
 
 import { setEditor } from "modules/editor/actions";
 import { setTheme } from "modules/theme/actions";
@@ -6,7 +6,7 @@ import { setTheme } from "modules/theme/actions";
 // Components
 import EditorComponent from "./component";
 
-export default connect(
+export default connectState(
   state => ({
     editor: state.editor
   }),

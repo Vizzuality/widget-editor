@@ -20,6 +20,7 @@ const InputStyles = {
 
 const SelectChart = ({ patchConfiguration, options, value }) => {
   const handleChange = option => {
+    console.log("handle change", patchConfiguration);
     patchConfiguration({ chartType: option.value });
   };
 

@@ -1,12 +1,15 @@
 import { takeLatest, put, select } from "redux-saga/effects";
+import { getAction } from "helpers/redux";
 
 import { setConfiguration } from "modules/configuration/actions";
 
 function* preloadData() {
   const {
-    editor: {
-      widget: {
-        attributes: { widgetConfig }
+    widgetEditor: {
+      editor: {
+        widget: {
+          attributes: { widgetConfig }
+        }
       }
     }
   } = yield select();
@@ -15,5 +18,5 @@ function* preloadData() {
 }
 
 export default function* baseSaga() {
-  yield takeLatest("EDITOR/setEditor", preloadData);
+  yield takeLatest(getAction("EDITOR/setEditor"), preloadData);
 }

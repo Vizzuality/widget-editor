@@ -1,4 +1,4 @@
-import { createAction } from "vizzuality-redux-tools";
+import { createAction } from "helpers/redux";
 
 export const setConfiguration = createAction("CONFIGURATION/setConfiguration");
 export const patchConfiguration = createAction(
