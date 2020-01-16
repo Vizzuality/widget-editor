@@ -13,11 +13,12 @@
   "scripts": {
     "start:renderer": "lerna run tsc && lerna run start --scope @applications/renderer --stream",
     "start:widget-editor": "cd src/packages/widget-editor && yarn compile && lerna run tsc && lerna run start --scope @applications/widget-editor --stream",
-    "build:widget-editor": "cd src/packages/widget-editor && yarn compile",
+    "build:widget-editor": "cd src/applications/widget-editor && npm run build",
     "test:widget-editor": "cd src/applications/widget-editor && yarn test --watchAll=false",
     "test:renderer": "cd src/applications/renderer && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
-    "test": "jest --verbose ./src/packages && (cd src/applications/renderer && yarn test --watchAll=false) && (cd src/applications/widget-editor && yarn test --watchAll=false)"
+    "test": "jest --verbose ./src/packages && (cd src/applications/renderer && yarn test --watchAll=false) && (cd src/applications/widget-editor && yarn test --watchAll=false)",
+    "deploy:widget-editor": "cd src/applications/widget-editor && npm run deploy"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",
