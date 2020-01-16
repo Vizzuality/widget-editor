@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/widget-editor/static/css/main.6f66ba81.chunk.css",
+    "main.js": "/widget-editor/static/js/main.89190fa0.chunk.js",
+    "main.js.map": "/widget-editor/static/js/main.89190fa0.chunk.js.map",
+    "runtime-main.js": "/widget-editor/static/js/runtime-main.5fd221c7.js",
+    "runtime-main.js.map": "/widget-editor/static/js/runtime-main.5fd221c7.js.map",
+    "static/js/2.a7ecd66c.chunk.js": "/widget-editor/static/js/2.a7ecd66c.chunk.js",
+    "static/js/2.a7ecd66c.chunk.js.map": "/widget-editor/static/js/2.a7ecd66c.chunk.js.map",
+    "index.html": "/widget-editor/index.html",
+    "precache-manifest.efcb9fea8fb1deaeb402d6292a2810e5.js": "/widget-editor/precache-manifest.efcb9fea8fb1deaeb402d6292a2810e5.js",
+    "service-worker.js": "/widget-editor/service-worker.js",
+    "static/css/main.6f66ba81.chunk.css.map": "/widget-editor/static/css/main.6f66ba81.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.5fd221c7.js",
+    "static/js/2.a7ecd66c.chunk.js",
+    "static/css/main.6f66ba81.chunk.css",
+    "static/js/main.89190fa0.chunk.js"
+  ]
+}
