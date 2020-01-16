@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
+import isEqual from "lodash/isEqual";
 import sagaEvents from "sagas/events";
 
 import Renderer from "components/renderer";
@@ -13,6 +13,11 @@ const StyledContainer = styled.div`
   display: flex;
   flex-flow: wrap;
   justify-content: space-between;
+  flex-flow: column;
+
+  @media only screen and (min-width: 768px) {
+    flex-flow: wrap;
+  }
 `;
 
 class Editor extends React.Component {
@@ -23,11 +28,18 @@ class Editor extends React.Component {
     this.resolveTheme();
   }
 
-  resolveTheme() {
-    const { theme, setTheme } = this.props;
-    if (theme) {
-      setTheme(theme);
+  componentDidUpdate(prevProps) {
+    const { theme: prevTheme } = prevProps;
+    const { theme } = this.props;
+
+    if (!isEqual(theme, prevTheme)) {
+      this.resolveTheme();
     }
+  }
+
+  resolveTheme() {
+    const { theme, dispatch } = this.props;
+    dispatch({ type: "THEME/setTheme", payload: theme });
   }
 
   async getDatasetAndWidgets() {

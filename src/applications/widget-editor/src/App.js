@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import "./App.css";
 
@@ -6,7 +6,15 @@ import "./App.css";
 import RwAdapter from "@packages/rw-adapter";
 import WidgetEditor from "@packages/widget-editor";
 
+import { GithubPicker } from "react-color";
+
 function App() {
+  const [colorPickerActive, setColorPickerActive] = useState(false);
+  const [theme, setTheme] = useState({ color: "#C32D7B" });
+  const handleChangeTheme = gp => {
+    setTheme({ color: gp.hex });
+  };
+
   const adapter = new RwAdapter(
     {
       applications: ["rw"],
@@ -19,9 +27,21 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">Widget editor V2</header>
+      <header className="App-header">
+        Widget editor V2
+        <div
+          className="App-set-theme"
+          onClick={() => setColorPickerActive(!colorPickerActive)}
+        >
+          <span className="theme-preview" style={{ background: theme.color }} />
+          <h4>Test Theme</h4>
+          {colorPickerActive && (
+            <GithubPicker onChangeComplete={handleChangeTheme} theme="Github" />
+          )}
+        </div>
+      </header>
       <div className="widget-editor-wrapper">
-        <WidgetEditor adapter={adapter} theme={{ color: "#C32D7B" }} />
+        <WidgetEditor adapter={adapter} theme={theme} />
       </div>
     </div>
   );

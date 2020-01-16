@@ -4,5 +4,6 @@ import { connect } from "react-redux";
 import ChartComponent from "./component";
 
 export default connect(state => ({
-  editor: state.editor
+  editor: state.editor,
+  widget: state.widget
 }))(ChartComponent);
