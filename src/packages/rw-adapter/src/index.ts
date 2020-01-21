@@ -13,7 +13,6 @@ export default class RwAdapter implements Adapter {
   datasetId = null;
 
   constructor(params: object | {}, datasetId: string) {
-    console.log('RW adapter', params);
     this.config = ConfigHelper(params);
     this.datasetId = datasetId;
     this.datasetService = new DatasetService(this.config);

@@ -8,10 +8,8 @@ export default class Filters {
   sql: string;
   configuration: any;
   constructor(data: any) {
-    console.log('filters service', data);
     this.configuration = data;
     this.sql = '';
-
 
     this.prepareSelectStatement();
     this.prepareAggregate();
@@ -20,7 +18,6 @@ export default class Filters {
     this.prepareOrder();
     this.prepareLimit();
     this.debugSql();
-    this.requestWidgetData();
   }
 
   private prepareSelectStatement() {
@@ -61,7 +58,7 @@ export default class Filters {
     console.info('sql query', this.sql);
   }
 
-  private async requestWidgetData() {
+  async requestWidgetData() {
     const { value: { datasetID } } = this.configuration;
     const response = await fetch(`https://api.resourcewatch.org/v1/query/${datasetID}?sql=${this.sql}`);
     const data = await response.json()

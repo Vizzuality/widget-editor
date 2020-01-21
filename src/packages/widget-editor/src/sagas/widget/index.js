@@ -1,8 +1,8 @@
-import { takeLatest, put, select } from "redux-saga/effects";
+import { takeLatest, put, call, select } from "redux-saga/effects";
 
 import { getAction } from "helpers/redux";
 
-import { WidgetHelper, FiltersService } from "@packages/core";
+import { WidgetHelper } from "@packages/core";
 import { constants } from '@packages/core';
 
 import { setWidget } from "modules/widget/actions";
@@ -25,6 +25,7 @@ function* preloadData() {
   yield put(setWidget(vegaConfig));
 }
 
+
 function* updateWidget() {
   const {
     widgetEditor: { editor, configuration }
@@ -39,8 +40,6 @@ function* updateWidget() {
   );
 
   const vegaConfig = widgetHelper.getVegaConfig();
-
-  const widgetPatchData = new FiltersService(configuration);
 
   yield put(setWidget(vegaConfig));
 }

@@ -7,12 +7,9 @@ import constants from './constants';
 
 import WidgetHelper from "./helpers/wiget-helper";
 
-import getQueryByFilters from "./sql/getQueryByFilters";
-
 export { constants };
 export { WidgetHelper };
 export { Data as DataService };
 export { Filters as FiltersService };
 export { Datasets as DatasetService };
 export { Widget as WidgetService };
-export { getQueryByFilters };
