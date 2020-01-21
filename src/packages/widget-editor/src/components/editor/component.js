@@ -1,11 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import sagaEvents from "sagas/events";
 
 import Renderer from "components/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
+
+import { DataService } from '@packages/core';
+
+import { constants } from '@packages/core';
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -23,9 +26,10 @@ const StyledContainer = styled.div`
 class Editor extends React.Component {
   constructor(props) {
     super(props);
-    this.getDatasetAndWidgets();
-    this.getFieldsAndLayers();
-    this.resolveTheme();
+    const { adapter, setEditor, dispatch } = this.props;
+
+    const dataService = new DataService(adapter, setEditor, dispatch);
+    dataService.resolveInitialState();
   }
 
   componentDidUpdate(prevProps) {
@@ -42,35 +46,13 @@ class Editor extends React.Component {
     dispatch({ type: "THEME/setTheme", payload: theme });
   }
 
-  async getDatasetAndWidgets() {
-    const { adapter, setEditor, dispatch } = this.props;
-    const dataset = await adapter.getDataset();
-    const widget = await adapter.getWidget(dataset);
-
-    setEditor({ dataset, widget });
-    dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
-
-    const widgetData = await adapter.getWidgetData(dataset, widget);
-
-    setEditor({ widgetData });
-    dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
-  }
-
-  async getFieldsAndLayers() {
-    const { adapter, setEditor, dispatch } = this.props;
-
-    const fields = await adapter.getFields();
-    const layers = await adapter.getLayers();
-
-    setEditor({ layers, fields });
-    dispatch({ type: sagaEvents.DATA_FLOW_DATA_READY });
-  }
-
   render() {
+    const { configuration } = this.props;
+
     return (
       <StyledContainer>
         <Renderer />
-        <EditorOptions />
+        {configuration.limit && <EditorOptions />}
         <Footer />
       </StyledContainer>
     );

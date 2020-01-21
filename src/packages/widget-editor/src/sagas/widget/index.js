@@ -1,9 +1,9 @@
 import { takeLatest, put, select } from "redux-saga/effects";
-import sagaEvents from "sagas/events";
 
 import { getAction } from "helpers/redux";
 
-import { WidgetHelper } from "@packages/core";
+import { WidgetHelper, FiltersService } from "@packages/core";
+import { constants } from '@packages/core';
 
 import { setWidget } from "modules/widget/actions";
 
@@ -40,10 +40,12 @@ function* updateWidget() {
 
   const vegaConfig = widgetHelper.getVegaConfig();
 
+  const widgetPatchData = new FiltersService(configuration);
+
   yield put(setWidget(vegaConfig));
 }
 
 export default function* baseSaga() {
-  yield takeLatest(sagaEvents.DATA_FLOW_VISUALISATION_READY, preloadData);
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALISATION_READY, preloadData);
   yield takeLatest(getAction("CONFIGURATION/patchConfiguration"), updateWidget);
 }

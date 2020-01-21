@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-
 import Button from "components/button";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
@@ -25,7 +24,18 @@ const StyledListItem = styled.li`
   color: red;
 `;
 
-const EditorOptions = () => {
+const EditorOptions = ({ limit = null, patchConfiguration  }) => {
+  const [optionsState, setOptionsState] = useState({ limit: `${limit}` })
+  const handleChange = (e) => {
+    setOptionsState({ ...optionsState, limit: e.target.value });
+  } 
+
+  useEffect(() => {
+    if (optionsState.limit !== limit && limit !== null) {
+      patchConfiguration({ limit: optionsState.limit });
+    }
+  }, [optionsState])
+
   return (
     <StyledContainer>
       <StyledList>
@@ -41,7 +51,8 @@ const EditorOptions = () => {
         <StyledListItem>
           <Button>Table view</Button>
         </StyledListItem>
-      </StyledList>
+      </StyledList> 
+      <input type="number" min="1" max="500" value={optionsState.limit} onChange={handleChange} />
     </StyledContainer>
   );
 };

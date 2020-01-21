@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleModule } from "vizzuality-redux-tools";
 
-import { APP_NAMESPACE } from "helpers/redux";
+import { constants } from '@packages/core';
 
 import * as editor from "modules/editor";
 import * as theme from "modules/theme";
@@ -16,5 +16,5 @@ const modules = {
 };
 
 export default {
-  [APP_NAMESPACE]: combineReducers(modules)
+  [constants.APP_NAMESPACE]: combineReducers(modules)
 };

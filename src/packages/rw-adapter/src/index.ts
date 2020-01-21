@@ -13,6 +13,7 @@ export default class RwAdapter implements Adapter {
   datasetId = null;
 
   constructor(params: object | {}, datasetId: string) {
+    console.log('RW adapter', params);
     this.config = ConfigHelper(params);
     this.datasetId = datasetId;
     this.datasetService = new DatasetService(this.config);
@@ -38,11 +39,11 @@ export default class RwAdapter implements Adapter {
     return fields;
   }
 
-  async getWidget(datasetId: string | number) {
+  async getWidget(dataset: Payloads.Dataset) {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata";
 
-    const widgetId = this.widgetService.fromDataset(datasetId).id;
+    const widgetId = this.widgetService.fromDataset(dataset).id;
     const url = `${this.endpoint}/widget/${widgetId}?${applications.join(
       ","
     )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
