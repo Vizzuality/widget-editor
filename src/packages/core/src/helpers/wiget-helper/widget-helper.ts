@@ -17,7 +17,7 @@ class WidgetHelper implements WidgetHelpers.WidgetHelper {
   ) {
     this.widgetConfig = widgetConfig;
     this.configuration = configuration;
-    this.data = [...data];
+    this.data = data;
     this.schema = this.defaultTemplate();
 
     const test = new ChartService(this.schema);
