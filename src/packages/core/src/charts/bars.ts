@@ -2,7 +2,7 @@ import { Charts } from "@packages/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-export default class Pie implements Charts.Chart, Charts.Pie {
+export default class Bars implements Charts.Chart, Charts.Bars {
   schema: Charts.Schema;
   widgetConfig: object;
   widgetData: object;
@@ -18,6 +18,7 @@ export default class Pie implements Charts.Chart, Charts.Pie {
   generateSchema() {
     this.schema = {
       ...this.schema,
+      axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData()
@@ -27,10 +28,18 @@ export default class Pie implements Charts.Chart, Charts.Pie {
   setScales() {
     return [
       {
-        name: "c",
-        type: "ordinal",
+        name: "xscale",
+        type: "band",
         domain: { data: "table", field: sqlFields.value },
-        range: { scheme: "category20" }
+        range: "width",
+        padding: 0.05,
+        round: true
+      },
+      {
+        name: "yscale",
+        domain: { data: "table", field: sqlFields.category },
+        nice: true,
+        range: "height"
       }
     ];
   }
@@ -38,25 +47,30 @@ export default class Pie implements Charts.Chart, Charts.Pie {
   setMarks() {
     return [
       {
-        type: "arc",
+        type: "rect",
         from: { data: "table" },
         encode: {
           enter: {
-            fill: { scale: "c", field: sqlFields.value },
-            x: { signal: "width / 2" },
-            y: { signal: "height / 2" }
+            x: { scale: "xscale", field: sqlFields.value },
+            width: { scale: "xscale", band: 1 },
+            y: { scale: "yscale", field: sqlFields.category },
+            y2: { scale: "yscale", value: 0 }
           },
           update: {
-            startAngle: { field: "startAngle" },
-            endAngle: { field: "endAngle" },
-            innerRadius: {
-              signal: "width > height ? height / 3 : width / 3"
-            },
-            outerRadius: { signal: "width > height ? height / 2 : width / 2" }
+            fill: { value: "steelblue" }
           },
-          hover: { opacity: { value: 0.8 } }
+          hover: {
+            fill: { value: "red" }
+          }
         }
       }
+    ];
+  }
+
+  setAxes() {
+    return [
+      { orient: "bottom", scale: "xscale" },
+      { orient: "left", scale: "yscale" }
     ];
   }
 
@@ -65,15 +79,7 @@ export default class Pie implements Charts.Chart, Charts.Pie {
     return [
       {
         values: widgetData,
-        name: "table",
-        transform: [
-          {
-            type: "pie",
-            field: sqlFields.category,
-            startAngle: 0,
-            endAngle: 6.29
-          }
-        ]
+        name: "table"
       }
     ];
   }

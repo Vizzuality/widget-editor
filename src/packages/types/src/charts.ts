@@ -27,14 +27,24 @@ export namespace Charts {
     getChart(): Schema;
   }
 
+  export interface Bars {
+    setAxes(): object;
+    setScales(): Array<object>;
+    setMarks(): Array<object>;
+    bindData(): Array<object>;
+  }
+
+  export interface Pie {
+    setScales(): Array<object>;
+    setMarks(): Array<object>;
+    bindData(): Array<object>;
+  }
+
   export interface Chart {
     schema: Schema;
     widgetConfig: object;
     widgetData: object;
     generateSchema(): void;
-    setScales(): Array<object>;
-    setMarks(): Array<object>;
-    bindData(): Array<object>;
     getChart(): Schema;
   }
 }

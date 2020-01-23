@@ -6,10 +6,7 @@ import Vega from "./services/vega";
 
 import constants from "./constants";
 
-import WidgetHelper from "./helpers/wiget-helper";
-
 export { constants };
-export { WidgetHelper };
 export { Vega as VegaService };
 export { Data as DataService };
 export { Filters as FiltersService };
