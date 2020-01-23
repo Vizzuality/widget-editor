@@ -1,8 +1,8 @@
 import { Adapter, Payloads } from "@packages/types";
 
-import FiltersService from './filters';
+import FiltersService from "./filters";
 
-import { sagaEvents } from '../constants';
+import { sagaEvents } from "../constants";
 
 export default class Data {
   adapter: Adapter;
@@ -11,7 +11,6 @@ export default class Data {
   setEditor: Function;
   dispatch: Function;
 
-
   constructor(adapter: Adapter, setEditor: Function, dispatch: Function) {
     this.adapter = adapter;
     this.setEditor = setEditor;
@@ -19,7 +18,7 @@ export default class Data {
     this.dataset = null;
     this.widget = null;
   }
-    
+
   private async getDatasetAndWidgets() {
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset);
@@ -29,7 +28,11 @@ export default class Data {
   }
 
   private async getWidgetData() {
-    const { attributes: { widgetConfig: { paramsConfig } } } = this.widget;
+    const {
+      attributes: {
+        widgetConfig: { paramsConfig }
+      }
+    } = this.widget;
 
     // Construct correct SQL query based on widgetConfig
     const filtersService = new FiltersService(paramsConfig);
@@ -37,7 +40,7 @@ export default class Data {
 
     this.setEditor({ widgetData: widgetData.data });
     this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
-  }   
+  }
 
   private async getFieldsAndLayers() {
     const fields = await this.adapter.getFields();
@@ -52,5 +55,4 @@ export default class Data {
     await this.getWidgetData();
     await this.getFieldsAndLayers();
   }
-
 }

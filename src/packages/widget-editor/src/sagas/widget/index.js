@@ -2,8 +2,8 @@ import { takeLatest, put, call, select } from "redux-saga/effects";
 
 import { getAction } from "helpers/redux";
 
-import { WidgetHelper } from "@packages/core";
-import { constants } from '@packages/core';
+import { VegaService, WidgetHelper } from "@packages/core";
+import { constants } from "@packages/core";
 
 import { setWidget } from "modules/widget/actions";
 
@@ -15,16 +15,17 @@ function* preloadData() {
   const { widgetData } = editor;
   const { widgetConfig } = editor.widget.attributes;
 
+  const vega = new VegaService(widgetConfig, widgetData, configuration);
+
   const widgetHelper = new WidgetHelper(
     widgetConfig,
     widgetData,
     configuration
   );
   const vegaConfig = widgetHelper.getVegaConfig();
-
-  yield put(setWidget(vegaConfig));
+  console.log("old vega config", vegaConfig);
+  yield put(setWidget(vega.getChart()));
 }
-
 
 function* updateWidget() {
   const {
@@ -45,6 +46,9 @@ function* updateWidget() {
 }
 
 export default function* baseSaga() {
-  yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALISATION_READY, preloadData);
+  yield takeLatest(
+    constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
+    preloadData
+  );
   yield takeLatest(getAction("CONFIGURATION/patchConfiguration"), updateWidget);
 }

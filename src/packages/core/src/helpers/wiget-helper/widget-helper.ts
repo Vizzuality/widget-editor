@@ -1,7 +1,4 @@
 import { WidgetHelpers } from "@packages/types";
-
-import ChartService from "../../charts";
-
 import { defaultVegaSchema } from "./constants";
 
 class WidgetHelper implements WidgetHelpers.WidgetHelper {
@@ -19,8 +16,6 @@ class WidgetHelper implements WidgetHelpers.WidgetHelper {
     this.configuration = configuration;
     this.data = data;
     this.schema = this.defaultTemplate();
-
-    const test = new ChartService(this.schema);
   }
 
   private defaultTemplate() {
