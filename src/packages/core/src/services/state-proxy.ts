@@ -7,8 +7,8 @@ const cache = state => {
   cacheState = state;
 };
 
-const sync = async (state: object) => {
-  const hasUpdates = cacheState.limit !== state.limit;
+const sync = async (state: { limit: number }) => {
+  const hasUpdates = cacheState && state && cacheState.limit !== state.limit;
 
   // We dont have any state to compare with
   // so we can treat it as "initial state"
