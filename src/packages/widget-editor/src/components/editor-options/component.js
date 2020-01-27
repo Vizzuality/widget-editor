@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "components/button";
+import QueryLimit from "components/query-limit";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -24,18 +25,7 @@ const StyledListItem = styled.li`
   color: red;
 `;
 
-const EditorOptions = ({ limit = null, patchConfiguration  }) => {
-  const [optionsState, setOptionsState] = useState({ limit: `${limit}` })
-  const handleChange = (e) => {
-    setOptionsState({ ...optionsState, limit: e.target.value });
-  } 
-
-  useEffect(() => {
-    if (optionsState.limit !== limit && limit !== null) {
-      patchConfiguration({ limit: optionsState.limit });
-    }
-  }, [optionsState])
-
+const EditorOptions = ({ limit = null, patchConfiguration }) => {
   return (
     <StyledContainer>
       <StyledList>
@@ -51,8 +41,8 @@ const EditorOptions = ({ limit = null, patchConfiguration  }) => {
         <StyledListItem>
           <Button>Table view</Button>
         </StyledListItem>
-      </StyledList> 
-      <input type="number" min="1" max="500" value={optionsState.limit} onChange={handleChange} />
+      </StyledList>
+      <QueryLimit />
     </StyledContainer>
   );
 };

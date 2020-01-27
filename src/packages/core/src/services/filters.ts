@@ -62,10 +62,11 @@ export default class Filters {
 
   async requestWidgetData() {
     const {
-      value: { datasetID }
+      value: { datasetID },
+      areaIntersection
     } = this.configuration;
     const response = await fetch(
-      `https://api.resourcewatch.org/v1/query/${datasetID}?sql=${this.sql}`
+      `https://api.resourcewatch.org/v1/query/${datasetID}?sql=${this.sql}&geostore=${areaIntersection}`
     );
     const data = await response.json();
     return data;

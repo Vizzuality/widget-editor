@@ -8,6 +8,7 @@ export default class Data {
   adapter: Adapter;
   dataset: Payloads.Dataset;
   widget: Payloads.Widget;
+  cachedState: object;
   setEditor: Function;
   dispatch: Function;
 
