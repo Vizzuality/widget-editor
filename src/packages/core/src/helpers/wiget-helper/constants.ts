@@ -13,6 +13,16 @@ export const defaultVegaSchema = () => {
   };
 };
 
+// XXX: This makes it easier to construct our charts
+// This is used in @core/services/filters when we recive data
+// This makes it easier to know what field names to use in our vega configs
+// And we can in the @core/services/filters modify our querries saftly
+export const sqlFields = {
+  value: "x",
+  category: "y"
+};
+
 export default {
-  defaultVegaSchema
+  defaultVegaSchema,
+  sqlFields
 };

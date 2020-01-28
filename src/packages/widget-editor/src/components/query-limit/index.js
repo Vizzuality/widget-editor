@@ -2,11 +2,12 @@ import { connectState } from "helpers/redux";
 
 import { patchConfiguration } from "modules/configuration/actions";
 
-import EditorOptionsComponent from './component';
+import QueryLimitComponent from "./component";
 
 export default connectState(
-  (state) => ({
-     limit: state.configuration.limit
+  state => ({
+    theme: state.theme,
+    limit: state.configuration.limit
   }),
   { patchConfiguration }
-)(EditorOptionsComponent)  
+)(QueryLimitComponent);

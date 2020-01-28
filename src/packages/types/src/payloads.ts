@@ -10,6 +10,9 @@ export namespace Payloads {
       slug: string;
       description: string;
       application: [string];
+      widgetConfig: {
+        paramsConfig: object
+      };
       defaultEditableWidget: boolean;
       env: string;
     };

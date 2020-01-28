@@ -8,7 +8,8 @@ import EditorComponent from "./component";
 
 export default connectState(
   state => ({
-    editor: state.editor
+    editor: state.editor,
+    configuration: state.configuration
   }),
   dispatch => {
     return {

@@ -1,5 +1,6 @@
 import { takeLatest, put, select } from "redux-saga/effects";
 import { getAction } from "helpers/redux";
+import { constants } from "@packages/core";
 
 import { setConfiguration } from "modules/configuration/actions";
 
@@ -18,5 +19,8 @@ function* preloadData() {
 }
 
 export default function* baseSaga() {
-  yield takeLatest(getAction("EDITOR/setEditor"), preloadData);
+  yield takeLatest(
+    constants.sagaEvents.DATA_FLOW_DATASET_WIDGET_READY,
+    preloadData
+  );
 }

@@ -10,8 +10,10 @@ export default interface Adapter {
   config: Config;
   endpoint: Endpoint;
   datasetId: Id;
-  getDataset(datasetId: DatasetId): Promise<Payloads.Payloads.Dataset>;
-  getWidget(widgetId: WidgetId): Promise<Payloads.Payloads.Widget>;
+  getDataset(): Promise<Payloads.Payloads.Dataset>;
+  getWidget(dataset: Payloads.Payloads.Dataset): Promise<Payloads.Payloads.Widget>;
+  getFields(): Promise<[object]>;
+  getLayers(): Promise<[object]>
   getWidgetData(
     dataset: Payloads.Payloads.Dataset,
     widget: Payloads.Payloads.Widget

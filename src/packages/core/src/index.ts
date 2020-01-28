@@ -1,11 +1,15 @@
 import Datasets from "./services/dataset";
 import Widget from "./services/widget";
+import Filters from "./services/filters";
+import Data from "./services/data";
+import Vega from "./services/vega";
+import stateProxy from "./services/state-proxy";
+import constants from "./constants";
 
-import WidgetHelper from "./helpers/wiget-helper";
-
-import getQueryByFilters from "./sql/getQueryByFilters";
-
-export { WidgetHelper };
+export { constants };
+export { Vega as VegaService };
+export { Data as DataService };
+export { stateProxy };
+export { Filters as FiltersService };
 export { Datasets as DatasetService };
 export { Widget as WidgetService };
-export { getQueryByFilters };
