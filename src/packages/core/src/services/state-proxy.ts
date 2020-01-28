@@ -1,14 +1,25 @@
 import FiltersService from "./filters";
 import { sagaEvents } from "../constants";
-
-let cacheState = null;
+import isEqual from "lodash/isEqual";
+let cacheState = {
+  limit: null,
+  chartType: null,
+  value: null
+};
 
 const cache = state => {
   cacheState = state;
 };
 
-const sync = async (state: { limit: number }) => {
-  const hasUpdates = cacheState && state && cacheState.limit !== state.limit;
+const sync = async (state: {
+  limit: number;
+  chartType: string;
+  value: object;
+}) => {
+  const hasUpdates =
+    (!!cacheState.limit && cacheState.limit !== state.limit) ||
+    (!!cacheState.chartType && cacheState.chartType !== state.chartType) ||
+    (!!cacheState.value && !isEqual(cacheState.value, state.value));
 
   // We dont have any state to compare with
   // so we can treat it as "initial state"

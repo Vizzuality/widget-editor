@@ -15,6 +15,9 @@ const InputStyles = {
     border: "1px solid rgba(202,204,208,0.85)",
     borderRadius: "4px",
     padding: "3px 0"
+  }),
+  option: base => ({
+    ...base
   })
 };
 
