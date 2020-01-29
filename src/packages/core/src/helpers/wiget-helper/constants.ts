@@ -1,8 +1,8 @@
 export const defaultVegaSchema = () => {
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
-    width: 400,
-    height: 279,
+    width: 100,
+    height: 100,
     data: [],
     legend: [],
     config: [],

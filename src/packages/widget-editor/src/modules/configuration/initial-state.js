@@ -3,6 +3,6 @@ export default {
   chartType: "pie",
   availableCharts: [
     { value: "pie", label: "pie" },
-    { value: "bars", label: "Bars" }
+    { value: "bar", label: "Bars" }
   ]
 };

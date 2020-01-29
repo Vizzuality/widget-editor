@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import isEmpty from "lodash/isEmpty";
 
 import Chart from "components/chart";
+import QueryValues from "components/query-values";
 import SelectChart from "components/select-chart";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
@@ -16,11 +18,12 @@ const StyledContainer = styled.div`
   ${DEFAULT_BORDER()}
 `;
 
-const Renderer = () => {
+const Renderer = ({ widget }) => {
   return (
     <StyledContainer>
       <SelectChart />
       <Chart />
+      {!isEmpty(widget) && <QueryValues />}
     </StyledContainer>
   );
 };

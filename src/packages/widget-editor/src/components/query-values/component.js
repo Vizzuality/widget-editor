@@ -11,6 +11,7 @@ import Input from "styles-common/input";
 const StyledContainer = styled.div`
   margin: 10px;
   flex-basis: 100%;
+  padding: 10px;
 `;
 
 const InputStyles = {
@@ -43,9 +44,9 @@ const QueryValues = ({
 
   return (
     <FlexContainer>
-      <FormLabel htmlFor="options-values">Values</FormLabel>
       <StyledContainer>
         <Select
+          menuPlacement="top"
           defaultValue={value}
           onChange={handleChange}
           getOptionLabel={option => option.alias}

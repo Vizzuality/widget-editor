@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "components/button";
 import QueryLimit from "components/query-limit";
-import QueryValues from "components/query-values";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -44,7 +43,6 @@ const EditorOptions = ({ limit = null, patchConfiguration }) => {
         </StyledListItem>
       </StyledList>
       <QueryLimit />
-      <QueryValues />
     </StyledContainer>
   );
 };

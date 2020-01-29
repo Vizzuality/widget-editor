@@ -25,6 +25,7 @@ const sync = async (state: {
   // so we can treat it as "initial state"
   // Construct correct SQL query based on widgetConfig
   if (hasUpdates) {
+    cache(state);
     const filtersService = new FiltersService(state);
     const widgetData = await filtersService.requestWidgetData();
     return {

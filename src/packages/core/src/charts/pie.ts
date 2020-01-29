@@ -13,6 +13,7 @@ export default class Pie implements Charts.Chart, Charts.Pie {
     this.widgetData = widgetData;
 
     this.generateSchema();
+    this.setGenericSettings();
   }
 
   generateSchema() {
@@ -21,6 +22,14 @@ export default class Pie implements Charts.Chart, Charts.Pie {
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData()
+    };
+  }
+
+  setGenericSettings() {
+    this.schema = {
+      ...this.schema,
+      width: 400,
+      height: 400
     };
   }
 

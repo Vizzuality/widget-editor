@@ -21,7 +21,7 @@ function App() {
       locale: "en",
       includes: ["metadata", "vocabulary", "widget", "layer"]
     },
-    "a86d906d-9862-4783-9e30-cdb68cd808b8"
+    "03bfb30e-829f-4299-bab9-b2be1b66b5d4"
   );
 
   return (

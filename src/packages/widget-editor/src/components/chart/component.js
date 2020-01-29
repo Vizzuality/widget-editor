@@ -13,6 +13,10 @@ const StyledContainer = styled.div`
   .c-chart {
     flex: 1;
     text-align: center;
+    overflow: hidden;
+    margin: 20px;
+    max-height: 400px;
+    align-self: center;
   }
 `;
 
@@ -31,7 +35,6 @@ const Chart = ({ editor, widget }) => {
       const runtime = vega.parse(widget);
 
       vegaContainer.current = new vega.View(runtime)
-        .width(width / 2)
         .initialize(chart.current)
         .renderer("canvas")
         .hover()

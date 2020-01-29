@@ -29,26 +29,39 @@ export default class Filters {
     const { aggregateFunction, value } = this.configuration;
     const { name, tableName } = value;
 
-    if (aggregateFunction.toUpperCase() === "SUM") {
-      this.sql = `${this.sql}, SUM(${name}) as ${sqlFields.category} FROM ${tableName}`;
+    if (!aggregateFunction) {
+      this.sql = `${this.sql}, ${name} as ${sqlFields.category} FROM ${tableName}`;
     } else {
-      throw new Error(
-        `Aggragate function (${aggregateFunction}) not implemented in filter service.`
-      );
+      if (aggregateFunction.toUpperCase() === "SUM") {
+        this.sql = `${this.sql}, SUM(${name}) as ${sqlFields.category} FROM ${tableName}`;
+      } else {
+        throw new Error(
+          `Aggragate function (${aggregateFunction}) not implemented in filter service.`
+        );
+      }
     }
   }
 
   private prepareGroupBy() {
-    this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
+    const { groupBy } = this.configuration;
+    if (groupBy) {
+      const { name } = groupBy;
+      this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
+    }
   }
 
   private prepareOrderBy() {
-    this.sql = `${this.sql} ORDER BY ${sqlFields.category}`;
+    const { orderBy } = this.configuration;
+    if (orderBy) {
+      const { name } = orderBy;
+      this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
+    }
   }
 
   private prepareOrder() {
-    // TODO: Implement order
-    this.sql = `${this.sql} desc`;
+    const { orderBy } = this.configuration;
+    const { orderType } = orderBy;
+    this.sql = `${this.sql} ${orderType || "desc"}`;
   }
 
   private prepareLimit() {
@@ -62,11 +75,10 @@ export default class Filters {
 
   async requestWidgetData() {
     const {
-      value: { datasetID },
-      areaIntersection
+      value: { datasetID }
     } = this.configuration;
     const response = await fetch(
-      `https://api.resourcewatch.org/v1/query/${datasetID}?sql=${this.sql}&geostore=${areaIntersection}`
+      `https://api.resourcewatch.org/v1/query/${datasetID}?sql=${this.sql}`
     );
     const data = await response.json();
     return data;

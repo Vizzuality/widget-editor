@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import find from "lodash/find";
+import isEqual from "lodash/isEqual";
 
 import Select from "react-select";
 
@@ -22,8 +23,16 @@ const InputStyles = {
 };
 
 const SelectChart = ({ patchConfiguration, options, value }) => {
+  const [selected, setSelected] = useState(find(options, { value }));
+
+  useEffect(() => {
+    // TODO: optimize...
+    if (!isEqual(find(options, { value }), selected)) {
+      setSelected(find(options, { value }));
+    }
+  }, [selected, value]);
+
   const handleChange = option => {
-    console.log("handle change", patchConfiguration);
     patchConfiguration({ chartType: option.value });
   };
 
@@ -31,7 +40,7 @@ const SelectChart = ({ patchConfiguration, options, value }) => {
     <StyledContainer>
       <Select
         onChange={handleChange}
-        defaultValue={find(options, { value })}
+        value={selected}
         options={options}
         styles={InputStyles}
       />

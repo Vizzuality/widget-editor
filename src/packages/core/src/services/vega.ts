@@ -47,7 +47,7 @@ export default class Vega implements Charts.Vega {
       ).getChart();
     }
 
-    if (chartType === "bars") {
+    if (chartType === "bar") {
       chart = new Bars(
         this.schema,
         this.widgetConfig,

@@ -10,6 +10,8 @@ export namespace Charts {
       round?: boolean;
       nice?: boolean;
     }>;
+    width: number;
+    height: number;
     config: object;
     legend: Array<object>;
     marks: Array<object>;
@@ -44,6 +46,7 @@ export namespace Charts {
     schema: Schema;
     widgetConfig: object;
     widgetData: object;
+    setGenericSettings(): void;
     generateSchema(): void;
     getChart(): Schema;
   }

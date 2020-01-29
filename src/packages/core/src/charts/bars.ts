@@ -13,6 +13,7 @@ export default class Bars implements Charts.Chart, Charts.Bars {
     this.widgetData = widgetData;
 
     this.generateSchema();
+    this.setGenericSettings();
   }
 
   generateSchema() {
@@ -22,6 +23,14 @@ export default class Bars implements Charts.Chart, Charts.Bars {
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData()
+    };
+  }
+
+  setGenericSettings() {
+    this.schema = {
+      ...this.schema,
+      width: 500,
+      height: 300
     };
   }
 
