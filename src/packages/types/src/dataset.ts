@@ -1,13 +1,24 @@
-import * as Payloads from "./payloads";
+import * as Dataset from './dataset';
+import * as Widget from './widget';
 
+type Id = string | null;
 type Url = string;
 type Query = string;
 type ColumnName = string;
 type TableName = string;
 type Geostore = string;
 
-export default interface Dataset {
-  fetchData(url: Url): Promise<[Payloads.Payloads.Dataset]>;
+export interface Payload {
+  attributes: {
+    provider: string;
+    tableName: string;
+    widget: Widget.Payload[] | null;
+  };
+  id: Id;
+}
+
+export interface Service {
+  fetchData(url: Url): Promise<[Dataset.Payload]>;
   fetchFilteredData?(query: Query): [object];
   getFields?(): [object];
   getLayers?(): [object];

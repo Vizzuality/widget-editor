@@ -1,4 +1,4 @@
-import { Charts } from "@packages/types";
+import { Charts, Vega } from '@packages/types';
 
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
@@ -10,11 +10,11 @@ import {
   sqlFields
 } from "../helpers/wiget-helper/constants";
 
-export default class Vega implements Charts.Vega {
+export default class VegaService implements Charts.Service {
   widgetConfig: any;
   widgetData: any;
   configuration: any;
-  schema: any;
+  schema: Vega.Schema;
 
   constructor(widgetConfig: any, widgetData: any, configuration: any) {
     this.schema = defaultVegaSchema();

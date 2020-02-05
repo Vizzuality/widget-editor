@@ -1,21 +1,22 @@
-import Config from "./config";
-import * as Payloads from "./payloads";
+import * as Dataset from './dataset';
+import * as Widget from './widget';
+import * as Config from './config';
 
 type Id = string | number;
 type DatasetId = Id;
 type WidgetId = Id;
 type Endpoint = string;
 
-export default interface Adapter {
-  config: Config;
+export interface Service {
+  config: Config.Payload;
   endpoint: Endpoint;
   datasetId: Id;
-  getDataset(): Promise<Payloads.Payloads.Dataset>;
-  getWidget(dataset: Payloads.Payloads.Dataset): Promise<Payloads.Payloads.Widget>;
+  getDataset(): Promise<Dataset.Payload>;
+  getWidget(dataset: Dataset.Payload): Promise<Widget.Payload>;
   getFields(): Promise<[object]>;
   getLayers(): Promise<[object]>
   getWidgetData(
-    dataset: Payloads.Payloads.Dataset,
-    widget: Payloads.Payloads.Widget
+    dataset: Dataset.Payload,
+    widget: Widget.Payload
   ): Promise<[object]>;
 }

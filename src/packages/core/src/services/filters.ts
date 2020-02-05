@@ -2,11 +2,13 @@
 // Formating SQL string based on properties
 // Request new data based on propertie configuration
 
+import { Filters, Config } from '@packages/types';
+
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-export default class Filters {
+export default class FiltersService implements Filters.Service {
   sql: string;
-  configuration: any;
+  configuration: Config.Payload;
   constructor(data: any) {
     this.configuration = data;
     this.sql = "";
@@ -17,15 +19,14 @@ export default class Filters {
     this.prepareOrderBy();
     this.prepareOrder();
     this.prepareLimit();
-    this.debugSql();
   }
 
-  private prepareSelectStatement() {
+  prepareSelectStatement() {
     const { category } = this.configuration;
     this.sql = `SELECT ${category.name} as ${sqlFields.value}`;
   }
 
-  private prepareAggregate() {
+  prepareAggregate() {
     const { aggregateFunction, value } = this.configuration;
     const { name, tableName } = value;
 
@@ -42,7 +43,7 @@ export default class Filters {
     }
   }
 
-  private prepareGroupBy() {
+  prepareGroupBy() {
     const { groupBy } = this.configuration;
     if (groupBy) {
       const { name } = groupBy;
@@ -50,7 +51,7 @@ export default class Filters {
     }
   }
 
-  private prepareOrderBy() {
+  prepareOrderBy() {
     const { orderBy } = this.configuration;
     if (orderBy) {
       const { name } = orderBy;
@@ -58,13 +59,13 @@ export default class Filters {
     }
   }
 
-  private prepareOrder() {
+  prepareOrder() {
     const { orderBy } = this.configuration;
     const { orderType } = orderBy;
     this.sql = `${this.sql} ${orderType || "desc"}`;
   }
 
-  private prepareLimit() {
+  prepareLimit() {
     const { limit = 500 } = this.configuration;
     this.sql = `${this.sql} LIMIT ${limit}`;
   }

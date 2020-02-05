@@ -1,22 +1,22 @@
 import { find } from "lodash";
 
-import { Widget, Config, Payloads } from "@packages/types";
+import { Dataset, Widget, Config } from '@packages/types';
 
-export default class WidgetService implements Widget {
-  config: Config;
+export default class WidgetService implements Widget.Service {
+  config: Config.Payload;
 
-  constructor(config: Config) {
+  constructor(config: Config.Payload) {
     this.config = config;
   }
 
-  fromDataset(dataset: Payloads.Dataset): Payloads.Widget {
+  fromDataset(dataset: Dataset.Payload): Widget.Payload {
     return find(
       dataset.attributes.widget,
       widget => !!widget.attributes.defaultEditableWidget
     );
   }
 
-  getDataSqlQuery(dataset: Payloads.Dataset, widget: Payloads.Widget): string {
+  getDataSqlQuery(dataset: Dataset.Payload, widget: Widget.Payload): string {
     // const { provider, tableName } = dataset.attributes;
     // let query: string = getQueryByFilters(tableName, provider);
     // return `${query} LIMIT 10`;
@@ -38,7 +38,7 @@ export default class WidgetService implements Widget {
     return null;
   }
 
-  async fetchWidget(url: string): Promise<Payloads.Widget> {
+  async fetchWidget(url: string): Promise<Widget.Payload> {
     try {
       const response = await fetch(url);
 

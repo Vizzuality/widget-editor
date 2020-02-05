@@ -7,7 +7,7 @@ type UserToken = string | null;
 type UserEmail = string | null;
 type Locale = string;
 
-interface ConfigurationSchema {
+export interface Payload {
   url?: Url;
   env?: Env;
   applications?: Applications;
@@ -16,10 +16,20 @@ interface ConfigurationSchema {
   userToken?: UserToken;
   userEmail?: UserEmail;
   locale: Locale;
+  category: { name: string };
+  aggregateFunction?: string | null;
+  groupBy?: { name: string };
+  orderBy?: { name: string, orderType: string };
+  limit: number;
+  value: {
+    datasetID?: string;
+    name?: string;
+    tableName?: string;
+  };
 }
 
-export default interface Config {
-  config: ConfigurationSchema;
+export interface Service {
+  config: Payload;
   setConfig(params: object | null): void;
-  getConfig(): ConfigurationSchema;
+  getConfig(): Payload;
 }
