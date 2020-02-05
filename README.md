@@ -26,7 +26,6 @@ We recommend not adding packages globally (unless it's for building or dev depen
 We are using Redux sagas for side effects. We are handling what should be updated with `@core/services/state-proxy` that will make sure we have changes. (more to be added)
 
 <img src="https://github.com/Vizzuality/widget-editor/blob/master/assets/data-flow.png" />
-[view full view here](https://github.com/Vizzuality/widget-editor/blob/master/assets/data-flow.png)
 
 #### Referencing packages within an application
 
