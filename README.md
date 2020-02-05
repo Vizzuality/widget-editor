@@ -2,10 +2,12 @@
 
 This is the repo for the new version of the widget editor currently under development. Its mostly written in typescript with some exceptions and utilizing a mono-repo structure using yarn workspaces with Lerna.
 
+## Monorepo Structure
+
+<img src="https://github.com/Vizzuality/widget-editor/blob/master/assets/widget-editor-packages.png" />
+
 
 #### Managing packages
-
-<img src="https://github.com/Vizzuality/widget-editor/master/assets/widget-editor-packages.png" />
 
 1. Install packages by in root writing `yarn` in the terminal. This will add all dependencies for all of the packages.
 2. Start an application by running `yarn start:{widget-editor|renderer}`.
@@ -23,8 +25,8 @@ We recommend not adding packages globally (unless it's for building or dev depen
 
 We are using Redux sagas for side effects. We are handling what should be updated with `@core/services/state-proxy` that will make sure we have changes. (more to be added)
 
-<img src="https://github.com/Vizzuality/widget-editor/master/assets/data-flow.png" />
-[view full view here](https://github.com/Vizzuality/widget-editor/master/assets/data-flow.png)
+<img src="https://github.com/Vizzuality/widget-editor/blob/master/assets/data-flow.png" />
+[view full view here](https://github.com/Vizzuality/widget-editor/blob/master/assets/data-flow.png)
 
 #### Referencing packages within an application
 
