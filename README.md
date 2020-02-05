@@ -1,22 +1,16 @@
 # Widget editor V2
 
-This is the new version of the widget editor following the MVP pattern. The project is split into two sections `applications` and `packages` packages are holding all of our core logic consumed by our `applications`. Currently, we have two applications using `react`. All of our `packages` are written in typescript.
+This is the repo for the new version of the widget editor currently under development. Its mostly written in typescript with some exceptions and utilizing a mono-repo structure using yarn workspaces with Lerna.
 
-## Getting started
-
-We are using a `mono repo` structure using `yarn workspaces` combined with `lerna`. The project is split into two categories `applications` & `packages`.
-
-#### Applications
-
-This is code that will be directly served and interacted with a user, these apps are using react and they are consuming the `packages`
 
 #### Managing packages
 
-All core logic consumed by the applications. These are all written in `typescript`
+<img src="https://github.com/Vizzuality/widget-editor/master/assets/widget-editor-packages.png" />
 
 1. Install packages by in root writing `yarn` in the terminal. This will add all dependencies for all of the packages.
 2. Start an application by running `yarn start:{widget-editor|renderer}`.
 3. Run tests globally by running `yarn test` run them locally by running `yarn test:{@applications|@packages}/{package}`
+4. Run linting by running `yarn lint` 
 
 #### Adding and managing packages
 
@@ -24,6 +18,13 @@ All core logic consumed by the applications. These are all written in `typescrip
 2. In packages `yarn workspace @packages/{package} add {package}`
 
 We recommend not adding packages globally (unless it's for building or dev dependencies), but if you have to you can run: `yarn add {package} --dev -W`
+
+#### Application data flow
+
+We are using Redux sagas for side effects. We are handling what should be updated with `@core/services/state-proxy` that will make sure we have changes. (more to be added)
+
+<img src="https://github.com/Vizzuality/widget-editor/master/assets/data-flow.png" />
+[view full view here](https://github.com/Vizzuality/widget-editor/master/assets/data-flow.png)
 
 #### Referencing packages within an application
 
