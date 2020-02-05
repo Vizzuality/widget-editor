@@ -1,10 +1,25 @@
 type Id = string | number;
 
-import * as Payloads from "./payloads";
+export interface Payload {
+  id: Id;
+  type: string;
+  attributes: {
+    name: string;
+    dataset: string;
+    slug: string;
+    description: string;
+    application: [string];
+    widgetConfig: {
+      paramsConfig: object
+    };
+    defaultEditableWidget: boolean;
+    env: string;
+  };
+}
 
-export default interface Widget {
+export interface Service {
   fromDataset(dataset: object): object;
   getDataSqlQuery(dataset: any, widget: any): string;
   fetchWidgetData(url: string): Promise<[object]>;
-  fetchWidget(widgetId: Id): Promise<Payloads.Payloads.Widget>;
+  fetchWidget(widgetId: Id): Promise<Payload>;
 }

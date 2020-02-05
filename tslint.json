@@ -1,0 +1,19 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "linterOptions": {
+      "exclude": [
+        "bin",
+        "build/**",
+        "config/**",
+        "coverage/**",
+        "node_modules/**",
+        "**/*.d.ts"
+      ]
+    },
+    "jsRules": {},
+    "rules": {},
+    "rulesDirectory": []
+}

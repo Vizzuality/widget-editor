@@ -1,13 +1,13 @@
-import { Charts } from "@packages/types";
+import { Charts, Vega, Generic, Widget } from '@packages/types';
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-export default class Pie implements Charts.Chart, Charts.Pie {
-  schema: Charts.Schema;
-  widgetConfig: object;
-  widgetData: object;
+export default class Pie implements Charts.Pie {
+  schema: Vega.Schema;
+  widgetConfig: Widget.Payload;
+  widgetData: Generic.ObjectPayload;
 
-  constructor(schema: Charts.Schema, widgetConfig: object, widgetData: object) {
+  constructor(schema: Vega.Schema, widgetConfig: Widget.Payload, widgetData: Generic.ObjectPayload) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -69,7 +69,7 @@ export default class Pie implements Charts.Chart, Charts.Pie {
     ];
   }
 
-  bindData() {
+  bindData(): Vega.Data[] {
     const { widgetData } = this;
     return [
       {

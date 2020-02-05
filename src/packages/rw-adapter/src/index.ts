@@ -1,10 +1,10 @@
-import { Adapter, Payloads } from "@packages/types";
+import { Adapter, Dataset, Widget, Config } from '@packages/types';
 
 import { DatasetService, WidgetService } from "@packages/core";
 
 import ConfigHelper from "./helpers/config";
 
-export default class RwAdapter implements Adapter {
+export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
 
   config = null;
@@ -12,7 +12,7 @@ export default class RwAdapter implements Adapter {
   widgetService = null;
   datasetId = null;
 
-  constructor(params: object | {}, datasetId: string) {
+  constructor(params: Config.Payload, datasetId: string) {
     this.config = ConfigHelper(params);
     this.datasetId = datasetId;
     this.datasetService = new DatasetService(this.config);
@@ -38,7 +38,7 @@ export default class RwAdapter implements Adapter {
     return fields;
   }
 
-  async getWidget(dataset: Payloads.Dataset) {
+  async getWidget(dataset: Dataset.Payload) {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata";
 
@@ -52,7 +52,7 @@ export default class RwAdapter implements Adapter {
     return widget;
   }
 
-  async getWidgetData(dataset: Payloads.Dataset, widget: Payloads.Widget) {
+  async getWidgetData(dataset: Dataset.Payload, widget: Widget.Payload) {
     const sql = this.widgetService.getDataSqlQuery(dataset, widget);
 
     const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;

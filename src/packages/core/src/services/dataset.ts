@@ -1,13 +1,13 @@
-import { Dataset, Config, Payloads } from "@packages/types";
+import { Dataset, Config } from '@packages/types';
 
-export default class DatasetService implements Dataset {
-  config: Config;
+export default class DatasetService implements Dataset.Service {
+  config: Config.Payload;
 
-  constructor(config: Config) {
+  constructor(config: Config.Payload) {
     this.config = config;
   }
 
-  async fetchData(url: string): Promise<[Payloads.Dataset]> {
+  async fetchData(url: string): Promise<[Dataset.Payload]> {
     try {
       const response = await fetch(url);
 

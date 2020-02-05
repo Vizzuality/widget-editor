@@ -2,11 +2,13 @@ import { takeLatest, put, call, select } from "redux-saga/effects";
 
 import { getAction } from "helpers/redux";
 
-import { VegaService, stateProxy } from "@packages/core";
+import { VegaService, StateProxy } from "@packages/core";
 import { constants } from "@packages/core";
 
 import { setEditor } from "modules/editor/actions";
 import { setWidget } from "modules/widget/actions";
+
+const stateProxy = new StateProxy();
 
 function* preloadData() {
   const {
@@ -18,7 +20,7 @@ function* preloadData() {
 
   const vega = new VegaService(widgetConfig, widgetData, configuration);
   yield put(setWidget(vega.getChart()));
-  stateProxy.cache(configuration);
+  stateProxy.cacheCurrent(configuration);
 }
 
 function* resolveWithProxy() {
@@ -27,13 +29,15 @@ function* resolveWithProxy() {
   } = yield select();
 
   // Check and patch current state based on user configuration
-  const proxyResult = yield call(stateProxy.sync, configuration);
+  const proxyResult = yield call([stateProxy, 'sync'], configuration);
 
   if (proxyResult.hasUpdates) {
+    // TODO: Clean this up, better to utalize a widget service within the proxy
     if (!!proxyResult.widgetData) {
       yield put(setEditor({ widgetData: proxyResult.widgetData }));
       yield call(updateWidget);
     }
+    yield takeLatest(constants.sagaEvents.DATA_FLOW_PROXY_UPDATE, updateWidget);
   }
 }
 
@@ -57,7 +61,6 @@ export default function* baseSaga() {
     getAction("CONFIGURATION/patchConfiguration"),
     resolveWithProxy
   );
-  yield takeLatest(constants.sagaEvents.DATA_FLOW_PROXY_UPDATE, updateWidget);
 }
 
 // SELECT primary_fuel as x, SUM(estimated_generation_gwh) as y FROM powerwatch_data_20180102 GROUP BY x ORDER BY y desc LIMIT 2

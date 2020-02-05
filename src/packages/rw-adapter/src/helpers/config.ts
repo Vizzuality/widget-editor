@@ -2,16 +2,14 @@ import { pick } from "lodash";
 
 import { Config } from "@packages/types";
 
-class ConfigHelper implements Config {
-  config: {
-    locale: "en";
-  };
+class ConfigHelper implements Config.Service {
+  config: Config.Payload;
 
-  constructor(params: object) {
+  constructor(params: Config.Payload) {
     this.setConfig(params);
   }
 
-  setConfig(params: object) {
+  setConfig(params: Config.Payload): void {
     const acceptedParams = pick(params, [
       "url",
       "env",
@@ -25,11 +23,11 @@ class ConfigHelper implements Config {
     this.config = { ...this.config, ...acceptedParams };
   }
 
-  getConfig() {
+  getConfig(): Config.Payload {
     return this.config;
   }
 }
 
-export default (params: object) => {
+export default (params: Config.Payload): Config.Service => {
   return new ConfigHelper(params);
 };

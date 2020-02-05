@@ -1,18 +1,17 @@
-import { Adapter, Payloads } from "@packages/types";
+import { Dataset, Widget, Adapter, Generic } from '@packages/types';
 
 import FiltersService from "./filters";
-
 import { sagaEvents } from "../constants";
 
-export default class Data {
-  adapter: Adapter;
-  dataset: Payloads.Dataset;
-  widget: Payloads.Widget;
+export default class DataService {
+  adapter: Adapter.Service;
+  dataset: Dataset.Payload;
+  widget: Widget.Payload;
   cachedState: object;
-  setEditor: Function;
-  dispatch: Function;
+  setEditor: Generic.Dispatcher;
+  dispatch: Generic.Dispatcher;
 
-  constructor(adapter: Adapter, setEditor: Function, dispatch: Function) {
+  constructor(adapter: Adapter.Service, setEditor: Generic.Dispatcher, dispatch: Generic.Dispatcher) {
     this.adapter = adapter;
     this.setEditor = setEditor;
     this.dispatch = dispatch;
