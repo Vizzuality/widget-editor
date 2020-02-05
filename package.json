@@ -18,6 +18,7 @@
     "test:renderer": "cd src/applications/renderer && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
     "test": "jest --verbose ./src/packages && (cd src/applications/renderer && yarn test --watchAll=false) && (cd src/applications/widget-editor && yarn test --watchAll=false)",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "deploy:widget-editor": "cd src/applications/widget-editor && npm run deploy"
   },
   "devDependencies": {

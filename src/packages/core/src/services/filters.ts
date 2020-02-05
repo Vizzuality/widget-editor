@@ -69,10 +69,6 @@ export default class Filters {
     this.sql = `${this.sql} LIMIT ${limit}`;
   }
 
-  private debugSql() {
-    console.info("sql query", this.sql);
-  }
-
   async requestWidgetData() {
     const {
       value: { datasetID }
@@ -83,6 +79,4 @@ export default class Filters {
     const data = await response.json();
     return data;
   }
-
-  getData() {}
 }

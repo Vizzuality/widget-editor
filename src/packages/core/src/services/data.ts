@@ -9,10 +9,10 @@ export default class Data {
   dataset: Payloads.Dataset;
   widget: Payloads.Widget;
   cachedState: object;
-  setEditor: Function;
-  dispatch: Function;
+  setEditor: () => void;
+  dispatch: () => void;
 
-  constructor(adapter: Adapter, setEditor: Function, dispatch: Function) {
+  constructor(adapter: Adapter, setEditor: () => void, dispatch: () => void) {
     this.adapter = adapter;
     this.setEditor = setEditor;
     this.dispatch = dispatch;

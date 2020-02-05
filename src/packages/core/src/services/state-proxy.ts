@@ -1,46 +1,49 @@
 import FiltersService from "./filters";
 import { sagaEvents } from "../constants";
 import isEqual from "lodash/isEqual";
-let cacheState = {
-  limit: null,
-  chartType: null,
-  value: null
-};
 
-const cache = state => {
-  cacheState = state;
-};
-
-const sync = async (state: {
-  limit: number;
-  chartType: string;
-  value: object;
-}) => {
-  const hasUpdates =
-    (!!cacheState.limit && cacheState.limit !== state.limit) ||
-    (!!cacheState.chartType && cacheState.chartType !== state.chartType) ||
-    (!!cacheState.value && !isEqual(cacheState.value, state.value));
-
-  // We dont have any state to compare with
-  // so we can treat it as "initial state"
-  // Construct correct SQL query based on widgetConfig
-  if (hasUpdates) {
-    cache(state);
-    const filtersService = new FiltersService(state);
-    const widgetData = await filtersService.requestWidgetData();
-    return {
-      hasUpdates,
-      widgetData: widgetData.data
-    };
+export default class StateProxy {
+  cache: object;
+  constructor() {
+    // These are the properties that we will check for updates
+    this.cache = {
+      limit: null,
+      chartType: null,
+      value: null
+    }
   }
 
-  return {
-    hasUpdates,
-    widgetData: null
-  };
-};
+  checkHasUpdate(state: { limit: number, chartType: number, value: object }) {
+    const keys = Object.keys(this.cache);
+    let hasUpdate = false;
+    keys.forEach(key => {
+      hasUpdate = hasUpdate || !isEqual(this.cache[key], state[key]);
+    });
 
-export default {
-  cache,
-  sync
-};
+    return hasUpdate;
+  }
+
+  cacheCurrent(state: { limit: number, chartType: number, value: object }) {
+    this.cache = state;
+  }
+
+  async sync(state: { limit: number, chartType: number, value: object }) {
+    const hasUpdate = this.checkHasUpdate(state);
+
+    if (hasUpdate) {
+      this.cacheCurrent(state);
+      const filtersService = new FiltersService(state);
+      const widgetData = await filtersService.requestWidgetData();
+      return {
+        hasUpdates: hasUpdate,
+        widgetData: widgetData.data
+      };
+    }
+
+    return {
+      hasUpdates: hasUpdate,
+      widgetData: null
+    };
+
+  }
+}
