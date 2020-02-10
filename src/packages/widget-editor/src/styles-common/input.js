@@ -9,6 +9,10 @@ const Input = styled.input`
   padding: 14px 10px;
   font-size: 14px;
   margin-left: 20px;
+
+  &[type="number"] {
+    text-align: center;
+  }
 `;
 
 export default Input;

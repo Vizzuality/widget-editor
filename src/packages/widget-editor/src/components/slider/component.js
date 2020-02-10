@@ -3,9 +3,8 @@ import styled, { ThemeProvider } from "styled-components";
 import ReactSlider from "react-slider";
 
 const StyledSlider = styled(ReactSlider)`
-  width: 100%;
   height: 7px;
-  flex-basis: 70%;
+  width: inherit;
 `;
 
 const StyledThumb = styled.div`
