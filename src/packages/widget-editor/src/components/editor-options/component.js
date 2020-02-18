@@ -12,6 +12,7 @@ const StyledContainer = styled.div`
   height: calc(100% - ${FOOTER_HEIGHT} - 20px);
   padding: 0 30px;
   margin: 10px 0;
+  overflow-y: scroll;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
 `;
 
