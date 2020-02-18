@@ -10,10 +10,10 @@ export default class StateProxy {
       limit: null,
       chartType: null,
       value: null
-    }
+    };
   }
 
-  checkHasUpdate(state: { limit: number, chartType: number, value: object }) {
+  checkHasUpdate(state: { limit: number; chartType: number; value: object }) {
     const keys = Object.keys(this.cache);
     let hasUpdate = false;
     keys.forEach(key => {
@@ -23,11 +23,11 @@ export default class StateProxy {
     return hasUpdate;
   }
 
-  cacheCurrent(state: { limit: number, chartType: number, value: object }) {
+  cacheCurrent(state: { limit: number; chartType: number; value: object }) {
     this.cache = state;
   }
 
-  async sync(state: { limit: number, chartType: number, value: object }) {
+  async sync(state: { limit: number; chartType: number; value: object }) {
     const hasUpdate = this.checkHasUpdate(state);
 
     if (hasUpdate) {
@@ -44,6 +44,5 @@ export default class StateProxy {
       hasUpdates: hasUpdate,
       widgetData: null
     };
-
   }
 }

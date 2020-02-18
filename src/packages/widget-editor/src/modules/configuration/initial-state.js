@@ -1,4 +1,6 @@
 export default {
+  title: "",
+  caption: "",
   visualizationType: "chart",
   chartType: "pie",
   availableCharts: [

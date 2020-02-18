@@ -9,13 +9,19 @@ function* preloadData() {
     widgetEditor: {
       editor: {
         widget: {
-          attributes: { widgetConfig }
+          attributes: { name, description, widgetConfig }
         }
       }
     }
   } = yield select();
 
-  yield put(setConfiguration(widgetConfig.paramsConfig));
+  const configuration = {
+    ...widgetConfig.paramsConfig,
+    title: name,
+    caption: description
+  };
+
+  yield put(setConfiguration(configuration));
 }
 
 export default function* baseSaga() {

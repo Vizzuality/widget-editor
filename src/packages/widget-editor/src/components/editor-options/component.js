@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "components/button";
 import QueryLimit from "components/query-limit";
+import WidgetInfo from "components/widget-info";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -42,6 +43,7 @@ const EditorOptions = ({ limit = null, patchConfiguration }) => {
           <Button>Table view</Button>
         </StyledListItem>
       </StyledList>
+      <WidgetInfo />
       <QueryLimit />
     </StyledContainer>
   );
