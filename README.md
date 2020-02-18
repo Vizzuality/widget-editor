@@ -2,17 +2,31 @@
 
 This is the repo for the new version of the widget editor currently under development. Its mostly written in typescript with some exceptions and utilizing a mono-repo structure using yarn workspaces with Lerna.
 
+## Getting started
+
+1. Install packages in `root` by typing `yarn`
+2. inside `@applications/widget-editor` add `.env` with these credentials:
+
+```
+NODE_ENV=develop
+NODE_PATH=src
+SASS_PATH=node_modules:src
+```
+
+3. Run `yarn start:widget-editor`. This will compile and watch all packages for changes.
+
+Happy coding!
+
 ## Monorepo Structure
 
 <img src="https://github.com/Vizzuality/widget-editor/blob/master/assets/widget-editor-packages.png" />
-
 
 #### Managing packages
 
 1. Install packages by in root writing `yarn` in the terminal. This will add all dependencies for all of the packages.
 2. Start an application by running `yarn start:{widget-editor|renderer}`.
 3. Run tests globally by running `yarn test` run them locally by running `yarn test:{@applications|@packages}/{package}`
-4. Run linting by running `yarn lint` 
+4. Run linting by running `yarn lint`
 
 #### Adding and managing packages
 

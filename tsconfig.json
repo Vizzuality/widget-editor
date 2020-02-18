@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "target": "es6",
     "sourceMap": true,
+    "skipLibCheck": true,
     "lib": ["es6", "dom"]
   },
   "exclude": ["node_modules", "**/build", "**/*.spec.ts"]
