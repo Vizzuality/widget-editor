@@ -3,11 +3,16 @@ const paths = require("./paths");
 module.exports = {
   webpack: function(config, env) {
     // Without this, the monorepo won't work
+
+    config.watchOptions = {
+      poll: 1000 // Check for changes every second
+    };
+
     config.module.rules = config.module.rules.map(rule => {
       if (!Reflect.has(rule, "oneOf")) {
         return rule;
       }
-      console.log("test");
+
       const oneOf = rule.oneOf.map(loader => {
         if (!Reflect.has(loader, "test")) {
           return loader;
@@ -45,9 +50,6 @@ module.exports = {
     // a starting configuration to then modify instead of having to create a config from scratch.
     // console.log("dev server", configFunction);
     // const config = configFunction();
-    config.before = (app, server) => {
-      console.log("BEFORE");
-    };
     return config;
   }
 };
