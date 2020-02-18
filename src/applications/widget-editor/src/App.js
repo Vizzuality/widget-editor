@@ -27,7 +27,7 @@ function App() {
   return (
     <Provider store={store}>
       <div className="App">
-        <header className="App-header">Widget editor V2</header>
+        <header className="App-header">Widget editor</header>
         <div className="widget-editor-wrapper">
           <WidgetEditor adapter={adapter} theme={theme} store={store} />
         </div>

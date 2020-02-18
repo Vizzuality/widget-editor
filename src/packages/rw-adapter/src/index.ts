@@ -1,4 +1,4 @@
-import { Adapter, Dataset, Widget, Config } from '@packages/types';
+import { Adapter, Dataset, Widget, Config } from "@packages/types";
 
 import { DatasetService, WidgetService } from "@packages/core";
 
