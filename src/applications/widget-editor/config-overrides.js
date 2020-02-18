@@ -3,11 +3,6 @@ const paths = require("./paths");
 module.exports = {
   webpack: function(config, env) {
     // Without this, the monorepo won't work
-
-    config.watchOptions = {
-      poll: 1000 // Check for changes every second
-    };
-
     config.module.rules = config.module.rules.map(rule => {
       if (!Reflect.has(rule, "oneOf")) {
         return rule;
