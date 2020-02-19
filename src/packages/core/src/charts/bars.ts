@@ -1,4 +1,4 @@
-import { Charts, Vega, Generic, Widget } from '@packages/types';
+import { Charts, Vega, Generic, Widget } from "@packages/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
@@ -7,7 +7,11 @@ export default class Bars implements Charts.Bars {
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
 
-  constructor(schema: Vega.Schema, widgetConfig: Widget.Payload, widgetData: Generic.ObjectPayload) {
+  constructor(
+    schema: Vega.Schema,
+    widgetConfig: Widget.Payload,
+    widgetData: Generic.ObjectPayload
+  ) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -29,8 +33,11 @@ export default class Bars implements Charts.Bars {
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      width: 500,
-      height: 300
+      autosize: {
+        type: "fit",
+        contains: "padding"
+      },
+      padding: 20
     };
   }
 
