@@ -8,11 +8,11 @@ import FormLabel from "styles-common/form-label";
 import Input from "styles-common/input";
 
 import * as helpers from "./helpers";
+import { Accordion, AccordionSection } from 'components/accordion';
 
 const WidgetInfo = ({ theme, configuration, patchConfiguration }) => {
   const [title, setTitle] = useState(configuration.title);
   const [caption, setCaption] = useState(configuration.caption);
-
   const debounceTitle = useDebounce(title, 500);
   const debounceCaption = useDebounce(caption, 500);
 
@@ -40,21 +40,34 @@ const WidgetInfo = ({ theme, configuration, patchConfiguration }) => {
 
   return (
     <FlexContainer>
-      <FormLabel htmlFor="options-title">Title</FormLabel>
-      <Input
-        type="text"
-        name="options-title"
-        value={title}
-        onChange={e => handleOnChange(e.target.value, "title")}
-      />
-      <FormLabel htmlFor="options-title">Caption</FormLabel>
-      <Input
-        type="text"
-        name="options-capton"
-        value={caption}
-        onChange={e => handleOnChange(e.target.value, "caption")}
-      />
+      <Accordion>
+        <AccordionSection title="Description and labels" openDefault >
+          <FlexContainer> 
+            <FormLabel htmlFor="options-title">Title</FormLabel>
+            <Input
+              type="text"
+              name="options-title"
+              value={title}
+              onChange={e => handleOnChange(e.target.value, "title")}
+              />
+            <FormLabel htmlFor="options-title">Caption</FormLabel>
+            <Input
+              type="text"
+              name="options-capton"
+              value={caption}
+              onChange={e => handleOnChange(e.target.value, "caption")}
+              />
+          </FlexContainer>
+        </AccordionSection>
+        <AccordionSection title="Filters">
+          Filters content
+        </AccordionSection>
+        <AccordionSection title="Orders">
+          Orders content
+        </AccordionSection>
+      </Accordion>      
     </FlexContainer>
+     
   );
 };
 

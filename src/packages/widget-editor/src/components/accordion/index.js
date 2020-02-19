@@ -1,0 +1,3 @@
+// Components
+export * from "./component";
+
