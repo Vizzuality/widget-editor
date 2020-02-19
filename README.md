@@ -1,5 +1,7 @@
 # Widget editor V2
 
+Playground: [here](https://vizzuality.github.io/widget-editor/)
+
 This is the repo for the new version of the widget editor currently under development. Its mostly written in typescript with some exceptions and utilizing a mono-repo structure using yarn workspaces with Lerna.
 
 ## Getting started
