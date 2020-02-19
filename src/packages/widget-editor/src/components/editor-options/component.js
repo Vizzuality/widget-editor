@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "components/button";
+import { Accordion, AccordionSection } from "components/accordion";
+
 import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";
 
@@ -44,8 +46,16 @@ const EditorOptions = ({ limit = null, patchConfiguration }) => {
           <Button>Table view</Button>
         </StyledListItem>
       </StyledList>
-      <WidgetInfo />
-      <QueryLimit />
+
+      <Accordion>
+        <AccordionSection title="Description and labels" openDefault>
+          <WidgetInfo />
+        </AccordionSection>
+        <AccordionSection title="Filters">
+          <QueryLimit />
+        </AccordionSection>
+        <AccordionSection title="Orders">Orders content</AccordionSection>
+      </Accordion>
     </StyledContainer>
   );
 };

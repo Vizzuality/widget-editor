@@ -25,34 +25,32 @@ const Chart = ({ editor, widget }) => {
   const vegaContainer = useRef();
   const memoryStoreWidget = useRef();
 
+  // TODO: CLEANUP, probably better to just utalise a traditional Rclass here
   useEffect(() => {
     if (
       chart.current &&
       !isEmpty(widget) &&
       !isEqual(widget, memoryStoreWidget)
     ) {
-      const width = chart.current.parentNode.offsetWidth;
       const runtime = vega.parse(widget);
+      const width = chart.current.offsetWidth;
 
       vegaContainer.current = new vega.View(runtime)
         .initialize(chart.current)
         .renderer("canvas")
+        .width(width - 40)
         .hover()
         .run();
       memoryStoreWidget.current = widget;
+
+      vegaContainer.current.resize = () => {
+        const width = chart.current.offsetWidth;
+        vegaContainer.current.width(width - 40).run();
+      };
+
+      window.addEventListener("resize", vegaContainer.current.resize);
     }
   }, [chart, editor, widget]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = chart.current.parentNode.getBoundingClientRect().width;
-      vegaContainer.current.signal("width", width / 2).run("enter");
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  });
 
   return (
     <StyledContainer>
