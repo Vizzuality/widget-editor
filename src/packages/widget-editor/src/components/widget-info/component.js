@@ -5,10 +5,10 @@ import useDebounce from "hooks/use-debounce";
 
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
+import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 
 import * as helpers from "./helpers";
-import { Accordion, AccordionSection } from 'components/accordion';
 
 const WidgetInfo = ({ theme, configuration, patchConfiguration }) => {
   const [title, setTitle] = useState(configuration.title);
@@ -40,34 +40,25 @@ const WidgetInfo = ({ theme, configuration, patchConfiguration }) => {
 
   return (
     <FlexContainer>
-      <Accordion>
-        <AccordionSection title="Description and labels" openDefault >
-          <FlexContainer> 
-            <FormLabel htmlFor="options-title">Title</FormLabel>
-            <Input
-              type="text"
-              name="options-title"
-              value={title}
-              onChange={e => handleOnChange(e.target.value, "title")}
-              />
-            <FormLabel htmlFor="options-title">Caption</FormLabel>
-            <Input
-              type="text"
-              name="options-capton"
-              value={caption}
-              onChange={e => handleOnChange(e.target.value, "caption")}
-              />
-          </FlexContainer>
-        </AccordionSection>
-        <AccordionSection title="Filters">
-          Filters content
-        </AccordionSection>
-        <AccordionSection title="Orders">
-          Orders content
-        </AccordionSection>
-      </Accordion>      
+      <InputGroup>
+        <FormLabel htmlFor="options-title">Title</FormLabel>
+        <Input
+          type="text"
+          name="options-title"
+          value={title}
+          onChange={e => handleOnChange(e.target.value, "title")}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-title">Caption</FormLabel>
+        <Input
+          type="text"
+          name="options-capton"
+          value={caption}
+          onChange={e => handleOnChange(e.target.value, "caption")}
+        />
+      </InputGroup>
     </FlexContainer>
-     
   );
 };
 
