@@ -10,7 +10,7 @@ const StyledAccordion = styled.div`
 const StyledAccordionContent = styled.div`
   display: "block";
   max-height: ${props => props.scrollHeight + "px" || "0"};
-  overflow-y: hidden;
+  overflow-y: ${props => (props.scrollHeight ? "visible" : "hidden")};
   transition: all 0.2s ease-out;
   padding-left: 24px;
   padding-top: ${props => (props.scrollHeight ? "18px" : "0" || "0")};

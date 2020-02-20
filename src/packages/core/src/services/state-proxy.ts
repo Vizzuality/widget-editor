@@ -9,7 +9,8 @@ export default class StateProxy {
     this.cache = {
       limit: null,
       chartType: null,
-      value: null
+      value: null,
+      orderBy: null
     };
   }
 
