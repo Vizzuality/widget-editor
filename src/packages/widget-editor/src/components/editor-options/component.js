@@ -5,6 +5,7 @@ import { Accordion, AccordionSection } from "components/accordion";
 
 import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";
+import OrderValues from "components/order-values";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -54,7 +55,9 @@ const EditorOptions = ({ limit = null, patchConfiguration }) => {
         <AccordionSection title="Filters">
           <QueryLimit />
         </AccordionSection>
-        <AccordionSection title="Orders">Orders content</AccordionSection>
+        <AccordionSection title="Order">
+          <OrderValues />
+        </AccordionSection>
       </Accordion>
     </StyledContainer>
   );
