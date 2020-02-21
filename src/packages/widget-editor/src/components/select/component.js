@@ -85,7 +85,7 @@ const CustomOption = ({ data, isDisabled, innerProps }) => {
       </StyledSelectOptionTitle>
       {description && description.length > 0 && (
         <StyledSelectOptionDescription>
-          { data.description }
+          { description }
         </StyledSelectOptionDescription>
       )}
     </StyledSelectOption>
