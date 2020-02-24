@@ -16,11 +16,11 @@ const StyledFooter = styled.footer`
   padding: 0 30px;
 `;
 
-const Footer = () => {
+const Footer = ({ authenticated }) => {
   return (
     <StyledFooter>
       <Button type="highlight">Need help?</Button>
-      <Button type="cta">Save widget</Button>
+      {authenticated && <Button type="cta">Save widget</Button>}
     </StyledFooter>
   );
 };

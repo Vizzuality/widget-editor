@@ -1,4 +1,4 @@
-import { Dataset, Widget, Adapter, Generic } from '@packages/types';
+import { Dataset, Widget, Adapter, Generic } from "@packages/types";
 
 import FiltersService from "./filters";
 import { sagaEvents } from "../constants";
@@ -11,15 +11,24 @@ export default class DataService {
   setEditor: Generic.Dispatcher;
   dispatch: Generic.Dispatcher;
 
-  constructor(adapter: Adapter.Service, setEditor: Generic.Dispatcher, dispatch: Generic.Dispatcher) {
+  constructor(
+    datasetId: Adapter.datasetId,
+    adapter: Adapter.Service,
+    setEditor: Generic.Dispatcher,
+    dispatch: Generic.Dispatcher
+  ) {
     this.adapter = adapter;
     this.setEditor = setEditor;
     this.dispatch = dispatch;
     this.dataset = null;
     this.widget = null;
+
+    this.adapter.setDatasetId(datasetId);
   }
 
-  private async getDatasetAndWidgets() {
+  async getDatasetAndWidgets() {
+    console.log("Ds service", this.adapter);
+
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset);
 
@@ -27,7 +36,7 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
-  private async getWidgetData() {
+  async getWidgetData() {
     const {
       attributes: {
         widgetConfig: { paramsConfig }
@@ -42,7 +51,7 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
   }
 
-  private async getFieldsAndLayers() {
+  async getFieldsAndLayers() {
     const fields = await this.adapter.getFields();
     const layers = await this.adapter.getLayers();
 

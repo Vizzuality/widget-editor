@@ -11,16 +11,56 @@ export default class RwAdapter implements Adapter.Service {
   datasetService = null;
   widgetService = null;
   datasetId = null;
+  AUTH_TOKEN = null;
 
-  constructor(params: Config.Payload, datasetId: string) {
-    this.config = ConfigHelper(params);
-    this.datasetId = datasetId;
+  applications = ["rw"];
+  env = "production";
+  locale = "en";
+
+  constructor() {
+    const asConfig: Config.Payload = {
+      applications: this.applications,
+      env: this.env,
+      locale: this.locale
+    };
+    this.config = ConfigHelper(asConfig);
     this.datasetService = new DatasetService(this.config);
     this.widgetService = new WidgetService(this.config);
   }
 
+  private async saveWidgetRW() {
+    const url = `${this.endpoint}/dataset/${this.datasetId}/widget`;
+    if (this.AUTH_TOKEN) {
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.AUTH_TOKEN}`
+          }
+        });
+        return await response.json();
+      } catch (error) {
+        console.error("Cant save widget", error);
+      }
+    } else {
+      console.error("Missing auth token for saveWidget (RW)");
+    }
+  }
+
+  private hasAuthToken() {
+    return !!this.AUTH_TOKEN;
+  }
+
+  setDatasetId(datasetId: Adapter.datasetId) {
+    if (!datasetId) {
+      console.error("Error: datasetId is required");
+    }
+    this.datasetId = datasetId;
+  }
+
   async getDataset() {
     const { applications, env, locale } = this.config.getConfig();
+    console.log("hello", this.config.getConfig());
     const includes = "metadata,vocabulary,widget,layer";
 
     const url = `${this.endpoint}/dataset/${this.datasetId}?${applications.join(
@@ -71,5 +111,19 @@ export default class RwAdapter implements Adapter.Service {
     const { data } = await this.datasetService.fetchData(url);
 
     return data;
+  }
+
+  // Called before save
+  // Usefull if params are needed like AUTH token
+  async preSaveWidget() {}
+
+  async saveWidget() {
+    // if (!this.AUTH_TOKEN) {
+    //   return false;
+    // }
+    // await this.preSaveWidget();
+    // const request = await saveWidgetRW();
+    // return request;
+    return {};
   }
 }

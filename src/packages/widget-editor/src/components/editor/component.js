@@ -6,9 +6,9 @@ import Renderer from "components/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 
-import { DataService } from '@packages/core';
+import { DataService } from "@packages/core";
 
-import { constants } from '@packages/core';
+import { constants } from "@packages/core";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -26,19 +26,43 @@ const StyledContainer = styled.div`
 class Editor extends React.Component {
   constructor(props) {
     super(props);
-    const { adapter, setEditor, dispatch } = this.props;
+    const { onSave, datasetId, adapter, setEditor, dispatch } = this.props;
 
-    const dataService = new DataService(adapter, setEditor, dispatch);
+    const dataService = new DataService(
+      datasetId,
+      adapter,
+      setEditor,
+      dispatch
+    );
     dataService.resolveInitialState();
   }
 
+  componentWillMount() {
+    const { authenticated, dispatch } = this.props;
+    if (authenticated) {
+      this.resolveAuthentication();
+    }
+  }
+
   componentDidUpdate(prevProps) {
-    const { theme: prevTheme } = prevProps;
-    const { theme } = this.props;
+    const { theme: prevTheme, authenticated: prevAuthenticated } = prevProps;
+    const { theme, authenticated } = this.props;
 
     if (!isEqual(theme, prevTheme)) {
       this.resolveTheme();
     }
+
+    if (!isEqual(authenticated, prevAuthenticated)) {
+      this.resolveAuthentication();
+    }
+  }
+
+  resolveAuthentication() {
+    const { authenticated, dispatch } = this.props;
+    dispatch({
+      type: "CONFIGURATION/setConfiguration",
+      payload: { authenticated }
+    });
   }
 
   resolveTheme() {

@@ -11,6 +11,7 @@
     "src/packages/*"
   ],
   "scripts": {
+    "compile:ts": "lerna run tsc",
     "watch": "cd src/packages/widget-editor && yarn start && lerna run --parallel watch",
     "widget-editor": "lerna run --parallel start --scope @applications/widget-editor --stream",
     "start:widget-editor": "npm-run-all --parallel watch widget-editor",
