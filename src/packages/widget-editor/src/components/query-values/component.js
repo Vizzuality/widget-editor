@@ -46,6 +46,7 @@ const QueryValues = ({
           getOptionValue={option => option.identifier}
           options={columns}
           isCustom
+          isPopup
         />
       </StyledContainer>
     </FlexContainer>
