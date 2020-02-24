@@ -6,7 +6,6 @@ import useDebounce from "hooks/use-debounce";
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
 import Input from "styles-common/input";
-import { None } from "vega";
 import Select from "components/select";
 
 const StyledContainer = styled.div`
