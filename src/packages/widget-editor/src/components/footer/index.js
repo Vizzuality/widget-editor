@@ -4,5 +4,5 @@ import { connectState } from "helpers/redux";
 import FooterComponent from "./component";
 
 export default connectState(state => ({
-  authenticated: state.configuration.authenticated
+  authenticated: state.editor.authenticated
 }))(FooterComponent);

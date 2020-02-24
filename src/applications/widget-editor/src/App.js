@@ -26,7 +26,7 @@ function App() {
           <WidgetEditor
             datasetId="03bfb30e-829f-4299-bab9-b2be1b66b5d4"
             onSave={handleOnSave}
-            authenticated={false}
+            authenticated={true}
             adapter={RwAdapter}
             theme={theme}
             store={store}

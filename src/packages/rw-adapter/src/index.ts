@@ -60,7 +60,6 @@ export default class RwAdapter implements Adapter.Service {
 
   async getDataset() {
     const { applications, env, locale } = this.config.getConfig();
-    console.log("hello", this.config.getConfig());
     const includes = "metadata,vocabulary,widget,layer";
 
     const url = `${this.endpoint}/dataset/${this.datasetId}?${applications.join(

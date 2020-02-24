@@ -27,8 +27,6 @@ export default class DataService {
   }
 
   async getDatasetAndWidgets() {
-    console.log("Ds service", this.adapter);
-
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset);
 

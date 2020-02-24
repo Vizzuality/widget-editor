@@ -60,7 +60,7 @@ class Editor extends React.Component {
   resolveAuthentication() {
     const { authenticated, dispatch } = this.props;
     dispatch({
-      type: "CONFIGURATION/setConfiguration",
+      type: "widgetEditor/EDITOR/setEditor",
       payload: { authenticated }
     });
   }

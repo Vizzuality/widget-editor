@@ -1,5 +1,4 @@
 export default {
-  authenticated: false,
   title: "",
   caption: "",
   visualizationType: "chart",
