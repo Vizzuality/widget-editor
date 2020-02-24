@@ -43,9 +43,9 @@ const StyledButton = styled.button`
     `}
 `;
 
-const Button = ({ type = "default", theme, children }) => {
+const Button = ({ type = "default", theme, children, ...props }) => {
   return (
-    <StyledButton color={theme.color} type={type}>
+    <StyledButton {...props} color={theme.color} type={type}>
       {children}
     </StyledButton>
   );

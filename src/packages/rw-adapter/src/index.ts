@@ -13,9 +13,27 @@ export default class RwAdapter implements Adapter.Service {
   datasetId = null;
   AUTH_TOKEN = null;
 
+  // Some generic setup for
   applications = ["rw"];
   env = "production";
   locale = "en";
+
+  // What params are we interested in when saving our widget?
+  widget_params = [
+    "chartType",
+    "visualizationType",
+    "limit",
+    "value",
+    "category",
+    "color",
+    "size",
+    "orderBy",
+    "aggregateFunction",
+    "filters",
+    "areaIntersection",
+    "band",
+    "layer"
+  ];
 
   constructor() {
     const asConfig: Config.Payload = {
@@ -26,6 +44,15 @@ export default class RwAdapter implements Adapter.Service {
     this.config = ConfigHelper(asConfig);
     this.datasetService = new DatasetService(this.config);
     this.widgetService = new WidgetService(this.config);
+  }
+
+  // Used when saving data
+  // This will be grabbed and put into onSave on any request
+  payload() {
+    return {
+      applications: this.applications,
+      env: this.env
+    };
   }
 
   private async saveWidgetRW() {
@@ -110,19 +137,5 @@ export default class RwAdapter implements Adapter.Service {
     const { data } = await this.datasetService.fetchData(url);
 
     return data;
-  }
-
-  // Called before save
-  // Usefull if params are needed like AUTH token
-  async preSaveWidget() {}
-
-  async saveWidget() {
-    // if (!this.AUTH_TOKEN) {
-    //   return false;
-    // }
-    // await this.preSaveWidget();
-    // const request = await saveWidgetRW();
-    // return request;
-    return {};
   }
 }

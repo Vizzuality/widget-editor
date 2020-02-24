@@ -28,13 +28,10 @@ class Editor extends React.Component {
     super(props);
     const { onSave, datasetId, adapter, setEditor, dispatch } = this.props;
 
-    const dataService = new DataService(
-      datasetId,
-      adapter,
-      setEditor,
-      dispatch
-    );
-    dataService.resolveInitialState();
+    this.onSave = this.onSave.bind(this);
+
+    this.dataService = new DataService(datasetId, adapter, setEditor, dispatch);
+    this.dataService.resolveInitialState();
   }
 
   componentWillMount() {
@@ -70,6 +67,14 @@ class Editor extends React.Component {
     dispatch({ type: "THEME/setTheme", payload: theme });
   }
 
+  onSave() {
+    const { onSave, dispatch, configuration, widget } = this.props;
+    if (typeof onSave === "function") {
+      onSave(this.dataService.resolveUpdates(configuration, widget));
+    }
+    dispatch({ type: constants.sagaEvents.EDITOR_SAVE });
+  }
+
   render() {
     const { configuration } = this.props;
 
@@ -77,7 +82,7 @@ class Editor extends React.Component {
       <StyledContainer>
         <Renderer />
         {configuration.limit && <EditorOptions />}
-        <Footer />
+        <Footer onSave={this.onSave} />
       </StyledContainer>
     );
   }
