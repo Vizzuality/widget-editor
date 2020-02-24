@@ -61,6 +61,7 @@ export default class DataService {
   resolveUpdates(configuration: any, widget: any) {
     let widgetParams = {};
 
+    // Resolve adapter specific fields as params in payload
     this.adapter.widget_params.forEach(param => {
       if (param in configuration) {
         widgetParams = { ...widgetParams, [param]: configuration[param] };
@@ -75,17 +76,19 @@ export default class DataService {
       }
     });
 
+    // Build payload that the consumer will need to save the state of the editor
     const payload = {
       ...this.adapter.payload(),
-      title: configuration.title,
+      title: configuration.title || null,
+      description: configuration.description || null,
       widget: {
         params: widgetParams,
-        data: widget.data,
-        scales: widget.scales,
-        axes: widget.axes,
-        marks: widget.marks,
+        data: widget.data || null,
+        scales: widget.scales || null,
+        axes: widget.axes || null,
+        marks: widget.marks || null,
         interaction_config: widget.interaction_config || null,
-        config: widget.config
+        config: widget.config || null
       }
     };
 
