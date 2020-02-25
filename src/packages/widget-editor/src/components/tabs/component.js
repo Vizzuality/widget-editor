@@ -45,6 +45,10 @@ export const Tabs = ({ children }) => {
   );
 }
 
-export const Tab = ({ children }) => {
-  return children;
+/**
+ * 
+ * @param {label} label require for displaying tab
+ */
+export const Tab = ({ children, label }) => {
+  return label ? children : null;
 }
