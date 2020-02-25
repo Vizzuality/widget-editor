@@ -2,9 +2,7 @@ import styled from "styled-components";
 
 export const StyledPopupContainer = styled.div`
   position: absolute;
-  /* width: 420px; */
 	box-sizing: border-box;
-	/* height: 199.39px; */
 	height: auto;
 	width: 422px;
 	border: 1px solid rgba(26,28,34,0.1);
@@ -25,4 +23,40 @@ export const StyledPopupContainer = styled.div`
     border-top: 10px solid #FFFFFF;
     z-index: 3;
   }
+`;
+
+export const StyledCategoryAlias = styled.h4`
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  margin-top: 0;
+  color: #2C75B0;
+  font-size: 16px;
+  line-height: 25px;
+`;
+
+export const StyledCategoryDescription = styled.div`
+  position: relative;
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #393F44;
+  font-size: 16px;
+  line-height: 25px;
+`;
+export const StyledValueAlias = styled.div`
+  position: relative;
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #393F44;
+  font-size: 16px;
+  line-height: 25px;
+`;
+
+export const IconBox = styled.div`
+  color: #393F44;
+  position: absolute;
+  left: 0;
+  top: 1px;
 `;

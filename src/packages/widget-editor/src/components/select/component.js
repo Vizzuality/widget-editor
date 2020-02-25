@@ -13,15 +13,10 @@ import {
  */
 const CustomSelect = ( props ) => {
 
-  const { isCustom, isPopup, onChange, defaultValue } = props;
+  const { isCustom, isPopup, onChange, configuration, ...otherProps } = props;
+  const { value, category } = configuration;
   const [isPopupOpen, setPopup] = useState(false);
   const [isOpen, setOpen] = useState(false);
-  const [selected, setSelected] = useState(defaultValue);
-
-  const changeValue = selectedOption => {
-    onChange(selectedOption);
-    setSelected(selectedOption);
-  }
 
   return (
     <StyledSelectBox
@@ -29,15 +24,14 @@ const CustomSelect = ( props ) => {
       onMouseLeave={() => setPopup(false)}
     >
       <Select
-        {...props}
-        onChange={changeValue}
+        {...otherProps}
         onMenuOpen={() => setOpen(true)}
         onMenuClose={() => setOpen(false)}
         styles={isCustom ? CustomStyles : InputStyles} 
         components={isCustom ? { Option: CustomOption } : null}
       />
       {isPopup && isPopupOpen && !isOpen && (
-        <Popup data={selected} />
+        <Popup category={category} value={value} />
       )}
     </StyledSelectBox>
   );

@@ -1,13 +1,31 @@
 import React from "react";
-import { StyledPopupContainer } from "./style";
+import CategoryIcon from 'components/icons/CategoryIcon';
+import { 
+  StyledPopupContainer,
+  StyledCategoryAlias,
+  StyledCategoryDescription,
+  StyledValueAlias,
+  IconBox 
+} from "./style";
 
 
-const Popup = ({ data }) => {
-  const { description, alias } = data;
+const Popup = ({ category, value }) => {
+  const { alias: valueAlias } = value;
+  const { alias: categoryAlias } = category;
   return (
     <StyledPopupContainer>
-      <h3>{alias}</h3>
-      <p>{description}</p>
+      <StyledCategoryAlias>
+        <IconBox><CategoryIcon /></IconBox>
+        {categoryAlias}
+      </StyledCategoryAlias>
+      <StyledCategoryDescription>
+        <IconBox>#</IconBox>
+        {categoryAlias} Description
+      </StyledCategoryDescription>
+      <StyledValueAlias>
+        <IconBox>#</IconBox>
+        {valueAlias}
+      </StyledValueAlias>
     </StyledPopupContainer>
   );
 }

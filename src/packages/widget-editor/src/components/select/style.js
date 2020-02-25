@@ -17,7 +17,7 @@ export const CustomStyles = {
 
   container: () => ({
     position: "relative",
-    "box-sizing": "border-box",
+    boxSizing: "border-box",
     cursor: "pointer",
   }),
   
@@ -38,7 +38,7 @@ export const CustomStyles = {
     display: "flex",
     padding: "8px",
     transition: "color 150ms",
-    "box-sizing": "border-box",
+    boxSizing: "border-box",
     position: "relative",
     top: "5px",
   }),
