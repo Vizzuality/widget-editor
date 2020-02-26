@@ -1,4 +1,4 @@
-import { Dataset, Widget, Adapter, Generic } from '@packages/types';
+import { Dataset, Widget, Adapter, Generic } from "@packages/types";
 
 import FiltersService from "./filters";
 import { sagaEvents } from "../constants";
@@ -11,15 +11,22 @@ export default class DataService {
   setEditor: Generic.Dispatcher;
   dispatch: Generic.Dispatcher;
 
-  constructor(adapter: Adapter.Service, setEditor: Generic.Dispatcher, dispatch: Generic.Dispatcher) {
+  constructor(
+    datasetId: Adapter.datasetId,
+    adapter: Adapter.Service,
+    setEditor: Generic.Dispatcher,
+    dispatch: Generic.Dispatcher
+  ) {
     this.adapter = adapter;
     this.setEditor = setEditor;
     this.dispatch = dispatch;
     this.dataset = null;
     this.widget = null;
+
+    this.adapter.setDatasetId(datasetId);
   }
 
-  private async getDatasetAndWidgets() {
+  async getDatasetAndWidgets() {
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset);
 
@@ -27,7 +34,7 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
-  private async getWidgetData() {
+  async getWidgetData() {
     const {
       attributes: {
         widgetConfig: { paramsConfig }
@@ -42,12 +49,50 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
   }
 
-  private async getFieldsAndLayers() {
+  async getFieldsAndLayers() {
     const fields = await this.adapter.getFields();
     const layers = await this.adapter.getLayers();
 
     this.setEditor({ layers, fields });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATA_READY });
+  }
+
+  // TODO: add generic types for configuration and widget
+  resolveUpdates(configuration: any, widget: any) {
+    let widgetParams = {};
+
+    // Resolve adapter specific fields as params in payload
+    this.adapter.widget_params.forEach(param => {
+      if (param in configuration) {
+        widgetParams = { ...widgetParams, [param]: configuration[param] };
+      } else {
+        // This can be displayed as info
+        // As the user might just have miss-spelled a property.
+        // We will inform them with a warning instead of throwing error
+        // as the initial script will still work to populate params
+        console.warn(
+          `Widget Editor: Param(${param}) does not exsist in widget, make sure adapter.widget_params has fields that match with your API widget payload. Refer to documentation for adapter.widget_params for aditional information.`
+        );
+      }
+    });
+
+    // Build payload that the consumer will need to save the state of the editor
+    const payload = {
+      ...this.adapter.payload(),
+      title: configuration.title || null,
+      description: configuration.description || null,
+      widget: {
+        params: widgetParams,
+        data: widget.data || null,
+        scales: widget.scales || null,
+        axes: widget.axes || null,
+        marks: widget.marks || null,
+        interaction_config: widget.interaction_config || null,
+        config: widget.config || null
+      }
+    };
+
+    return payload;
   }
 
   async resolveInitialState() {

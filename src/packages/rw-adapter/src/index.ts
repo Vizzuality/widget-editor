@@ -11,12 +11,78 @@ export default class RwAdapter implements Adapter.Service {
   datasetService = null;
   widgetService = null;
   datasetId = null;
+  AUTH_TOKEN = null;
 
-  constructor(params: Config.Payload, datasetId: string) {
-    this.config = ConfigHelper(params);
-    this.datasetId = datasetId;
+  // Some generic setup for
+  applications = ["rw"];
+  env = "production";
+  locale = "en";
+
+  // What params are we interested in when saving our widget?
+  widget_params = [
+    "chartType",
+    "visualizationType",
+    "limit",
+    "value",
+    "category",
+    "color",
+    "size",
+    "orderBy",
+    "aggregateFunction",
+    "filters",
+    "areaIntersection",
+    "band",
+    "layer"
+  ];
+
+  constructor() {
+    const asConfig: Config.Payload = {
+      applications: this.applications,
+      env: this.env,
+      locale: this.locale
+    };
+    this.config = ConfigHelper(asConfig);
     this.datasetService = new DatasetService(this.config);
     this.widgetService = new WidgetService(this.config);
+  }
+
+  // Used when saving data
+  // This will be grabbed and put into onSave on any request
+  payload() {
+    return {
+      applications: this.applications,
+      env: this.env
+    };
+  }
+
+  private async saveWidgetRW() {
+    const url = `${this.endpoint}/dataset/${this.datasetId}/widget`;
+    if (this.AUTH_TOKEN) {
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.AUTH_TOKEN}`
+          }
+        });
+        return await response.json();
+      } catch (error) {
+        console.error("Cant save widget", error);
+      }
+    } else {
+      console.error("Missing auth token for saveWidget (RW)");
+    }
+  }
+
+  private hasAuthToken() {
+    return !!this.AUTH_TOKEN;
+  }
+
+  setDatasetId(datasetId: Adapter.datasetId) {
+    if (!datasetId) {
+      console.error("Error: datasetId is required");
+    }
+    this.datasetId = datasetId;
   }
 
   async getDataset() {

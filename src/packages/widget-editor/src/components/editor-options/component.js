@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "components/button";
 import { Accordion, AccordionSection } from "components/accordion";
-import { Tabs, Tab } from 'components/tabs';
+import { Tabs, Tab } from "components/tabs";
 
 import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";
@@ -48,15 +48,9 @@ const EditorOptions = ({ limit = null, patchConfiguration }) => {
             </AccordionSection>
           </Accordion>
         </Tab>
-        <Tab label="Visual style">
-          Visual style
-        </Tab>
-        <Tab label="Advanced">
-          Advanced
-        </Tab>
-        <Tab label="Table view">
-          Table view
-        </Tab>
+        <Tab label="Visual style">Visual style</Tab>
+        <Tab label="Advanced">Advanced</Tab>
+        <Tab label="Table view">Table view</Tab>
       </Tabs>
     </StyledContainer>
   );

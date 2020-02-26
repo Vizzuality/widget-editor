@@ -15,11 +15,11 @@ import thunk from "redux-thunk";
 import { handleModule } from "vizzuality-redux-tools";
 
 // Modules
-import * as sampleStore from "modules/sample-module";
+import * as editorOptions from "modules/editor-options";
 
 const initStore = (initialState = {}) => {
   const appReducers = combineReducers({
-    sampleModule: handleModule(sampleStore),
+    editorOptions: handleModule(editorOptions),
     ...reducers
   });
 
