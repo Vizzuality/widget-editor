@@ -1,12 +1,12 @@
 import { connect } from "react-redux";
 
-import EditorOptionsComponent from "./component";
+import ToggleOptionsComponent from "./component";
 
 import { modifyOptions } from "modules/editor-options/actions";
 
 export default connect(
   state => ({
-    editorOptions: state.editorOptions
+    optionsActive: state.editorOptions.optionsOpen
   }),
   { modifyOptions }
-)(EditorOptionsComponent);
+)(ToggleOptionsComponent);

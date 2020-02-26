@@ -5,6 +5,7 @@ import configureStore from "store";
 
 import Editor from "components/editor";
 import EditorOptions from "components/editor-options";
+import ToggleOptions from "components/toggle-options";
 
 import "./App.css";
 
@@ -14,10 +15,11 @@ function App() {
     <Provider store={store}>
       <div className="App">
         <header className="App-header">
-          Widget editor
-          <EditorOptions />
+          Widget editor playground
+          <ToggleOptions />
         </header>
         <Editor />
+        <EditorOptions />
       </div>
     </Provider>
   );

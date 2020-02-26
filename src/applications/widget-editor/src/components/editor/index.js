@@ -4,7 +4,7 @@ import EditorComponent from "./component";
 
 export default connect(
   state => ({
-    sampleModule: state.sampleModule
+    editorOptions: state.editorOptions
   }),
   {}
 )(EditorComponent);

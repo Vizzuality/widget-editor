@@ -25,4 +25,4 @@ class WidgetEditor extends React.Component {
   }
 }
 
-export default React.memo(WidgetEditor);
+export default WidgetEditor;

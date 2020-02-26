@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
+import debounce from "lodash/debounce";
 
 import Renderer from "components/renderer";
 import EditorOptions from "components/editor-options";
@@ -42,32 +43,40 @@ class Editor extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { theme: prevTheme, authenticated: prevAuthenticated } = prevProps;
-    const { theme, authenticated } = this.props;
+    const {
+      datasetId: prevDatasetId,
+      theme: prevTheme,
+      authenticated: prevAuthenticated
+    } = prevProps;
+    const { datasetId, theme, authenticated } = this.props;
+
+    // When datasetId changes, we need to restore the editor itself
+    if (!isEqual(datasetId, prevDatasetId)) {
+      alert("Need to restore editor!");
+    }
+
     if (!isEqual(theme, prevTheme)) {
-      this.resolveTheme();
+      this.resolveTheme(theme);
     }
 
     if (!isEqual(authenticated, prevAuthenticated)) {
-      console.log("authentication is changed", this.props);
-      this.resolveAuthentication();
+      this.resolveAuthentication(authenticated);
     }
   }
 
-  resolveAuthentication() {
-    const { authenticated, dispatch } = this.props;
-    console.log("dispatch", dispatch);
-    console.log("authenticated", authenticated);
-    dispatch({
-      type: "widgetEditor/EDITOR/setEditor",
-      payload: { authenticated }
-    });
-  }
+  // We debounce all properties here
+  // Then we dont have to care if debouncing is set on the client
+  resolveAuthentication = debounce(authenticated => {
+    const { setEditor } = this.props;
+    setEditor({ authenticated });
+  }, 1000);
 
-  resolveTheme() {
-    const { theme, dispatch } = this.props;
-    dispatch({ type: "THEME/setTheme", payload: theme });
-  }
+  // We debounce all properties here
+  // Then we dont have to care if debouncing is set on the client
+  resolveTheme = debounce(theme => {
+    const { setTheme } = this.props;
+    setTheme(theme);
+  }, 1000);
 
   onSave() {
     const { onSave, dispatch, configuration, widget } = this.props;
@@ -79,7 +88,6 @@ class Editor extends React.Component {
 
   render() {
     const { configuration } = this.props;
-    console.log("configuration", configuration);
     return (
       <StyledContainer>
         <Renderer />

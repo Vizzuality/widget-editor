@@ -14,8 +14,7 @@ class Editor extends React.Component {
 
   render() {
     const {
-      sampleModule: { authToken, dataset },
-      theme
+      editorOptions: { authToken, dataset, theme }
     } = this.props;
 
     const authenticated = !!authToken && authToken.length > 0;

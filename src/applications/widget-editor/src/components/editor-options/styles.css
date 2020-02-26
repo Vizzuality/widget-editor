@@ -1,0 +1,55 @@
+.c-playground-options {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 300px;
+  height: calc(100vh - 59px);
+  background: #292c34;
+  border-top: 1px solid white;
+  transform: translateX(300px);
+  transition: all 0.2s;
+}
+
+.c-playground-options h4 {
+  color: white;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.c-playground-options label {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 12px;
+  padding: 10px 0 5px 20px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.c-playground-options input {
+  margin: 0 20px;
+  padding: 8px 6px;
+  width: calc(100% - 60px);
+  border: none;
+  font-size: 13px;
+}
+
+.c-playground-options select {
+  margin: 0 20px;
+  width: calc(100% - 49px);
+}
+
+.c-playground-options .color-presentation {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  margin: 0 5px 0 0;
+}
+
+.c-playground-options.-open {
+  transform: translateX(0px);
+  transition: all 0.2s;
+}
