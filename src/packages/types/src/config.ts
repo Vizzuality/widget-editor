@@ -7,26 +7,9 @@ type UserToken = string | null;
 type UserEmail = string | null;
 type Locale = string;
 
-export interface Payload {
-  url?: Url;
-  env?: Env;
-  applications?: Applications;
-  authUrl?: AuthUrl;
-  assetsPath?: AssetsPath;
-  userToken?: UserToken;
-  userEmail?: UserEmail;
-  locale: Locale;
-  category: { name: string };
-  aggregateFunction?: string | null;
-  groupBy?: { name: string };
-  orderBy?: { name: string, orderType: string };
-  limit: number;
-  value: {
-    datasetID?: string;
-    name?: string;
-    tableName?: string;
-  };
-}
+// Needs to be generic, as a custom adapter can in theory contain any payload
+// The types needs to be defined within the adapter itself
+export type Payload = any;
 
 export interface Service {
   config: Payload;

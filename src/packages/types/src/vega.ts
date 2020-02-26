@@ -1,4 +1,4 @@
-import * as Generic from './generic';
+import * as Generic from "./generic";
 
 interface Axes {
   orient: string;
@@ -49,7 +49,7 @@ interface Marks {
       fill?: { value: string };
       opacity?: { value: number };
     };
-  }
+  };
 }
 
 export interface Data {
@@ -68,6 +68,7 @@ export interface Schema {
   width: number;
   height: number;
   padding?: number;
+  autosize?: { type: string; contains: string };
   data: Data[];
   legend: Generic.ObjectPayload;
   config: Generic.ObjectPayload;

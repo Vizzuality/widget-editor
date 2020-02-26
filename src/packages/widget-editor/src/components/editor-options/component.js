@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Accordion, AccordionSection } from "components/accordion";
-import { Tabs, Tab } from 'components/tabs';
+import { Tabs, Tab } from "components/tabs";
 
 import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";

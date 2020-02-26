@@ -1,7 +1,7 @@
 import * as actions from "./actions";
 
 export default {
-  [actions.sampleAction]: (state, { payload }) => ({
+  [actions.modifyOptions]: (state, { payload }) => ({
     ...state,
     ...payload
   })
