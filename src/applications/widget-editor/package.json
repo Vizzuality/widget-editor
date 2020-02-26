@@ -1,6 +1,6 @@
 {
   "name": "@applications/widget-editor",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": false,
   "homepage": "http://vizzuality.github.io/widget-editor",
   "dependencies": {
