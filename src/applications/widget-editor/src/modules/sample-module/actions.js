@@ -1,7 +1,9 @@
 import { createAction } from "vizzuality-redux-tools";
 
-export const sampleAction = createAction("SAMPLE-MODULE/sampleAction");
+export const setAuthToken = createAction("SAMPLE-MODULE/setAuthToken");
+export const setDataset = createAction("SAMPLE-MODULE/setDataset");
 
 export default {
-  sampleAction
+  setAuthToken,
+  setDataset
 };

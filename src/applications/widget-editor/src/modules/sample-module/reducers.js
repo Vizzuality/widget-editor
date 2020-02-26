@@ -1,8 +1,12 @@
 import * as actions from "./actions";
 
 export default {
-  [actions.sampleAction]: (state, { payload }) => ({
+  [actions.setAuthToken]: (state, { payload }) => ({
     ...state,
-    ...payload
+    authToken: payload
+  }),
+  [actions.setDataset]: (state, { payload }) => ({
+    ...state,
+    dataset: payload
   })
 };

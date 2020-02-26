@@ -1,3 +1,5 @@
+import { Provider } from "react-redux";
+
 import React from "react";
 import Editor from "components/editor";
 
@@ -23,4 +25,4 @@ class WidgetEditor extends React.Component {
   }
 }
 
-export default WidgetEditor;
+export default React.memo(WidgetEditor);

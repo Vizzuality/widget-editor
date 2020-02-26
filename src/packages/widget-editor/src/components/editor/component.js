@@ -44,18 +44,20 @@ class Editor extends React.Component {
   componentDidUpdate(prevProps) {
     const { theme: prevTheme, authenticated: prevAuthenticated } = prevProps;
     const { theme, authenticated } = this.props;
-
     if (!isEqual(theme, prevTheme)) {
       this.resolveTheme();
     }
 
     if (!isEqual(authenticated, prevAuthenticated)) {
+      console.log("authentication is changed", this.props);
       this.resolveAuthentication();
     }
   }
 
   resolveAuthentication() {
     const { authenticated, dispatch } = this.props;
+    console.log("dispatch", dispatch);
+    console.log("authenticated", authenticated);
     dispatch({
       type: "widgetEditor/EDITOR/setEditor",
       payload: { authenticated }
@@ -77,7 +79,7 @@ class Editor extends React.Component {
 
   render() {
     const { configuration } = this.props;
-
+    console.log("configuration", configuration);
     return (
       <StyledContainer>
         <Renderer />
