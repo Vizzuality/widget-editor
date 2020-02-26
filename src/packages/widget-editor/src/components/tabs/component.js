@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'components/button';
 import { 
   StyledTabsContainer,
@@ -13,6 +13,10 @@ const TabButton = (props) => {
 
 export const Tabs = ({ children }) => {
   const [active, setActive] = useState(0);
+  useEffect(()=>{
+    const defaultNum = children.findIndex(child => child.props.default);
+    setActive(defaultNum === -1 ? 0 : defaultNum);
+  },[]);
   return (
     <StyledTabsContainer>
       <StyledList>

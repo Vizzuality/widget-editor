@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import Button from "components/button";
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from 'components/tabs';
 
 import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
+import TableView from "components/table-view";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -20,18 +20,7 @@ const StyledContainer = styled.div`
   ${DEFAULT_BORDER(1, 1, 1, 0)}
 `;
 
-const StyledList = styled.ul`
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 0;
-  list-style: none;
-`;
-
-const StyledListItem = styled.li`
-  color: red;
-`;
-
-const EditorOptions = ({ limit = null, patchConfiguration }) => {
+const EditorOptions = () => {
   return (
     <StyledContainer>
       <Tabs>
@@ -54,8 +43,8 @@ const EditorOptions = ({ limit = null, patchConfiguration }) => {
         <Tab label="Advanced">
           Advanced
         </Tab>
-        <Tab label="Table view">
-          Table view
+        <Tab label="Table view" default>
+          <TableView />
         </Tab>
       </Tabs>
     </StyledContainer>
