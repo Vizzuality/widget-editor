@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
-import useDebounce from "hooks/use-debounce";
-
 import FlexContainer from "styles-common/flex";
-import FormLabel from "styles-common/form-label";
-import Input from "styles-common/input";
 import Select from "components/select";
 
 const StyledContainer = styled.div`
@@ -45,7 +41,9 @@ const QueryValues = ({
           getOptionLabel={option => option.alias}
           getOptionValue={option => option.identifier}
           options={columns}
+          configuration={configuration}
           isCustom
+          isPopup
         />
       </StyledContainer>
     </FlexContainer>

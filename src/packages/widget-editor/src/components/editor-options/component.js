@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "components/button";
 import { Accordion, AccordionSection } from "components/accordion";
+import { Tabs, Tab } from 'components/tabs';
 
 import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";
@@ -33,32 +34,30 @@ const StyledListItem = styled.li`
 const EditorOptions = ({ limit = null, patchConfiguration }) => {
   return (
     <StyledContainer>
-      <StyledList>
-        <StyledListItem>
-          <Button>General</Button>
-        </StyledListItem>
-        <StyledListItem>
-          <Button>Visual style</Button>
-        </StyledListItem>
-        <StyledListItem>
-          <Button>Advanced</Button>
-        </StyledListItem>
-        <StyledListItem>
-          <Button>Table view</Button>
-        </StyledListItem>
-      </StyledList>
-
-      <Accordion>
-        <AccordionSection title="Description and labels" openDefault>
-          <WidgetInfo />
-        </AccordionSection>
-        <AccordionSection title="Filters">
-          <QueryLimit />
-        </AccordionSection>
-        <AccordionSection title="Order">
-          <OrderValues />
-        </AccordionSection>
-      </Accordion>
+      <Tabs>
+        <Tab label="General">
+          <Accordion>
+            <AccordionSection title="Description and labels" openDefault>
+              <WidgetInfo />
+            </AccordionSection>
+            <AccordionSection title="Filters">
+              <QueryLimit />
+            </AccordionSection>
+            <AccordionSection title="Order">
+              <OrderValues />
+            </AccordionSection>
+          </Accordion>
+        </Tab>
+        <Tab label="Visual style">
+          Visual style
+        </Tab>
+        <Tab label="Advanced">
+          Advanced
+        </Tab>
+        <Tab label="Table view">
+          Table view
+        </Tab>
+      </Tabs>
     </StyledContainer>
   );
 };
