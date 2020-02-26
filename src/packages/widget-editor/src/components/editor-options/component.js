@@ -43,7 +43,7 @@ const EditorOptions = () => {
         <Tab label="Advanced">
           Advanced
         </Tab>
-        <Tab label="Table view" default>
+        <Tab label="Table view">
           <TableView />
         </Tab>
       </Tabs>
