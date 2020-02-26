@@ -1,110 +1,126 @@
 import React, { useState, useEffect } from "react";
 import Slider from "components/slider";
-
-import useDebounce from "hooks/use-debounce";
+import isEqual from "lodash/isEqual";
 
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
+import debounce from "lodash/debounce";
 
 import * as helpers from "./helpers";
 
-const WidgetInfo = ({ theme, configuration, patchConfiguration }) => {
-  const [title, setTitle] = useState(configuration.title);
-  const [caption, setCaption] = useState(configuration.caption);
-  const [xaxis, setXaxis] = useState(configuration.category.alias || "");
-  const [yaxis, setYaxis] = useState(configuration.value.alias || "");
+class WidgetInfo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = this.stateFromProps(props.configuration);
+  }
 
-  const debounceTitle = useDebounce(title, 500);
-  const debounceCaption = useDebounce(caption, 500);
-  const debounceXaxis = useDebounce(xaxis, 500);
-  const debounceYaxis = useDebounce(yaxis, 500);
+  componentDidUpdate(prevProps) {
+    const { configuration: prevConfiguration } = prevProps;
+    const { configuration } = this.props;
 
-  const handleChange = e => {
-    setLimit(e.target.value);
-  };
+    if (
+      !isEqual(
+        this.stateFromProps(prevConfiguration),
+        this.stateFromProps(configuration)
+      )
+    ) {
+      this.setState(this.stateFromProps(configuration));
+    }
+  }
 
-  const handleOnChange = (value, type) => {
-    if (type === "title") {
-      setTitle(value);
-    }
-    if (type === "caption") {
-      setCaption(value);
-    }
-    if (type === "xaxis") {
-      setXaxis(value);
-    }
-    if (type === "yaxis") {
-      setYaxis(value);
-    }
-  };
+  stateFromProps(configuration) {
+    return {
+      title: configuration ? configuration.title : "",
+      caption: configuration ? configuration.caption : "",
+      yAxis: configuration ? configuration.category.alias : "",
+      xAxis: configuration ? configuration.value.alias : ""
+    };
+  }
 
-  useEffect(() => {
-    if (helpers.hasUpdate(debounceTitle, configuration.title)) {
-      patchConfiguration({ title: debounceTitle });
-    }
-    if (helpers.hasUpdate(debounceCaption, configuration.caption)) {
-      patchConfiguration({ caption: debounceCaption });
-    }
-    if (helpers.hasUpdate(debounceXaxis, configuration.category.name)) {
-      patchConfiguration({
-        category: { ...configuration.category, alias: debounceXaxis }
-      });
-    }
-    if (helpers.hasUpdate(debounceYaxis, configuration.value.name)) {
-      patchConfiguration({
-        value: { ...configuration.value, alias: debounceYaxis }
-      });
-    }
-  }, [debounceTitle, debounceCaption, debounceXaxis, debounceYaxis]);
+  handleUpdate = debounce(() => {
+    const { configuration, patchConfiguration } = this.props;
+    const { title, caption, yAxis, xAxis } = this.state;
 
-  return (
-    <FlexContainer>
-      <InputGroup>
-        <FormLabel htmlFor="options-title">Title</FormLabel>
-        <Input
-          type="text"
-          placeholder="Add title"
-          name="options-title"
-          value={title}
-          onChange={e => handleOnChange(e.target.value, "title")}
-        />
-      </InputGroup>
-      <InputGroup>
-        <FormLabel htmlFor="options-title">Caption</FormLabel>
-        <Input
-          type="text"
-          placeholder="Add caption"
-          name="options-capton"
-          value={caption}
-          onChange={e => handleOnChange(e.target.value, "caption")}
-        />
-      </InputGroup>
-      <FlexContainer row={true}>
+    patchConfiguration({
+      title,
+      caption,
+      category: { ...configuration.category, alias: yAxis },
+      value: { ...configuration.value, alias: xAxis }
+    });
+  }, 1000);
+
+  setTitle(title) {
+    this.setState({ title });
+    this.handleUpdate();
+  }
+
+  setCaption(caption) {
+    this.setState({ caption });
+    this.handleUpdate();
+  }
+
+  setYAxis(yAxis) {
+    this.setState({ yAxis });
+    this.handleUpdate();
+  }
+
+  setXAxis(xAxis) {
+    this.setState({ xAxis });
+    this.handleUpdate();
+  }
+
+  render() {
+    const { title, caption, xAxis, yAxis } = this.state;
+
+    return (
+      <FlexContainer>
         <InputGroup>
-          <FormLabel htmlFor="options-x-axis">X axis</FormLabel>
+          <FormLabel htmlFor="options-title">Title</FormLabel>
           <Input
             type="text"
-            placeholder="Overwrite axis name"
-            name="options-x-axis"
-            value={xaxis}
-            onChange={e => handleOnChange(e.target.value, "xaxis")}
+            placeholder="Add title"
+            name="options-title"
+            value={title}
+            onChange={e => this.setTitle(e.target.value)}
           />
         </InputGroup>
         <InputGroup>
-          <FormLabel htmlFor="options-y-axis">Y axis</FormLabel>
+          <FormLabel htmlFor="options-title">Caption</FormLabel>
           <Input
             type="text"
-            placeholder="Overwrite axis name"
-            name="options-y-axis"
-            value={yaxis}
-            onChange={e => handleOnChange(e.target.value, "yaxis")}
+            placeholder="Add caption"
+            name="options-capton"
+            value={caption}
+            onChange={e => this.setCaption(e.target.value)}
           />
         </InputGroup>
+        <FlexContainer row={true}>
+          <InputGroup>
+            <FormLabel htmlFor="options-x-axis">X axis</FormLabel>
+            <Input
+              type="text"
+              placeholder="Overwrite axis name"
+              name="options-x-axis"
+              value={xAxis}
+              onChange={e => this.setXAxis(e.target.value)}
+            />
+          </InputGroup>
+          <InputGroup>
+            <FormLabel htmlFor="options-y-axis">Y axis</FormLabel>
+            <Input
+              type="text"
+              placeholder="Overwrite axis name"
+              name="options-y-axis"
+              value={yAxis}
+              onChange={e => this.setYaxis(e.target.value)}
+            />
+          </InputGroup>
+        </FlexContainer>
       </FlexContainer>
-    </FlexContainer>
-  );
-};
+    );
+  }
+}
 
 export default WidgetInfo;

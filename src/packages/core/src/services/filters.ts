@@ -2,7 +2,7 @@
 // Formating SQL string based on properties
 // Request new data based on propertie configuration
 
-import { Filters, Config } from '@packages/types';
+import { Filters, Config } from "@packages/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
@@ -61,8 +61,10 @@ export default class FiltersService implements Filters.Service {
 
   prepareOrder() {
     const { orderBy } = this.configuration;
-    const { orderType } = orderBy;
-    this.sql = `${this.sql} ${orderType || "desc"}`;
+    if (orderBy) {
+      const { orderType } = orderBy;
+      this.sql = `${this.sql} ${orderType || "desc"}`;
+    }
   }
 
   prepareLimit() {

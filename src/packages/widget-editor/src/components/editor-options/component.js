@@ -20,7 +20,7 @@ const StyledContainer = styled.div`
   ${DEFAULT_BORDER(1, 1, 1, 0)}
 `;
 
-const EditorOptions = () => {
+const EditorOptions = ({ orderBy }) => {
   return (
     <StyledContainer>
       <Tabs>
@@ -33,16 +33,12 @@ const EditorOptions = () => {
               <QueryLimit />
             </AccordionSection>
             <AccordionSection title="Order">
-              <OrderValues />
+              {orderBy && <OrderValues />}
             </AccordionSection>
           </Accordion>
         </Tab>
-        <Tab label="Visual style">
-          Visual style
-        </Tab>
-        <Tab label="Advanced">
-          Advanced
-        </Tab>
+        <Tab label="Visual style">Visual style</Tab>
+        <Tab label="Advanced">Advanced</Tab>
         <Tab label="Table view">
           <TableView />
         </Tab>
