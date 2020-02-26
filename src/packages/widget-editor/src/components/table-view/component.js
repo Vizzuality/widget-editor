@@ -18,16 +18,20 @@ const TableView = ({ widgetData, configuration }) => {
   return (
     <StyledTableBox>
       <StyledTable>
-        <StyledTr>
-          <StyledTh>{categoryAlias}</StyledTh>
-          <StyledTh>{valueAlias}</StyledTh>
-        </StyledTr>
+        <thead>
+          <StyledTr>
+            <StyledTh>{categoryAlias}</StyledTh>
+            <StyledTh>{valueAlias}</StyledTh>
+          </StyledTr>
+        </thead>
+        <tbody>
           {widgetData && widgetData.map(el => (
-            <StyledTr>
+            <StyledTr key={el.x}>
               <StyledTd>{el.x}</StyledTd>
               <StyledTd center>{el.y}</StyledTd>
             </StyledTr>
           ))}
+        </tbody>
       </StyledTable>
     </StyledTableBox>
   );

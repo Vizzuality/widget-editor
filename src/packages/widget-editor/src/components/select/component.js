@@ -13,7 +13,7 @@ import {
  */
 const CustomSelect = ( props ) => {
 
-  const { isCustom, isPopup, onChange, configuration, ...otherProps } = props;
+  const { isCustom, isPopup, configuration, ...otherProps } = props;
   const { value, category } = configuration;
   const [isPopupOpen, setPopup] = useState(false);
   const [isOpen, setOpen] = useState(false);
