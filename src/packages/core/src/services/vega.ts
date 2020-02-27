@@ -2,6 +2,7 @@ import { Charts, Vega } from '@packages/types';
 
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
+import Line from "../charts/line";
 
 import { SUPPORTED_CHARTS } from "../charts/constants";
 
@@ -49,6 +50,14 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "bar") {
       chart = new Bars(
+        this.schema,
+        this.widgetConfig,
+        this.widgetData
+      ).getChart();
+    }
+
+    if (chartType === "line") {
+      chart = new Line(
         this.schema,
         this.widgetConfig,
         this.widgetData

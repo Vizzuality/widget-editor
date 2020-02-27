@@ -15,6 +15,7 @@ export default class FiltersService implements Filters.Service {
 
     this.prepareSelectStatement();
     this.prepareAggregate();
+    this.prepareFilters();
     this.prepareGroupBy();
     this.prepareOrderBy();
     this.prepareOrder();
@@ -33,8 +34,9 @@ export default class FiltersService implements Filters.Service {
     if (!aggregateFunction) {
       this.sql = `${this.sql}, ${name} as ${sqlFields.category} FROM ${tableName}`;
     } else {
-      if (aggregateFunction.toUpperCase() === "SUM") {
-        this.sql = `${this.sql}, SUM(${name}) as ${sqlFields.category} FROM ${tableName}`;
+      const aggregation = aggregateFunction.toUpperCase();
+      if (aggregation === "SUM" || aggregation === "COUNT") {
+        this.sql = `${this.sql}, ${aggregation}(${name}) as ${sqlFields.category} FROM ${tableName}`;
       } else {
         throw new Error(
           `Aggragate function (${aggregateFunction}) not implemented in filter service.`
@@ -43,12 +45,52 @@ export default class FiltersService implements Filters.Service {
     }
   }
 
+  // Range conditions gets constructed as key => value AND key <= value
+  // This is true if we have two values in our filter
+  private rangeCondition(condition: string, name: string, value: [number]): string {
+     let range = condition;
+     value.forEach((v, index) => {
+      let statement = '';
+      if (index === 0) {
+        statement = `${name} >= ${v}`;
+      } else if (index === 1) {
+        statement = `${statement} AND ${name} <= ${v}`;
+      }
+      range = `${range} ${statement}`;
+    });
+    return range;
+  }
+
+  prepareFilters() {
+    const { filters } = this.configuration;
+    let filtersQuery = 'WHERE';
+
+    if (filters && Array.isArray(filters) && filters.length > 0) {
+      filters.forEach(({ name, value }) => {
+        const isRange = value && Array.isArray(value) && value.length === 2;
+        if (isRange) {
+          filtersQuery = this.rangeCondition(filtersQuery, name, value);
+        } else {
+          throw new Error(
+            `Expected value range filter recived (${value.join()}), not yet implemented in filter service.`
+          );
+        }
+      })
+    }
+    this.sql = `${this.sql} ${filtersQuery}`;
+  }
+
   prepareGroupBy() {
-    const { groupBy } = this.configuration;
+    const { groupBy, aggregateFunction } = this.configuration;
     if (groupBy) {
       const { name } = groupBy;
-      this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
+      this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`; 
+    } else if (aggregateFunction && aggregateFunction !== 'none') {
+      // If there's an aggregate function, we group the results
+      // with the first column (dimension x)
+      this.sql = `${this.sql} GROUP BY ${sqlFields.value}`; 
     }
+
   }
 
   prepareOrderBy() {
