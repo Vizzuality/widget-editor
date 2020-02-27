@@ -39,11 +39,15 @@ export default class DataService {
   }
 
   async restoreEditor(datasetId) {
+    this.setEditor({ restoring: true });
+
     this.adapter.setDatasetId(datasetId);
 
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.getWidgetData();
+
+    this.setEditor({ restoring: false });
   }
 
   async getWidgetData() {
@@ -54,7 +58,7 @@ export default class DataService {
     } = this.widget;
 
     // Construct correct SQL query based on widgetConfig
-    const filtersService = new FiltersService(paramsConfig);
+    const filtersService = new FiltersService(paramsConfig, this.dataset.id);
     this.widgetData = await filtersService.requestWidgetData();
 
     this.setEditor({ widgetData: this.widgetData.data });
@@ -111,5 +115,6 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getWidgetData();
     await this.getFieldsAndLayers();
+    this.setEditor({ initialized: true });
   }
 }

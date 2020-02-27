@@ -6,6 +6,7 @@ export default {
   availableCharts: [
     { value: "pie", label: "pie" },
     { value: "bar", label: "Bars" },
-    { value: "line", label: "Line" }
+    { value: "line", label: "Line" },
+    { value: "scatter", label: "Scatter" }
   ]
 };
