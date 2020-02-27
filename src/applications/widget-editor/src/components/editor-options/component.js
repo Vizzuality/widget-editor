@@ -31,8 +31,17 @@ class EditorOptions extends React.Component {
           <option value="03bfb30e-829f-4299-bab9-b2be1b66b5d4">
             Forest Sector Economic Contribution
           </option>
+          <option value="d446a52e-c4c1-4e74-ae30-3204620a0365">
+            Access to Electricity
+          </option>
+            <option value="20cc5eca-8c63-4c41-8e8e-134dcf1e6d76">
+            Fires
+          </option>
           <option value="a86d906d-9862-4783-9e30-cdb68cd808b8">
             Global Power Plant Database
+          </option>
+          <option value="1bc94710-d7ec-46f9-aa27-edddd87b1625">
+            Cold Water Corals
           </option>
         </select>
 

@@ -52,7 +52,7 @@ class Editor extends React.Component {
 
     // When datasetId changes, we need to restore the editor itself
     if (!isEqual(datasetId, prevDatasetId)) {
-      alert("Need to restore editor!");
+      this.initializeRestoration(datasetId);
     }
 
     if (!isEqual(theme, prevTheme)) {
@@ -69,6 +69,10 @@ class Editor extends React.Component {
   resolveAuthentication = debounce(authenticated => {
     const { setEditor } = this.props;
     setEditor({ authenticated });
+  }, 1000);
+
+  initializeRestoration = debounce(datasetId => {
+    this.dataService.restoreEditor(datasetId);
   }, 1000);
 
   // We debounce all properties here

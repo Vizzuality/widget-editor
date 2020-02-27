@@ -1,12 +1,15 @@
 import { Dataset, Widget, Adapter, Generic } from "@packages/types";
 
 import FiltersService from "./filters";
+import VegaService from "./vega";
+
 import { sagaEvents } from "../constants";
 
 export default class DataService {
   adapter: Adapter.Service;
   dataset: Dataset.Payload;
   widget: Widget.Payload;
+  widgetData: any;
   cachedState: object;
   setEditor: Generic.Dispatcher;
   dispatch: Generic.Dispatcher;
@@ -22,6 +25,7 @@ export default class DataService {
     this.dispatch = dispatch;
     this.dataset = null;
     this.widget = null;
+    this.widgetData = null;
 
     this.adapter.setDatasetId(datasetId);
   }
@@ -34,6 +38,18 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
+  async restoreEditor(datasetId) {
+    this.setEditor({ restoring: true });
+
+    this.adapter.setDatasetId(datasetId);
+
+    await this.getDatasetAndWidgets();
+    await this.getFieldsAndLayers();
+    await this.getWidgetData();
+
+    this.setEditor({ restoring: false });
+  }
+
   async getWidgetData() {
     const {
       attributes: {
@@ -42,10 +58,10 @@ export default class DataService {
     } = this.widget;
 
     // Construct correct SQL query based on widgetConfig
-    const filtersService = new FiltersService(paramsConfig);
-    const widgetData = await filtersService.requestWidgetData();
+    const filtersService = new FiltersService(paramsConfig, this.dataset.id);
+    this.widgetData = await filtersService.requestWidgetData();
 
-    this.setEditor({ widgetData: widgetData.data });
+    this.setEditor({ widgetData: this.widgetData.data });
     this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
   }
 
@@ -99,5 +115,6 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getWidgetData();
     await this.getFieldsAndLayers();
+    this.setEditor({ initialized: true });
   }
 }
