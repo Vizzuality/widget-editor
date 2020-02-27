@@ -2,7 +2,7 @@ import { Charts, Vega, Generic, Widget } from "@packages/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-export default class Bars implements Charts.Bars {
+export default class Line implements Charts.Line {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
@@ -44,19 +44,19 @@ export default class Bars implements Charts.Bars {
 
   setScales() {
     return [
-      {
+     {
         name: "xscale",
-        type: "band",
-        domain: { data: "table", field: sqlFields.value },
+        type: "point",
         range: "width",
-        padding: 0.05,
-        round: true
+        domain: { data: "table", field: sqlFields.value },
       },
       {
         name: "yscale",
-        domain: { data: "table", field: sqlFields.category },
+        type: "linear",
+        range: "height",
         nice: true,
-        range: "height"
+        zero: true,
+        domain: { data: "table", field: sqlFields.category },
       }
     ];
   }
@@ -64,20 +64,17 @@ export default class Bars implements Charts.Bars {
   setMarks() {
     return [
       {
-        type: "rect",
-        from: { data: "table" },
-        encode: {
-          enter: {
-            x: { scale: "xscale", field: sqlFields.value },
-            width: { scale: "xscale", band: 1 },
-            y: { scale: "yscale", field: sqlFields.category },
-            y2: { scale: "yscale", value: 0 }
-          },
-          update: {
-            fill: { value: "steelblue" }
-          },
-          hover: {
-            fill: { value: "red" }
+        "name": "lines",
+        "interactive": false,
+        "type": "line",
+        "from": { "data": "table" },
+        "encode": {
+          "enter": {
+            "x": { "scale": "xscale", "field": "x" },
+            "y": { "scale": "yscale", "field": "y" },
+            "strokeCap": { "value": "round" },
+            "strokeWidth": { "value": 2 },
+            "strokeJoin": { "value": "round" }
           }
         }
       }

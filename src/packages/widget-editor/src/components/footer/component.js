@@ -18,7 +18,7 @@ const StyledFooter = styled.footer`
   padding: 0 30px;
 `;
 
-const Footer = () => {
+const Footer = ({ authenticated, onSave }) => {
 
   const[modalOpen, setModalOpen] = useState(false);
 
@@ -31,7 +31,11 @@ const Footer = () => {
         <h2>How to customize the visualization</h2>
       </Modal>
       <Button onClick={() => setModalOpen(true)} type="highlight">Need help?</Button>
-      <Button type="cta">Save widget</Button>
+      {authenticated && (
+        <Button type="cta" onClick={onSave}>
+          Save widget
+        </Button>
+      )}
     </StyledFooter>
   );
 };

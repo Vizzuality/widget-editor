@@ -28,12 +28,12 @@ export default class StateProxy {
     this.cache = state;
   }
 
-  async sync(state: { limit: number; chartType: number; value: object }) {
+  async sync(state: { limit: number; chartType: number; value: object }, datasetId: string) {
     const hasUpdate = this.checkHasUpdate(state);
 
     if (hasUpdate) {
       this.cacheCurrent(state);
-      const filtersService = new FiltersService(state);
+      const filtersService = new FiltersService(state, datasetId);
       const widgetData = await filtersService.requestWidgetData();
       return {
         hasUpdates: hasUpdate,
