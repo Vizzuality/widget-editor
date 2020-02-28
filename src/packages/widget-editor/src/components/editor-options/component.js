@@ -7,6 +7,7 @@ import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import TableView from "components/table-view";
+import JsonEditor from "components/json-editor";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -38,7 +39,11 @@ const EditorOptions = ({ orderBy }) => {
           </Accordion>
         </Tab>
         <Tab label="Visual style">Visual style</Tab>
-        <Tab label="Advanced">Advanced</Tab>
+        <Tab label="Advanced">
+
+          <JsonEditor />
+
+        </Tab>
         <Tab label="Table view">
           <TableView />
         </Tab>
