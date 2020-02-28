@@ -40,9 +40,7 @@ const EditorOptions = ({ orderBy }) => {
         </Tab>
         <Tab label="Visual style">Visual style</Tab>
         <Tab label="Advanced">
-
           <JsonEditor />
-
         </Tab>
         <Tab label="Table view">
           <TableView />
