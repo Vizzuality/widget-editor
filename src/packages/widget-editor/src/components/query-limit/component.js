@@ -15,8 +15,7 @@ const StyledInputBox = styled.div`
   width:100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
+  justify-content: ${props => props.isDouble ? 'space-between' : 'flex-end'};
   input {
     max-width: 100px;
   }
@@ -27,7 +26,7 @@ const QueryLimit = ({
   min = 0, 
   max = 500,
   value,
-  minDistance = 10,
+  minDistance = 1,
   onChange = (data) => {},
   handleOnChangeValue = (data, key) => {} 
 }) => {
@@ -44,21 +43,17 @@ const QueryLimit = ({
   if (maxValue - minValue <= minDistance) {
     minValue = maxValue - minDistance;
   }
-  
-  const handleOnChange = value => {
-    onChange(value);
-  };
 
   return (
     <FlexContainer>
       <FormLabel htmlFor="options-limit">{label}</FormLabel>
-      <StyledSliderBox>        
+      <StyledSliderBox isDouble={isDouble}>        
         <Slider
           min={min}
           max={max}
-          value={[minValue, maxValue]}
+          value={isDouble ? [minValue, maxValue] : maxValue}
           defaultValue={isDouble ? min : [min, max]}
-          onChange={(value) => handleOnChange(value)}
+          onChange={(value) => onChange(value)}
         />
       </StyledSliderBox>
       <StyledInputBox>

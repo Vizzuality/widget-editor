@@ -45,9 +45,13 @@ const EditorOptions = ({ orderBy }) => {
               <QueryLimit 
                 max={100}
                 label="Limit"
-                value={[minValue, maxValue]}
+                value={maxValue}
                 onChange={(value) => onSetData(value)}
-                handleOnChangeValue={(value, key) => key === 'minValue' ? setMinValue(Number(value)) : setMaxValue(Number(value))}
+                handleOnChangeValue={(value, key = 'maxValue') =>
+                  key === 'minValue'
+                  ? setMinValue(Number(value))
+                  : setMaxValue(Number(value))
+                }
               />
             </AccordionSection>
             <AccordionSection title="Order">
