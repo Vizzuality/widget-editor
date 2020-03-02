@@ -45,7 +45,7 @@ const EditorOptions = ({ orderBy }) => {
               <QueryLimit 
                 max={100}
                 label="Limit"
-                value={maxValue}
+                value={[minValue, maxValue]}
                 onChange={(value) => onSetData(value)}
                 handleOnChangeValue={(value, key = 'maxValue') =>
                   key === 'minValue'

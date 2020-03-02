@@ -47,7 +47,7 @@ const QueryLimit = ({
   return (
     <FlexContainer>
       <FormLabel htmlFor="options-limit">{label}</FormLabel>
-      <StyledSliderBox isDouble={isDouble}>        
+      <StyledSliderBox>        
         <Slider
           min={min}
           max={max}
@@ -56,7 +56,7 @@ const QueryLimit = ({
           onChange={(value) => onChange(value)}
         />
       </StyledSliderBox>
-      <StyledInputBox>
+      <StyledInputBox isDouble={isDouble}>
         {isDouble && (
           <Input
             min={min}
