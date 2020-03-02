@@ -31,18 +31,25 @@ const StyledTrack = styled.div`
   border-radius: 999px;
 `;
 
-const Thumb = (props, state) => <StyledThumb {...props} />;
-const Track = (props, state) => <StyledTrack {...props} index={state.index} />;
+const Thumb = (props, state) => <StyledThumb {...props} index={state.index} />;
+const Track = (props, state) => {
+  return (
+    <StyledTrack {...props} index={state.index} />
+  );
+};
 
 const Slider = ({
   min = 1,
   max = 500,
-  defaultValue = 500,
   value,
+  defaultValue,
   theme,
-  onDone,
-  onChange
+  onChange = () => {},
+  onDone = () => {},
 }) => {
+
+  const isArray = Array.isArray(value);
+
   return (
     <ThemeProvider theme={theme}>
       <StyledSlider
@@ -50,10 +57,11 @@ const Slider = ({
         onChange={onChange}
         renderTrack={Track}
         renderThumb={Thumb}
-        value={Number(value)}
+        value={value}
+        defaultValue={defaultValue}
         max={max}
         min={min}
-        defaultValue={defaultValue}
+        isArray={isArray}
       />
     </ThemeProvider>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
@@ -21,16 +21,34 @@ const StyledContainer = styled.div`
 `;
 
 const EditorOptions = ({ orderBy }) => {
+
+  const [minValue, setMinValue] = useState(10);
+  const [maxValue, setMaxValue] = useState(40);
+  const onSetData = (value) => {
+    if (Array.isArray(value)) {
+      setMinValue(Number(value[0])); 
+      setMaxValue(Number(value[1]));
+    } else {
+      setMaxValue(Number(value));
+    }
+  }
+
   return (
     <StyledContainer>
       <Tabs>
         <Tab label="General">
           <Accordion>
-            <AccordionSection title="Description and labels" openDefault>
+            <AccordionSection title="Description and labels">
               <WidgetInfo />
             </AccordionSection>
-            <AccordionSection title="Filters">
-              <QueryLimit />
+            <AccordionSection title="Filters" openDefault>
+              <QueryLimit 
+                max={100}
+                label="Limit"
+                value={[minValue, maxValue]}
+                onChange={(value) => onSetData(value)}
+                handleOnChangeValue={(value, key) => key === 'minValue' ? setMinValue(Number(value)) : setMaxValue(Number(value))}
+              />
             </AccordionSection>
             <AccordionSection title="Order">
               {orderBy && <OrderValues />}

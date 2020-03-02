@@ -25,8 +25,8 @@ const TableView = ({ widgetData, configuration }) => {
           </StyledTr>
         </thead>
         <tbody>
-          {widgetData && widgetData.map(el => (
-            <StyledTr key={el.x}>
+          {widgetData && widgetData.map((el, key) => (
+            <StyledTr key={key}>
               <StyledTd>{el.x}</StyledTd>
               <StyledTd center>{el.y}</StyledTd>
             </StyledTr>
