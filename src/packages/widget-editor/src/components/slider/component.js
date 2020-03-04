@@ -22,27 +22,35 @@ const StyledThumb = styled.div`
 const StyledTrack = styled.div`
   top: 0;
   bottom: 0;
-  background: ${props =>
-    props.index === 2
+  background: ${props => {
+    if (props.isArray) {
+      return props.isArray && props.index === 1
+      ? props.theme.slider.track
+      : props.theme.slider.trackBackground
+    } else {
+      return props.index === 2
       ? props.theme.slider.track
       : props.index === 1
       ? props.theme.slider.trackBackground
       : props.theme.slider.track};
+    }
+  };
   border-radius: 999px;
 `;
 
 const Thumb = (props, state) => <StyledThumb {...props} />;
-const Track = (props, state) => <StyledTrack {...props} index={state.index} />;
+const Track = (props, state) => <StyledTrack {...props} isArray={Array.isArray(state.value)} index={state.index} />;
 
 const Slider = ({
   min = 1,
   max = 500,
-  defaultValue = 500,
   value,
+  defaultValue,
   theme,
-  onDone,
-  onChange
+  onChange = () => {},
+  onDone = () => {},
 }) => {
+
   return (
     <ThemeProvider theme={theme}>
       <StyledSlider
@@ -50,10 +58,10 @@ const Slider = ({
         onChange={onChange}
         renderTrack={Track}
         renderThumb={Thumb}
-        value={Number(value)}
+        value={value}
+        defaultValue={defaultValue}
         max={max}
         min={min}
-        defaultValue={defaultValue}
       />
     </ThemeProvider>
   );

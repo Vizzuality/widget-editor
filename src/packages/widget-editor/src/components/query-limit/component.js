@@ -1,45 +1,81 @@
 import React, { useState, useEffect } from "react";
 import Slider from "components/slider";
-
-import useDebounce from "hooks/use-debounce";
-
 import FlexContainer from "styles-common/flex";
-import SliderAndInput from "styles-common/slider-and-input";
 import FormLabel from "styles-common/form-label";
 import Input from "styles-common/input";
+import styled from "styled-components";
 
-const QueryLimit = ({ theme, limit: storeLimit, patchConfiguration }) => {
-  const [limit, setLimit] = useState(`${storeLimit}`);
-  const debounceLimit = useDebounce(limit, 500);
+const StyledSliderBox = styled.div`
+  width:100%;
+  display: flex;
+  padding: 20px 0;
+`;
 
-  const handleChange = e => {
-    setLimit(e.target.value);
-  };
+const StyledInputBox = styled.div`
+  width:100%;
+  display: flex;
+  align-items: center;
+  justify-content: ${props => props.isDouble ? 'space-between' : 'flex-end'};
+  input {
+    max-width: 100px;
+  }
+`;
 
-  const handleOnChange = value => {
-    setLimit(value);
-  };
+const QueryLimit = ({ 
+  label = "Label", 
+  min = 0, 
+  max = 500,
+  value,
+  minDistance = 1,
+  onChange = (data) => {},
+  handleOnChangeValue = (data, key) => {} 
+}) => {
+  const isDouble = Array.isArray(value);
+  let minValue = min;
+  let maxValue = max;
+  if (isDouble) {
+    minValue = value[0];
+    maxValue = value[1];
+  } else {
+    maxValue = value ? value : max;
+  }
 
-  useEffect(() => {
-    if (debounceLimit !== storeLimit && debounceLimit !== null) {
-      patchConfiguration({ limit: debounceLimit });
-    }
-  }, [debounceLimit]);
+  if (maxValue - minValue <= minDistance) {
+    minValue = maxValue - minDistance;
+  }
 
   return (
     <FlexContainer>
-      <FormLabel htmlFor="options-limit">Limit</FormLabel>
-      <SliderAndInput>
-        <Slider onChange={handleOnChange} value={limit} />
+      <FormLabel htmlFor="options-limit">{label}</FormLabel>
+      <StyledSliderBox>        
+        <Slider
+          min={min}
+          max={max}
+          value={isDouble ? [minValue, maxValue] : maxValue}
+          defaultValue={isDouble ? min : [min, max]}
+          onChange={(value) => onChange(value)}
+        />
+      </StyledSliderBox>
+      <StyledInputBox isDouble={isDouble}>
+        {isDouble && (
+          <Input
+            min={min}
+            max={max}
+            value={minValue}
+            type="number"
+            name="options-limit"
+            onChange={e => handleOnChangeValue(e.target.value, 'minValue')}
+          />
+        )}
         <Input
+          min={min}
+          max={max}
+          value={maxValue}
           type="number"
           name="options-limit"
-          min="1"
-          max="500"
-          value={limit}
-          onChange={e => handleOnChange(e.target.value)}
+          onChange={e => handleOnChangeValue(e.target.value, 'maxValue')}
         />
-      </SliderAndInput>
+      </StyledInputBox>
     </FlexContainer>
   );
 };
