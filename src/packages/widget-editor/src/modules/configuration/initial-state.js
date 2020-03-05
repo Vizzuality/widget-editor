@@ -8,5 +8,5 @@ export default {
     { value: "bar", label: "Bars" },
     { value: "line", label: "Line" },
     { value: "scatter", label: "Scatter" }
-  ]
+  ],
 };

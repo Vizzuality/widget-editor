@@ -45,6 +45,7 @@ const StyledAccordionSection = styled.div`
   padding-top: 11px;
   padding-bottom: 11px;
   position: relative;
+  overflow-y: hidden;
 
   &:before {
     content: " ";
@@ -75,8 +76,8 @@ export const AccordionSection = ({ title, openDefault, children }) => {
   };
 
   useEffect(() => {
-    if (openDefault) clickToTitle();
-  }, []);
+    setTimeout(() => openDefault ? clickToTitle() : null, 0);   
+  }, [children]);
 
   return (
     <StyledAccordionSection>
