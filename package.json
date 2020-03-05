@@ -12,9 +12,9 @@
   ],
   "scripts": {
     "compile:ts": "lerna run tsc",
-    "watch": "cd src/packages/widget-editor && yarn start && lerna run --parallel watch",
-    "widget-editor": "lerna run --parallel start --scope @applications/widget-editor --stream",
-    "start:widget-editor": "npm-run-all --parallel watch widget-editor",
+    "watch:packages": "lerna run watch --parallel",
+    "watch:widget-editor": "lerna run start --parallel --scope @applications/widget-editor --stream",
+    "start:widget-editor": "npm-run-all --parallel watch:*",
     "build:widget-editor": "cd src/applications/widget-editor && npm run build",
     "test:widget-editor": "cd src/applications/widget-editor && yarn test --watchAll=false",
     "test:renderer": "cd src/applications/renderer && yarn test --watchAll=false",

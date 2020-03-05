@@ -37,6 +37,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
+    "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "compile": "NODE_ENV=production babel src --out-dir lib --copy-files"
   },
   "eslintConfig": {

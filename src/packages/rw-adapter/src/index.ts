@@ -41,6 +41,7 @@ export default class RwAdapter implements Adapter.Service {
       env: this.env,
       locale: this.locale
     };
+
     this.config = ConfigHelper(asConfig);
     this.datasetService = new DatasetService(this.config);
     this.widgetService = new WidgetService(this.config);

@@ -9,7 +9,7 @@ const StyledButton = styled.button`
   background: transparent;
   padding: 10px 20px;
   border-radius: 5px;
-  outline: 0;
+  outline: 1;
 
   ${props =>
     props.type &&
@@ -43,8 +43,8 @@ const StyledButton = styled.button`
       }
     `}
 
-  ${props => 
-    props.active && 
+  ${props =>
+    props.active &&
     css`
       border: 1px solid ${props.color};
       color: ${props.color};
