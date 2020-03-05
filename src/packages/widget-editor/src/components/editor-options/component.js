@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
@@ -8,6 +8,7 @@ import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import TableView from "components/table-view";
 import JsonEditor from "components/json-editor";
+import Filter from "components/filter";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -43,6 +44,9 @@ const EditorOptions = ({ orderBy }) => {
               <WidgetInfo />
             </AccordionSection>
             <AccordionSection title="Filters" openDefault>
+
+              <Filter />
+
               <QueryLimit 
                 max={100}
                 label="Limit"
