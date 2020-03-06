@@ -3,7 +3,7 @@ export const TYPE_VALUE = 'value';
 export const TYPE_COLUMNS = 'columns';
 
 export const DEFAULT_RANGE_FILTER = {
-    indicator: '',
+    indicator: TYPE_RANGE,
     values: [0, 100],
     type: TYPE_RANGE,
     notNull: true,
@@ -12,7 +12,7 @@ export const DEFAULT_RANGE_FILTER = {
 }
 
 export const DEFAULT_VALUE_FILTER = {
-    indicator: '',
+    indicator: TYPE_VALUE,
     values: 0,
     type: TYPE_VALUE,
     notNull: true,
@@ -21,7 +21,7 @@ export const DEFAULT_VALUE_FILTER = {
 }
 
 export const DEFAULT_COLUMNS_FILTER = {
-  indicator: '',
+  indicator: TYPE_COLUMNS,
   values: [],
   type: TYPE_COLUMNS
 }
