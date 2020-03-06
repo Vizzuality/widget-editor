@@ -12,6 +12,13 @@ const StyledButton = styled.button`
   outline: 1;
 
   ${props =>
+    props.size &&
+    props.size === "small" &&
+    css`
+      padding: 7px 15px;
+    `}
+
+  ${props =>
     props.type &&
     props.type === "cta" &&
     css`

@@ -45,7 +45,6 @@ const StyledAccordionSection = styled.div`
   padding-top: 11px;
   padding-bottom: 11px;
   position: relative;
-  overflow-y: hidden;
 
   &:before {
     content: " ";
@@ -66,7 +65,7 @@ const StyledAccordionSection = styled.div`
 `;
 
 export const AccordionSection = ({ title, openDefault, children }) => {
-  const contentRef = useRef(null);
+  const contentRef = useRef({});
   const [outerHeight, setOuterHeight] = useState(0);
 
   const clickToTitle = () => {
@@ -75,16 +74,28 @@ export const AccordionSection = ({ title, openDefault, children }) => {
     setOuterHeight(height);
   };
 
+  const updateHeight = () => {
+    const panel = contentRef.current;
+    const height = panel.scrollHeight;
+    setOuterHeight(height);
+  }
+
   useEffect(() => {
+    console.log('init');
     setTimeout(() => openDefault ? clickToTitle() : null, 0);   
-  }, [children]);
+  }, []);
+  
+  useEffect(() => {
+    console.log('scrollHeight');
+    if( outerHeight !== 0 ) updateHeight();   
+  }, [contentRef.current.scrollHeight]);
 
   return (
     <StyledAccordionSection>
       <StyledAccordionButton onClick={() => clickToTitle()}>
         {title}
       </StyledAccordionButton>
-      <StyledAccordionContent ref={contentRef} scrollHeight={outerHeight}>
+      <StyledAccordionContent onChange={() => updateHeight() } ref={contentRef} scrollHeight={outerHeight}>
         {children}
       </StyledAccordionContent>
     </StyledAccordionSection>

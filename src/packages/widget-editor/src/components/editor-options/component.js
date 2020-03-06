@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
 
-import QueryLimit from "components/query-limit";
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import TableView from "components/table-view";
@@ -66,18 +65,6 @@ const EditorOptions = ({ orderBy, compact }) => {
             </AccordionSection>
             <AccordionSection title="Filters" openDefault>
               <Filter />
-
-              <QueryLimit
-                max={100}
-                label="Limit"
-                value={[minValue, maxValue]}
-                onChange={value => onSetData(value)}
-                handleOnChangeValue={(value, key = "maxValue") =>
-                  key === "minValue"
-                    ? setMinValue(Number(value))
-                    : setMaxValue(Number(value))
-                }
-              />
             </AccordionSection>
             <AccordionSection title="Order">
               {orderBy && <OrderValues />}
