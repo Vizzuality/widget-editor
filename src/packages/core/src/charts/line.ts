@@ -33,7 +33,7 @@ export default class Line implements Charts.Line {
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 300,
+      height: 400,
       autosize: {
         type: "fit",
         contains: "padding"
@@ -44,19 +44,19 @@ export default class Line implements Charts.Line {
 
   setScales() {
     return [
-     {
-        name: "xscale",
+      {
+        name: "x",
         type: "point",
         range: "width",
-        domain: { data: "table", field: sqlFields.value },
+        domain: { data: "table", field: "x" }
       },
       {
-        name: "yscale",
+        name: "y",
         type: "linear",
         range: "height",
         nice: true,
         zero: true,
-        domain: { data: "table", field: sqlFields.category },
+        domain: { data: "table", field: sqlFields.category }
       }
     ];
   }
@@ -64,17 +64,17 @@ export default class Line implements Charts.Line {
   setMarks() {
     return [
       {
-        "name": "lines",
-        "interactive": false,
-        "type": "line",
-        "from": { "data": "table" },
-        "encode": {
-          "enter": {
-            "x": { "scale": "xscale", "field": "x" },
-            "y": { "scale": "yscale", "field": "y" },
-            "strokeCap": { "value": "round" },
-            "strokeWidth": { "value": 2 },
-            "strokeJoin": { "value": "round" }
+        name: "lines",
+        interactive: false,
+        type: "line",
+        from: { data: "table" },
+        encode: {
+          enter: {
+            x: { scale: "x", field: "x" },
+            y: { scale: "y", field: "y" },
+            strokeCap: { value: "round" },
+            strokeWidth: { value: 2 },
+            strokeJoin: { value: "round" }
           }
         }
       }
@@ -83,8 +83,30 @@ export default class Line implements Charts.Line {
 
   setAxes() {
     return [
-      { orient: "bottom", scale: "xscale" },
-      { orient: "left", scale: "yscale" }
+      {
+        ...this.schema.axis,
+        ...this.schema.axisX,
+        orient: "bottom",
+        scale: "x",
+        labelOverlap: "parity",
+        ticks: false
+      },
+      {
+        ...this.schema.axis,
+        ...this.schema.axisY,
+        orient: "left",
+        scale: "y",
+        labelOverlap: "parity",
+        format: "s",
+        encode: {
+          labels: {
+            update: {
+              align: { value: "right" },
+              baseline: { value: "bottom" }
+            }
+          }
+        }
+      }
     ];
   }
 
@@ -93,7 +115,11 @@ export default class Line implements Charts.Line {
     return [
       {
         values: widgetData,
-        name: "table"
+        name: "table",
+        transform: [
+          { type: "identifier", as: "id" },
+          { type: "joinaggregate", as: ["count"] }
+        ]
       }
     ];
   }

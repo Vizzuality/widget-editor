@@ -26,14 +26,15 @@ export default class Bars implements Charts.Bars {
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
-      data: this.bindData()
+      data: this.bindData(),
+      interaction_config: this.interactionConfig()
     };
   }
 
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 300,
+      height: 400,
       autosize: {
         type: "fit",
         contains: "padding"
@@ -45,17 +46,18 @@ export default class Bars implements Charts.Bars {
   setScales() {
     return [
       {
-        name: "xscale",
+        name: "x",
         type: "band",
-        domain: { data: "table", field: sqlFields.value },
+        domain: { data: "table", field: "id" },
         range: "width",
-        padding: 0.05,
-        round: true
+        padding: 0.05
       },
       {
-        name: "yscale",
+        name: "y",
+        type: "linear",
         domain: { data: "table", field: sqlFields.category },
         nice: true,
+        zero: true,
         range: "height"
       }
     ];
@@ -67,18 +69,40 @@ export default class Bars implements Charts.Bars {
         type: "rect",
         from: { data: "table" },
         encode: {
-          enter: {
-            x: { scale: "xscale", field: sqlFields.value },
-            width: { scale: "xscale", band: 1 },
-            y: { scale: "yscale", field: sqlFields.category },
-            y2: { scale: "yscale", value: 0 }
-          },
           update: {
-            fill: { value: "steelblue" }
+            opacity: { value: 1 },
+            x: { scale: "x", field: "id" },
+            width: { scale: "x", band: 1 },
+            y: { scale: "y", field: "y" },
+            y2: { scale: "y", value: 0 }
           },
           hover: {
-            fill: { value: "red" }
+            opacity: { value: 0.8 }
           }
+        }
+      }
+    ];
+  }
+
+  interactionConfig() {
+    return [
+      {
+        name: "tooltip",
+        config: {
+          fields: [
+            {
+              column: "y",
+              property: "y",
+              type: "number",
+              format: ".2s"
+            },
+            {
+              column: "x",
+              property: "x",
+              type: "string",
+              format: ".2f"
+            }
+          ]
         }
       }
     ];
@@ -86,8 +110,51 @@ export default class Bars implements Charts.Bars {
 
   setAxes() {
     return [
-      { orient: "bottom", scale: "xscale" },
-      { orient: "left", scale: "yscale" }
+      {
+        ...this.schema.axis,
+        ...this.schema.axisX,
+        orient: "bottom",
+        scale: "x",
+        labelOverlap: "parity",
+        ticks: false,
+        encode: {
+          labels: {
+            update: {
+              text: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? truncate(data('table')[datum.value - 1].x, 12) : data('table')[datum.value - 1].x"
+              },
+              align: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'"
+              },
+              baseline: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'"
+              },
+              angle: {
+                signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0"
+              }
+            }
+          }
+        }
+      },
+      {
+        ...this.schema.axis,
+        ...this.schema.axisY,
+        orient: "left",
+        scale: "y",
+        labelOverlap: "parity",
+        format: "s",
+        encode: {
+          labels: {
+            update: {
+              align: { value: "right" },
+              baseline: { value: "bottom" }
+            }
+          }
+        }
+      }
     ];
   }
 
@@ -96,7 +163,11 @@ export default class Bars implements Charts.Bars {
     return [
       {
         values: widgetData,
-        name: "table"
+        name: "table",
+        transform: [
+          { type: "identifier", as: "id" },
+          { type: "joinaggregate", as: ["count"] }
+        ]
       }
     ];
   }
