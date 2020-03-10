@@ -1,12 +1,17 @@
 import React from 'react';
-import Input from "styles-common/input";
+import Input from 'styles-common/input';
+import styled from 'styled-components';
+
+const StyledInput = styled(Input)`
+  text-align: left !important;
+`;
 
 const FilterValue = ({ filter, setData, id }) => {
 
   const { values, min, max } = filter;
 
   return (
-    <Input
+    <StyledInput
       min={min}
       max={max}
       value={values}
