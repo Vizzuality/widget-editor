@@ -33,8 +33,6 @@ const AddSection = ({ addFilter, removeFilter, filters }) => {
     addFilter(type)
   }
 
-  console.log(refButton);
-
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
     return () => {
