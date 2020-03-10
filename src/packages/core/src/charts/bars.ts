@@ -69,6 +69,11 @@ export default class Bars implements Charts.Bars {
         type: "rect",
         from: { data: "table" },
         encode: {
+          enter: {
+            tooltip: {
+              signal: "{'Label': datum.x, 'Value': datum.y }"
+            }
+          },
           update: {
             opacity: { value: 1 },
             x: { scale: "x", field: "id" },

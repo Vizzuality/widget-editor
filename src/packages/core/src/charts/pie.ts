@@ -1,4 +1,4 @@
-import { Charts, Vega, Generic, Widget } from '@packages/types';
+import { Charts, Vega, Generic, Widget } from "@packages/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
@@ -7,7 +7,11 @@ export default class Pie implements Charts.Pie {
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
 
-  constructor(schema: Vega.Schema, widgetConfig: Widget.Payload, widgetData: Generic.ObjectPayload) {
+  constructor(
+    schema: Vega.Schema,
+    widgetConfig: Widget.Payload,
+    widgetData: Generic.ObjectPayload
+  ) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -21,7 +25,8 @@ export default class Pie implements Charts.Pie {
       ...this.schema,
       scales: this.setScales(),
       marks: this.setMarks(),
-      data: this.bindData()
+      data: this.bindData(),
+      interaction_config: this.interactionConfig()
     };
   }
 
@@ -31,6 +36,30 @@ export default class Pie implements Charts.Pie {
       width: 400,
       height: 400
     };
+  }
+
+  interactionConfig() {
+    return [
+      {
+        name: "tooltip",
+        config: {
+          fields: [
+            {
+              column: "y",
+              property: "y",
+              type: "number",
+              format: ".2s"
+            },
+            {
+              column: "x",
+              property: "x",
+              type: "string",
+              format: ".2f"
+            }
+          ]
+        }
+      }
+    ];
   }
 
   setScales() {
@@ -51,6 +80,9 @@ export default class Pie implements Charts.Pie {
         from: { data: "table" },
         encode: {
           enter: {
+            tooltip: {
+              signal: "{'Label': datum.x, 'Value': datum.y }"
+            },
             fill: { scale: "c", field: sqlFields.value },
             x: { signal: "width / 2" },
             y: { signal: "height / 2" }
