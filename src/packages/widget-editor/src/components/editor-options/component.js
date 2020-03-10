@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
-
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import TableView from "components/table-view";
@@ -44,26 +43,15 @@ const StyledContainer = styled.div`
 `;
 
 const EditorOptions = ({ orderBy, compact }) => {
-  const [minValue, setMinValue] = useState(10);
-  const [maxValue, setMaxValue] = useState(40);
-  const onSetData = value => {
-    if (Array.isArray(value)) {
-      setMinValue(Number(value[0]));
-      setMaxValue(Number(value[1]));
-    } else {
-      setMaxValue(Number(value));
-    }
-  };
-
   return (
     <StyledContainer compact={compact}>
       <Tabs>
         <Tab label="General">
           <Accordion>
-            <AccordionSection title="Description and labels">
+            <AccordionSection title="Description and labels" openDefault>
               <WidgetInfo />
             </AccordionSection>
-            <AccordionSection title="Filters" openDefault>
+            <AccordionSection title="Filters">
               <Filter />
             </AccordionSection>
             <AccordionSection title="Order">
