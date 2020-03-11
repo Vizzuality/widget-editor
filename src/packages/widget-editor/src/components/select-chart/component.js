@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import find from "lodash/find";
 import isEqual from "lodash/isEqual";
-
+import Button from "components/button";
 import Select from "react-select";
+import { StyledContainer, StyledSelectBox, InputStyles } from './style';
 
-const StyledContainer = styled.div`
-  margin: 10px;
-`;
 
-const InputStyles = {
-  control: () => ({
-    // none of react-select's styles are passed to <Control />
-    display: "flex",
-    border: "1px solid rgba(202,204,208,0.85)",
-    borderRadius: "4px",
-    padding: "3px 0"
-  }),
-  option: base => ({
-    ...base
-  })
-};
-
-const SelectChart = ({ patchConfiguration, options, value }) => {
+const SelectChart = ({ patchConfiguration, options, value, theme, setTheme }) => {
   const [selected, setSelected] = useState(find(options, { value }));
-
+  const { compact: { isCompact, isOpen } } = theme;
   useEffect(() => {
     // TODO: optimize...
     if (!isEqual(find(options, { value }), selected)) {
@@ -36,14 +20,28 @@ const SelectChart = ({ patchConfiguration, options, value }) => {
     patchConfiguration({ chartType: option.value });
   };
 
+  const hadleSettings = () => {
+    setTheme({...theme, compact: { isCompact, isOpen: !isOpen }})
+  }
+
   return (
-    <StyledContainer>
-      <Select
-        onChange={handleChange}
-        value={selected}
-        options={options}
-        styles={InputStyles}
-      />
+    <StyledContainer isCompact={isCompact}>
+      <StyledSelectBox isCompact={isCompact}>
+        <Select
+          onChange={handleChange}
+          value={selected}
+          options={options}
+          styles={InputStyles}
+        />
+      </StyledSelectBox>
+      {isCompact && (
+        <Button
+          type="highlight"
+          onClick={()=> hadleSettings()}
+        >
+          Settings
+        </Button>
+      )}
     </StyledContainer>
   );
 };

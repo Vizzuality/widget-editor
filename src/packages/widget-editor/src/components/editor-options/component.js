@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
 
@@ -19,9 +19,28 @@ const StyledContainer = styled.div`
   margin: 10px 0;
   overflow-y: scroll;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
+  ${props => props.compact.isCompact && 
+    css`
+      visibility: hidden;
+      /* z-index: -1; */
+      max-height: 0;
+      position: absolute;
+      top: 65px;
+      left: 0; 
+      margin: 0;
+      width: 100%;
+      transition: all 0.3s ease-in-out;
+    `}
+  ${props => props.compact.isCompact && props.compact.isOpen &&
+  css`
+    display: block;
+    z-index: auto;
+    visibility: visible;
+    max-height: calc(100% - ${FOOTER_HEIGHT} - 65px);
+  `}
 `;
 
-const EditorOptions = ({ orderBy }) => {
+const EditorOptions = ({ orderBy, compact }) => {
 
   const [minValue, setMinValue] = useState(10);
   const [maxValue, setMaxValue] = useState(40);
@@ -35,7 +54,7 @@ const EditorOptions = ({ orderBy }) => {
   }
 
   return (
-    <StyledContainer>
+    <StyledContainer compact={compact}>
       <Tabs>
         <Tab label="General">
           <Accordion>

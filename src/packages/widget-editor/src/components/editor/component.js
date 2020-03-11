@@ -1,42 +1,25 @@
 import React from "react";
-import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
-
 import Renderer from "components/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
-
 import { DataService } from "@packages/core";
-
 import { constants } from "@packages/core";
-
-const StyledContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-flow: wrap;
-  justify-content: space-between;
-  flex-flow: column;
-
-  @media only screen and (min-width: 768px) {
-    flex-flow: wrap;
-  }
-`;
+import { StyledContainer } from './style';
 
 class Editor extends React.Component {
   constructor(props) {
     super(props);
-    const { onSave, datasetId, adapter, setEditor, dispatch } = this.props;
-
+    const { datasetId, adapter, setEditor, dispatch, theme } = this.props;
     this.onSave = this.onSave.bind(this);
-
     this.dataService = new DataService(datasetId, adapter, setEditor, dispatch);
     this.dataService.resolveInitialState();
+    this.resolveTheme(theme);
   }
 
   componentWillMount() {
-    const { authenticated, dispatch } = this.props;
+    const { authenticated } = this.props;
     if (authenticated) {
       this.resolveAuthentication();
     }
@@ -91,9 +74,9 @@ class Editor extends React.Component {
   }
 
   render() {
-    const { configuration } = this.props;
+    const { configuration, theme: { compact } } = this.props;
     return (
-      <StyledContainer>
+      <StyledContainer {...compact} >
         <Renderer />
         {configuration.limit && <EditorOptions />}
         <Footer onSave={this.onSave} />
