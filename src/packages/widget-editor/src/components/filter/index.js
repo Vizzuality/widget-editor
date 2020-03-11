@@ -1,15 +1,17 @@
 import { connectState } from "helpers/redux";
 
-import { patchConfiguration } from "modules/configuration/actions";
+import { setFilters } from "modules/filters/actions";
 
 import FilterComponent from "./component";
 
 export default connectState(
   state => ({
-    filters: state.configuration.filters,
-    fields: state.editor.fields,
+    configuration: state.configuration,
+    datasetId: state.editor.dataset.id,
+    filters: state.filters.list,
+    fields: state.editor.fields
   }),
-  { patchConfiguration }
+  { setFilters }
 )(FilterComponent);
 
-export * from './component';
+export * from "./component";
