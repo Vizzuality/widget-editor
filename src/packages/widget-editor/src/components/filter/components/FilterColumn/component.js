@@ -1,22 +1,23 @@
-import React from 'react';
+import React from "react";
 import Select from "react-select";
 
-const FilterColumn = ({ filter, setData = () => {}, id, optionData = [] }) => {
+import { TYPE_COLUMNS } from "components/filter/const";
 
-  const { values } = filter;
-
+const FilterColumn = ({ filter, setData = () => {}, optionData = [] }) => {
   const handleChange = options => {
-    setData(options, id);
+    setData(options, filter.id, TYPE_COLUMNS);
   };
 
+  const value = optionData.find(({ value }) => value === filter.column);
+
   return (
-    <Select 
-      value={values}
-      name={`filter-column-${id}`}
-      isMulti
+    <Select
+      value={value}
+      placeholder="Select Column"
+      name={`filter-column-${filter.id}`}
       options={optionData}
       onChange={handleChange}
     />
-  ); 
-}
+  );
+};
 export default FilterColumn;

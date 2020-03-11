@@ -1,3 +1,3 @@
-import FilterColumn from './component';
+import FilterColumn from "./component";
 
 export default FilterColumn;

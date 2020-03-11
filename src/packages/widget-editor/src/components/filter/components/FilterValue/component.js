@@ -1,25 +1,35 @@
-import React from 'react';
-import Input from 'styles-common/input';
-import styled from 'styled-components';
+import React from "react";
+import Input from "styles-common/input";
+import styled from "styled-components";
+
+import isFloat from "helpers/isFloat";
+
+import { TYPE_VALUE } from "components/filter/const";
 
 const StyledInput = styled(Input)`
   text-align: left !important;
 `;
 
-const FilterValue = ({ filter, setData, id }) => {
+const FilterValue = ({ filter, disabled = false, setData }) => {
+  const { values } = filter.filter;
+  const { min, max } = filter.fieldInfo
+    ? filter.fieldInfo
+    : { min: 0, max: 100 };
 
-  const { values, min, max } = filter;
+  const isFloatingPoint = isFloat(min) || isFloat(max);
 
   return (
     <StyledInput
       min={min}
       max={max}
+      step={isFloatingPoint ? 0.1 : 1}
+      disabled={disabled}
       value={values}
       type="number"
-      name={`filter-value-${id}`}
-      onChange={e => setData(e.target.value, id)}
+      name={`filter-value-${filter.id}`}
+      onChange={e => setData(e.target.value, filter.id, TYPE_VALUE)}
     />
-  ); 
-}
+  );
+};
 
 export default FilterValue;
