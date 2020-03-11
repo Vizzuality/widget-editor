@@ -109,7 +109,7 @@ const Filter = ({
               />
             </InputGroup>
 
-            {filter.indicator === TYPE_RANGE && (
+            {filter.column !== null && filter.indicator === TYPE_RANGE && (
               <FilterRange
                 disabled={filter.column === null}
                 filter={filter}
@@ -117,7 +117,7 @@ const Filter = ({
               />
             )}
 
-            {filter.indicator === TYPE_VALUE && (
+            {filter.column !== null && filter.indicator === TYPE_VALUE && (
               <FilterValue
                 disabled={filter.column === null}
                 filter={filter}
