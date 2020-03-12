@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import { FiltersService } from "@packages/core";
 
@@ -108,7 +108,7 @@ const Filter = ({
           {filter.column !== null && (
             <StyledFilter>
               {NUMBER_TYPES.indexOf(filter.indicator) > -1 && (
-                <InputGroup noMargins={true}>
+                <InputGroup noMargins={filter.indicator === TYPE_RANGE}>
                   <FilterIndicator
                     filter={filter}
                     disabled={filter.column === null}
@@ -148,8 +148,8 @@ const Filter = ({
                 </InputGroup>
               )}
 
-              {FILTER_NUMBER_INDICATOR_TYPES.indexOf(filter.indicator) > -1 && (
-                <Fragment>
+              {NUMBER_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup>
                   {filter.indicator === TYPE_RANGE && (
                     <FilterRange
                       disabled={filter.column === null}
@@ -165,7 +165,7 @@ const Filter = ({
                       setData={setData}
                     />
                   )}
-                </Fragment>
+                </InputGroup>
               )}
               <NotNullInput
                 filter={filter}
