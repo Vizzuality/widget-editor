@@ -1,11 +1,9 @@
-import { Provider } from "react-redux";
-
 import React from "react";
 import Editor from "components/editor";
 
 class WidgetEditor extends React.Component {
   render() {
-    const { authenticated, onSave, datasetId, adapter, theme } = this.props;
+    const { authenticated, onSave, datasetId, adapter, theme, compact = true } = this.props;
 
     if (typeof adapter !== "function") {
       throw new Error(
@@ -19,7 +17,13 @@ class WidgetEditor extends React.Component {
         onSave={onSave}
         datasetId={datasetId}
         adapter={new adapter()}
-        theme={theme}
+        theme={{
+          ...theme, 
+          compact: { 
+            isCompact: compact,
+            isOpen: false 
+          }
+        }}
       />
     );
   }

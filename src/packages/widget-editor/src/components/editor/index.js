@@ -16,7 +16,7 @@ export default connectState(
     return {
       dispatch,
       setEditor: data => dispatch(setEditor(data)),
-      setTheme: data => dispatch(setTheme(data))
+      setTheme: data => dispatch(setTheme(data)),
     };
   }
 )(EditorComponent);
