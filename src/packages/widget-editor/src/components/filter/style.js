@@ -2,13 +2,6 @@ import styled from "styled-components";
 
 export const StyledFilterBox = styled.div`
   position: relative;
-
-  * {
-    box-sizing: border-box;
-  }
-  input {
-    box-sizing: border-box !important;
-  }
 `;
 
 export const StyledEmpty = styled.div`

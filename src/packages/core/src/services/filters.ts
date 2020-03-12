@@ -8,27 +8,7 @@ import FieldsService from "./fields";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-// constants
-const TYPE_COLUMNS = "columns";
-const TYPE_INDICATOR = "indicator";
-const TYPE_VALUE = "value";
-const TYPE_RANGE = "range";
-
-const DEFAULT_RANGE_FILTER = {
-  values: [0, 100],
-  type: TYPE_RANGE,
-  notNull: true,
-  max: 500,
-  min: 0
-};
-
-const DEFAULT_VALUE_FILTER = {
-  values: 0,
-  type: TYPE_VALUE,
-  notNull: true,
-  max: 500,
-  min: 0
-};
+import filtersHelper from "../helpers/filters";
 
 export default class FiltersService implements Filters.Service {
   sql: string;
@@ -190,78 +170,7 @@ export default class FiltersService implements Filters.Service {
     const { values, id, type } = payload;
     const fieldService = new FieldsService(configuration, datasetId, fields);
 
-    let patch = [];
-
-    async function asyncForEach(array, callback) {
-      for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-      }
-    }
-
-    if (type === TYPE_COLUMNS) {
-      await asyncForEach(filters, async filter => {
-        if (filter.id === id) {
-          const fieldInfo = await fieldService.getFieldInfo(
-            filter,
-            values.value
-          );
-          patch.push({
-            ...filter,
-            column: values.value,
-            dataType: values.dataType,
-            fieldInfo,
-            filter: {
-              ...filter.filter,
-              ...(filter.indicator === "range"
-                ? { values: [fieldInfo.min, fieldInfo.max] }
-                : {})
-            }
-          });
-        } else {
-          patch.push(filter);
-        }
-      });
-    }
-
-    if (type === TYPE_INDICATOR) {
-      // TODO: Check if value isset for current filter
-      // Then we need to assign that value when modifying filter
-      patch = filters.map(filter => {
-        if (filter.id === id) {
-          return {
-            ...filter,
-            indicator: values.value,
-            filter:
-              values.value === TYPE_RANGE
-                ? {
-                    ...DEFAULT_RANGE_FILTER,
-                    values: [filter.fieldInfo.min, filter.fieldInfo.max]
-                  }
-                : { ...DEFAULT_VALUE_FILTER, values: filter.fieldInfo.max }
-          };
-        }
-        return filter;
-      });
-    }
-
-    if (type === TYPE_RANGE) {
-      patch = filters.map(filter => {
-        if (filter.id === id) {
-          return { ...filter, filter: { ...filter.filter, values } };
-        }
-        return filter;
-      });
-    }
-
-    if (type === TYPE_VALUE) {
-      patch = filters.map(filter => {
-        if (filter.id === id) {
-          return { ...filter, filter: { ...filter.filter, values } };
-        }
-        return filter;
-      });
-    }
-
+    const patch = await filtersHelper(filters, fieldService, payload);
     return patch;
   }
 }

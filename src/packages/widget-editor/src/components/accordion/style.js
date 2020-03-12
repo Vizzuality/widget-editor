@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledAccordion = styled.div`
   width: 100%;
@@ -27,16 +27,16 @@ export const StyledAccordionButton = styled.a`
   padding-left: 25px;
   cursor: pointer;
 
-&:before {
-  content: " ";
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #c32d7b;
-  position: absolute;
-  left: 0;
-  top: 8px;
-}
+  &:before {
+    content: " ";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #c32d7b;
+    position: absolute;
+    left: 0;
+    top: 8px;
+  }
 `;
 
 export const StyledAccordionSection = styled.div`
@@ -44,20 +44,20 @@ export const StyledAccordionSection = styled.div`
   padding-bottom: 11px;
   position: relative;
 
-&:before {
-  content: " ";
-  height: 1px;
-  width: calc(100% - 24px);
-  display: block;
-  position: absolute;
-  top: 0;
-  background-color: #d2d3d6;
-  margin-left: 24px;
-}
-
-&:first-child {
   &:before {
-    display: none;
+    content: " ";
+    height: 1px;
+    width: calc(100% - 24px);
+    display: block;
+    position: absolute;
+    top: 0;
+    background-color: #d2d3d6;
+    margin-left: 24px;
   }
-}
+
+  &:first-child {
+    &:before {
+      display: none;
+    }
+  }
 `;

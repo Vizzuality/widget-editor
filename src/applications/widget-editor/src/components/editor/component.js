@@ -22,6 +22,7 @@ class Editor extends React.Component {
     return (
       <div className="widget-editor-wrapper">
         <WidgetEditor
+          compact={false}
           datasetId={dataset}
           onSave={this.handleOnSave}
           authenticated={authenticated}
