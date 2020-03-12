@@ -59,10 +59,18 @@ export default class DataService {
 
     // Construct correct SQL query based on widgetConfig
     const filtersService = new FiltersService(paramsConfig, this.dataset.id);
-    this.widgetData = await filtersService.requestWidgetData();
+    try {
+      this.widgetData = await filtersService.requestWidgetData();
+    } catch (e) {
+      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
+    }
 
-    this.setEditor({ widgetData: this.widgetData.data });
-    this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
+    if (!this.widgetData || !this.widgetData.data) {
+      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
+    } else {
+      this.setEditor({ widgetData: this.widgetData.data });
+      this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
+    }
   }
 
   isFieldAllowed(field) {

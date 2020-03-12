@@ -10,7 +10,12 @@ const StyledInput = styled(Input)`
   text-align: left !important;
 `;
 
-const FilterValue = ({ filter, disabled = false, setData }) => {
+const FilterValue = ({
+  filter,
+  disabled = false,
+  setData,
+  isNumeric = true
+}) => {
   const { values } = filter.filter;
   const { min, max } = filter.fieldInfo
     ? filter.fieldInfo
@@ -25,7 +30,7 @@ const FilterValue = ({ filter, disabled = false, setData }) => {
       step={isFloatingPoint ? 0.1 : 1}
       disabled={disabled}
       value={values}
-      type="number"
+      type={isNumeric ? "number" : "text"}
       name={`filter-value-${filter.id}`}
       onChange={e => setData(e.target.value, filter.id, TYPE_VALUE)}
     />

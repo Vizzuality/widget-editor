@@ -9,6 +9,11 @@ const FilterIndicator = ({
   setData = () => {},
   optionData = []
 }) => {
+  const value =
+    filter.indicator === "string"
+      ? filter.filter.values
+      : optionData.find(o => o.value === filter.indicator);
+
   const handleChange = options => {
     setData(options, filter.id, TYPE_INDICATOR);
   };
@@ -16,12 +21,13 @@ const FilterIndicator = ({
   return (
     <Select
       isDisabled={disabled}
-      value={
-        filter.indicator
-          ? optionData.find(o => o.value === filter.indicator)
-          : null
+      value={value ? value : null}
+      isMulti={filter.indicator === "string"}
+      placeholder={
+        filter.indicator === "string"
+          ? `Select ${filter.column}`
+          : "Select Indicator"
       }
-      placeholder="Select Indicator"
       name={`filter-indicator-${filter.id}`}
       options={optionData}
       onChange={handleChange}

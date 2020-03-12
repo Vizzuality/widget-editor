@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import { FiltersService } from "@packages/core";
 
@@ -16,12 +16,18 @@ import {
   TYPE_INDICATOR,
   TYPE_VALUE,
   COLUMN_FILTER_GROUP,
-  FILTER_TYPES
+  TYPE_FILTER_ON_VALUES,
+  FILTER_NUMBER_INDICATOR_TYPES,
+  FILTER_STRING_INDICATOR_TYPES,
+  STRING_TYPES,
+  NUMBER_TYPES
 } from "./const";
 
+import NotNullInput from "./components/NotNullInput";
 import FilterRange from "./components/FilterRange";
 import FilterValue from "./components/FilterValue";
 import FilterColumn from "./components/FilterColumn";
+import FilterStrings from "./components/FilterStrings";
 import FilterIndicator from "./components/FilterIndicator";
 import AddSection from "./components/AddSection";
 
@@ -99,32 +105,76 @@ const Filter = ({
               </Button>
             </StyledDeleteBox>
           </InputGroup>
-          <StyledFilter>
-            <InputGroup noMargins={true}>
-              <FilterIndicator
-                filter={filter}
-                disabled={filter.column === null}
-                setData={setData}
-                optionData={FILTER_TYPES}
-              />
-            </InputGroup>
+          {filter.column !== null && (
+            <StyledFilter>
+              {NUMBER_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup noMargins={true}>
+                  <FilterIndicator
+                    filter={filter}
+                    disabled={filter.column === null}
+                    setData={setData}
+                    optionData={FILTER_NUMBER_INDICATOR_TYPES}
+                  />
+                </InputGroup>
+              )}
 
-            {filter.indicator === TYPE_RANGE && (
-              <FilterRange
-                disabled={filter.column === null}
-                filter={filter}
-                setData={setData}
-              />
-            )}
+              {STRING_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup>
+                  <FilterIndicator
+                    filter={filter}
+                    disabled={filter.column === null}
+                    setData={setData}
+                    optionData={FILTER_STRING_INDICATOR_TYPES}
+                  />
+                </InputGroup>
+              )}
 
-            {filter.indicator === TYPE_VALUE && (
-              <FilterValue
-                disabled={filter.column === null}
+              {STRING_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup>
+                  {filter.indicator === TYPE_FILTER_ON_VALUES && (
+                    <FilterStrings
+                      filter={filter}
+                      setData={setData}
+                      optionData={filter.fieldInfo}
+                    />
+                  )}
+                  {filter.indicator !== TYPE_FILTER_ON_VALUES && (
+                    <FilterValue
+                      isNumeric={false}
+                      filter={filter}
+                      setData={setData}
+                    />
+                  )}
+                </InputGroup>
+              )}
+
+              {FILTER_NUMBER_INDICATOR_TYPES.indexOf(filter.indicator) > -1 && (
+                <Fragment>
+                  {filter.indicator === TYPE_RANGE && (
+                    <FilterRange
+                      disabled={filter.column === null}
+                      filter={filter}
+                      setData={setData}
+                    />
+                  )}
+
+                  {filter.indicator === TYPE_VALUE && (
+                    <FilterValue
+                      disabled={filter.column === null}
+                      filter={filter}
+                      setData={setData}
+                    />
+                  )}
+                </Fragment>
+              )}
+              <NotNullInput
                 filter={filter}
+                name={`filter-not-null-${filter.id}`}
+                label="Not null values"
                 setData={setData}
               />
-            )}
-          </StyledFilter>
+            </StyledFilter>
+          )}
         </StyledFilterSection>
       ))}
     </StyledFilterBox>

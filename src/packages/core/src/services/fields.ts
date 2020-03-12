@@ -1,5 +1,7 @@
 import { Config } from "@packages/types";
 
+import capitalize from "../helpers/capitalize";
+
 export default class FieldsService {
   configuration: Config.Payload;
   datasetId: String;
@@ -54,10 +56,10 @@ export default class FieldsService {
       const res = await this.getColumnMinAndMax(selectedField);
       return res;
     }
-    console.log("selected field", selectedField);
+
     if (selectedField.type === this.COLUMN_TYPE) {
       const res = await this.getColumnValues(selectedField);
-      return res;
+      return res.map(r => ({ value: r, label: capitalize(r) }));
     }
 
     return "Hello world";
