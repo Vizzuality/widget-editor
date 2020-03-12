@@ -3,7 +3,15 @@ import Editor from "components/editor";
 
 class WidgetEditor extends React.Component {
   render() {
-    const { authenticated, onSave, datasetId, adapter, theme, compact = true } = this.props;
+    const {
+      authenticated,
+      onSave,
+      datasetId,
+      adapter,
+      theme,
+      schemes,
+      compact = true
+    } = this.props;
 
     if (typeof adapter !== "function") {
       throw new Error(
@@ -17,11 +25,12 @@ class WidgetEditor extends React.Component {
         onSave={onSave}
         datasetId={datasetId}
         adapter={new adapter()}
+        schemes={schemes}
         theme={{
-          ...theme, 
-          compact: { 
+          ...theme,
+          compact: {
             isCompact: compact,
-            isOpen: false 
+            isOpen: false
           }
         }}
       />

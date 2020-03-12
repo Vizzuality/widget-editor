@@ -11,11 +11,19 @@ import { StyledContainer } from "./style";
 class Editor extends React.Component {
   constructor(props) {
     super(props);
-    const { datasetId, adapter, setEditor, dispatch, theme } = this.props;
+    const {
+      datasetId,
+      adapter,
+      setEditor,
+      dispatch,
+      theme,
+      schemes
+    } = this.props;
     this.onSave = this.onSave.bind(this);
     this.dataService = new DataService(datasetId, adapter, setEditor, dispatch);
     this.dataService.resolveInitialState();
     this.resolveTheme(theme);
+    this.resolveSchemes(schemes);
   }
 
   componentWillMount() {
@@ -29,9 +37,10 @@ class Editor extends React.Component {
     const {
       datasetId: prevDatasetId,
       theme: prevTheme,
+      schemes: prevSchemes,
       authenticated: prevAuthenticated
     } = prevProps;
-    const { datasetId, theme, authenticated } = this.props;
+    const { datasetId, theme, schemes, authenticated } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
     if (!isEqual(datasetId, prevDatasetId)) {
@@ -40,6 +49,10 @@ class Editor extends React.Component {
 
     if (!isEqual(theme, prevTheme)) {
       this.resolveTheme(theme);
+    }
+
+    if (!isEqual(schemes, prevSchemes)) {
+      this.resolveSchemes(schemes);
     }
 
     if (!isEqual(authenticated, prevAuthenticated)) {
@@ -63,6 +76,11 @@ class Editor extends React.Component {
   resolveTheme = debounce(theme => {
     const { setTheme } = this.props;
     setTheme(theme);
+  }, 1000);
+
+  resolveSchemes = debounce(schemes => {
+    const { setScheme } = this.props;
+    setScheme(schemes);
   }, 1000);
 
   onSave() {
