@@ -5,32 +5,36 @@ import FormLabel from "styles-common/form-label";
 import Input from "styles-common/input";
 import styled from "styled-components";
 
+import isFloat from "helpers/isFloat";
+
 const StyledSliderBox = styled.div`
-  width:100%;
+  width: 100%;
   display: flex;
   padding: 20px 0;
 `;
 
 const StyledInputBox = styled.div`
-  width:100%;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: ${props => props.isDouble ? 'space-between' : 'flex-end'};
+  justify-content: ${props => (props.isDouble ? "space-between" : "flex-end")};
   input {
     max-width: 100px;
   }
 `;
 
-const QueryLimit = ({ 
-  label = "Label", 
-  min = 0, 
-  max = 500,
+const QueryLimit = ({
+  label,
+  min = null,
+  max = null,
   value,
   minDistance = 1,
-  onChange = (data) => {},
-  handleOnChangeValue = (data, key) => {} 
+  onChange = data => {},
+  handleOnChangeValue = (data, key) => {}
 }) => {
   const isDouble = Array.isArray(value);
+  const isFloatingPoint = isFloat(min) || isFloat(max);
+
   let minValue = min;
   let maxValue = max;
   if (isDouble) {
@@ -44,36 +48,39 @@ const QueryLimit = ({
     minValue = maxValue - minDistance;
   }
 
+  const minMaxProps = {
+    ...(min !== null && { min }),
+    ...(max !== null && { max })
+  };
+
   return (
     <FlexContainer>
-      <FormLabel htmlFor="options-limit">{label}</FormLabel>
-      <StyledSliderBox>        
+      {label && <FormLabel htmlFor="options-limit">{label}</FormLabel>}
+      <StyledSliderBox>
         <Slider
-          min={min}
-          max={max}
+          {...minMaxProps}
+          step={isFloatingPoint ? 0.1 : 1}
           value={isDouble ? [minValue, maxValue] : maxValue}
           defaultValue={isDouble ? min : [min, max]}
-          onChange={(value) => onChange(value)}
+          onChange={value => onChange(value)}
         />
       </StyledSliderBox>
       <StyledInputBox isDouble={isDouble}>
         {isDouble && (
           <Input
-            min={min}
-            max={max}
+            {...minMaxProps}
             value={minValue}
             type="number"
             name="options-limit"
-            onChange={e => handleOnChangeValue(e.target.value, 'minValue')}
+            onChange={e => handleOnChangeValue(e.target.value, "minValue")}
           />
         )}
         <Input
-          min={min}
-          max={max}
+          {...minMaxProps}
           value={maxValue}
           type="number"
           name="options-limit"
-          onChange={e => handleOnChangeValue(e.target.value, 'maxValue')}
+          onChange={e => handleOnChangeValue(e.target.value, "maxValue")}
         />
       </StyledInputBox>
     </FlexContainer>

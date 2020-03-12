@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import ReactSlider from "react-slider";
 
 const StyledSlider = styled(ReactSlider)`
-  height: 7px;
+  height: 4px;
   width: inherit;
 `;
 
@@ -15,6 +15,7 @@ const StyledThumb = styled.div`
   border: 3px solid ${props => props.theme.slider.track};
   border-radius: 50%;
   transform: translateY(-50%);
+  z-index: 0 !important;
   top: 50%;
   cursor: grab;
 `;
@@ -25,32 +26,38 @@ const StyledTrack = styled.div`
   background: ${props => {
     if (props.isArray) {
       return props.isArray && props.index === 1
-      ? props.theme.slider.track
-      : props.theme.slider.trackBackground
+        ? props.theme.slider.track
+        : props.theme.slider.trackBackground;
     } else {
       return props.index === 2
-      ? props.theme.slider.track
-      : props.index === 1
-      ? props.theme.slider.trackBackground
-      : props.theme.slider.track};
+        ? props.theme.slider.track
+        : props.index === 1
+        ? props.theme.slider.trackBackground
+        : props.theme.slider.track;
     }
-  };
+  }};
   border-radius: 999px;
 `;
 
 const Thumb = (props, state) => <StyledThumb {...props} />;
-const Track = (props, state) => <StyledTrack {...props} isArray={Array.isArray(state.value)} index={state.index} />;
+const Track = (props, state) => (
+  <StyledTrack
+    {...props}
+    isArray={Array.isArray(state.value)}
+    index={state.index}
+  />
+);
 
 const Slider = ({
   min = 1,
   max = 500,
+  step = 1,
   value,
   defaultValue,
   theme,
   onChange = () => {},
-  onDone = () => {},
+  onDone = () => {}
 }) => {
-
   return (
     <ThemeProvider theme={theme}>
       <StyledSlider
@@ -59,6 +66,7 @@ const Slider = ({
         renderTrack={Track}
         renderThumb={Thumb}
         value={value}
+        step={step}
         defaultValue={defaultValue}
         max={max}
         min={min}

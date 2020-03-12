@@ -14,7 +14,7 @@ const Input = styled.input`
 
   &[type="number"] {
     box-sizing: content-box;
-    text-align: center;
+    padding: 8px 10px;
   }
 `;
 

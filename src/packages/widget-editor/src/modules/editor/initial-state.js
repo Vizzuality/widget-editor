@@ -4,5 +4,6 @@ export default {
   initialized: false,
   dataset: null,
   widget: null,
-  widgetData: null
+  widgetData: null,
+  errors: null
 };

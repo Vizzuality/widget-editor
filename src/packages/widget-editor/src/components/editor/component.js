@@ -6,7 +6,7 @@ import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 import { DataService } from "@packages/core";
 import { constants } from "@packages/core";
-import { StyledContainer } from './style';
+import { StyledContainer } from "./style";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -74,9 +74,12 @@ class Editor extends React.Component {
   }
 
   render() {
-    const { configuration, theme: { compact } } = this.props;
+    const {
+      configuration,
+      theme: { compact }
+    } = this.props;
     return (
-      <StyledContainer {...compact} >
+      <StyledContainer {...compact}>
         <Renderer />
         {configuration.limit && <EditorOptions />}
         <Footer onSave={this.onSave} />

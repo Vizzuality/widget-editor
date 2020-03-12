@@ -3,7 +3,7 @@ import { Dataset, Widget, Adapter, Generic } from "@packages/types";
 import FiltersService from "./filters";
 import VegaService from "./vega";
 
-import { sagaEvents } from "../constants";
+import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
 
 export default class DataService {
   adapter: Adapter.Service;
@@ -34,6 +34,8 @@ export default class DataService {
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset);
 
+    await this.translateFilters();
+
     this.setEditor({ dataset: this.dataset, widget: this.widget });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
@@ -50,6 +52,14 @@ export default class DataService {
     this.setEditor({ restoring: false });
   }
 
+  async translateFilters() {
+    const { filters } = this.widget.attributes.widgetConfig.paramsConfig;
+    this.dispatch({
+      type: reduxActions.EDITOR_SET_FILTERS,
+      payload: { list: this.adapter.handleFilters(filters) }
+    });
+  }
+
   async getWidgetData() {
     const {
       attributes: {
@@ -59,17 +69,50 @@ export default class DataService {
 
     // Construct correct SQL query based on widgetConfig
     const filtersService = new FiltersService(paramsConfig, this.dataset.id);
-    this.widgetData = await filtersService.requestWidgetData();
+    try {
+      this.widgetData = await filtersService.requestWidgetData();
+    } catch (e) {
+      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
+    }
 
-    this.setEditor({ widgetData: this.widgetData.data });
-    this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
+    if (!this.widgetData || !this.widgetData.data) {
+      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
+    } else {
+      this.setEditor({ widgetData: this.widgetData.data });
+      this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
+    }
+  }
+
+  isFieldAllowed(field) {
+    const fieldTypeAllowed = ALLOWED_FIELD_TYPES.find(
+      val => val.name.toLowerCase() === field.type.toLowerCase()
+    );
+    const isCartodbId = field.columnName === "cartodb_id";
+    const result = !isCartodbId && fieldTypeAllowed;
+    return result;
   }
 
   async getFieldsAndLayers() {
     const fields = await this.adapter.getFields();
     const layers = await this.adapter.getLayers();
 
-    this.setEditor({ layers, fields });
+    // Get field aliases from Dataset
+    const { columns } = this.dataset.attributes.metadata[0].attributes;
+    // Filter on allowed field types
+    const allowedFields = [];
+
+    Object.keys(fields).forEach(field => {
+      const f = {
+        ...fields[field],
+        columnName: field,
+        metadata: columns[field]
+      };
+      if (this.isFieldAllowed(f)) {
+        allowedFields.push(f);
+      }
+    });
+
+    this.setEditor({ layers, fields: allowedFields });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATA_READY });
   }
 

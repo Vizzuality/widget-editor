@@ -4,14 +4,20 @@
 
 import { Filters, Config } from "@packages/types";
 
+import FieldsService from "./fields";
+
 import { sqlFields } from "../helpers/wiget-helper/constants";
+
+import filtersHelper from "../helpers/filters";
 
 export default class FiltersService implements Filters.Service {
   sql: string;
   datasetId: string;
   configuration: Config.Payload;
+
   constructor(data: any, datasetId: string) {
     this.configuration = data;
+
     this.sql = "";
 
     this.datasetId = datasetId;
@@ -35,7 +41,9 @@ export default class FiltersService implements Filters.Service {
     const { tableName: yTableName } = category;
 
     if (!xTableName && !yTableName) {
-      throw new Error('Filters service: canot parse table name from value nor category.');
+      throw new Error(
+        "Filters service: canot parse table name from value nor category."
+      );
     }
 
     // XXX: We prioritize xTableName, not sure if thats correct.
@@ -47,11 +55,15 @@ export default class FiltersService implements Filters.Service {
     const { name } = value;
 
     if (!aggregateFunction) {
-      this.sql = `${this.sql}, ${name} as ${sqlFields.category} FROM ${this.resolveTableName()}`;
+      this.sql = `${this.sql}, ${name} as ${
+        sqlFields.category
+      } FROM ${this.resolveTableName()}`;
     } else {
       const aggregation = aggregateFunction.toUpperCase();
       if (aggregation === "SUM" || aggregation === "COUNT") {
-        this.sql = `${this.sql}, ${aggregation}(${name}) as ${sqlFields.category} FROM ${this.resolveTableName()}`;
+        this.sql = `${this.sql}, ${aggregation}(${name}) as ${
+          sqlFields.category
+        } FROM ${this.resolveTableName()}`;
       } else {
         throw new Error(
           `Aggragate function (${aggregateFunction}) not implemented in filter service.`
@@ -62,11 +74,16 @@ export default class FiltersService implements Filters.Service {
 
   // Range conditions gets constructed as key => value AND key <= value
   // This is true if we have two values in our filter
-  private rangeCondition(condition: string, name: string, value: [number], type: string): string {
-     let range = condition;
-     value.forEach((v, index) => {
-      const serializeValue = type === 'date' ? `'${v}'` : v;
-      let statement = '';
+  private rangeCondition(
+    condition: string,
+    name: string,
+    value: [number],
+    type: string
+  ): string {
+    let range = condition;
+    value.forEach((v, index) => {
+      const serializeValue = type === "date" ? `'${v}'` : v;
+      let statement = "";
       if (index === 0) {
         statement = `${name} >= ${serializeValue}`;
       } else if (index === 1) {
@@ -79,7 +96,7 @@ export default class FiltersService implements Filters.Service {
 
   prepareFilters() {
     const { filters } = this.configuration;
-    let filtersQuery = 'WHERE';
+    let filtersQuery = "WHERE";
 
     if (filters && Array.isArray(filters) && filters.length > 0) {
       filters.forEach(({ name, value, type }) => {
@@ -91,7 +108,7 @@ export default class FiltersService implements Filters.Service {
             `Expected value range filter recived (${value.join()}), not yet implemented in filter service.`
           );
         }
-      })
+      });
     }
     this.sql = `${this.sql} ${filtersQuery}`;
   }
@@ -100,13 +117,12 @@ export default class FiltersService implements Filters.Service {
     const { groupBy, aggregateFunction } = this.configuration;
     if (groupBy) {
       const { name } = groupBy;
-      this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`; 
-    } else if (aggregateFunction && aggregateFunction !== 'none') {
+      this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
+    } else if (aggregateFunction && aggregateFunction !== "none") {
       // If there's an aggregate function, we group the results
       // with the first column (dimension x)
-      this.sql = `${this.sql} GROUP BY ${sqlFields.value}`; 
+      this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }
-
   }
 
   prepareOrderBy() {
@@ -132,13 +148,42 @@ export default class FiltersService implements Filters.Service {
 
   async requestWidgetData() {
     if (!this.datasetId) {
-      throw new Error('Error, datasetId not present in Filters service.');
+      throw new Error("Error, datasetId not present in Filters service.");
     }
 
     const response = await fetch(
       `https://api.resourcewatch.org/v1/query/${this.datasetId}?sql=${this.sql}`
     );
+
     const data = await response.json();
     return data;
+  }
+
+  static baseFilter(values, name, type, index) {
+    return {
+      column: name,
+      indicator:
+        Array.isArray(values) || values.length === 2 ? "range" : "value",
+      id: `we-filter-${name}-${index}`,
+      dataType: type,
+      filter: {
+        values,
+        notNull: true
+      }
+    };
+  }
+
+  static async patchFilters(
+    filters,
+    payload,
+    configuration,
+    datasetId,
+    fields
+  ) {
+    const { values, id, type } = payload;
+    const fieldService = new FieldsService(configuration, datasetId, fields);
+
+    const patch = await filtersHelper(filters, fieldService, payload);
+    return patch;
   }
 }
