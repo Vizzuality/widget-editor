@@ -83,6 +83,23 @@ const resolveStringLikeValue = (val, isList = false) => {
   return Array.isArray(val) ? val.map(v => v.label).join(",") : val;
 };
 
+const resolveNumberLikeValue = (filter, val, range = false) => {
+  const min =
+    filter.fieldInfo && filter.fieldInfo.min ? filter.fieldInfo.min : 0;
+  const max =
+    filter.fieldInfo && filter.fieldInfo.max ? filter.fieldInfo.max : 0;
+
+  if (val) {
+    return val;
+  }
+
+  if (range) {
+    return [min, max];
+  }
+
+  return max;
+};
+
 const patchIndicator = (filter, payload) => {
   const { values } = payload;
   const { values: appliedValue } = filter.filter;
@@ -110,15 +127,12 @@ const patchIndicator = (filter, payload) => {
   } else if (values.value === TYPE_RANGE) {
     setFilterOnIndicator = {
       ...DEFAULT_RANGE_FILTER,
-      values:
-        Array.isArray(appliedValue) && Array.isArray(appliedValue).length === 2
-          ? appliedValue
-          : [filter.fieldInfo.min, filter.fieldInfo.max]
+      values: resolveNumberLikeValue(filter, appliedValue, true)
     };
   } else if (values.value === TYPE_VALUE) {
     setFilterOnIndicator = {
       ...DEFAULT_VALUE_FILTER,
-      values: filter.fieldInfo.max
+      values: resolveNumberLikeValue(filter, appliedValue)
     };
   } else {
     throw new Error(

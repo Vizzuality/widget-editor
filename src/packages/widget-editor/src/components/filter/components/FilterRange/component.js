@@ -19,13 +19,16 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
       key === "maxValue"
         ? [minValue, Number(value)]
         : [Number(value), maxValue];
-    setData(newValues, id);
+    setData(newValues, filter.id, TYPE_RANGE);
+  };
+
+  const props = {
+    ...(filter.dataType !== "date" && { min: min, max: max })
   };
 
   return (
     <QueryLimit
-      max={max}
-      min={min}
+      {...props}
       disabled={disabled}
       value={[minValue, maxValue]}
       onChange={value => onSetData(value)}

@@ -30,4 +30,5 @@ export interface Service {
     widget: Widget.Payload
   ): Promise<[object]>;
   setDatasetId(datasetId: datasetId): void;
+  handleFilters(filters: any): void;
 }

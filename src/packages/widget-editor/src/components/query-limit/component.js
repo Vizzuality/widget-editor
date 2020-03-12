@@ -25,8 +25,8 @@ const StyledInputBox = styled.div`
 
 const QueryLimit = ({
   label,
-  min = 0,
-  max = 500,
+  min = null,
+  max = null,
   value,
   minDistance = 1,
   onChange = data => {},
@@ -48,13 +48,17 @@ const QueryLimit = ({
     minValue = maxValue - minDistance;
   }
 
+  const minMaxProps = {
+    ...(min !== null && { min }),
+    ...(max !== null && { max })
+  };
+
   return (
     <FlexContainer>
       {label && <FormLabel htmlFor="options-limit">{label}</FormLabel>}
       <StyledSliderBox>
         <Slider
-          min={min}
-          max={max}
+          {...minMaxProps}
           step={isFloatingPoint ? 0.1 : 1}
           value={isDouble ? [minValue, maxValue] : maxValue}
           defaultValue={isDouble ? min : [min, max]}
@@ -64,8 +68,7 @@ const QueryLimit = ({
       <StyledInputBox isDouble={isDouble}>
         {isDouble && (
           <Input
-            min={min}
-            max={max}
+            {...minMaxProps}
             value={minValue}
             type="number"
             name="options-limit"
@@ -73,8 +76,7 @@ const QueryLimit = ({
           />
         )}
         <Input
-          min={min}
-          max={max}
+          {...minMaxProps}
           value={maxValue}
           type="number"
           name="options-limit"

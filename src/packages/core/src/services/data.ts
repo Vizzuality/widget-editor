@@ -3,7 +3,7 @@ import { Dataset, Widget, Adapter, Generic } from "@packages/types";
 import FiltersService from "./filters";
 import VegaService from "./vega";
 
-import { sagaEvents, ALLOWED_FIELD_TYPES } from "../constants";
+import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
 
 export default class DataService {
   adapter: Adapter.Service;
@@ -34,6 +34,8 @@ export default class DataService {
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset);
 
+    await this.translateFilters();
+
     this.setEditor({ dataset: this.dataset, widget: this.widget });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
@@ -48,6 +50,14 @@ export default class DataService {
     await this.getWidgetData();
 
     this.setEditor({ restoring: false });
+  }
+
+  async translateFilters() {
+    const { filters } = this.widget.attributes.widgetConfig.paramsConfig;
+    this.dispatch({
+      type: reduxActions.EDITOR_SET_FILTERS,
+      payload: { list: this.adapter.handleFilters(filters) }
+    });
   }
 
   async getWidgetData() {

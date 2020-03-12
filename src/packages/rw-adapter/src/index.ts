@@ -1,6 +1,6 @@
 import { Adapter, Dataset, Widget, Config } from "@packages/types";
 
-import { DatasetService, WidgetService } from "@packages/core";
+import { DatasetService, WidgetService, FiltersService } from "@packages/core";
 
 import ConfigHelper from "./helpers/config";
 
@@ -138,5 +138,51 @@ export default class RwAdapter implements Adapter.Service {
     const { data } = await this.datasetService.fetchData(url);
 
     return data;
+  }
+
+  // This method translates any filters returned from RW to
+  // A data structure the editor understands
+  // WORK IN PROGRESS
+  handleFilters(filters) {
+    if (!filters || !Array.isArray(filters) || filters.length === 0) {
+      return [];
+    }
+
+    const out = [];
+
+    filters.forEach((filter, index) => {
+      if (filter.type === "date") {
+        let value;
+
+        if (Array.isArray(filter.value)) {
+          if (filter.value.length === 2) {
+            value = [
+              new Date(filter.value[0]).getFullYear(),
+              new Date(filter.value[1]).getFullYear()
+            ];
+          } else {
+            value = [new Date(filter.value[0]).getFullYear()];
+          }
+        } else {
+          value = new Date(filter.value).getFullYear();
+        }
+        out.push(
+          FiltersService.baseFilter(value, filter.name, filter.type, index)
+        );
+      }
+      if (filter.type === "number") {
+        out.push(
+          FiltersService.baseFilter(
+            filter.value,
+            filter.name,
+            filter.type,
+            index
+          )
+        );
+      }
+    });
+
+    console.log("Filters we got", filters);
+    return out;
   }
 }

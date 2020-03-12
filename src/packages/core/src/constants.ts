@@ -44,7 +44,8 @@ export const sagaEvents = {
 
 export const reduxActions = {
   EDITOR_SET_CONFIGURATION: `${APP_NAMESPACE}/CONFIGURATION/setConfiguration`,
-  EDITOR_SET_WIDGET: `${APP_NAMESPACE}/WIDGET/setWidget`
+  EDITOR_SET_WIDGET: `${APP_NAMESPACE}/WIDGET/setWidget`,
+  EDITOR_SET_FILTERS: `${APP_NAMESPACE}/EDITOR/setFilters`
 };
 
 export default {

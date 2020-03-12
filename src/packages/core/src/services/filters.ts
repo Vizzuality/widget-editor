@@ -159,7 +159,20 @@ export default class FiltersService implements Filters.Service {
     return data;
   }
 
-  // TODO: Cleanup
+  static baseFilter(values, name, type, index) {
+    return {
+      column: name,
+      indicator:
+        Array.isArray(values) || values.length === 2 ? "range" : "value",
+      id: `we-filter-${name}-${index}`,
+      dataType: type,
+      filter: {
+        values,
+        notNull: true
+      }
+    };
+  }
+
   static async patchFilters(
     filters,
     payload,
