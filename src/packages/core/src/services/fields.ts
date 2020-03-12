@@ -9,6 +9,7 @@ export default class FieldsService {
 
   NUMERIC_TYPE = "number";
   COLUMN_TYPE = "string";
+  DATE_TYPE = "date";
 
   constructor(configuration: Config.Payload, datasetId: string, fields: any) {
     this.configuration = configuration;
@@ -27,10 +28,18 @@ export default class FieldsService {
       .then(jsonData => jsonData.data);
   }
 
+  private getTableName() {
+    const { tableName: valueTableName } = this.configuration.value;
+    const { tableName: categoryTableName } = this.configuration.category;
+
+    return valueTableName ? valueTableName : categoryTableName;
+  }
+
   // TODO: Geostore
   private getColumnMinAndMax(field: any) {
     const { columnName } = field;
-    const tableName = this.configuration.value.tableName;
+    const tableName = this.getTableName();
+
     const query = `SELECT MIN(${columnName}) AS min, MAX(${columnName}) AS max FROM ${tableName}`;
 
     return this.query(`sql=${query}`).then(data => (data ? data[0] : {}));
@@ -39,7 +48,7 @@ export default class FieldsService {
   // TODO: Geostore
   private getColumnValues(field, uniq = true) {
     const { columnName } = field;
-    const tableName = this.configuration.value.tableName;
+    const tableName = this.getTableName();
 
     const uniqQueryPart = uniq ? `GROUP BY ${columnName}` : "";
     const query = `SELECT ${columnName} FROM ${tableName} ${uniqQueryPart} ORDER BY ${columnName}`;
@@ -52,7 +61,10 @@ export default class FieldsService {
   async getFieldInfo(field: any, column: string) {
     const selectedField = this.fields.find(f => f.columnName === column);
 
-    if (selectedField.type === this.NUMERIC_TYPE) {
+    if (
+      selectedField.type === this.NUMERIC_TYPE ||
+      selectedField.type === this.DATE_TYPE
+    ) {
       const res = await this.getColumnMinAndMax(selectedField);
       return res;
     }
