@@ -4,6 +4,12 @@ import { DatasetService, WidgetService, FiltersService } from "@packages/core";
 
 import ConfigHelper from "./helpers/config";
 
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
 
@@ -143,46 +149,51 @@ export default class RwAdapter implements Adapter.Service {
   // This method translates any filters returned from RW to
   // A data structure the editor understands
   // WORK IN PROGRESS
-  handleFilters(filters) {
+  async handleFilters(filters, fields, widget, datasetId) {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];
     }
 
+    const {
+      attributes: { name, description, widgetConfig }
+    } = widget;
+
+    const configuration = {
+      ...widgetConfig.paramsConfig,
+      title: name,
+      caption: description
+    };
+
     const out = [];
 
-    filters.forEach((filter, index) => {
-      if (filter.type === "date") {
-        let value;
+    await asyncForEach(filters, async (filter, index) => {
+      if (filter.type === "number" || filter.type === "date") {
+        const generateFilter = FiltersService.baseFilter(
+          filter.value,
+          filter.name,
+          filter.type,
+          index
+        );
 
-        if (Array.isArray(filter.value)) {
-          if (filter.value.length === 2) {
-            value = [
-              new Date(filter.value[0]).getFullYear(),
-              new Date(filter.value[1]).getFullYear()
-            ];
-          } else {
-            value = [new Date(filter.value[0]).getFullYear()];
-          }
-        } else {
-          value = new Date(filter.value).getFullYear();
-        }
-        out.push(
-          FiltersService.baseFilter(value, filter.name, filter.type, index)
+        // Patch filter with all their nessesary meta info
+        const patch = await FiltersService.patchFilters(
+          [generateFilter],
+          {
+            id: generateFilter.id,
+            type: "columns",
+            values: generateFilter.filter.values
+          },
+          configuration,
+          datasetId,
+          fields
         );
-      }
-      if (filter.type === "number") {
-        out.push(
-          FiltersService.baseFilter(
-            filter.value,
-            filter.name,
-            filter.type,
-            index
-          )
-        );
+
+        console.log("PATCHED", patch);
+
+        out.push([...patch]);
       }
     });
 
-    console.log("Filters we got", filters);
     return out;
   }
 }
