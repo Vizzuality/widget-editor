@@ -9,15 +9,10 @@ const FilterIndicator = ({
   setData = () => {},
   optionData = []
 }) => {
-  const options =
-    filter.indicator === "list" && filter && Array.isArray(filter.fieldInfo)
-      ? filter.fieldInfo.map(f => ({ label: f, value: f }))
-      : optionData;
-
   const value =
-    filter.indicator === "list"
+    filter.indicator === "string"
       ? filter.filter.values
-      : options.find(o => o.value === filter.indicator);
+      : optionData.find(o => o.value === filter.indicator);
 
   const handleChange = options => {
     setData(options, filter.id, TYPE_INDICATOR);
@@ -27,14 +22,14 @@ const FilterIndicator = ({
     <Select
       isDisabled={disabled}
       value={value ? value : null}
-      isMulti={filter.indicator === "list"}
+      isMulti={filter.indicator === "string"}
       placeholder={
-        filter.indicator === "list"
+        filter.indicator === "string"
           ? `Select ${filter.column}`
           : "Select Indicator"
       }
       name={`filter-indicator-${filter.id}`}
-      options={options}
+      options={optionData}
       onChange={handleChange}
     />
   );

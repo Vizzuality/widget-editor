@@ -154,6 +154,7 @@ export default class FiltersService implements Filters.Service {
     const response = await fetch(
       `https://api.resourcewatch.org/v1/query/${this.datasetId}?sql=${this.sql}`
     );
+
     const data = await response.json();
     return data;
   }
