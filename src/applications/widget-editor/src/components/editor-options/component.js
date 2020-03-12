@@ -5,7 +5,7 @@ import "./styles.css";
 class EditorOptions extends React.Component {
   render() {
     const {
-      editorOptions: { authToken, dataset, optionsOpen, theme },
+      editorOptions: { compactMode, authToken, dataset, optionsOpen, theme },
       modifyOptions
     } = this.props;
 
@@ -34,9 +34,7 @@ class EditorOptions extends React.Component {
           <option value="d446a52e-c4c1-4e74-ae30-3204620a0365">
             Access to Electricity
           </option>
-            <option value="20cc5eca-8c63-4c41-8e8e-134dcf1e6d76">
-            Fires
-          </option>
+          <option value="20cc5eca-8c63-4c41-8e8e-134dcf1e6d76">Fires</option>
           <option value="a86d906d-9862-4783-9e30-cdb68cd808b8">
             Global Power Plant Database
           </option>
@@ -44,6 +42,11 @@ class EditorOptions extends React.Component {
             Cold Water Corals
           </option>
         </select>
+
+        <label htmlFor="editor-compact-mode">Toggle Compact mode</label>
+        <button onClick={() => modifyOptions({ compactMode: !compactMode })}>
+          {compactMode ? "Set Default mode" : "Set Compact mode"}
+        </button>
 
         <label htmlFor="theme-color">
           <span

@@ -3,11 +3,11 @@ import { FOOTER_HEIGHT } from "style-constants";
 
 export const StyledContainer = styled.div`
   width: 100%;
-  box-sizing: border-box;
 
   ${props =>
     props.isCompact
       ? css`
+          box-sizing: border-box;
           position: relative;
           max-width: 600px;
           margin: 0 auto;

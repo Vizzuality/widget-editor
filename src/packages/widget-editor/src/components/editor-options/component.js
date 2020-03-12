@@ -36,6 +36,7 @@ const StyledContainer = styled.div`
     props.compact.isCompact &&
     props.compact.isOpen &&
     css`
+      box-sizing: border-box;
       display: block;
       z-index: auto;
       visibility: visible;
