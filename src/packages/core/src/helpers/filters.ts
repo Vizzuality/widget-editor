@@ -72,7 +72,6 @@ const patchColumn = async (filter, payload, fieldService) => {
 };
 
 const resolveStringLikeValue = (val, isList = false) => {
-  console.log("resolve value", val);
   if (isList) {
     return Array.isArray(val) ? val : [];
   }
