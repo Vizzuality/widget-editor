@@ -9,10 +9,11 @@ const ChartIcon = ({
   type = TYPE_COLUMN,
   direction = DIRECTION_HORIZONTAL,
   active = false,
+  disabled = false,
   setData = (data) => {console.log(data)}}) => {
   return (
     <StyledBox>
-      <StyledIcon active={active} onClick={()=> setData({ type, direction })}>
+      <StyledIcon active={active} disabled={disabled} onClick={()=> setData({ type, direction })}>
         <svg
           height="29px" 
           viewBox="0 -24 455.06 455"  

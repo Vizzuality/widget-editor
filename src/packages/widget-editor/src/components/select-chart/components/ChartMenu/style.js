@@ -8,6 +8,10 @@ export const StyledContainer = styled.div`
   right: -102px;
   width: 262px;
   z-index: 11;
+
+  @media only screen and (max-width: 767px) {
+    right: 0;
+  }
 `;
 
 export const StyledMenu = styled.div`
@@ -22,7 +26,7 @@ export const StyledMenu = styled.div`
   box-shadow: 0 20px 30px 0 rgba(0,0,0,0.1);
   z-index: 2;
   padding: 29px 34px;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   
 
   &:before {
@@ -34,6 +38,11 @@ export const StyledMenu = styled.div`
     border-top: 10px solid #FFFFFF;
     z-index: 3;
     transform: rotate(180deg);
+
+    @media only screen and (max-width: 767px) {
+      right: 10px;
+      left: auto;
+    }
   }
 `;
 

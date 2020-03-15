@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import find from "lodash/find";
-import isEqual from "lodash/isEqual";
 import Select from "react-select";
 import ChartMenu from "./components/ChartMenu";
 import {
@@ -9,20 +8,14 @@ import {
   StyledOverflow,
 } from "./style";
 
-const SelectChart = ({ patchConfiguration, options, value }) => {
-  const [selected, setSelected] = useState(find(options, { value }));
+const SelectChart = ({ patchConfiguration, options, chartType, direction }) => {
+  const [selected, setSelected] = useState(find(options, { chartType, direction }));
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef({});
 
-  useEffect(() => {
-    // TODO: optimize...
-    if (!isEqual(find(options, { value }), selected)) {
-      setSelected(find(options, { value }));
-    }
-  }, [selected, value]);
-
   const handleChange = option => {
-    patchConfiguration({ chartType: option.value, direction: option.direction });
+    const { chartType, direction } = option;
+    patchConfiguration({ chartType, direction });
     setSelected(option);
     setIsOpen(false);
   };

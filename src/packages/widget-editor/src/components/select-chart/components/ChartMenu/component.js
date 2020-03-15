@@ -32,7 +32,12 @@ const ChartList = ({ list, setData, title }) => {
 const ChartMenu = ({ options, getValue, setValue, innerRef }) => {
   const data = getValue()[0];
   const menu = MENU_DATA.map(m => {
-    if (m.type === data.value && m.direction === data.direction) m.active = true;
+    m.active = m.type === data.chartType && m.direction === data.direction 
+      ? true
+      : false;
+    m.disabled = options.find(o => o.chartType === m.type && o.direction === m.direction)
+      ? false
+      : true;
     return m;
   });
 
@@ -40,11 +45,13 @@ const ChartMenu = ({ options, getValue, setValue, innerRef }) => {
   const bars = menu.filter(m => m.type === TYPE_BAR);
   const more = menu.filter(m => m.type !== TYPE_BAR && m.type !== TYPE_COLUMN);
 
-  const setData = (selected) => {
-    console.log(selected);
-    const dataSet = options.find(el => el.value === selected.type && el.direction === selected.direction);
+  const setData = selected => {
+    const dataSet = options.find(el => 
+      el.chartType === selected.type 
+      && el.direction === selected.direction
+    );
     if (dataSet) setValue(dataSet);
-  } 
+  }
 
   return (
     <StyledContainer ref={innerRef}>

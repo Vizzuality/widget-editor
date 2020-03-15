@@ -1,4 +1,6 @@
 
+
+// all column types
 export const TYPE_COLUMN = 'column';
 export const TYPE_BAR = 'bar';
 export const TYPE_LINE = 'line';
@@ -8,6 +10,7 @@ export const TYPE_DONUT = 'donut';
 export const DIRECTION_VERTICAL = 'vertical';
 export const DIRECTION_HORIZONTAL = 'horizontal';
 
+// charts for showing data
 export const MENU_DATA = [
   { 
     type: TYPE_COLUMN,

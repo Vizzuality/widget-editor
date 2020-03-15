@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const StyledBox = styled.div`
   box-sizing: border-box;
@@ -17,6 +17,9 @@ export const StyledIcon = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+
+  opacity: ${props => props.disabled ? '0.5' : '1'};
+  pointer-events: ${props => props.disabled ? 'none' : 'auto'};
 
   &:hover {
     border: 2px solid #C32D7B;
