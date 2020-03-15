@@ -28,7 +28,10 @@ const ChartList = ({ list, setData, title }) => {
     </Fragment>
   )
 }
-
+/**
+ * MENU_DATA - the array of charts for showing in menu
+ * @param {options} - the array of available charts 
+ */
 const ChartMenu = ({ options, getValue, setValue, innerRef }) => {
   const data = getValue()[0];
   const menu = MENU_DATA.map(m => {
