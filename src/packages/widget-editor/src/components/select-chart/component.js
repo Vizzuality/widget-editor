@@ -38,7 +38,7 @@ const SelectChart = ({ patchConfiguration, options, chartType, direction, theme,
           styles={InputStyles}
           components={ { Menu: ChartMenu } }
           innerRef={ref}
-          menuIsOpen={isOpen}
+          menuIsOpen={isOpenMenu}
         />
       </StyledSelectBox>
       {isCompact && (

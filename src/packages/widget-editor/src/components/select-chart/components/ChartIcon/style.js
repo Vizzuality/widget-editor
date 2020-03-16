@@ -18,7 +18,7 @@ export const StyledIcon = styled.div`
   justify-content: center;
   text-align: center;
 
-  opacity: ${props => props.disabled ? '0.5' : '1'};
+  opacity: ${props => props.disabled ? '0.2' : '1'};
   pointer-events: ${props => props.disabled ? 'none' : 'auto'};
 
   &:hover {
