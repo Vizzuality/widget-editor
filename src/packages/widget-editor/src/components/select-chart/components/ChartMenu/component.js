@@ -33,6 +33,8 @@ const ChartList = ({ list, setData, title }) => {
  * @param {options} - the array of available charts 
  */
 const ChartMenu = ({ options, getValue, setValue, innerRef }) => {
+
+  console.log('run');
   const data = getValue()[0];
   const menu = MENU_DATA.map(m => {
     m.active = m.type === data.chartType && m.direction === data.direction 

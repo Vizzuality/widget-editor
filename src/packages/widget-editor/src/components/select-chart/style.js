@@ -1,7 +1,12 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const StyledContainer = styled.div`
   margin: 10px;
+  ${props => props.isCompact && 
+  css`
+    display: flex;
+    align-items: center;
+  `}
 `;
 
 export const StyledOverflow = styled.div`
@@ -53,3 +58,11 @@ export const InputStyles = {
     padding: "3px 0"
   })
 }
+
+export const StyledSelectBox = styled.div`
+  ${props => props.isCompact && 
+  css`
+    width: 100%;
+    padding-right: 15px;
+  `}
+`;
