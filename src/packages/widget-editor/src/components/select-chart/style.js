@@ -9,6 +9,14 @@ export const StyledContainer = styled.div`
   `}
 `;
 
+export const StyledSelectBox = styled.div`
+  ${props => props.isCompact && 
+  css`
+    width: 100%;
+    padding-right: 15px;
+  `}
+`;
+
 export const StyledOverflow = styled.div`
   position: absolute;
   width: 100%;
@@ -59,10 +67,3 @@ export const InputStyles = {
   })
 }
 
-export const StyledSelectBox = styled.div`
-  ${props => props.isCompact && 
-  css`
-    width: 100%;
-    padding-right: 15px;
-  `}
-`;

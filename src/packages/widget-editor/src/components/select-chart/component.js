@@ -27,8 +27,10 @@ const SelectChart = ({ patchConfiguration, options, chartType, direction, theme,
     setTheme({...theme, compact: { isCompact, isOpen: !isOpen }})
   }
 
+  console.log(isCompact);
+
   return (
-    <StyledContainer>
+    <StyledContainer isCompact={isCompact}>
       <StyledSelectBox isCompact={isCompact}>
         <Select
           onChange={handleChange}
