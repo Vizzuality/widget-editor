@@ -54,11 +54,10 @@ export default class DataService {
   async translateFilters() {
     const { filters } = this.widget.attributes.widgetConfig.paramsConfig;
 
-    const translated = await this.adapter.handleFilters(
+    const translated = await this.adapter.filterUpdate(
       filters,
       this.allowedFields,
-      this.widget,
-      this.datasetId
+      this.widget
     );
 
     this.dispatch({

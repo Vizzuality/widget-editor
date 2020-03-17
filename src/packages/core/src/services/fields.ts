@@ -19,6 +19,7 @@ export default class FieldsService {
 
   private query(q) {
     return fetch(
+      // TODO: This url should come from adapter
       `https://api.resourcewatch.org/v1/query/${this.datasetId}?${q}`
     )
       .then(response => {
@@ -74,6 +75,6 @@ export default class FieldsService {
       return res.map(r => ({ value: r, label: capitalize(r) }));
     }
 
-    return "Hello world";
+    return `${selectedField.type} Not implemented.`;
   }
 }

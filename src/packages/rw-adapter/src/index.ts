@@ -146,10 +146,8 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
-  // This method translates any filters returned from RW to
-  // A data structure the editor understands
-  // WORK IN PROGRESS
-  async handleFilters(filters, fields, widget, datasetId) {
+  // Triggered on filter update
+  async filterUpdate(filters, fields, widget) {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];
     }
@@ -164,35 +162,15 @@ export default class RwAdapter implements Adapter.Service {
       caption: description
     };
 
-    const out = [];
-
-    await asyncForEach(filters, async (filter, index) => {
-      if (filter.type === "number" || filter.type === "date") {
-        const generateFilter = FiltersService.baseFilter(
-          filter.value,
-          filter.name,
-          filter.type,
-          index
-        );
-
-        // Patch filter with all their nessesary meta info
-        const patch = await FiltersService.patchFilters(
-          [generateFilter],
-          {
-            id: generateFilter.id,
-            type: "columns",
-            values: generateFilter.filter.values
-          },
-          configuration,
-          datasetId,
-          fields
-        );
-
-        console.log("PATCHED", patch);
-
-        out.push([...patch]);
-      }
-    });
+    const out = await FiltersService.handleFilters(
+      filters,
+      {
+        column: "name",
+        values: "value",
+        type: "type"
+      },
+      { configuration, datasetId: this.datasetId, fields, widget }
+    );
 
     return out;
   }
