@@ -30,5 +30,10 @@ export default {
   slider: {
     track: "#a3daf3",
     trackBackground: "#f5f5f5"
-  }
+  },
+  selectedScheme: 'default',
+  font: 'lato',
+  titleSize: 'auto',
+  captionSize: 'auto',
+  axisTitleSize: 'auto'
 };

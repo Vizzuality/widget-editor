@@ -46,7 +46,9 @@ export const AccordionSection = ({ title, openDefault, children }) => {
           skipOnMount
           onResize={updateHeight}
         >
-          {children}
+          <div>
+            {children}
+          </div>
         </ReactResizeDetector>
       </StyledAccordionContent>
     </StyledAccordionSection>

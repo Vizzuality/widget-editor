@@ -8,6 +8,8 @@ import OrderValues from "components/order-values";
 import TableView from "components/table-view";
 import JsonEditor from "components/json-editor";
 import Filter from "components/filter";
+import Typography from "components/typography";
+import ColorShemes from "components/color-shemes";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -50,7 +52,7 @@ const EditorOptions = ({ orderBy, compact }) => {
       <Tabs>
         <Tab label="General">
           <Accordion>
-            <AccordionSection title="Description and labels" openDefault>
+            <AccordionSection title="Description and labels">
               <WidgetInfo />
             </AccordionSection>
             <AccordionSection title="Filters">
@@ -61,7 +63,16 @@ const EditorOptions = ({ orderBy, compact }) => {
             </AccordionSection>
           </Accordion>
         </Tab>
-        <Tab label="Visual style">Visual style</Tab>
+        <Tab label="Visual style" default >
+          <Accordion>
+            <AccordionSection title="Typography" >
+              <Typography />
+            </AccordionSection>
+            <AccordionSection title="Color" openDefault>
+              <ColorShemes />
+            </AccordionSection>
+          </Accordion>
+        </Tab>
         <Tab label="Advanced">
           <JsonEditor />
         </Tab>
