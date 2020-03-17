@@ -9,6 +9,7 @@ import TableView from "components/table-view";
 import JsonEditor from "components/json-editor";
 import Filter from "components/filter";
 import Typography from "components/typography";
+import ColorShemes from "components/color-shemes";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
@@ -64,11 +65,11 @@ const EditorOptions = ({ orderBy, compact }) => {
         </Tab>
         <Tab label="Visual style" default >
           <Accordion>
-            <AccordionSection title="Typography" openDefault >
+            <AccordionSection title="Typography" >
               <Typography />
             </AccordionSection>
-            <AccordionSection title="Color">
-              Color
+            <AccordionSection title="Color" openDefault>
+              <ColorShemes />
             </AccordionSection>
           </Accordion>
         </Tab>
