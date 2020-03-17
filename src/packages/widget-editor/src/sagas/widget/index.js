@@ -29,7 +29,11 @@ function* resolveWithProxy() {
   } = yield select();
 
   // Check and patch current state based on user configuration
-  const proxyResult = yield call([stateProxy, "sync"], configuration, editor.dataset.id);
+  const proxyResult = yield call(
+    [stateProxy, "sync"],
+    configuration,
+    editor.dataset.id
+  );
 
   if (proxyResult.hasUpdates) {
     // TODO: Clean this up, better to utalize a widget service within the proxy

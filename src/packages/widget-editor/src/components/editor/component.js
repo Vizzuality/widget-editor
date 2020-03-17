@@ -94,12 +94,13 @@ class Editor extends React.Component {
   render() {
     const {
       configuration,
+      adapter,
       theme: { compact }
     } = this.props;
     return (
       <StyledContainer {...compact}>
         <Renderer />
-        {configuration.limit && <EditorOptions />}
+        {configuration.limit && <EditorOptions adapter={adapter} />}
         <Footer onSave={this.onSave} />
       </StyledContainer>
     );

@@ -46,15 +46,15 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.getWidgetData();
-    await this.translateFilters();
+    await this.handleFilters();
 
     this.setEditor({ restoring: false });
   }
 
-  async translateFilters() {
+  async handleFilters() {
     const { filters } = this.widget.attributes.widgetConfig.paramsConfig;
 
-    const translated = await this.adapter.filterUpdate(
+    const normalizeFilters = await this.adapter.filterUpdate(
       filters,
       this.allowedFields,
       this.widget
@@ -62,7 +62,7 @@ export default class DataService {
 
     this.dispatch({
       type: reduxActions.EDITOR_SET_FILTERS,
-      payload: { list: translated }
+      payload: { list: normalizeFilters }
     });
   }
 
@@ -164,7 +164,7 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getWidgetData();
     await this.getFieldsAndLayers();
-    await this.translateFilters();
+    await this.handleFilters();
 
     this.setEditor({ initialized: true });
   }
