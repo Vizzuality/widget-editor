@@ -15,7 +15,10 @@ const Renderer = ({ widget, editor }) => {
   return (
     <StyledContainer>
       <SelectChart />
+      
       {initialized && !restoring && <Chart />}
+      {/* {initialized && !restoring && <QueryValues />} */}
+      
       {!initialized && (
         <RestoringWidget>
           <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
@@ -26,7 +29,6 @@ const Renderer = ({ widget, editor }) => {
           <RestoringWidgetTitle>Building widget...</RestoringWidgetTitle>
         </RestoringWidget>
       )}
-      {initialized && !restoring && <QueryValues />}
     </StyledContainer>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 
 import FlexContainer from "styles-common/flex";
@@ -11,6 +11,11 @@ const StyledContainer = styled.div`
   width: 100%;
   max-width: 300px;
   box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 `;
 
 const QueryValues = ({
@@ -32,21 +37,32 @@ const QueryValues = ({
   };
 
   return (
-    <FlexContainer>
-      <StyledContainer>
-        <Select
-          menuPlacement="top"
-          defaultValue={value}
-          onChange={handleChange}
-          getOptionLabel={option => option.alias}
-          getOptionValue={option => option.identifier}
-          options={columns}
-          configuration={configuration}
-          isCustom
-          isPopup
-        />
-      </StyledContainer>
-    </FlexContainer>
+    <Fragment>
+      <Select
+        align="vertical"
+        menuPlacement="top"
+        defaultValue={value}
+        onChange={handleChange}
+        getOptionLabel={option => option.alias}
+        getOptionValue={option => option.identifier}
+        options={columns}
+        configuration={configuration}
+        isCustom
+        isPopup
+      />
+      <Select
+        align="horizontal"
+        menuPlacement="top"
+        defaultValue={value}
+        onChange={handleChange}
+        getOptionLabel={option => option.alias}
+        getOptionValue={option => option.identifier}
+        options={columns}
+        configuration={configuration}
+        isCustom
+        isPopup
+      />
+    </Fragment>
   );
 };
 

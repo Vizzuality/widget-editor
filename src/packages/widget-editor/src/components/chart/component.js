@@ -6,11 +6,12 @@ import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 
-import ChartTheme from "helpers/theme";
+import QueryValues from "components/query-values";
 
 const StyledContainer = styled.div`
-  flex 1;
+  /* flex 1; */
   display: flex;
+  position: relative;
   width: 100%;
   .c-chart {
     flex: 1;
@@ -108,6 +109,7 @@ const Chart = ({ editor, widget }) => {
   return (
     <StyledContainer>
       <div className="c-chart" ref={chart}></div>
+      <QueryValues />
     </StyledContainer>
   );
 };

@@ -5,15 +5,21 @@ import CustomOption from './components/CustomOption'
 import {
   StyledSelectBox,
   CustomStyles,
+  CustomStylesVertical,
   InputStyles
 } from "./style";
 
 /**
  * CustomSelect. Component uses react-select library for customization.
  */
-const CustomSelect = ( props ) => {
+const CustomSelect = ( { 
+  isCustom = false, 
+  isPopup = false, 
+  configuration = {}, 
+  align = 'horizontal', 
+  ...otherProps 
+} ) => {
 
-  const { isCustom, isPopup, configuration, ...otherProps } = props;
   const { value, category } = configuration;
   const [isPopupOpen, setPopup] = useState(false);
   const [isOpen, setOpen] = useState(false);
@@ -22,16 +28,18 @@ const CustomSelect = ( props ) => {
     <StyledSelectBox
       onMouseEnter={() => setPopup(true)} 
       onMouseLeave={() => setPopup(false)}
+      align={align}
     >
       <Select
         {...otherProps}
+        align={align}
         onMenuOpen={() => setOpen(true)}
         onMenuClose={() => setOpen(false)}
         styles={isCustom ? CustomStyles : InputStyles} 
         components={isCustom ? { Option: CustomOption } : null}
       />
       {isPopup && isPopupOpen && !isOpen && (
-        <Popup category={category} value={value} />
+        <Popup category={category} value={value} align={align} />
       )}
     </StyledSelectBox>
   );

@@ -9,11 +9,11 @@ import {
 } from "./style";
 
 
-const Popup = ({ category, value }) => {
+const Popup = ({ category, value, align }) => {
   const { alias: valueAlias } = value;
   const { alias: categoryAlias } = category;
   return (
-    <StyledPopupContainer>
+    <StyledPopupContainer align={align}>
       <StyledCategoryAlias>
         <IconBox><CategoryIcon /></IconBox>
         {categoryAlias}

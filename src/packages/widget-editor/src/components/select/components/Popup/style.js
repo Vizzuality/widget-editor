@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const StyledPopupContainer = styled.div`
   position: absolute;
@@ -14,6 +14,12 @@ export const StyledPopupContainer = styled.div`
   left: -75px;
   padding: 20px;
 
+  ${props => props.align === 'vertical' && css`
+    left: 75px;
+    bottom: initial;
+    top: 30%;
+  `}
+
   &:after {
     content: '';
     position: absolute;
@@ -22,6 +28,10 @@ export const StyledPopupContainer = styled.div`
     border: 10px solid transparent;
     border-top: 10px solid #FFFFFF;
     z-index: 3;
+
+    ${props => props.align === 'vertical' && css`
+     display: none;
+    `}
   }
 `;
 
