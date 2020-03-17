@@ -4,6 +4,12 @@ import { DatasetService, WidgetService, FiltersService } from "@packages/core";
 
 import ConfigHelper from "./helpers/config";
 
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
 
@@ -140,49 +146,32 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
-  // This method translates any filters returned from RW to
-  // A data structure the editor understands
-  // WORK IN PROGRESS
-  handleFilters(filters) {
+  // Triggered on filter update
+  async filterUpdate(filters, fields, widget) {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];
     }
 
-    const out = [];
+    const {
+      attributes: { name, description, widgetConfig }
+    } = widget;
 
-    filters.forEach((filter, index) => {
-      if (filter.type === "date") {
-        let value;
+    const configuration = {
+      ...widgetConfig.paramsConfig,
+      title: name,
+      caption: description
+    };
 
-        if (Array.isArray(filter.value)) {
-          if (filter.value.length === 2) {
-            value = [
-              new Date(filter.value[0]).getFullYear(),
-              new Date(filter.value[1]).getFullYear()
-            ];
-          } else {
-            value = [new Date(filter.value[0]).getFullYear()];
-          }
-        } else {
-          value = new Date(filter.value).getFullYear();
-        }
-        out.push(
-          FiltersService.baseFilter(value, filter.name, filter.type, index)
-        );
-      }
-      if (filter.type === "number") {
-        out.push(
-          FiltersService.baseFilter(
-            filter.value,
-            filter.name,
-            filter.type,
-            index
-          )
-        );
-      }
-    });
+    const out = await FiltersService.handleFilters(
+      filters,
+      {
+        column: "name",
+        values: "value",
+        type: "type"
+      },
+      { configuration, datasetId: this.datasetId, fields, widget }
+    );
 
-    console.log("Filters we got", filters);
     return out;
   }
 }

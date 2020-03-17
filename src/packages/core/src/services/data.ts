@@ -34,8 +34,6 @@ export default class DataService {
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset);
 
-    await this.translateFilters();
-
     this.setEditor({ dataset: this.dataset, widget: this.widget });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
@@ -48,15 +46,23 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.getWidgetData();
+    await this.translateFilters();
 
     this.setEditor({ restoring: false });
   }
 
   async translateFilters() {
     const { filters } = this.widget.attributes.widgetConfig.paramsConfig;
+
+    const translated = await this.adapter.filterUpdate(
+      filters,
+      this.allowedFields,
+      this.widget
+    );
+
     this.dispatch({
       type: reduxActions.EDITOR_SET_FILTERS,
-      payload: { list: this.adapter.handleFilters(filters) }
+      payload: { list: translated }
     });
   }
 
@@ -99,7 +105,7 @@ export default class DataService {
     // Get field aliases from Dataset
     const { columns } = this.dataset.attributes.metadata[0].attributes;
     // Filter on allowed field types
-    const allowedFields = [];
+    this.allowedFields = [];
 
     Object.keys(fields).forEach(field => {
       const f = {
@@ -108,11 +114,11 @@ export default class DataService {
         metadata: columns[field]
       };
       if (this.isFieldAllowed(f)) {
-        allowedFields.push(f);
+        this.allowedFields.push(f);
       }
     });
 
-    this.setEditor({ layers, fields: allowedFields });
+    this.setEditor({ layers, fields: this.allowedFields });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATA_READY });
   }
 
@@ -158,6 +164,8 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getWidgetData();
     await this.getFieldsAndLayers();
+    await this.translateFilters();
+
     this.setEditor({ initialized: true });
   }
 }

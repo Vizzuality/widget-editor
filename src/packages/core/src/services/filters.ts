@@ -10,6 +10,13 @@ import { sqlFields } from "../helpers/wiget-helper/constants";
 
 import filtersHelper from "../helpers/filters";
 
+// TODO: Move async function to util
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 export default class FiltersService implements Filters.Service {
   sql: string;
   datasetId: string;
@@ -159,18 +166,42 @@ export default class FiltersService implements Filters.Service {
     return data;
   }
 
-  static baseFilter(values, name, type, index) {
-    return {
-      column: name,
-      indicator:
-        Array.isArray(values) || values.length === 2 ? "range" : "value",
-      id: `we-filter-${name}-${index}`,
-      dataType: type,
-      filter: {
-        values,
-        notNull: true
-      }
+  static async handleFilters(filters, config, adapter) {
+    const {
+      column: configuredColumn,
+      type: configuredType,
+      values: configuredValues
+    } = config;
+    const { configuration, datasetId, fields, widget } = adapter;
+
+    const out = [];
+
+    const assignIndicator = val => {
+      return Array.isArray(val) || val.length === 2 ? "range" : "value";
     };
+
+    await asyncForEach(filters, async (filter, index) => {
+      const values = filter[configuredValues];
+      const column = filter[configuredColumn];
+      const type = filter[configuredType];
+
+      // Resolve metadata for current field
+      const fieldService = new FieldsService(configuration, datasetId, fields);
+
+      out.push({
+        column,
+        indicator: assignIndicator(values),
+        id: `we-filter-${column}-${index}`,
+        dataType: type,
+        filter: {
+          values: values,
+          notNull: true
+        },
+        fieldInfo: await fieldService.getFieldInfo(filter, column)
+      });
+    });
+
+    return out;
   }
 
   static async patchFilters(
