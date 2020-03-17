@@ -9,7 +9,8 @@ import SelectChartComponent from "./component";
 export default connectState(
   state => ({
     options: state.configuration.availableCharts,
-    value: state.configuration.chartType,
+    chartType: state.configuration.chartType,
+    direction: state.configuration.direction,
     theme: state.theme,
   }),
   { patchConfiguration, setTheme }
