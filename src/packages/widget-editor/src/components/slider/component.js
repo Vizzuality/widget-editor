@@ -5,6 +5,8 @@ import ReactSlider from "react-slider";
 const StyledSlider = styled(ReactSlider)`
   height: 4px;
   width: inherit;
+  background: ${props =>
+    props.array ? "transparent" : props.theme.slider.track};
 `;
 
 const StyledThumb = styled.div`

@@ -1,7 +1,12 @@
+// TODO: Rename this filter!
 import React, { useState, useEffect } from "react";
+
+import useDebounce from "hooks/use-debounce";
+
 import Slider from "components/slider";
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
+import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import styled from "styled-components";
 
@@ -32,16 +37,27 @@ const QueryLimit = ({
   onChange = data => {},
   handleOnChangeValue = (data, key) => {}
 }) => {
-  const isDouble = Array.isArray(value);
+  const [localValue, setLocalValue] = useState({ value, key: null });
+  const debouncedValue = useDebounce(localValue);
+
+  useEffect(() => {
+    if (!debouncedValue.key) {
+      onChange(debouncedValue.value);
+    } else {
+      handleOnChangeValue(debouncedValue.value, debouncedValue.key);
+    }
+  }, [debouncedValue]);
+
+  const isDouble = Array.isArray(localValue.value);
   const isFloatingPoint = isFloat(min) || isFloat(max);
 
   let minValue = min;
   let maxValue = max;
   if (isDouble) {
-    minValue = value[0];
-    maxValue = value[1];
+    minValue = localValue.value[0];
+    maxValue = localValue.value[1];
   } else {
-    maxValue = value ? value : max;
+    maxValue = localValue.value ? localValue.value : max;
   }
 
   if (maxValue - minValue <= minDistance) {
@@ -54,7 +70,7 @@ const QueryLimit = ({
   };
 
   return (
-    <FlexContainer>
+    <InputGroup>
       {label && <FormLabel htmlFor="options-limit">{label}</FormLabel>}
       <StyledSliderBox>
         <Slider
@@ -62,7 +78,7 @@ const QueryLimit = ({
           step={isFloatingPoint ? 0.1 : 1}
           value={isDouble ? [minValue, maxValue] : maxValue}
           defaultValue={isDouble ? min : [min, max]}
-          onChange={value => onChange(value)}
+          onChange={value => setLocalValue({ value, key: null })}
         />
       </StyledSliderBox>
       <StyledInputBox isDouble={isDouble}>
@@ -72,7 +88,9 @@ const QueryLimit = ({
             value={minValue}
             type="number"
             name="options-limit"
-            onChange={e => handleOnChangeValue(e.target.value, "minValue")}
+            onChange={e =>
+              setLocalValue({ value: e.target.value, key: "minValue" })
+            }
           />
         )}
         <Input
@@ -80,10 +98,12 @@ const QueryLimit = ({
           value={maxValue}
           type="number"
           name="options-limit"
-          onChange={e => handleOnChangeValue(e.target.value, "maxValue")}
+          onChange={e =>
+            setLocalValue({ value: e.target.value, key: "maxValue" })
+          }
         />
       </StyledInputBox>
-    </FlexContainer>
+    </InputGroup>
   );
 };
 

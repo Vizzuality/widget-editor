@@ -5,6 +5,7 @@ import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
+import QueryLimit from "components/query-limit";
 import TableView from "components/table-view";
 import JsonEditor from "components/json-editor";
 import Filter from "components/filter";
@@ -46,7 +47,18 @@ const StyledContainer = styled.div`
     `}
 `;
 
-const EditorOptions = ({ orderBy, compact, adapter }) => {
+const EditorOptions = ({
+  limit,
+  orderBy,
+  patchConfiguration,
+  compact,
+  adapter
+}) => {
+  const handleChange = (value, type) => {
+    if (type === "limit") {
+      patchConfiguration({ limit: value });
+    }
+  };
   return (
     <StyledContainer compact={compact}>
       <Tabs>
@@ -60,6 +72,16 @@ const EditorOptions = ({ orderBy, compact, adapter }) => {
             </AccordionSection>
             <AccordionSection title="Order">
               {orderBy && <OrderValues />}
+              {limit && (
+                <QueryLimit
+                  min={0}
+                  max={500}
+                  onChange={value => handleChange(value, "limit")}
+                  handleOnChangeValue={value => handleChange(value, "limit")}
+                  label="Limit"
+                  value={limit}
+                />
+              )}
             </AccordionSection>
           </Accordion>
         </Tab>
