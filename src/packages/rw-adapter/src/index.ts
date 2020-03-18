@@ -93,6 +93,13 @@ export default class RwAdapter implements Adapter.Service {
     this.datasetId = datasetId;
   }
 
+  setTableName(tableName: string) {
+    if (!tableName) {
+      console.error("Error: datasetId is required");
+    }
+    this.tableName = tableName;
+  }
+
   async getDataset() {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata,vocabulary,widget,layer";
@@ -150,11 +157,42 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
+  // Triggered when widget is atempting to be saved
+  handleSave(consumerOnSave, dataService, application = 'rw', editorState) {
+    const { configuration, widget, filters: { list: editorFilters  } } = editorState;
+    const { dataset: { id, attributes: { tableName }}} = dataService;
+
+    this.setDatasetId(id);
+    this.setTableName(tableName);
+
+    let widgetParams = {};
+
+    this.widget_params.forEach(param => {
+      if (param in configuration) {
+        widgetParams = { ...widgetParams, [param]: configuration[param] };
+      } 
+    })
+
+    let widgetConfig = widget;
+    delete widgetConfig.data;
+    widgetConfig.filters = this.filterSerializer(editorFilters);
+
+    const out = {
+      name: configuration.title || null,
+      description: configuration.description || null,
+      application,
+      widgetConfig
+    };
+
+    consumerOnSave(out);
+  }
+
   // Called when filters are updated
   // Its up to the adapter to serialize these in a format the api wants
   filterSerializer(filters: any) {
     const out = filters.map(filter => ({
-      value: filter.filter.values,
+      value: filter.indicator === 'FILTER_ON_VALUES' ? 
+        filter.filter.values.map(v => (v.value)) : filter.filter.values,
       type: filter.dataType,
       name: filter.column,
       datasetID: this.datasetId,

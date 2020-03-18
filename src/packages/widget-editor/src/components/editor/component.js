@@ -40,7 +40,7 @@ class Editor extends React.Component {
       schemes: prevSchemes,
       authenticated: prevAuthenticated
     } = prevProps;
-    const { datasetId, theme, schemes, authenticated } = this.props;
+    const { datasetId, theme, schemes, adapter, authenticated } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
     if (!isEqual(datasetId, prevDatasetId)) {
@@ -84,9 +84,9 @@ class Editor extends React.Component {
   }, 1000);
 
   onSave() {
-    const { onSave, dispatch, configuration, widget } = this.props;
+    const { onSave, dispatch, editorState, adapter, application } = this.props;
     if (typeof onSave === "function") {
-      onSave(this.dataService.resolveUpdates(configuration, widget));
+      adapter.handleSave(onSave, this.dataService, application, editorState)
     }
     dispatch({ type: constants.sagaEvents.EDITOR_SAVE });
   }

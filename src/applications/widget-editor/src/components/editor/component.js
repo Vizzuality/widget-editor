@@ -72,6 +72,7 @@ class Editor extends React.Component {
           datasetId={dataset}
           onSave={this.handleOnSave}
           authenticated={authenticated}
+          application="rw"
           adapter={RwAdapter}
           theme={theme}
         />
