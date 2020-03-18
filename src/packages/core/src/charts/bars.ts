@@ -6,15 +6,18 @@ export default class Bars implements Charts.Bars {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
+  scheme: any
 
   constructor(
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload
+    widgetData: Generic.ObjectPayload,
+    scheme: any
   ) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
+    this.scheme = scheme;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -27,7 +30,13 @@ export default class Bars implements Charts.Bars {
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData(),
-      interaction_config: this.interactionConfig()
+      interaction_config: this.interactionConfig(),
+      config: {
+        ...this.scheme.config,
+        rect: {
+          fill: this.scheme ? this.scheme.mainColor : this.schema.config.rect.fill
+        }
+      }
     };
   }
 

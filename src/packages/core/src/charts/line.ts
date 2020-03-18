@@ -6,15 +6,18 @@ export default class Line implements Charts.Line {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
+  scheme: any
 
   constructor(
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload
+    widgetData: Generic.ObjectPayload,
+    scheme: any
   ) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
+    this.scheme = scheme;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -28,6 +31,17 @@ export default class Line implements Charts.Line {
       marks: this.setMarks(),
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
+      config: {
+        ...this.schema.config,
+        line: {
+          ...this.schema.config.line,
+          stroke: this.scheme ? this.scheme.mainColor : this.schema.config.line.stroke
+        },
+        symbol: {
+          ...this.schema.config.symbol,
+          fill: this.scheme ? this.scheme.mainColor : this.schema.config.symbol.fill
+        }
+      },
       signals: [
         {
           name: "hover",

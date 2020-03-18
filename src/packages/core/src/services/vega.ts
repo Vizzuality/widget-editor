@@ -16,11 +16,12 @@ export default class VegaService implements Charts.Service {
   widgetConfig: any;
   widgetData: any;
   configuration: any;
+  scheme: any;
   schema: Vega.Schema;
 
-  constructor(widgetConfig: any, widgetData: any, configuration: any) {
+  constructor(widgetConfig: any, widgetData: any, configuration: any, theme: any) {
+    this.scheme = theme.schemes.find(scheme => scheme.name === theme.selectedScheme);
     this.schema = defaultVegaSchema();
-
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.configuration = configuration;
@@ -45,7 +46,8 @@ export default class VegaService implements Charts.Service {
       chart = new Pie(
         this.schema,
         this.widgetConfig,
-        this.widgetData
+        this.widgetData,
+        this.scheme
       ).getChart();
     }
 
@@ -53,7 +55,8 @@ export default class VegaService implements Charts.Service {
       chart = new Bars(
         this.schema,
         this.widgetConfig,
-        this.widgetData
+        this.widgetData,
+        this.scheme
       ).getChart();
     }
 
@@ -61,7 +64,8 @@ export default class VegaService implements Charts.Service {
       chart = new Line(
         this.schema,
         this.widgetConfig,
-        this.widgetData
+        this.widgetData,
+        this.scheme
       ).getChart();
     }
 
@@ -69,7 +73,8 @@ export default class VegaService implements Charts.Service {
       chart = new Scatter(
         this.schema,
         this.widgetConfig,
-        this.widgetData
+        this.widgetData,
+        this.scheme
       ).getChart();
     }
 
@@ -81,7 +86,7 @@ export default class VegaService implements Charts.Service {
 
   setConfig() {
     // TODO: Support default config if none is present
-    this.schema = { ...this.schema, config: this.widgetConfig.config };
+    this.schema = { ...this.schema, config: { ...this.schema.config, ...this.widgetConfig.config } };
   }
 
   getChart() {
