@@ -5,7 +5,6 @@ import CustomOption from './components/CustomOption'
 import {
   StyledSelectBox,
   CustomStyles,
-  CustomStylesVertical,
   InputStyles
 } from "./style";
 

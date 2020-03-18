@@ -19,19 +19,38 @@ const StyledContainer = styled.div`
 `;
 
 const QueryValues = ({
-  theme,
-  value,
+  // value,
   columns,
   configuration,
   patchConfiguration
 }) => {
-  const handleChange = selectedOption => {
+  const { 
+    category: { 
+      alias: categoryAlias, 
+      name: categoryName 
+    }, 
+    value: { 
+      alias: valueAlias, 
+      name: valueName
+    } 
+  } = configuration
+  const verticalValue = { alias: categoryAlias, name: categoryName };
+  const horizontalValue = { alias: valueAlias, name: valueName };
+  const handleChangeVertical = selectedOption => {
+    // TODO: Wee need to set type here
+    patchConfiguration({
+      category: {
+        ...configuration.category,
+        ...selectedOption,
+      }
+    });
+  };
+  const handleChangeHorizontal = selectedOption => {
     // TODO: Wee need to set type here
     patchConfiguration({
       value: {
         ...configuration.value,
-        name: selectedOption.identifier,
-        alias: selectedOption.alias
+        ...selectedOption
       }
     });
   };
@@ -41,8 +60,8 @@ const QueryValues = ({
       <Select
         align="vertical"
         menuPlacement="top"
-        defaultValue={value}
-        onChange={handleChange}
+        defaultValue={verticalValue}
+        onChange={handleChangeVertical}
         getOptionLabel={option => option.alias}
         getOptionValue={option => option.identifier}
         options={columns}
@@ -53,8 +72,8 @@ const QueryValues = ({
       <Select
         align="horizontal"
         menuPlacement="top"
-        defaultValue={value}
-        onChange={handleChange}
+        defaultValue={horizontalValue}
+        onChange={handleChangeHorizontal}
         getOptionLabel={option => option.alias}
         getOptionValue={option => option.identifier}
         options={columns}
