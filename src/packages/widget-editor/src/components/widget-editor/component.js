@@ -5,6 +5,7 @@ class WidgetEditor extends React.Component {
   render() {
     const {
       authenticated,
+      application,
       onSave,
       datasetId,
       adapter,
@@ -22,6 +23,7 @@ class WidgetEditor extends React.Component {
     return (
       <Editor
         authenticated={authenticated}
+        application={application}
         onSave={onSave}
         datasetId={datasetId}
         adapter={new adapter()}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from 'components/button';
 import { 
   StyledTabsContainer,
+  StyledTabsContentBox,
   StyledTabsContent,
   StyledList,
   StyledListLabel
@@ -33,18 +34,20 @@ export const Tabs = ({ children }) => {
             </StyledListLabel>
           ) : null
         })}
-      </StyledList>     
-      {children.map((child, num) => {
-        const { children: tabContent } = child.props;
-        return (
-          <StyledTabsContent 
-            key={num} 
-            active={num === active}
-          >
-            {tabContent}
-          </StyledTabsContent>
-        )
-      })}      
+      </StyledList>
+      <StyledTabsContentBox>
+        {children.map((child, num) => {
+          const { children: tabContent } = child.props;
+          return (
+            <StyledTabsContent 
+              key={num} 
+              active={num === active}
+            >
+              {tabContent}
+            </StyledTabsContent>
+          )
+        })}      
+      </StyledTabsContentBox>
     </StyledTabsContainer>
   );
 }

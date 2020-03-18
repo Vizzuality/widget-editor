@@ -6,13 +6,16 @@ export default class Pie implements Charts.Pie {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
+  scheme: any;
 
   constructor(
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload
+    widgetData: Generic.ObjectPayload,
+    scheme: any
   ) {
     this.schema = schema;
+    this.scheme = scheme;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
 
@@ -68,7 +71,7 @@ export default class Pie implements Charts.Pie {
         name: "c",
         type: "ordinal",
         domain: { data: "table", field: sqlFields.value },
-        range: { scheme: "category20" }
+        range: this.scheme ? this.scheme.category : 'category20'
       }
     ];
   }

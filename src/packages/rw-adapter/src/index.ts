@@ -17,6 +17,7 @@ export default class RwAdapter implements Adapter.Service {
   datasetService = null;
   widgetService = null;
   datasetId = null;
+  tableName = null;
   AUTH_TOKEN = null;
 
   // Some generic setup for
@@ -92,6 +93,13 @@ export default class RwAdapter implements Adapter.Service {
     this.datasetId = datasetId;
   }
 
+  setTableName(tableName: string) {
+    if (!tableName) {
+      console.error("Error: datasetId is required");
+    }
+    this.tableName = tableName;
+  }
+
   async getDataset() {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata,vocabulary,widget,layer";
@@ -101,6 +109,9 @@ export default class RwAdapter implements Adapter.Service {
     )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
 
     const { data: dataset } = await this.datasetService.fetchData(url);
+
+    this.tableName = dataset.attributes.tableName;
+
     return dataset;
   }
 
@@ -146,7 +157,52 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
-  // Triggered on filter update
+  // Triggered when widget is atempting to be saved
+  handleSave(consumerOnSave, dataService, application = 'rw', editorState) {
+    const { configuration, widget, filters: { list: editorFilters  } } = editorState;
+    const { dataset: { id, attributes: { tableName }}} = dataService;
+
+    this.setDatasetId(id);
+    this.setTableName(tableName);
+
+    let widgetParams = {};
+
+    this.widget_params.forEach(param => {
+      if (param in configuration) {
+        widgetParams = { ...widgetParams, [param]: configuration[param] };
+      } 
+    })
+
+    let widgetConfig = widget;
+    delete widgetConfig.data;
+    widgetConfig.filters = this.filterSerializer(editorFilters);
+
+    const out = {
+      name: configuration.title || null,
+      description: configuration.description || null,
+      application,
+      widgetConfig
+    };
+
+    consumerOnSave(out);
+  }
+
+  // Called when filters are updated
+  // Its up to the adapter to serialize these in a format the api wants
+  filterSerializer(filters: any) {
+    const out = filters.map(filter => ({
+      value: filter.indicator === 'FILTER_ON_VALUES' ? 
+        filter.filter.values.map(v => (v.value)) : filter.filter.values,
+      type: filter.dataType,
+      name: filter.column,
+      datasetID: this.datasetId,
+      tableName: this.tableName,
+      alias: filter.column // TODO: Fix me
+    }));
+
+    return out;
+  }
+
   async filterUpdate(filters, fields, widget) {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];

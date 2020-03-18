@@ -7,12 +7,23 @@ import {
   StyledContainer,
   StyledSelectBox,
   InputStyles,
-  StyledOverflow,
+  StyledOverflow
 } from "./style";
 
-const SelectChart = ({ patchConfiguration, options, chartType, direction, theme, setTheme }) => {
-  const [selected, setSelected] = useState(find(options, { chartType, direction }));
-  const { compact: { isCompact, isOpen } } = theme;
+const SelectChart = ({
+  patchConfiguration,
+  options,
+  chartType,
+  direction,
+  theme,
+  setTheme
+}) => {
+  const [selected, setSelected] = useState(
+    find(options, { chartType, direction })
+  );
+  const {
+    compact: { isCompact, isOpen }
+  } = theme;
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const ref = useRef({});
 
@@ -24,10 +35,8 @@ const SelectChart = ({ patchConfiguration, options, chartType, direction, theme,
   };
 
   const hadleSettings = () => {
-    setTheme({...theme, compact: { isCompact, isOpen: !isOpen }})
-  }
-
-  console.log(isCompact);
+    setTheme({ ...theme, compact: { isCompact, isOpen: !isOpen } });
+  };
 
   return (
     <StyledContainer isCompact={isCompact}>
@@ -38,22 +47,17 @@ const SelectChart = ({ patchConfiguration, options, chartType, direction, theme,
           value={selected}
           options={options}
           styles={InputStyles}
-          components={ { Menu: ChartMenu } }
+          components={{ Menu: ChartMenu }}
           innerRef={ref}
           menuIsOpen={isOpenMenu}
         />
       </StyledSelectBox>
       {isCompact && (
-        <Button
-          type="highlight"
-          onClick={()=> hadleSettings()}
-        >
+        <Button type="highlight" onClick={() => hadleSettings()}>
           Settings
         </Button>
       )}
-      {isOpenMenu && (
-        <StyledOverflow onClick={() => setIsOpenMenu(false)} />
-      )}
+      {isOpenMenu && <StyledOverflow onClick={() => setIsOpenMenu(false)} />}
     </StyledContainer>
   );
 };

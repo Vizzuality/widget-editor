@@ -17,9 +17,9 @@ const StyledContainer = styled.div`
   flex: 1;
   background: #fff;
   height: calc(100% - ${FOOTER_HEIGHT} - 20px);
-  padding: 0 30px;
+  padding: 0 0 0 30px;
   margin: 10px 0;
-  overflow-y: scroll;
+  overflow-y: hidden;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
   ${props =>
     props.compact.isCompact &&
@@ -46,7 +46,7 @@ const StyledContainer = styled.div`
     `}
 `;
 
-const EditorOptions = ({ orderBy, compact }) => {
+const EditorOptions = ({ orderBy, compact, adapter }) => {
   return (
     <StyledContainer compact={compact}>
       <Tabs>
@@ -56,16 +56,16 @@ const EditorOptions = ({ orderBy, compact }) => {
               <WidgetInfo />
             </AccordionSection>
             <AccordionSection title="Filters">
-              <Filter />
+              <Filter adapter={adapter} />
             </AccordionSection>
             <AccordionSection title="Order">
               {orderBy && <OrderValues />}
             </AccordionSection>
           </Accordion>
         </Tab>
-        <Tab label="Visual style" default >
+        <Tab label="Visual style" default>
           <Accordion>
-            <AccordionSection title="Typography" >
+            <AccordionSection title="Typography">
               <Typography />
             </AccordionSection>
             <AccordionSection title="Color" openDefault>

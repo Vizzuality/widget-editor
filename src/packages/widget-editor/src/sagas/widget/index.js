@@ -12,13 +12,13 @@ const stateProxy = new StateProxy();
 
 function* preloadData() {
   const {
-    widgetEditor: { editor, configuration }
+    widgetEditor: { editor, configuration, theme }
   } = yield select();
 
   const { widgetData } = editor;
   const { widgetConfig } = editor.widget.attributes;
 
-  const vega = new VegaService(widgetConfig, widgetData, configuration);
+  const vega = new VegaService(widgetConfig, widgetData, configuration, theme);
   yield put(setWidget(vega.getChart()));
   stateProxy.cacheCurrent(configuration);
 }
@@ -29,7 +29,11 @@ function* resolveWithProxy() {
   } = yield select();
 
   // Check and patch current state based on user configuration
-  const proxyResult = yield call([stateProxy, "sync"], configuration, editor.dataset.id);
+  const proxyResult = yield call(
+    [stateProxy, "sync"],
+    configuration,
+    editor.dataset.id
+  );
 
   if (proxyResult.hasUpdates) {
     // TODO: Clean this up, better to utalize a widget service within the proxy
@@ -43,13 +47,16 @@ function* resolveWithProxy() {
 
 function* updateWidget() {
   const {
-    widgetEditor: { editor, configuration }
+    widgetEditor: { editor, configuration, theme }
   } = yield select();
-  const { widgetData } = editor;
-  const { widgetConfig } = editor.widget.attributes;
 
-  const vega = new VegaService(widgetConfig, widgetData, configuration);
-  yield put(setWidget(vega.getChart()));
+
+  if (editor.initialized) {
+    const { widgetData } = editor;
+    const { widgetConfig } = editor.widget.attributes;
+    const vega = new VegaService(widgetConfig, widgetData, configuration, theme);
+    yield put(setWidget(vega.getChart()));
+  }
 }
 
 export default function* baseSaga() {
@@ -61,6 +68,10 @@ export default function* baseSaga() {
     getAction("CONFIGURATION/patchConfiguration"),
     resolveWithProxy
   );
+  yield takeLatest(
+    getAction("EDITOR/THEME/setTheme"),
+    updateWidget
+  )
 }
 
 // SELECT primary_fuel as x, SUM(estimated_generation_gwh) as y FROM powerwatch_data_20180102 GROUP BY x ORDER BY y desc LIMIT 2

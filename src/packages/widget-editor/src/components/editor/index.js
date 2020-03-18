@@ -10,7 +10,8 @@ export default connectState(
   state => ({
     editor: state.editor,
     configuration: state.configuration,
-    widget: state.widget
+    widget: state.widget,
+    editorState: state
   }),
   dispatch => {
     return {

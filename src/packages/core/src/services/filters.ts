@@ -166,13 +166,13 @@ export default class FiltersService implements Filters.Service {
     return data;
   }
 
-  static async handleFilters(filters, config, adapter) {
+  static async handleFilters(filters, config, payload) {
     const {
       column: configuredColumn,
       type: configuredType,
       values: configuredValues
     } = config;
-    const { configuration, datasetId, fields, widget } = adapter;
+    const { configuration, datasetId, fields, widget } = payload;
 
     const out = [];
 
