@@ -24,7 +24,8 @@ export const getWidgetColumns = createSelector([getDataset], dataset => {
   // 3. Do we always have relevant props ?
   const columns = dataset.attributes.widgetRelevantProps.map(prop => ({
     ...dataset.attributes.metadata[0].attributes.columns[prop],
-    identifier: prop
+    identifier: prop,
+    name: prop
   }));
 
   return columns;

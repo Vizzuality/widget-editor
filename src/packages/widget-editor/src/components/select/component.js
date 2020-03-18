@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Popup from "./components/Popup";
-import CustomOption from './components/CustomOption'
+import { ALIGN_HORIZONTAL } from './const';
 import {
   StyledSelectBox,
+  StyledOverflow,
   CustomStyles,
-  InputStyles
+  InputStyles,
 } from "./style";
 
 /**
@@ -15,32 +16,29 @@ const CustomSelect = ( {
   isCustom = false, 
   isPopup = false, 
   configuration = {}, 
-  align = 'horizontal', 
+  align = ALIGN_HORIZONTAL,
+  onChange = () => {},
   ...otherProps 
 } ) => {
 
-  const { value, category } = configuration;
-  const [isPopupOpen, setPopup] = useState(false);
-  const [isOpen, setOpen] = useState(false);
+  const handleChange = option => {
+    onChange(option);
+  }
 
   return (
-    <StyledSelectBox
-      onMouseEnter={() => setPopup(true)} 
-      onMouseLeave={() => setPopup(false)}
-      align={align}
-    >
-      <Select
-        {...otherProps}
+    <Fragment>
+      <StyledSelectBox
         align={align}
-        onMenuOpen={() => setOpen(true)}
-        onMenuClose={() => setOpen(false)}
-        styles={isCustom ? CustomStyles : InputStyles} 
-        components={isCustom ? { Option: CustomOption } : null}
-      />
-      {isPopup && isPopupOpen && !isOpen && (
-        <Popup category={category} value={value} align={align} />
-      )}
-    </StyledSelectBox>
+      >
+        <Select
+          align={align}
+          onChange={handleChange}
+          styles={isCustom ? CustomStyles : InputStyles}
+          components={isCustom ? { Menu: Popup } : null}
+          {...otherProps}
+          />
+      </StyledSelectBox>
+    </Fragment>
   );
 }
 

@@ -11,26 +11,21 @@ export const StyledTabsContentBox = styled.div`
   padding-right: 30px;
 
 
-  /* scrollbar chrome customization */
-  /* width */
   ::-webkit-scrollbar {
     width: 7px;
   }
 
-  /* Track */
   ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 2px grey; 
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.05);
   }
   
-  /* Handle */
   ::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.3); 
     border-radius: 10px;
   }
 
-  /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background:  rgba(0, 0, 0, 0.4); 
   }

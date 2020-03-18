@@ -1,41 +1,31 @@
 import React, { Fragment } from "react";
-import styled from "styled-components";
-
-import FlexContainer from "styles-common/flex";
 import Select from "components/select";
 
-const StyledContainer = styled.div`
-  margin: 10px;
-  flex-basis: 100%;
-  padding: 10px;
-  width: 100%;
-  max-width: 300px;
-  box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-`;
-
 const QueryValues = ({
-  // value,
   columns,
   configuration,
   patchConfiguration
 }) => {
   const { 
-    category: { 
+    title,
+    category_title,
+    category: {
       alias: categoryAlias, 
       name: categoryName 
-    }, 
-    value: { 
-      alias: valueAlias, 
+    },
+    value: {
+      alias: valueAlias,
       name: valueName
-    } 
+    }
   } = configuration
-  const verticalValue = { alias: categoryAlias, name: categoryName };
-  const horizontalValue = { alias: valueAlias, name: valueName };
+  const verticalValue = { 
+    alias: categoryAlias || category_title || valueName, 
+    name: categoryName 
+  };
+  const horizontalValue = { 
+    alias: valueAlias || title || valueName, 
+    name: valueName 
+  };
   const handleChangeVertical = selectedOption => {
     // TODO: Wee need to set type here
     patchConfiguration({
