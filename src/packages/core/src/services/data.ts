@@ -45,7 +45,6 @@ export default class DataService {
 
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
-    await this.getWidgetData();
     await this.handleFilters();
 
     this.setEditor({ restoring: false });
@@ -64,29 +63,6 @@ export default class DataService {
       type: reduxActions.EDITOR_SET_FILTERS,
       payload: { list: normalizeFilters }
     });
-  }
-
-  async getWidgetData() {
-    const {
-      attributes: {
-        widgetConfig: { paramsConfig }
-      }
-    } = this.widget;
-
-    // Construct correct SQL query based on widgetConfig
-    const filtersService = new FiltersService(paramsConfig, this.dataset.id);
-    try {
-      this.widgetData = await filtersService.requestWidgetData();
-    } catch (e) {
-      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
-    }
-
-    if (!this.widgetData || !this.widgetData.data) {
-      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
-    } else {
-      this.setEditor({ widgetData: this.widgetData.data });
-      this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
-    }
   }
 
   isFieldAllowed(field) {
@@ -122,9 +98,29 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATA_READY });
   }
 
+  async requestWithFilters(filters: any, configuration: any) {
+    const serialized = this.adapter.filterSerializer(filters);
+    const filtersService = new FiltersService(
+      { ...configuration },
+      filters,
+      this.dataset
+    );
+
+    const request = await this.adapter.requestData(
+      filtersService.getQuery(),
+      this.dataset
+    );
+
+    if (!request.data || "errors" in request) {
+      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
+    } else {
+      this.setEditor({ widgetData: request.data });
+      this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
+    }
+  }
+
   async resolveInitialState() {
     await this.getDatasetAndWidgets();
-    await this.getWidgetData();
     await this.getFieldsAndLayers();
     await this.handleFilters();
 

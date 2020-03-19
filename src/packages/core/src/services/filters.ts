@@ -21,10 +21,11 @@ export default class FiltersService implements Filters.Service {
   sql: string;
   datasetId: string;
   configuration: Config.Payload;
+  filters: any;
 
-  constructor(data: any, datasetId: string) {
-    this.configuration = data;
-
+  constructor(configuration: any, filters: any, datasetId: string) {
+    this.configuration = configuration;
+    this.filters = filters;
     this.sql = "";
 
     this.datasetId = datasetId;
@@ -35,11 +36,6 @@ export default class FiltersService implements Filters.Service {
     this.prepareOrderBy();
     this.prepareOrder();
     this.prepareLimit();
-  }
-
-  prepareSelectStatement() {
-    const { category } = this.configuration;
-    this.sql = `SELECT ${category.name} as ${sqlFields.value}`;
   }
 
   private resolveTableName() {
@@ -55,6 +51,11 @@ export default class FiltersService implements Filters.Service {
 
     // XXX: We prioritize xTableName, not sure if thats correct.
     return xTableName ? xTableName : yTableName;
+  }
+
+  prepareSelectStatement() {
+    const { category } = this.configuration;
+    this.sql = `SELECT ${category.name} as ${sqlFields.value}`;
   }
 
   prepareAggregate() {
@@ -79,45 +80,115 @@ export default class FiltersService implements Filters.Service {
     }
   }
 
-  // Range conditions gets constructed as key => value AND key <= value
-  // This is true if we have two values in our filter
+  private escapeValue(value, dataType) {
+    return dataType === "date" || dataType === "string" ? `'${value}'` : value;
+  }
+
   private rangeCondition(
-    condition: string,
-    name: string,
-    value: [number],
-    type: string
+    sql: string,
+    column: string,
+    values: [string | number],
+    dataType: string
   ): string {
-    let range = condition;
-    value.forEach((v, index) => {
-      const serializeValue = type === "date" ? `'${v}'` : v;
-      let statement = "";
-      if (index === 0) {
-        statement = `${name} >= ${serializeValue}`;
-      } else if (index === 1) {
-        statement = `${statement} AND ${name} <= ${serializeValue}`;
-      }
-      range = `${range} ${statement}`;
-    });
-    return range;
+    let out = sql;
+    return `${out} ${column} >= ${this.escapeValue(
+      values[0],
+      dataType
+    )} AND ${column} <= ${this.escapeValue(values[1], dataType)}`;
+  }
+
+  private valueRange(
+    sql: string,
+    column: string,
+    values: [string | number],
+    dataType: string
+  ): string {
+    let out = sql;
+    return `${out} ${column} IN (${values
+      .map(v => this.escapeValue(v.value, dataType))
+      .join(",")})`;
+  }
+
+  private textContains(
+    sql: string,
+    column: string,
+    values: [string | number],
+    dataType: string
+  ): string {
+    let out = sql;
+    return `${out} ${column} = ${this.escapeValue(values, dataType)}`;
+  }
+
+  private textNotContains(
+    sql: string,
+    column: string,
+    values: [string | number],
+    dataType: string
+  ): string {
+    let out = sql;
+    return `${out} ${column} != ${this.escapeValue(values, dataType)}`;
+  }
+
+  private textStartsWith(
+    sql: string,
+    column: string,
+    values: [string | number],
+    dataType: string
+  ): string {
+    let out = sql;
+    return `${out} (lower(${column}) LIKE '${values}%')`;
+  }
+
+  private textEndsWith(
+    sql: string,
+    column: string,
+    values: [string | number],
+    dataType: string
+  ): string {
+    let out = sql;
+    return `${out} (lower(${column}) LIKE '%${values}')`;
   }
 
   prepareFilters() {
-    const { filters } = this.configuration;
-    let filtersQuery = "WHERE";
+    let out = this.sql;
 
-    if (filters && Array.isArray(filters) && filters.length > 0) {
-      filters.forEach(({ name, value, type }) => {
-        const isRange = value && Array.isArray(value) && value.length === 2;
-        if (isRange) {
-          filtersQuery = this.rangeCondition(filtersQuery, name, value, type);
-        } else {
-          throw new Error(
-            `Expected value range filter recived (${value.join()}), not yet implemented in filter service.`
-          );
+    if (this.filters && this.filters.length > 0) {
+      out = `${out} WHERE `;
+      this.filters.forEach((weFilter, index) => {
+        const {
+          indicator,
+          column,
+          dataType,
+          filter: { values }
+        } = weFilter;
+
+        out = index > 0 ? `${out} AND ` : out;
+
+        if (indicator === "range") {
+          out = this.rangeCondition(out, column, values, dataType);
+        }
+        if (indicator === "FILTER_ON_VALUES") {
+          out = this.valueRange(out, column, values, dataType);
+        }
+        if (indicator === "TEXT_CONTAINS") {
+          out = this.textContains(out, column, values, dataType);
+        }
+
+        if (indicator === "TEXT_NOT_CONTAINS") {
+          out = this.textNotContains(out, column, values, dataType);
+        }
+
+        if (indicator === "TEXT_STARTS_WITH") {
+          out = this.textStartsWith(out, column, values, dataType);
+        }
+
+        if (indicator === "TEXT_ENDS_WITH") {
+          out = this.textEndsWith(out, column, values, dataType);
         }
       });
     }
-    this.sql = `${this.sql} ${filtersQuery}`;
+
+    this.sql = out.replace(/ +(?= )/g, "");
   }
 
   prepareGroupBy() {
@@ -158,12 +229,18 @@ export default class FiltersService implements Filters.Service {
       throw new Error("Error, datasetId not present in Filters service.");
     }
 
+    return [];
+
     const response = await fetch(
       `https://api.resourcewatch.org/v1/query/${this.datasetId}?sql=${this.sql}`
     );
 
     const data = await response.json();
     return data;
+  }
+
+  getQuery() {
+    return this.sql.replace(/ +(?= )/g, "");
   }
 
   static async handleFilters(filters, config, payload) {

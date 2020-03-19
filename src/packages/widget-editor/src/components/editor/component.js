@@ -86,7 +86,7 @@ class Editor extends React.Component {
   onSave() {
     const { onSave, dispatch, editorState, adapter, application } = this.props;
     if (typeof onSave === "function") {
-      adapter.handleSave(onSave, this.dataService, application, editorState)
+      adapter.handleSave(onSave, this.dataService, application, editorState);
     }
     dispatch({ type: constants.sagaEvents.EDITOR_SAVE });
   }
@@ -100,7 +100,9 @@ class Editor extends React.Component {
     return (
       <StyledContainer {...compact}>
         <Renderer />
-        {configuration.limit && <EditorOptions adapter={adapter} />}
+        {configuration.limit && (
+          <EditorOptions adapter={adapter} dataService={this.dataService} />
+        )}
         <Footer onSave={this.onSave} />
       </StyledContainer>
     );

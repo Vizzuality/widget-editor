@@ -40,7 +40,7 @@ import {
 } from "./style";
 
 const Filter = ({
-  adapter,
+  dataService,
   setFilters,
   filters = [],
   fields = [],
@@ -68,9 +68,11 @@ const Filter = ({
     );
 
     setFilters({
-      list: patch,
-      adapterPayload: adapter.filterSerializer(patch)
+      list: patch
     });
+
+    // XXX: Update Data Service with applied filters
+    dataService.requestWithFilters(patch, configuration);
   };
 
   const addFilter = () => {
@@ -79,16 +81,14 @@ const Filter = ({
       { ...COLUMN_FILTER_GROUP, id: uniqueId("we-filter-") }
     ];
     setFilters({
-      list: patch,
-      adapterPayload: adapter.filterSerializer(patch)
+      list: patch
     });
   };
 
   const removeFilter = id => {
     const patch = filters.filter(f => f.id !== id) || [];
     setFilters({
-      list: patch,
-      adapterPayload: adapter.filterSerializer(patch)
+      list: patch
     });
   };
 

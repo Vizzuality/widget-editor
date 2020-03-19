@@ -158,9 +158,18 @@ export default class RwAdapter implements Adapter.Service {
   }
 
   // Triggered when widget is atempting to be saved
-  handleSave(consumerOnSave, dataService, application = 'rw', editorState) {
-    const { configuration, widget, filters: { list: editorFilters  } } = editorState;
-    const { dataset: { id, attributes: { tableName }}} = dataService;
+  handleSave(consumerOnSave, dataService, application = "rw", editorState) {
+    const {
+      configuration,
+      widget,
+      filters: { list: editorFilters }
+    } = editorState;
+    const {
+      dataset: {
+        id,
+        attributes: { tableName }
+      }
+    } = dataService;
 
     this.setDatasetId(id);
     this.setTableName(tableName);
@@ -170,8 +179,8 @@ export default class RwAdapter implements Adapter.Service {
     this.widget_params.forEach(param => {
       if (param in configuration) {
         widgetParams = { ...widgetParams, [param]: configuration[param] };
-      } 
-    })
+      }
+    });
 
     let widgetConfig = widget;
     delete widgetConfig.data;
@@ -190,9 +199,11 @@ export default class RwAdapter implements Adapter.Service {
   // Called when filters are updated
   // Its up to the adapter to serialize these in a format the api wants
   filterSerializer(filters: any) {
-    const out = filters.map(filter => ({
-      value: filter.indicator === 'FILTER_ON_VALUES' ? 
-        filter.filter.values.map(v => (v.value)) : filter.filter.values,
+    const serialize = filters.map(filter => ({
+      value:
+        filter.indicator === "FILTER_ON_VALUES"
+          ? filter.filter.values.map(v => v.value)
+          : filter.filter.values,
       type: filter.dataType,
       name: filter.column,
       datasetID: this.datasetId,
@@ -200,7 +211,32 @@ export default class RwAdapter implements Adapter.Service {
       alias: filter.column // TODO: Fix me
     }));
 
-    return out;
+    // If any of these props are empty, dont apply the filter
+    const REQUIRED_PROPS = ["value", "type", "datasetID", "tableName"];
+
+    const validateProperty = prop => {
+      if (Array.isArray(prop) && prop.length === 0) {
+        return false;
+      }
+      if (typeof prop === "string" && prop.length === 0) {
+        return false;
+      }
+      return prop === null ? false : true;
+    };
+
+    return serialize.filter(
+      f =>
+        [...REQUIRED_PROPS].filter(prop => validateProperty(f[prop])).length ===
+        REQUIRED_PROPS.length
+    );
+  }
+
+  async requestData(sql, dataset) {
+    const response = await fetch(
+      `https://api.resourcewatch.org/v1/query/${dataset.id}?sql=${sql}`
+    );
+    const data = await response.json();
+    return data;
   }
 
   async filterUpdate(filters, fields, widget) {

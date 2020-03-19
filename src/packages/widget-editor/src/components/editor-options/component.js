@@ -52,7 +52,7 @@ const EditorOptions = ({
   orderBy,
   patchConfiguration,
   compact,
-  adapter
+  dataService
 }) => {
   const handleChange = (value, type) => {
     if (type === "limit") {
@@ -68,7 +68,7 @@ const EditorOptions = ({
               <WidgetInfo />
             </AccordionSection>
             <AccordionSection title="Filters">
-              <Filter adapter={adapter} />
+              <Filter dataService={dataService} />
             </AccordionSection>
             <AccordionSection title="Order">
               {orderBy && <OrderValues />}
