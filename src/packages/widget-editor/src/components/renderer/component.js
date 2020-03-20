@@ -1,6 +1,7 @@
 import React from "react";
 
 import Chart from "components/chart";
+import ChartColorFilter from "components/chart-color-filter";
 import QueryValues from "components/query-values";
 import SelectChart from "components/select-chart";
 import {
@@ -17,7 +18,6 @@ const Renderer = ({ widget, editor }) => {
       <SelectChart />
       
       {initialized && !restoring && <Chart />}
-      {/* {initialized && !restoring && <QueryValues />} */}
       
       {!initialized && (
         <RestoringWidget>
@@ -29,6 +29,8 @@ const Renderer = ({ widget, editor }) => {
           <RestoringWidgetTitle>Building widget...</RestoringWidgetTitle>
         </RestoringWidget>
       )}
+
+      <ChartColorFilter />
     </StyledContainer>
   );
 };

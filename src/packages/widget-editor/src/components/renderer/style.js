@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from 'style-constants';
 
 export const StyledContainer = styled.div`
+  position: relative;
   display: flex;
   flex-flow: column;
   height: calc(100% - ${FOOTER_HEIGHT});
