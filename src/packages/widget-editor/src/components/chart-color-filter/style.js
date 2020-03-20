@@ -81,6 +81,11 @@ export const InputStyles = {
   })
 };
 
+/**
+ * FIXME
+ * This component includes all styles for react-slick library (slick.css, slick.theme.css)
+ * Needs to modify this code to make it clear. As option, we can use another library. 
+ */
 export const StyledContainer = styled.div`
   box-sizing: border-box;
   border-top: 1px solid #D7D7D7;
@@ -92,13 +97,10 @@ export const StyledContainer = styled.div`
   padding: 15px 36px;
   display: flex;
   align-items: stretch;
+  
   * {
     box-sizing: border-box;
     outline: 0;
-  }
-
-  .slick-list {
-    transition: height 0.3s ease-in-out; 
   }
 
   .slick-slider
@@ -129,6 +131,7 @@ export const StyledContainer = styled.div`
 
       margin: 0;
       padding: 0;
+      transition: height 0.3s ease-in-out; 
   }
   .slick-list:focus
   {
@@ -421,9 +424,4 @@ export const StyledContainer = styled.div`
       opacity: .75;
       color: black;
   }
-
-
-
-
-
 `;

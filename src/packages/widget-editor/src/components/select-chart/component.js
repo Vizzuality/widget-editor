@@ -10,6 +10,14 @@ import {
   StyledOverflow
 } from "./style";
 
+ /**
+  * FIXME
+  * Open menu requires a dark background StyledOverflow. 
+  * To make it works we need to set the menu open value to redux.
+  * And display StyledOverflow in core application container.
+  * {isOpenMenu && < onClick={() => setIsOpenMenu(false)} />}
+  */
+
 const SelectChart = ({
   patchConfiguration,
   options,
@@ -25,7 +33,6 @@ const SelectChart = ({
     compact: { isCompact, isOpen }
   } = theme;
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const ref = useRef({});
 
   const handleChange = option => {
     const { chartType, direction } = option;
@@ -44,11 +51,11 @@ const SelectChart = ({
         <Select
           onChange={handleChange}
           onMenuOpen={() => setIsOpenMenu(true)}
+          onMenuClose={() => setIsOpenMenu(false)}
           value={selected}
           options={options}
           styles={InputStyles}
           components={{ Menu: ChartMenu }}
-          innerRef={ref}
           menuIsOpen={isOpenMenu}
         />
       </StyledSelectBox>
@@ -57,7 +64,6 @@ const SelectChart = ({
           Settings
         </Button>
       )}
-      {isOpenMenu && <StyledOverflow onClick={() => setIsOpenMenu(false)} />}
     </StyledContainer>
   );
 };

@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect, Fragment } from "react";
+import React, { Fragment } from "react";
 import Select from "react-select";
 import Popup from "./components/Popup";
 import { ALIGN_HORIZONTAL } from './const';
 import {
   StyledSelectBox,
-  StyledOverflow,
   CustomStyles,
   InputStyles,
 } from "./style";
