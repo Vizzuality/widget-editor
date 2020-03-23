@@ -3,9 +3,11 @@
 // all column types
 export const TYPE_COLUMN = 'column';
 export const TYPE_BAR = 'bar';
+export const TYPE_SCATTERPLOT = 'scatterplot';
 export const TYPE_LINE = 'line';
 export const TYPE_PIE = 'pie';
 export const TYPE_DONUT = 'donut';
+export const TYPE_RING = 'ring';
 
 export const DIRECTION_VERTICAL = 'vertical';
 export const DIRECTION_HORIZONTAL = 'horizontal';
@@ -37,7 +39,15 @@ export const MENU_DATA = [
     direction:  null
   },
   { 
-    type: 'donut',
+    type: TYPE_SCATTERPLOT,
+    direction:  null
+  },
+  // { 
+  //   type: TYPE_DONUT,
+  //   direction:  null
+  // },
+  { 
+    type: TYPE_RING,
     direction:  null
   }
 ];
