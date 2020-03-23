@@ -9,7 +9,7 @@ import QueryValuesComponent from "./component";
 export default connectState(
   state => ({
     theme: state.theme,
-    value: selectors.getWidgetSelectedColumn(state),
+    // value: selectors.getWidgetSelectedColumn(state),
     configuration: state.configuration,
     widgetRelevantProps: state.editor.dataset.attributes.widgetRelevantProps,
     columns: selectors.getWidgetColumns(state)

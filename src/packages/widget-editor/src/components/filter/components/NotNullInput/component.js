@@ -19,7 +19,7 @@ const NotNullInput = ({
         checked={filter.filter.notNull}
         onChange={e => setData(e.target.value, filter.id, "NOT_NULL_CHECK")}
       />
-      <label for={name}>{label}</label>
+      <label htmlFor={name}>{label}</label>
     </StyledCheckbox>
   );
 };
