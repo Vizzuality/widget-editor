@@ -8,6 +8,7 @@ import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
 export default class DataService {
   adapter: Adapter.Service;
   dataset: Dataset.Payload;
+  widgetId: Widget.Id;
   widget: Widget.Payload;
   widgetData: any;
   cachedState: object;
@@ -16,6 +17,7 @@ export default class DataService {
 
   constructor(
     datasetId: Adapter.datasetId,
+    widgetId: Widget.Id,
     adapter: Adapter.Service,
     setEditor: Generic.Dispatcher,
     dispatch: Generic.Dispatcher
@@ -24,6 +26,7 @@ export default class DataService {
     this.setEditor = setEditor;
     this.dispatch = dispatch;
     this.dataset = null;
+    this.widgetId = widgetId;
     this.widget = null;
     this.widgetData = null;
 
@@ -32,15 +35,16 @@ export default class DataService {
 
   async getDatasetAndWidgets() {
     this.dataset = await this.adapter.getDataset();
-    this.widget = await this.adapter.getWidget(this.dataset);
+    this.widget = await this.adapter.getWidget(this.dataset, this.widgetId);
 
     this.setEditor({ dataset: this.dataset, widget: this.widget });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
-  async restoreEditor(datasetId) {
+  async restoreEditor(datasetId, widgetId) {
     this.setEditor({ restoring: true });
 
+    this.widgetId = widgetId;
     this.adapter.setDatasetId(datasetId);
 
     await this.getDatasetAndWidgets();
@@ -51,18 +55,19 @@ export default class DataService {
   }
 
   async handleFilters() {
-    const { filters } = this.widget.attributes.widgetConfig.paramsConfig;
+    const filters = this.widget.attributes?.widgetConfig?.paramsConfig?.filters;
+    if (filters && Array.isArray(filters) && filters.length > 0) {
+      const normalizeFilters = await this.adapter.filterUpdate(
+        filters,
+        this.allowedFields,
+        this.widget
+      );
 
-    const normalizeFilters = await this.adapter.filterUpdate(
-      filters,
-      this.allowedFields,
-      this.widget
-    );
-
-    this.dispatch({
-      type: reduxActions.EDITOR_SET_FILTERS,
-      payload: { list: normalizeFilters }
-    });
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_FILTERS,
+        payload: { list: normalizeFilters }
+      });
+    }
   }
 
   isFieldAllowed(field) {
@@ -79,20 +84,24 @@ export default class DataService {
     const layers = await this.adapter.getLayers();
 
     // Get field aliases from Dataset
-    const { columns } = this.dataset.attributes.metadata[0].attributes;
+    const columns = this.dataset?.attributes?.metadata[0]?.attributes?.columns;
     // Filter on allowed field types
     this.allowedFields = [];
 
-    Object.keys(fields).forEach(field => {
-      const f = {
-        ...fields[field],
-        columnName: field,
-        metadata: columns[field]
-      };
-      if (this.isFieldAllowed(f)) {
-        this.allowedFields.push(f);
-      }
-    });
+    if (fields && Object.keys(fields).length > 0) {
+      Object.keys(fields).forEach(field => {
+        if (columns && field in columns) {
+          const f = {
+            ...fields[field],
+            columnName: field,
+            metadata: columns[field]
+          };
+          if (this.isFieldAllowed(f)) {
+            this.allowedFields.push(f);
+          }
+        }
+      });
+    }
 
     this.setEditor({ layers, fields: this.allowedFields });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATA_READY });

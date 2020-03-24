@@ -1,4 +1,4 @@
-import { Dataset, Config } from '@packages/types';
+import { Dataset, Config } from "@packages/types";
 
 export default class DatasetService implements Dataset.Service {
   config: Config.Payload;
@@ -13,11 +13,13 @@ export default class DatasetService implements Dataset.Service {
 
       if (response.status >= 400) {
         throw new Error(response.statusText);
+        return {};
       }
 
       return await response.json();
     } catch (err) {
-      throw new Error(err);
+      console.error("Error loading dataset:", url);
+      return {};
     }
   }
 }

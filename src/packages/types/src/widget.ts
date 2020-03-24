@@ -1,4 +1,4 @@
-type Id = string | number;
+export type Id = string | number | null;
 
 export interface Payload {
   id: Id;
@@ -10,7 +10,7 @@ export interface Payload {
     description: string;
     application: [string];
     widgetConfig: {
-      paramsConfig: object
+      paramsConfig: object;
     };
     defaultEditableWidget: boolean;
     env: string;

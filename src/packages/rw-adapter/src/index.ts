@@ -109,8 +109,7 @@ export default class RwAdapter implements Adapter.Service {
     )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
 
     const { data: dataset } = await this.datasetService.fetchData(url);
-
-    this.tableName = dataset.attributes.tableName;
+    this.tableName = dataset?.attributes?.tableName || null;
 
     return dataset;
   }
@@ -122,12 +121,15 @@ export default class RwAdapter implements Adapter.Service {
     return fields;
   }
 
-  async getWidget(dataset: Dataset.Payload) {
+  async getWidget(dataset: Dataset.Payload, widgetId: Widget.Id) {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata";
 
-    const widgetId = this.widgetService.fromDataset(dataset).id;
-    const url = `${this.endpoint}/widget/${widgetId}?${applications.join(
+    const resolveWidgetId = !widgetId
+      ? this.widgetService.fromDataset(dataset).id
+      : widgetId;
+
+    const url = `${this.endpoint}/widget/${resolveWidgetId}?${applications.join(
       ","
     )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
 

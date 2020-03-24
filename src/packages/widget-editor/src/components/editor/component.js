@@ -13,14 +13,24 @@ class Editor extends React.Component {
     super(props);
     const {
       datasetId,
+      widgetId,
       adapter,
       setEditor,
       dispatch,
       theme,
       schemes
     } = this.props;
+
     this.onSave = this.onSave.bind(this);
-    this.dataService = new DataService(datasetId, adapter, setEditor, dispatch);
+
+    this.dataService = new DataService(
+      datasetId,
+      widgetId,
+      adapter,
+      setEditor,
+      dispatch
+    );
+
     this.dataService.resolveInitialState();
     this.resolveTheme(theme);
     this.resolveSchemes(schemes);
@@ -36,15 +46,26 @@ class Editor extends React.Component {
   componentDidUpdate(prevProps) {
     const {
       datasetId: prevDatasetId,
+      widgetId: prevWidgetId,
       theme: prevTheme,
       schemes: prevSchemes,
       authenticated: prevAuthenticated
     } = prevProps;
-    const { datasetId, theme, schemes, adapter, authenticated } = this.props;
+    const {
+      datasetId,
+      widgetId,
+      theme,
+      schemes,
+      adapter,
+      authenticated
+    } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
-    if (!isEqual(datasetId, prevDatasetId)) {
-      this.initializeRestoration(datasetId);
+    if (
+      !isEqual(datasetId, prevDatasetId) ||
+      !isEqual(widgetId, prevWidgetId)
+    ) {
+      this.initializeRestoration(datasetId, widgetId);
     }
 
     if (!isEqual(theme, prevTheme)) {
@@ -67,8 +88,8 @@ class Editor extends React.Component {
     setEditor({ authenticated });
   }, 1000);
 
-  initializeRestoration = debounce(datasetId => {
-    this.dataService.restoreEditor(datasetId);
+  initializeRestoration = debounce((datasetId, widgetId) => {
+    this.dataService.restoreEditor(datasetId, widgetId);
   }, 1000);
 
   // We debounce all properties here

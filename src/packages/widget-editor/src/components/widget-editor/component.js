@@ -8,6 +8,7 @@ class WidgetEditor extends React.Component {
       application,
       onSave,
       datasetId,
+      widgetId = null,
       adapter,
       theme,
       schemes,
@@ -20,12 +21,17 @@ class WidgetEditor extends React.Component {
       );
     }
 
+    if (!datasetId) {
+      throw new Error("Widget editor: Missing prop datasetId of type string");
+    }
+
     return (
       <Editor
         authenticated={authenticated}
         application={application}
         onSave={onSave}
         datasetId={datasetId}
+        widgetId={widgetId}
         adapter={new adapter()}
         schemes={schemes}
         theme={{

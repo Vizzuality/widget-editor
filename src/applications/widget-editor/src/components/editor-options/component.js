@@ -3,9 +3,31 @@ import React, { Fragment } from "react";
 import "./styles.css";
 
 class EditorOptions extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      widgets: []
+    };
+
+    const widgetEndpoint = `https://api.resourcewatch.org/v1/widget?includes=metadata,user,vocabulary`;
+    const widgets = fetch(widgetEndpoint)
+      .then(response => response.json())
+      .then(widgetPayload => {
+        this.setState({ widgets: widgetPayload.data });
+      });
+  }
+
   render() {
+    const { widgets } = this.state;
     const {
-      editorOptions: { compactMode, authToken, dataset, optionsOpen, theme },
+      editorOptions: {
+        compactMode,
+        authToken,
+        dataset,
+        widget,
+        optionsOpen,
+        theme
+      },
       modifyOptions
     } = this.props;
 
@@ -26,7 +48,9 @@ class EditorOptions extends React.Component {
         <select
           id="dataset"
           value={dataset}
-          onChange={e => modifyOptions({ dataset: e.target.value })}
+          onChange={e =>
+            modifyOptions({ widget: null, dataset: e.target.value })
+          }
         >
           <option value="03bfb30e-829f-4299-bab9-b2be1b66b5d4">
             Forest Sector Economic Contribution
@@ -41,6 +65,27 @@ class EditorOptions extends React.Component {
           <option value="1bc94710-d7ec-46f9-aa27-edddd87b1625">
             Cold Water Corals
           </option>
+        </select>
+
+        <label htmlFor="widget">Select widget</label>
+        <select
+          id="widget"
+          value={widget || ""}
+          onChange={e =>
+            modifyOptions({
+              dataset: widgets.find(w => w.id === e.target.value).attributes
+                .dataset,
+              widget: e.target.value
+            })
+          }
+        >
+          {widgets.map(rwWidget => {
+            return (
+              <option key={rwWidget.id} value={rwWidget.id}>
+                {rwWidget.attributes.name}
+              </option>
+            );
+          })}
         </select>
 
         <label htmlFor="editor-compact-mode">Toggle Compact mode</label>

@@ -59,7 +59,7 @@ class Editor extends React.Component {
 
   render() {
     const {
-      editorOptions: { compactMode, authToken, dataset, theme }
+      editorOptions: { compactMode, authToken, dataset, widget, theme }
     } = this.props;
 
     const authenticated = !!authToken && authToken.length > 0;
@@ -70,6 +70,7 @@ class Editor extends React.Component {
           schemes={THEMES}
           compact={compactMode}
           datasetId={dataset}
+          widgetId={widget}
           onSave={this.handleOnSave}
           authenticated={authenticated}
           application="rw"
