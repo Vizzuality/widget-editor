@@ -6,6 +6,15 @@ const getDataset = state => state.editor.dataset;
 export const getWidgetSelectedColumn = createSelector(
   [getConfiguration, getDataset],
   (configuration, dataset) => {
+    if (
+      !dataset ||
+      !dataset.id ||
+      !dataset.attributes ||
+      !dataset.attributes.metadata
+    ) {
+      return null;
+    }
+
     const value =
       dataset.attributes.metadata[0].attributes.columns[
         configuration.value.name
@@ -18,10 +27,15 @@ export const getWidgetSelectedColumn = createSelector(
 );
 
 export const getWidgetColumns = createSelector([getDataset], dataset => {
-  // TODO: Lots of assumptions here
-  // 1. Do we always have dataset metadata?
-  // 2. Is it always on index:0 ?
-  // 3. Do we always have relevant props ?
+  if (
+    !dataset ||
+    !dataset.id ||
+    !dataset.attributes ||
+    !dataset.attributes.widgetRelevantProps
+  ) {
+    return [];
+  }
+
   const columns = dataset.attributes.widgetRelevantProps.map(prop => ({
     ...dataset.attributes.metadata[0].attributes.columns[prop],
     identifier: prop,

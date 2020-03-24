@@ -97,9 +97,11 @@ const Chart = ({ editor, widget }) => {
       }
 
       vegaContainer.current.resize = () => {
-        const width = chart.current.offsetWidth;
-        vegaContainer.current.width(width - 40).run();
-        instantiateTooltip(vegaContainer.current, widget);
+        if (chart && chart.current) {
+          const width = chart.current.offsetWidth;
+          vegaContainer.current.width(width - 40).run();
+          instantiateTooltip(vegaContainer.current, widget);
+        }
       };
 
       window.addEventListener("resize", vegaContainer.current.resize);

@@ -14,7 +14,23 @@ import ColorShemes from "components/color-shemes";
 
 import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
 
+const StyleEditorOptionsErrors = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform: translate(-50%, -50%);
+  h3 {
+    color: #ff6464;
+    text-align: center;
+  }
+  p {
+    color: #bfbfbf;
+    font-size: 12px;
+  }
+`;
+
 const StyledContainer = styled.div`
+  position: relative;
   flex: 1;
   background: #fff;
   height: calc(100% - ${FOOTER_HEIGHT} - 20px);
@@ -48,6 +64,7 @@ const StyledContainer = styled.div`
 `;
 
 const EditorOptions = ({
+  datasetId,
   limit,
   orderBy,
   patchConfiguration,
@@ -59,6 +76,18 @@ const EditorOptions = ({
       patchConfiguration({ limit: value });
     }
   };
+
+  if (!datasetId) {
+    return (
+      <StyledContainer compact={compact}>
+        <StyleEditorOptionsErrors>
+          <h3>Error loading dataset</h3>
+          <p>Dataset not accessible at this moment.</p>
+        </StyleEditorOptionsErrors>
+      </StyledContainer>
+    );
+  }
+
   return (
     <StyledContainer compact={compact}>
       <Tabs>

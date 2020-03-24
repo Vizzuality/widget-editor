@@ -1,37 +1,27 @@
 import React, { Fragment } from "react";
 import Select from "components/select";
 
-const QueryValues = ({
-  columns,
-  configuration,
-  patchConfiguration
-}) => {
-  const { 
+const QueryValues = ({ columns, configuration, patchConfiguration }) => {
+  const {
     title,
     category_title,
-    category: {
-      alias: categoryAlias, 
-      name: categoryName 
-    },
-    value: {
-      alias: valueAlias,
-      name: valueName
-    }
-  } = configuration
-  const verticalValue = { 
-    alias: categoryAlias || category_title || valueName, 
-    name: categoryName 
+    category: { alias: categoryAlias, name: categoryName },
+    value: { alias: valueAlias, name: valueName }
+  } = configuration;
+  const verticalValue = {
+    alias: categoryAlias || category_title || valueName,
+    name: categoryName
   };
-  const horizontalValue = { 
-    alias: valueAlias || title || valueName, 
-    name: valueName 
+  const horizontalValue = {
+    alias: valueAlias || title || valueName,
+    name: valueName
   };
   const handleChangeVertical = selectedOption => {
     // TODO: Wee need to set type here
     patchConfiguration({
       category: {
         ...configuration.category,
-        ...selectedOption,
+        ...selectedOption
       }
     });
   };
