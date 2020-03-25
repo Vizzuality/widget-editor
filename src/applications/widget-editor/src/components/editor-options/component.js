@@ -70,15 +70,23 @@ class EditorOptions extends React.Component {
         <label htmlFor="widget">Select widget</label>
         <select
           id="widget"
-          value={widget || ""}
-          onChange={e =>
-            modifyOptions({
-              dataset: widgets.find(w => w.id === e.target.value).attributes
-                .dataset,
-              widget: e.target.value
-            })
-          }
+          value={!!widget ? widget : "NO_WIDGET_SELECTED"}
+          onChange={e => {
+            if (e.target.value === "NO_WIDGET_SELECTED") {
+              modifyOptions({
+                widget: null,
+                dataset: "d446a52e-c4c1-4e74-ae30-3204620a0365"
+              });
+            } else {
+              modifyOptions({
+                dataset: widgets.find(w => w.id === e.target.value).attributes
+                  .dataset,
+                widget: e.target.value
+              });
+            }
+          }}
         >
+          <option value="NO_WIDGET_SELECTED">-</option>
           {widgets.map(rwWidget => {
             return (
               <option key={rwWidget.id} value={rwWidget.id}>
