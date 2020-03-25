@@ -7,7 +7,7 @@ import FilterComponent from "./component";
 export default connectState(
   state => ({
     configuration: state.configuration,
-    datasetId: state.editor.dataset.id,
+    dataset: state.editor.dataset,
     filters: state.filters.list,
     fields: state.editor.fields
   }),

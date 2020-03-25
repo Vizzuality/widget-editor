@@ -45,7 +45,7 @@ const Filter = ({
   filters = [],
   fields = [],
   configuration,
-  datasetId
+  dataset
 }) => {
   const availableColumns = fields.map(field => {
     return {
@@ -63,14 +63,13 @@ const Filter = ({
       filters,
       { values, id, type },
       configuration,
-      datasetId,
+      dataset,
       fields
     );
 
     setFilters({
       list: patch
     });
-
     // XXX: Update Data Service with applied filters
     dataService.requestWithFilters(patch, configuration);
   };

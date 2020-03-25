@@ -4,23 +4,23 @@ import capitalize from "../helpers/capitalize";
 
 export default class FieldsService {
   configuration: Config.Payload;
-  datasetId: String;
+  dataset: any;
   fields: any;
 
   NUMERIC_TYPE = "number";
   COLUMN_TYPE = "string";
   DATE_TYPE = "date";
 
-  constructor(configuration: Config.Payload, datasetId: string, fields: any) {
+  constructor(configuration: Config.Payload, dataset: string, fields: any) {
     this.configuration = configuration;
-    this.datasetId = datasetId;
+    this.dataset = dataset;
     this.fields = fields;
   }
 
   private query(q) {
     return fetch(
       // TODO: This url should come from adapter
-      `https://api.resourcewatch.org/v1/query/${this.datasetId}?${q}`
+      `https://api.resourcewatch.org/v1/query/${this.dataset.id}?${q}`
     )
       .then(response => {
         if (response.status >= 400) throw new Error(response.statusText);
@@ -30,16 +30,16 @@ export default class FieldsService {
   }
 
   private getTableName() {
-    const { tableName: valueTableName } = this.configuration.value;
-    const { tableName: categoryTableName } = this.configuration.category;
+    // const { tableName: valueTableName } = this.configuration.value;
+    // const { tableName: categoryTableName } = this.configuration.category;
 
-    return valueTableName ? valueTableName : categoryTableName;
+    return this.dataset.attributes.tableName;
   }
 
   // TODO: Geostore
   private getColumnMinAndMax(field: any) {
     const { columnName } = field;
-    const tableName = this.getTableName();
+    const tableName = this.getTableName(true);
 
     const query = `SELECT MIN(${columnName}) AS min, MAX(${columnName}) AS max FROM ${tableName}`;
 
@@ -49,6 +49,7 @@ export default class FieldsService {
   // TODO: Geostore
   private getColumnValues(field, uniq = true) {
     const { columnName } = field;
+    console.log(field, "FIELD");
     const tableName = this.getTableName();
 
     const uniqQueryPart = uniq ? `GROUP BY ${columnName}` : "";

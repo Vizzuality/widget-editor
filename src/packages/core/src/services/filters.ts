@@ -1,6 +1,8 @@
 // Filter service is responsible for:
 // Formating SQL string based on properties
 // Request new data based on propertie configuration
+import isPlainObject from "lodash/isPlainObject";
+import isArray from "lodash/isArray";
 
 import { Filters, Config } from "@packages/types";
 
@@ -19,16 +21,16 @@ async function asyncForEach(array, callback) {
 
 export default class FiltersService implements Filters.Service {
   sql: string;
-  datasetId: string;
+  dataset: any;
   configuration: Config.Payload;
   filters: any;
 
-  constructor(configuration: any, filters: any, datasetId: string) {
+  constructor(configuration: any, filters: any, dataset: any) {
     this.configuration = configuration;
     this.filters = filters;
     this.sql = "";
 
-    this.datasetId = datasetId;
+    this.dataset = dataset;
     this.prepareSelectStatement();
     this.prepareAggregate();
     this.prepareFilters();
@@ -39,18 +41,10 @@ export default class FiltersService implements Filters.Service {
   }
 
   private resolveTableName() {
-    const { value, category } = this.configuration;
-    const { tableName: xTableName } = value;
-    const { tableName: yTableName } = category;
-
-    if (!xTableName && !yTableName) {
-      throw new Error(
-        "Filters service: canot parse table name from value nor category."
-      );
-    }
-
-    // XXX: We prioritize xTableName, not sure if thats correct.
-    return xTableName ? xTableName : yTableName;
+    // const { value, category } = this.configuration;
+    // const { tableName: xTableName } = value;
+    // const { tableName: yTableName } = category;
+    return this.dataset.attributes.tableName;
   }
 
   prepareSelectStatement() {
@@ -110,6 +104,16 @@ export default class FiltersService implements Filters.Service {
   }
 
   private textContains(
+    sql: string,
+    column: string,
+    values: [string | number],
+    dataType: string
+  ): string {
+    let out = sql;
+    return `${out} ${column} = ${this.escapeValue(values, dataType)}`;
+  }
+
+  private valueEquals(
     sql: string,
     column: string,
     values: [string | number],
@@ -185,6 +189,10 @@ export default class FiltersService implements Filters.Service {
         if (indicator === "TEXT_ENDS_WITH") {
           out = this.textEndsWith(out, column, values, dataType);
         }
+
+        if (indicator === "value") {
+          out = this.valueEquals(out, column, values, dataType);
+        }
       });
     }
 
@@ -225,14 +233,14 @@ export default class FiltersService implements Filters.Service {
   }
 
   async requestWidgetData() {
-    if (!this.datasetId) {
+    if (!this.dataset.id) {
       throw new Error("Error, datasetId not present in Filters service.");
     }
 
     return [];
 
     const response = await fetch(
-      `https://api.resourcewatch.org/v1/query/${this.datasetId}?sql=${this.sql}`
+      `https://api.resourcewatch.org/v1/query/${this.dataset.id}?sql=${this.sql}`
     );
 
     const data = await response.json();
@@ -249,26 +257,32 @@ export default class FiltersService implements Filters.Service {
       type: configuredType,
       values: configuredValues
     } = config;
-    const { configuration, datasetId, fields, widget } = payload;
+
+    // Remove any filter from this flow not including an operation
+    const { configuration, dataset, fields, widget } = payload;
 
     const out = [];
 
     const assignIndicator = val => {
-      return Array.isArray(val) || val.length === 2 ? "range" : "value";
+      if (isPlainObject(val)) {
+        return Object.keys(val).length === 2 ? "range" : "value";
+      }
+      return isArray(val) && val.length === 2 ? "range" : "value";
     };
 
     await asyncForEach(filters, async (filter, index) => {
-      const values = filter[configuredValues];
+      const values = filter[configuredValues] || 0;
       const column = filter[configuredColumn];
       const type = filter[configuredType];
 
       // Resolve metadata for current field
-      const fieldService = new FieldsService(configuration, datasetId, fields);
+      const fieldService = new FieldsService(configuration, dataset, fields);
 
       out.push({
         column,
         indicator: assignIndicator(values),
         id: `we-filter-${column}-${index}`,
+        exlude: !filter.operation,
         dataType: type,
         filter: {
           values: values,
@@ -281,15 +295,9 @@ export default class FiltersService implements Filters.Service {
     return out;
   }
 
-  static async patchFilters(
-    filters,
-    payload,
-    configuration,
-    datasetId,
-    fields
-  ) {
+  static async patchFilters(filters, payload, configuration, dataset, fields) {
     const { values, id, type } = payload;
-    const fieldService = new FieldsService(configuration, datasetId, fields);
+    const fieldService = new FieldsService(configuration, dataset, fields);
 
     const patch = await filtersHelper(filters, fieldService, payload);
     return patch;

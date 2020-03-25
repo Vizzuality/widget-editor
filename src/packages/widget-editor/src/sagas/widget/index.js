@@ -19,16 +19,14 @@ async function getWidgetData(editorState) {
   const {
     configuration,
     filters,
-    editor: {
-      dataset: { id }
-    }
+    editor: { dataset }
   } = editorState;
-  const filtersService = new FiltersService(configuration, filters, id);
+  const filtersService = new FiltersService(configuration, filters, dataset);
   const sqlQuery = filtersService.getQuery();
 
   const { dataEndpoint } = adapterConfiguration;
 
-  const response = await fetch(`${dataEndpoint}/${id}?sql=${sqlQuery}`);
+  const response = await fetch(`${dataEndpoint}/${dataset.id}?sql=${sqlQuery}`);
   const data = await response.json();
 
   return data;
@@ -88,36 +86,52 @@ function* updateWidget() {
 
 function* updateWidgetData() {
   const { widgetEditor } = yield select();
-
   const widgetData = yield call(getWidgetData, widgetEditor);
 
   if (widgetData.data) {
     yield put(setEditor({ widgetData: widgetData.data }));
     yield call(updateWidget);
+    if (!widgetEditor.editor.initialized) {
+      yield put({ type: constants.sagaEvents.DATA_FLOW_VISUALISATION_READY });
+    }
   }
 }
 
 export default function* baseSaga() {
+  // --- Triggered once: When we have all nessesary information to render visualization
+  yield takeLatest(
+    constants.sagaEvents.DATA_FLOW_FIELDS_AND_LAYERS_READY,
+    updateWidgetData
+  );
+
+  // --- Triggered once: When we have all nessesary information to render visualization
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
     preloadData
   );
 
+  // --- Triggered once: When App initializes, we store adapter configuration localy
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
     storeAdapterConfigInState
   );
 
-  yield takeLatest(
-    getAction("CONFIGURATION/patchConfiguration"),
-    resolveWithProxy
-  );
-
+  // --- Triggered multiple: When Configuration or data updates we update the widget
   yield takeLatest(constants.sagaEvents.DATA_FLOW_UPDATE_WIDGET, updateWidget);
+
+  // --- Triggered multiple: When configuration updates, we update widget data
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE,
     updateWidgetData
   );
 
+  // --- Triggered multiple: When configuration gets modified, we check with our state
+  // --- proxy if we have updates, if thats the case we update the editors state based on response
+  yield takeLatest(
+    getAction("CONFIGURATION/patchConfiguration"),
+    resolveWithProxy
+  );
+
+  // --- Triggered multiple: If theme gets modified we update our widget
   yield takeLatest(getAction("EDITOR/THEME/setTheme"), updateWidget);
 }

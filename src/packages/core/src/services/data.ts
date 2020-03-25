@@ -60,7 +60,8 @@ export default class DataService {
       const normalizeFilters = await this.adapter.filterUpdate(
         filters,
         this.allowedFields,
-        this.widget
+        this.widget,
+        this.dataset
       );
 
       this.dispatch({
@@ -103,8 +104,8 @@ export default class DataService {
       });
     }
 
+    this.dispatch({ type: sagaEvents.DATA_FLOW_FIELDS_AND_LAYERS_READY });
     this.setEditor({ layers, fields: this.allowedFields });
-    this.dispatch({ type: sagaEvents.DATA_FLOW_DATA_READY });
   }
 
   async requestWithFilters(filters: any, configuration: any) {

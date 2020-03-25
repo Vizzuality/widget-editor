@@ -141,7 +141,6 @@ export default class RwAdapter implements Adapter.Service {
 
   async getWidgetData(dataset: Dataset.Payload, widget: Widget.Payload) {
     const sql = this.widgetService.getDataSqlQuery(dataset, widget);
-
     const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;
 
     const { data } = await this.widgetService.fetchWidgetData(url);
@@ -242,7 +241,7 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
-  async filterUpdate(filters, fields, widget) {
+  async filterUpdate(filters, fields, widget, dataset) {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];
     }
@@ -264,7 +263,7 @@ export default class RwAdapter implements Adapter.Service {
         values: "value",
         type: "type"
       },
-      { configuration, datasetId: this.datasetId, fields, widget }
+      { configuration, dataset, fields, widget }
     );
 
     return out;
