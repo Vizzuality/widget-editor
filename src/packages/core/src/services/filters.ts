@@ -223,7 +223,7 @@ export default class FiltersService implements Filters.Service {
     const { orderBy } = this.configuration;
     if (orderBy) {
       const { orderType } = orderBy;
-      this.sql = `${this.sql} ${orderType || "desc"}`;
+      this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
     }
   }
 
@@ -258,7 +258,6 @@ export default class FiltersService implements Filters.Service {
       values: configuredValues
     } = config;
 
-    // Remove any filter from this flow not including an operation
     const { configuration, dataset, fields, widget } = payload;
 
     const out = [];

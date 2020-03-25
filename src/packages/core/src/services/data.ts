@@ -1,3 +1,5 @@
+import isObjectLike from "lodash/isObjectLike";
+
 import { Dataset, Widget, Adapter, Generic } from "@packages/types";
 
 import FiltersService from "./filters";
@@ -55,10 +57,22 @@ export default class DataService {
   }
 
   async handleFilters() {
-    const filters = this.widget.attributes?.widgetConfig?.paramsConfig?.filters;
+    const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
+    const filters = paramsConfig?.filters;
+    let orderBy = null;
+
     if (filters && Array.isArray(filters) && filters.length > 0) {
+      // --- Handle orderBy if it exsists
+      // --- If a filter does not include an operation
+      const serializedFilters = filters.filter(f => !!f.operation);
+
+      // --- If orderby exsists, assign it to store
+      if (isObjectLike(paramsConfig.orderBy)) {
+        orderBy = paramsConfig.orderBy;
+      }
+
       const normalizeFilters = await this.adapter.filterUpdate(
-        filters,
+        serializedFilters,
         this.allowedFields,
         this.widget,
         this.dataset
@@ -66,7 +80,7 @@ export default class DataService {
 
       this.dispatch({
         type: reduxActions.EDITOR_SET_FILTERS,
-        payload: { list: normalizeFilters }
+        payload: { orderBy, list: normalizeFilters }
       });
     }
   }

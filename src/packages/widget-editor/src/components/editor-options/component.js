@@ -75,6 +75,9 @@ const EditorOptions = ({
     if (type === "limit") {
       patchConfiguration({ limit: value });
     }
+    if (type === "orderBy") {
+      patchConfiguration({ orderBy: value });
+    }
   };
 
   if (!datasetId) {
@@ -100,7 +103,11 @@ const EditorOptions = ({
               <Filter dataService={dataService} />
             </AccordionSection>
             <AccordionSection title="Order">
-              {orderBy && <OrderValues />}
+              {orderBy && (
+                <OrderValues
+                  onChange={value => handleChange(value, "orderBy")}
+                />
+              )}
               {limit && (
                 <QueryLimit
                   min={0}

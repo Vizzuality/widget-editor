@@ -1,12 +1,15 @@
 import { connectState } from "helpers/redux";
 
-import { patchConfiguration } from "modules/configuration/actions";
+import { setFilters } from "modules/filters/actions";
 
 import OrderValuesComponent from "./component";
 
+import * as selectors from "modules/widget/selectors";
+
 export default connectState(
   state => ({
-    orderBy: state.configuration.orderBy
+    orderBy: state.filters.orderBy,
+    columns: selectors.getWidgetColumns(state)
   }),
-  { patchConfiguration }
+  { setFilters }
 )(OrderValuesComponent);

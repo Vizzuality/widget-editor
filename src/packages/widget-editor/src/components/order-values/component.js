@@ -20,39 +20,68 @@ const InputStyles = {
   })
 };
 
-const ORDER_OPTIONS = [
+const ORDER_TYPES = [
   { label: "Ascending", value: "asc" },
   { label: "Descending", value: "desc" }
 ];
 
-const OrderValues = ({ orderBy, patchConfiguration }) => {
-  const [order, setOrder] = useState(
-    find(ORDER_OPTIONS, { value: orderBy.orderType })
+const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
+  const options = columns.map(c => ({
+    value: c.name || c.alias || c.identifier,
+    label: c.name || c.alias || c.identifier
+  }));
+
+  const selectedOption = options.find(o =>
+    orderBy ? o.label === orderBy.name : null
   );
 
-  useEffect(() => {
-    if (orderBy.orderType !== order.value) {
-      setOrder(find(ORDER_OPTIONS, { value: orderBy.orderType }));
-    }
-  }, [orderBy, order.value]);
+  const definedOrder =
+    orderBy && orderBy.orderType
+      ? find(ORDER_TYPES, {
+          value: orderBy.orderType.toLowerCase()
+        })
+      : ORDER_TYPES[0];
 
-  const handleChange = option => {
-    patchConfiguration({
-      orderBy: {
-        ...orderBy,
-        orderType: option.value
-      }
+  const [orderType, setOrderType] = useState(
+    definedOrder ? definedOrder : ORDER_TYPES[0]
+  );
+
+  const handleChange = (option, type) => {
+    let findSelected;
+    if (type === "orderByType") {
+      findSelected = orderBy;
+      setOrderType(option);
+    } else {
+      findSelected = columns.find(c => c.name === option.value);
+    }
+
+    setFilters({
+      orderBy: findSelected
+    });
+
+    onChange({
+      ...findSelected,
+      orderType: type === "orderByType" ? option.value : orderType.value
     });
   };
 
   return (
     <FlexContainer>
       <InputGroup>
+        <FormLabel htmlFor="options-title">Order by</FormLabel>
+        <Select
+          onChange={option => handleChange(option, "column")}
+          value={selectedOption}
+          options={options}
+          styles={InputStyles}
+        />
+      </InputGroup>
+      <InputGroup>
         <FormLabel htmlFor="options-title">Ascending or Descending</FormLabel>
         <Select
-          onChange={handleChange}
-          value={order}
-          options={ORDER_OPTIONS}
+          onChange={option => handleChange(option, "orderByType")}
+          value={orderType}
+          options={ORDER_TYPES}
           styles={InputStyles}
         />
       </InputGroup>
