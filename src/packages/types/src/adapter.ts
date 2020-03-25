@@ -11,6 +11,7 @@ export type datasetId = Id;
 export interface Service {
   config: Config.Payload;
   endpoint: Endpoint;
+  dataEndpoint: Endpoint;
   datasetId: datasetId;
 
   // Used when saving data

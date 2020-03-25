@@ -34,6 +34,11 @@ class Editor extends React.Component {
     this.dataService.resolveInitialState();
     this.resolveTheme(theme);
     this.resolveSchemes(schemes);
+
+    props.dispatch({
+      type: constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
+      payload: adapter
+    });
   }
 
   componentWillMount() {

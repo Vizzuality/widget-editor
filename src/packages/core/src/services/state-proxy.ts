@@ -1,53 +1,86 @@
-import FiltersService from "./filters";
 import { sagaEvents } from "../constants";
 import isEqual from "lodash/isEqual";
 
 export default class StateProxy {
-  cache: object;
+  chartCache: object;
   constructor() {
     // These are the properties that we will check for updates
-    this.cache = {
-      limit: null,
+    this.chartCache = {
       chartType: null,
+      direction: null
+    };
+
+    this.configuration = {
       value: null,
-      orderBy: null
+      category: null,
+      orderBy: null,
+      aggregateFunction: null,
+      filters: null,
+      areaIntersection: null,
+      band: null,
+      layer: null,
+      limit: null
     };
   }
 
-  checkHasUpdate(state: { limit: number; chartType: number; value: object }) {
-    const keys = Object.keys(this.cache);
-    let hasUpdate = false;
-    keys.forEach(key => {
-      hasUpdate = hasUpdate || !isEqual(this.cache[key], state[key]);
-    });
-
-    return hasUpdate;
+  cacheChart(state) {
+    const { chartType = null, direction = null } = state.configuration;
+    this.chartCache = { chartType, direction };
   }
 
-  cacheCurrent(state: { limit: number; chartType: number; value: object }) {
-    this.cache = state;
+  chartHasUpdate(state) {
+    const { editor } = state;
+    const { chartType, direction } = state.configuration;
+    const hasUpdate = !isEqual(this.chartCache, { chartType, direction });
+    this.chartCache = { chartType, direction };
+    return hasUpdate && editor.initialized;
   }
 
-  async sync(
-    state: { limit: number; chartType: number; value: object },
-    datasetId: string
-  ) {
-    const hasUpdate = this.checkHasUpdate(state);
+  configurationHasUpdate(state) {
+    const { editor } = state;
+    const {
+      value,
+      category,
+      orderBy,
+      aggregateFunction,
+      filters,
+      areaIntersection,
+      band,
+      layer,
+      limit
+    } = state.configuration;
 
-    if (hasUpdate) {
-      this.cacheCurrent(state);
-      // TODO: Is this nessesary??
-      // const filtersService = new FiltersService(state, datasetId);
-      // const widgetData = await filtersService.requestWidgetData();
-      // return {
-      //   hasUpdates: hasUpdate,
-      //   widgetData: widgetData.data
-      // };
+    const updatedConfiguration = {
+      value,
+      category,
+      orderBy,
+      aggregateFunction,
+      filters,
+      areaIntersection,
+      band,
+      layer,
+      limit
+    };
+
+    const hasUpdate = !isEqual(this.configuration, updatedConfiguration);
+    this.configuration = updatedConfiguration;
+
+    return hasUpdate && editor.initialized;
+  }
+
+  // -- This method checks our conditions and returns a saga event
+  // -- for any update we want to perform
+  async sync(editorState: object) {
+    const UPDATES = [];
+
+    if (this.chartHasUpdate(editorState)) {
+      UPDATES.push(sagaEvents.DATA_FLOW_UPDATE_WIDGET);
     }
 
-    return {
-      hasUpdates: hasUpdate,
-      widgetData: null
-    };
+    if (this.configurationHasUpdate(editorState)) {
+      UPDATES.push(sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE);
+    }
+
+    return UPDATES;
   }
 }

@@ -12,6 +12,7 @@ async function asyncForEach(array, callback) {
 
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
+  dataEndpoint = "https://api.resourcewatch.org/v1/query";
 
   config = null;
   datasetService = null;

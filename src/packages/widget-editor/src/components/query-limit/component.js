@@ -38,7 +38,7 @@ const QueryLimit = ({
   handleOnChangeValue = (data, key) => {}
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
-  const debouncedValue = useDebounce(localValue);
+  const debouncedValue = useDebounce(localValue, 400);
 
   useEffect(() => {
     if (!debouncedValue.key) {
