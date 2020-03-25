@@ -32,7 +32,7 @@ const ChartList = ({ list, setData, title }) => {
  * MENU_DATA - the array of charts for showing in menu
  * @param {options} - the array of available charts 
  */
-const ChartMenu = ({ options, getValue, setValue, innerRef }) => {
+const ChartMenu = ({ options, getValue, setValue, innerRef, innerProps }) => {
 
   const data = getValue()[0];
   const menu = MENU_DATA.map(m => {
@@ -58,7 +58,7 @@ const ChartMenu = ({ options, getValue, setValue, innerRef }) => {
   }
 
   return (
-    <StyledContainer ref={innerRef}>
+    <StyledContainer ref={innerRef} {...innerProps}>
       <StyledMenu>
         <ChartList 
           title="Columns"
