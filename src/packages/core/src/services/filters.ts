@@ -47,9 +47,19 @@ export default class FiltersService implements Filters.Service {
     return this.dataset.attributes.tableName;
   }
 
+  prepareColor() {
+    const { color } = this.configuration;
+    if (isPlainObject(color)) {
+      return `, ${color.identifier} as color`;
+    }
+    return "";
+  }
+
   prepareSelectStatement() {
     const { category } = this.configuration;
-    this.sql = `SELECT ${category.name} as ${sqlFields.value}`;
+    this.sql = `SELECT ${category.name} as ${
+      sqlFields.value
+    } ${this.prepareColor()}`;
   }
 
   prepareAggregate() {

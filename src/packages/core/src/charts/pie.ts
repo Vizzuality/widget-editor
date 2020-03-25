@@ -71,7 +71,7 @@ export default class Pie implements Charts.Pie {
         name: "c",
         type: "ordinal",
         domain: { data: "table", field: sqlFields.value },
-        range: this.scheme ? this.scheme.category : 'category20'
+        range: this.scheme ? this.scheme.category : "category20"
       }
     ];
   }
@@ -106,6 +106,7 @@ export default class Pie implements Charts.Pie {
 
   bindData(): Vega.Data[] {
     const { widgetData } = this;
+
     return [
       {
         values: widgetData,

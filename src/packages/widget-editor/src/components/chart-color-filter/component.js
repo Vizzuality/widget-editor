@@ -1,19 +1,15 @@
-import React from 'react';
-import Slider from 'react-slick';
-import Select from 'react-select';
-// import "slick-carousel/slick/slick.css"; 
-// import "slick-carousel/slick/slick-theme.css";
+import React from "react";
+import Slider from "react-slick";
+import Select from "components/select";
+import isObjectLike from "lodash/isObjectLike";
 
 import {
   StyledContainer,
-  StyledDataBox,
-  StyledData,
-  StyledColor,
-  StyledTitle,
-  StyledSliderBox,
-  StyledDropdownBox,
-  InputStyles,
-} from './style';
+  StyledColorsBoxContainer,
+  StyledColorsBox,
+  StyledColorDot,
+  StyledDropdownBox
+} from "./style";
 
 const settings = {
   dots: false,
@@ -23,61 +19,73 @@ const settings = {
   slidesToScroll: 1,
   initialSlide: 2,
   adaptiveHeight: true,
-  arrows: false,
+  arrows: false
 };
 
-const ChartColorFilter = ({ editor }) => {
+const SINGLE_COLOR_OPTION = {
+  alias: "Single color",
+  identifier: "___single_color"
+};
 
-  const { widgetData } = editor;
-  const sliderData = [];
-  const perPage = 6;
-  widgetData && widgetData.forEach((data, key) => {
-    const itemNumber = Math.floor(key/(perPage+1));
-    sliderData[itemNumber] ? sliderData[itemNumber].push(data) : sliderData[itemNumber] = [];
-  });
+const ChartColorFilter = ({
+  color,
+  configuration,
+  schemeColor,
+  activeScheme,
+  columns,
+  widgetData,
+  setFilters,
+  patchConfiguration
+}) => {
+  const defaultValue = isObjectLike(color) ? color : SINGLE_COLOR_OPTION;
 
-  const columns = [
-    { value: 1, label: 'start' },
-    { value: 1, label: 'end' },
-  ];
-
-  const horizontalValue = columns[0];
-
-  const handleChangeHorizontal = () => {
-
-  }
+  const handleChange = option => {
+    const color = option.identifier === "___single_color" ? null : option;
+    setFilters({
+      color
+    });
+    patchConfiguration({ color });
+  };
 
   return (
     <StyledContainer>
-      <StyledSliderBox>
-        <div>
-          <Slider {...settings}>
-            {sliderData && sliderData.map((slider, key) => (
-              <div key={key}>
-                <StyledDataBox>
-                  {slider.map(s => (
-                    <StyledData>
-                      <StyledColor />
-                      <StyledTitle>{s.x}</StyledTitle>
-                    </StyledData>
-                  ))}
-                </StyledDataBox>
-              </div>
-            ))}
-          </Slider>
-        </div>
-      </StyledSliderBox>
+      {!isObjectLike(color) && (
+        <StyledColorsBoxContainer alignCenter={!isObjectLike(color)}>
+          <StyledColorsBox>
+            <StyledColorDot color={schemeColor} />
+            Single color
+          </StyledColorsBox>
+        </StyledColorsBoxContainer>
+      )}
+      {isObjectLike(color) && (
+        <StyledColorsBoxContainer list={true}>
+          {widgetData.map((node, index) => {
+            return (
+              <StyledColorsBox list={true} key={node.x}>
+                <StyledColorDot color={activeScheme.category[index]} />
+                {node.x}
+              </StyledColorsBox>
+            );
+          })}
+        </StyledColorsBoxContainer>
+      )}
       <StyledDropdownBox>
         <Select
+          align="horizontal"
+          relative={true}
           menuPlacement="top"
-          defaultValue={horizontalValue}
-          onChange={handleChangeHorizontal}
-          options={columns}
-          styles={InputStyles}
+          defaultValue={defaultValue}
+          onChange={handleChange}
+          getOptionLabel={option => option.alias || option.name}
+          getOptionValue={option => option.identifier}
+          options={[SINGLE_COLOR_OPTION, ...columns]}
+          configuration={configuration}
+          isCustom
+          isPopup
         />
       </StyledDropdownBox>
     </StyledContainer>
   );
-}
+};
 
 export default ChartColorFilter;

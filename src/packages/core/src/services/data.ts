@@ -60,15 +60,20 @@ export default class DataService {
     const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
     const filters = paramsConfig?.filters;
     let orderBy = null;
+    let color = null;
 
     if (filters && Array.isArray(filters) && filters.length > 0) {
       // --- Handle orderBy if it exsists
       // --- If a filter does not include an operation
       const serializedFilters = filters.filter(f => !!f.operation);
 
-      // --- If orderby exsists, assign it to store
+      // --- If orderby exsists, assign it to stores
       if (isObjectLike(paramsConfig.orderBy)) {
         orderBy = paramsConfig.orderBy;
+      }
+
+      if (isObjectLike(paramsConfig.color)) {
+        color = paramsConfig.color;
       }
 
       const normalizeFilters = await this.adapter.filterUpdate(
@@ -80,7 +85,7 @@ export default class DataService {
 
       this.dispatch({
         type: reduxActions.EDITOR_SET_FILTERS,
-        payload: { orderBy, list: normalizeFilters }
+        payload: { color, orderBy, list: normalizeFilters }
       });
     }
   }
