@@ -7,17 +7,20 @@ export default class BarsVertical implements Charts.Bars {
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
   scheme: any;
+  colorApplied: boolean;
 
   constructor(
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
-    scheme: any
+    scheme: any,
+    colorApplied: boolean
   ) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.scheme = scheme;
+    this.colorApplied = colorApplied;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -29,15 +32,10 @@ export default class BarsVertical implements Charts.Bars {
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
-      data: this.bindData()
+      data: this.bindData(),
       interaction_config: this.interactionConfig(),
       config: {
-        ...this.scheme.config,
-        rect: {
-          fill: this.scheme
-            ? this.scheme.mainColor
-            : this.schema.config.rect.fill
-        }
+        ...this.scheme.config
       }
     };
   }
@@ -124,6 +122,9 @@ export default class BarsVertical implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
+            fill: {
+              signal: "datum._w_e_color"
+            },
             tooltip: {
               signal: "{'Label': datum.x, 'Value': datum.y }"
             }
@@ -168,10 +169,18 @@ export default class BarsVertical implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { widgetData, scheme } = this;
+
+    const serialize = widgetData.map((d, index) => ({
+      ...d,
+      _w_e_color: this.colorApplied
+        ? scheme.category[index]
+        : scheme.mainColor || this.schema.config.rect.fill
+    }));
+
     return [
       {
-        values: widgetData,
+        values: serialize,
         name: "table",
         transform: [
           { type: "identifier", as: "id" },

@@ -15,7 +15,7 @@ export const StyledColorsBoxContainer = styled.div`
     `}
 
   ${props =>
-    props.list &&
+    props.overflowIsHidden &&
     css`
       max-height: 70px;
       overflow-y: scroll;
@@ -28,7 +28,7 @@ export const StyledColorsBox = styled.div`
   font-size: 14px;
   color: #717171;
   ${props =>
-    props.list &&
+    props.alignCenter &&
     css`
       float: left;
       width: 110px;

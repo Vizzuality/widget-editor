@@ -50,18 +50,21 @@ const ChartColorFilter = ({
   return (
     <StyledContainer>
       {!isObjectLike(color) && (
-        <StyledColorsBoxContainer alignCenter={!isObjectLike(color)}>
-          <StyledColorsBox>
+        <StyledColorsBoxContainer
+          overflowIsHidden={false}
+          alignCenter={!isObjectLike(color)}
+        >
+          <StyledColorsBox alignCenter={false}>
             <StyledColorDot color={schemeColor} />
             Single color
           </StyledColorsBox>
         </StyledColorsBoxContainer>
       )}
       {isObjectLike(color) && (
-        <StyledColorsBoxContainer list={true}>
+        <StyledColorsBoxContainer overflowIsHidden={true}>
           {widgetData.map((node, index) => {
             return (
-              <StyledColorsBox list={true} key={node.x}>
+              <StyledColorsBox alignCenter={true} key={node.x}>
                 <StyledColorDot color={activeScheme.category[index]} />
                 {node.x}
               </StyledColorsBox>

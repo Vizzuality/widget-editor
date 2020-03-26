@@ -1,3 +1,5 @@
+import isObjectLike from "lodash/isObjectLike";
+
 import { Charts, Vega } from "@packages/types";
 
 import Pie from "../charts/pie";
@@ -19,6 +21,7 @@ export default class VegaService implements Charts.Service {
   configuration: any;
   scheme: any;
   schema: Vega.Schema;
+  colorApplied: boolean;
 
   constructor(
     widgetConfig: any,
@@ -29,6 +32,9 @@ export default class VegaService implements Charts.Service {
     this.scheme = theme.schemes.find(
       scheme => scheme.name === theme.selectedScheme
     );
+
+    this.colorApplied = isObjectLike(configuration.color);
+
     this.schema = defaultVegaSchema();
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -90,8 +96,8 @@ export default class VegaService implements Charts.Service {
       if (node.color) {
         if (node.color in groupColors) {
           groupColors[node.color] = {
-            ...out[node.color],
-            y: out[node.color].y + node.y
+            ...groupColors[node.color],
+            y: groupColors[node.color].y + node.y
           };
         } else {
           groupColors[node.color] = node;
@@ -109,13 +115,13 @@ export default class VegaService implements Charts.Service {
   }
 
   resolveDataFormat() {
-    const { chartType, direction, color } = this.configuration;
+    const { chartType, direction } = this.configuration;
 
     if (chartType === "pie") {
       return this.groupByTop(this.widgetData);
     }
 
-    if (color) {
+    if (this.colorApplied) {
       return this.groupByColor(this.widgetData);
     }
 
@@ -123,7 +129,7 @@ export default class VegaService implements Charts.Service {
   }
 
   resolveChart() {
-    const { chartType, direction, color } = this.configuration;
+    const { chartType, direction } = this.configuration;
     let chart;
 
     const data = this.resolveDataFormat();
@@ -141,7 +147,8 @@ export default class VegaService implements Charts.Service {
         this.schema,
         this.widgetConfig,
         data,
-        this.scheme
+        this.scheme,
+        true
       ).getChart();
     }
 
@@ -151,14 +158,16 @@ export default class VegaService implements Charts.Service {
           this.schema,
           this.widgetConfig,
           data,
-          this.scheme
+          this.scheme,
+          this.colorApplied
         ).getChart();
       } else {
         chart = new BarsVertical(
           this.schema,
           this.widgetConfig,
           data,
-          this.scheme
+          this.scheme,
+          this.colorApplied
         ).getChart();
       }
     }
@@ -168,7 +177,8 @@ export default class VegaService implements Charts.Service {
         this.schema,
         this.widgetConfig,
         data,
-        this.scheme
+        this.scheme,
+        this.colorApplied
       ).getChart();
     }
 
@@ -177,7 +187,8 @@ export default class VegaService implements Charts.Service {
         this.schema,
         this.widgetConfig,
         data,
-        this.scheme
+        this.scheme,
+        this.colorApplied
       ).getChart();
     }
 

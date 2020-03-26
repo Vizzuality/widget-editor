@@ -26,7 +26,7 @@ const Popup = ({
     <StyledPopupContainer align={align} ref={innerRef} {...innerProps}>
       <StyledPopupInsideContainer align={align}>
         {options.map(op => (
-          <Fragment key={op.name}>
+          <Fragment key={op.identifier + op.name}>
             <StyledCategoryAlias
               nonSelectedCategory={op.identifier === "___single_color"}
               active={op.name === selected.name}

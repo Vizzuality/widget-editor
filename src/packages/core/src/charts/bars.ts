@@ -12,11 +12,14 @@ export default class Bars implements Charts.Bars {
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
-    scheme: any
+    scheme: any,
+    colorApplied: boolean
   ) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
+    this.colorApplied = colorApplied;
+
     this.scheme = scheme;
 
     this.generateSchema();
@@ -32,12 +35,7 @@ export default class Bars implements Charts.Bars {
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
       config: {
-        ...this.scheme.config,
-        rect: {
-          fill: this.scheme
-            ? this.scheme.mainColor
-            : this.schema.config.rect.fill
-        }
+        ...this.scheme.config
       }
     };
   }
@@ -87,6 +85,9 @@ export default class Bars implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
+            fill: {
+              signal: "datum._w_e_color"
+            },
             tooltip: {
               signal: "{'Label': datum.x, 'Value': datum.y }"
             }
@@ -181,10 +182,18 @@ export default class Bars implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { widgetData, scheme } = this;
+
+    const serialize = widgetData.map((d, index) => ({
+      ...d,
+      _w_e_color: this.colorApplied
+        ? scheme.category[index]
+        : scheme.mainColor || this.schema.config.rect.fill
+    }));
+
     return [
       {
-        values: widgetData,
+        values: serialize,
         name: "table",
         transform: [
           { type: "identifier", as: "id" },
