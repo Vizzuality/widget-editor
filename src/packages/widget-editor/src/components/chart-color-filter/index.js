@@ -10,15 +10,16 @@ import * as widgetSelectors from "modules/widget/selectors";
 import * as themeSelectors from "modules/theme/selectors";
 
 export default connectState(
-  state => ({
+  (state) => ({
     widget: state.widget,
     color: state.filters.color,
     configuration: state.configuration,
-    columns: widgetSelectors.getWidgetColumns(state),
+    selectedColor: widgetSelectors.getSelectedColor(state),
+    columns: widgetSelectors.getWidgetColumns(state, { colorDimention: true }),
     schemeColor: themeSelectors.getMainThemeColor(state),
     activeScheme: themeSelectors.getActiveScheme(state),
     widgetData:
-      state.widget && state.widget.data ? state.widget.data[0].values : null
+      state.widget && state.widget.data ? state.widget.data[0].values : null,
   }),
   { setFilters, patchConfiguration }
 )(ChartColorFilter);

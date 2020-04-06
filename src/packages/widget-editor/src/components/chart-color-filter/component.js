@@ -8,7 +8,7 @@ import {
   StyledColorsBoxContainer,
   StyledColorsBox,
   StyledColorDot,
-  StyledDropdownBox
+  StyledDropdownBox,
 } from "./style";
 
 const settings = {
@@ -19,37 +19,49 @@ const settings = {
   slidesToScroll: 1,
   initialSlide: 2,
   adaptiveHeight: true,
-  arrows: false
+  arrows: false,
 };
 
-const SINGLE_COLOR_OPTION = {
-  alias: "Single color",
-  identifier: "___single_color"
+let c = 0;
+const resolveSchemeColor = (scheme, index) => {
+  if (index % scheme.length === 0) {
+    c = 0;
+  }
+  const color = scheme[c];
+  c++;
+  return color;
 };
 
 const ChartColorFilter = ({
   color,
   configuration,
   schemeColor,
+  selectedColor,
   activeScheme,
   columns,
   widgetData,
   setFilters,
-  patchConfiguration
+  patchConfiguration,
 }) => {
-  const defaultValue = isObjectLike(color) ? color : SINGLE_COLOR_OPTION;
+  const isPie = configuration.chartType === "pie";
+  const isSingleColorSelection = !isPie && !isObjectLike(color);
 
-  const handleChange = option => {
+  const handleChange = (option) => {
     const color = option.identifier === "___single_color" ? null : option;
-    setFilters({
-      color
-    });
-    patchConfiguration({ color });
+
+    if (isPie) {
+      patchConfiguration({ category: color });
+    } else {
+      setFilters({
+        color,
+      });
+      patchConfiguration({ color });
+    }
   };
 
   return (
     <StyledContainer>
-      {!isObjectLike(color) && (
+      {isSingleColorSelection && (
         <StyledColorsBoxContainer
           overflowIsHidden={false}
           alignCenter={!isObjectLike(color)}
@@ -60,28 +72,33 @@ const ChartColorFilter = ({
           </StyledColorsBox>
         </StyledColorsBoxContainer>
       )}
-      {isObjectLike(color) && (
+      {!isSingleColorSelection && (
         <StyledColorsBoxContainer overflowIsHidden={true}>
-          {widgetData.map((node, index) => {
-            return (
-              <StyledColorsBox alignCenter={true} key={node.x}>
-                <StyledColorDot color={activeScheme.category[index]} />
-                {node.x}
-              </StyledColorsBox>
-            );
-          })}
-        </StyledColorsBoxContainer>
+          {widgetData &&
+            widgetData.map((node, index) => {
+              return (
+                <StyledColorsBox alignCenter={true} key={node.x}>
+                  <StyledColorDot
+                    color={resolveSchemeColor(activeScheme.category, index)}
+                  />
+                  {node.x}
+                </StyledColorsBox>
+              );
+            })}
+        </StyledColorsBoxContainer>s
       )}
       <StyledDropdownBox>
         <Select
           align="horizontal"
           relative={true}
           menuPlacement="top"
-          defaultValue={defaultValue}
+          value={selectedColor}
           onChange={handleChange}
-          getOptionLabel={option => option.alias || option.name}
-          getOptionValue={option => option.identifier}
-          options={[SINGLE_COLOR_OPTION, ...columns]}
+          getOptionLabel={(option) =>
+            option.name || option.alias || option.identifier
+          }
+          getOptionValue={(option) => option.identifier}
+          options={columns}
           configuration={configuration}
           isCustom
           isPopup

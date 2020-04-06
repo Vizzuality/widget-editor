@@ -8,7 +8,7 @@ import {
   StyledCategoryAlias,
   StyledValueAlias,
   StyledDescription,
-  IconBox
+  IconBox,
 } from "./style";
 
 const Popup = ({
@@ -17,7 +17,7 @@ const Popup = ({
   setValue,
   innerRef,
   innerProps,
-  selectProps
+  selectProps,
 }) => {
   const selected = getValue()[0];
   const { align = ALIGN_HORIZONTAL } = selectProps;
@@ -25,11 +25,11 @@ const Popup = ({
   return (
     <StyledPopupContainer align={align} ref={innerRef} {...innerProps}>
       <StyledPopupInsideContainer align={align}>
-        {options.map(op => (
+        {options.map((op) => (
           <Fragment key={op.identifier + op.name}>
             <StyledCategoryAlias
               nonSelectedCategory={op.identifier === "___single_color"}
-              active={op.name === selected.name}
+              active={selected && op.identifier === selected.identifier}
               onClick={() => setValue(op)}
             >
               <IconBox>
@@ -43,7 +43,7 @@ const Popup = ({
               <StyledCategoryInfoContainer>
                 <StyledValueAlias>
                   <IconBox>#</IconBox>
-                  {op.alias || op.name}
+                  {op.alias || op.name || op.identifier}
                 </StyledValueAlias>
                 {op.description && (
                   <StyledDescription>{op.description}</StyledDescription>

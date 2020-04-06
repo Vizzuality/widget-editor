@@ -7,10 +7,10 @@ import * as selectors from "modules/widget/selectors";
 import QueryValuesComponent from "./component";
 
 export default connectState(
-  state => ({
+  (state) => ({
     theme: state.theme,
     configuration: state.configuration,
-    columns: selectors.getWidgetColumns(state)
+    columns: selectors.getWidgetColumns(state),
   }),
   { patchConfiguration }
 )(QueryValuesComponent);
