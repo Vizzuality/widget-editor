@@ -11,7 +11,7 @@ import { constants } from "@packages/core";
 */
 export const connectState = (stateHandler, dispatchHandler) => {
   return connect(
-    state =>
+    (state) =>
       typeof stateHandler === "function"
         ? stateHandler(state[constants.APP_NAMESPACE])
         : {},
@@ -20,14 +20,14 @@ export const connectState = (stateHandler, dispatchHandler) => {
 };
 
 // Create redux actions that namespaces the widget editor
-export const createAction = action =>
+export const createAction = (action) =>
   VzCreateAction(`${constants.APP_NAMESPACE}/${action}`);
 
 // Gets an action with our namespace. used for our sagas
-export const getAction = action => `${constants.APP_NAMESPACE}/${action}`;
+export const getAction = (action) => `${constants.APP_NAMESPACE}/${action}`;
 
 export default {
   connectState,
   createAction,
-  getAction
+  getAction,
 };

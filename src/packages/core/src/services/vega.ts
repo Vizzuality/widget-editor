@@ -68,10 +68,15 @@ export default class VegaService implements Charts.Service {
   }
 
   groupByTop(data, am = 5) {
+    function sortHighToLow(a, b) {
+      if (a.y > b.y) return -1;
+      if (b.y > a.y) return 1;
+      return 0;
+    }
+
     const combine = this.groupSimilar(data);
 
-    const sortValues = combine.sort((a, b) => a.y - b.y);
-
+    const sortValues = combine.sort(sortHighToLow);
     const top5 = sortValues.slice(0, am);
     const others = sortValues.slice(am, sortValues.length + 1);
 

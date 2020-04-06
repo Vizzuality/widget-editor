@@ -77,7 +77,7 @@ const ChartColorFilter = ({
           {widgetData &&
             widgetData.map((node, index) => {
               return (
-                <StyledColorsBox alignCenter={true} key={node.x}>
+                <StyledColorsBox alignCenter={true} key={`${node.x}-${index}`}>
                   <StyledColorDot
                     color={resolveSchemeColor(activeScheme.category, index)}
                   />
@@ -85,7 +85,7 @@ const ChartColorFilter = ({
                 </StyledColorsBox>
               );
             })}
-        </StyledColorsBoxContainer>s
+        </StyledColorsBoxContainer>
       )}
       <StyledDropdownBox>
         <Select
