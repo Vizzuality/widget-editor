@@ -35,19 +35,20 @@ class WidgetInfo extends React.Component {
       title: configuration ? configuration.title : "",
       caption: configuration ? configuration.caption : "",
       yAxis: configuration ? configuration.category.alias : "",
-      xAxis: configuration ? configuration.value.alias : ""
+      xAxis: configuration ? configuration.value.alias : "",
     };
   }
 
   handleUpdate = debounce(() => {
     const { configuration, patchConfiguration } = this.props;
     const { title, caption, yAxis, xAxis } = this.state;
-
     patchConfiguration({
       title,
       caption,
-      category: { ...configuration.category, alias: yAxis },
-      value: { ...configuration.value, alias: xAxis }
+      xAxisTitle: xAxis,
+      yAxisTitle: yAxis,
+      category: { ...configuration.category },
+      value: { ...configuration.value },
     });
   }, 1000);
 
@@ -83,7 +84,7 @@ class WidgetInfo extends React.Component {
             placeholder="Add title"
             name="options-title"
             value={title}
-            onChange={e => this.setTitle(e.target.value)}
+            onChange={(e) => this.setTitle(e.target.value)}
           />
         </InputGroup>
         <InputGroup>
@@ -93,7 +94,7 @@ class WidgetInfo extends React.Component {
             placeholder="Add caption"
             name="options-capton"
             value={caption}
-            onChange={e => this.setCaption(e.target.value)}
+            onChange={(e) => this.setCaption(e.target.value)}
           />
         </InputGroup>
         <FlexContainer row={true}>
@@ -104,7 +105,7 @@ class WidgetInfo extends React.Component {
               placeholder="Overwrite axis name"
               name="options-x-axis"
               value={xAxis}
-              onChange={e => this.setXAxis(e.target.value)}
+              onChange={(e) => this.setXAxis(e.target.value)}
             />
           </InputGroup>
           <InputGroup>
@@ -114,7 +115,7 @@ class WidgetInfo extends React.Component {
               placeholder="Overwrite axis name"
               name="options-y-axis"
               value={yAxis}
-              onChange={e => this.setYaxis(e.target.value)}
+              onChange={(e) => this.setYAxis(e.target.value)}
             />
           </InputGroup>
         </FlexContainer>

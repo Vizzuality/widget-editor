@@ -7,20 +7,21 @@ export default class StateProxy {
     // These are the properties that we will check for updates
     this.chartCache = {
       chartType: null,
-      direction: null
+      direction: null,
     };
 
     this.configuration = {
       value: null,
       category: null,
       orderBy: null,
+      groupBy: null,
       color: null,
       aggregateFunction: null,
       filters: null,
       areaIntersection: null,
       band: null,
       layer: null,
-      limit: null
+      limit: null,
     };
   }
 
@@ -43,26 +44,28 @@ export default class StateProxy {
       value,
       category,
       orderBy,
+      groupBy,
       color,
       aggregateFunction,
       filters,
       areaIntersection,
       band,
       layer,
-      limit
+      limit,
     } = state.configuration;
 
     const updatedConfiguration = {
       value,
       category,
       orderBy,
+      groupBy,
       color,
       aggregateFunction,
       filters,
       areaIntersection,
       band,
       layer,
-      limit
+      limit,
     };
 
     const hasUpdate = !isEqual(this.configuration, updatedConfiguration);

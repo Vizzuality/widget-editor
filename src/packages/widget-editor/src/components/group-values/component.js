@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import find from "lodash/find";
 
 import Select from "react-select";
@@ -25,20 +25,20 @@ const ORDER_TYPES = [
   { label: "Descending", value: "desc" },
 ];
 
-const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
+const GroupValues = ({ groupBy, columns, setFilters, onChange }) => {
   const options = columns.map((c) => ({
     value: c.name || c.alias || c.identifier,
     label: c.name || c.alias || c.identifier,
   }));
 
   const selectedOption = options.find((o) =>
-    orderBy ? o.label === orderBy.name : null
+    groupBy ? o.label === groupBy.name : null
   );
 
   const definedOrder =
-    orderBy && orderBy.orderType
+    groupBy && groupBy.orderType
       ? find(ORDER_TYPES, {
-          value: orderBy.orderType.toLowerCase(),
+          value: groupBy.orderType.toLowerCase(),
         })
       : ORDER_TYPES[0];
 
@@ -49,14 +49,14 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
   const handleChange = (option, type) => {
     let findSelected;
     if (type === "orderByType") {
-      findSelected = orderBy;
+      findSelected = groupBy;
       setOrderType(option);
     } else {
       findSelected = columns.find((c) => c.name === option.value);
     }
 
     setFilters({
-      orderBy: findSelected,
+      groupBy: findSelected,
     });
 
     onChange({
@@ -68,7 +68,7 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
   return (
     <FlexContainer>
       <InputGroup>
-        <FormLabel htmlFor="options-title">Order by</FormLabel>
+        <FormLabel htmlFor="options-title">Group by</FormLabel>
         <Select
           onChange={(option) => handleChange(option, "column")}
           value={selectedOption}
@@ -79,7 +79,7 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
       {/* <InputGroup> */}
       {/*   <FormLabel htmlFor="options-title">Ascending or Descending</FormLabel> */}
       {/*   <Select */}
-      {/*     onChange={option => handleChange(option, "orderByType")} */}
+      {/*     onChange={(option) => handleChange(option, "orderByType")} */}
       {/*     value={orderType} */}
       {/*     options={ORDER_TYPES} */}
       {/*     styles={InputStyles} */}
@@ -89,4 +89,4 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
   );
 };
 
-export default OrderValues;
+export default GroupValues;

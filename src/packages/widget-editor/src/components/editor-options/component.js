@@ -5,6 +5,7 @@ import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
+import GroupValues from "components/group-values";
 import QueryLimit from "components/query-limit";
 import TableView from "components/table-view";
 import JsonEditor from "components/json-editor";
@@ -38,7 +39,7 @@ const StyledContainer = styled.div`
   margin: 10px 0;
   overflow-y: hidden;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
-  ${props =>
+  ${(props) =>
     props.compact.isCompact &&
     css`
       visibility: hidden;
@@ -51,7 +52,7 @@ const StyledContainer = styled.div`
       width: 100%;
       transition: all 0.3s ease-in-out;
     `}
-  ${props =>
+  ${(props) =>
     props.compact.isCompact &&
     props.compact.isOpen &&
     css`
@@ -67,9 +68,10 @@ const EditorOptions = ({
   datasetId,
   limit,
   orderBy,
+  groupBy,
   patchConfiguration,
   compact,
-  dataService
+  dataService,
 }) => {
   const handleChange = (value, type) => {
     if (type === "limit") {
@@ -77,6 +79,9 @@ const EditorOptions = ({
     }
     if (type === "orderBy") {
       patchConfiguration({ orderBy: value });
+    }
+    if (type === "groupBy") {
+      patchConfiguration({ groupBy: value });
     }
   };
 
@@ -96,24 +101,25 @@ const EditorOptions = ({
       <Tabs>
         <Tab label="General">
           <Accordion>
-            <AccordionSection title="Description and labels">
+            <AccordionSection title="Description and labels" default>
               <WidgetInfo />
             </AccordionSection>
             <AccordionSection title="Filters">
               <Filter dataService={dataService} />
             </AccordionSection>
             <AccordionSection title="Order">
-              {orderBy && (
-                <OrderValues
-                  onChange={value => handleChange(value, "orderBy")}
-                />
-              )}
+              <OrderValues
+                onChange={(value) => handleChange(value, "orderBy")}
+              />
+              <GroupValues
+                onChange={(value) => handleChange(value, "groupBy")}
+              />
               {limit && (
                 <QueryLimit
                   min={0}
                   max={500}
-                  onChange={value => handleChange(value, "limit")}
-                  handleOnChangeValue={value => handleChange(value, "limit")}
+                  onChange={(value) => handleChange(value, "limit")}
+                  handleOnChangeValue={(value) => handleChange(value, "limit")}
                   label="Limit"
                   value={limit}
                 />
@@ -121,7 +127,7 @@ const EditorOptions = ({
             </AccordionSection>
           </Accordion>
         </Tab>
-        <Tab label="Visual style" default>
+        <Tab label="Visual style">
           <Accordion>
             <AccordionSection title="Typography">
               <Typography />
