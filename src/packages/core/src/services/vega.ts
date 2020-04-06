@@ -12,7 +12,7 @@ import { SUPPORTED_CHARTS } from "../charts/constants";
 
 import {
   defaultVegaSchema,
-  sqlFields
+  sqlFields,
 } from "../helpers/wiget-helper/constants";
 
 export default class VegaService implements Charts.Service {
@@ -30,7 +30,7 @@ export default class VegaService implements Charts.Service {
     theme: any
   ) {
     this.scheme = theme.schemes.find(
-      scheme => scheme.name === theme.selectedScheme
+      (scheme) => scheme.name === theme.selectedScheme
     );
 
     this.colorApplied = isObjectLike(configuration.color);
@@ -47,11 +47,11 @@ export default class VegaService implements Charts.Service {
   groupSimilar(data) {
     const combineSimilar = {};
 
-    data.forEach(node => {
+    data.forEach((node) => {
       if (node.x in combineSimilar) {
         combineSimilar[node.x] = {
           ...combineSimilar[node.x],
-          y: combineSimilar[node.x].y + node.y
+          y: combineSimilar[node.x].y + node.y,
         };
       } else {
         combineSimilar[node.x] = { ...node };
@@ -60,7 +60,7 @@ export default class VegaService implements Charts.Service {
 
     const out = [];
 
-    Object.keys(combineSimilar).forEach(node => {
+    Object.keys(combineSimilar).forEach((node) => {
       out.push(combineSimilar[node]);
     });
 
@@ -78,11 +78,11 @@ export default class VegaService implements Charts.Service {
     const out = [];
     let othersNode = { x: "Others", y: 0 };
 
-    others.forEach(node => {
+    others.forEach((node) => {
       othersNode = { ...othersNode, y: othersNode.y + node.y };
     });
 
-    top5.forEach(node => {
+    top5.forEach((node) => {
       out.push({ x: node.x, y: node.y });
     });
 
@@ -92,12 +92,12 @@ export default class VegaService implements Charts.Service {
   groupByColor(data) {
     const groupColors = {};
 
-    data.forEach(node => {
+    data.forEach((node) => {
       if (node.color) {
         if (node.color in groupColors) {
           groupColors[node.color] = {
             ...groupColors[node.color],
-            y: groupColors[node.color].y + node.y
+            y: groupColors[node.color].y + node.y,
           };
         } else {
           groupColors[node.color] = node;
@@ -107,7 +107,7 @@ export default class VegaService implements Charts.Service {
 
     const out = [];
 
-    Object.keys(groupColors).forEach(node => {
+    Object.keys(groupColors).forEach((node) => {
       out.push(groupColors[node]);
     });
 
@@ -121,11 +121,7 @@ export default class VegaService implements Charts.Service {
       return this.groupByTop(this.widgetData);
     }
 
-    if (this.colorApplied) {
-      return this.groupByColor(this.widgetData);
-    }
-
-    return this.groupSimilar(this.widgetData);
+    return this.widgetData;
   }
 
   resolveChart() {
@@ -194,15 +190,17 @@ export default class VegaService implements Charts.Service {
 
     this.schema = {
       ...this.schema,
-      ...chart
+      ...chart,
     };
   }
 
   setConfig() {
-    // TODO: Support default config if none is present
     this.schema = {
       ...this.schema,
-      config: { ...this.schema.config, ...this.widgetConfig.config }
+      config: {
+        ...this.schema.config,
+        ...this.widgetConfig.config,
+      },
     };
   }
 

@@ -35,8 +35,15 @@ export default class BarsVertical implements Charts.Bars {
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
       config: {
-        ...this.scheme.config
-      }
+        ...this.scheme.config,
+        ...(!this.colorApplied
+          ? {
+              rect: {
+                fill: this.scheme.mainColor,
+              },
+            }
+          : {}),
+      },
     };
   }
 
@@ -46,34 +53,45 @@ export default class BarsVertical implements Charts.Bars {
       height: 400,
       autosize: {
         type: "fit",
-        contains: "padding"
+        contains: "padding",
       },
-      padding: 20
+      padding: 20,
     };
   }
 
   setScales() {
-    return [
+    const scale = [
       {
         name: "x",
         type: "linear",
         domain: {
           data: "table",
-          field: sqlFields.category
+          field: sqlFields.category,
         },
-        range: "width"
+        range: "width",
       },
       {
         name: "y",
         type: "band",
         domain: {
           data: "table",
-          field: "x"
+          field: "x",
         },
         range: "height",
-        padding: 0.05
-      }
+        padding: 0.05,
+      },
     ];
+
+    if (this.colorApplied) {
+      scale.push({
+        name: "color",
+        type: "ordinal",
+        domain: { data: "table", field: sqlFields.category },
+        range: this.scheme.category,
+      });
+    }
+
+    return scale;
   }
 
   setAxes() {
@@ -84,7 +102,7 @@ export default class BarsVertical implements Charts.Bars {
         orient: "bottom",
         scale: "x",
         grid: true,
-        labelOverlap: "parity"
+        labelOverlap: "parity",
       },
       {
         ...this.schema.axis,
@@ -98,20 +116,20 @@ export default class BarsVertical implements Charts.Bars {
           labels: {
             update: {
               text: {
-                signal: "truncate(datum.value, 12)"
+                signal: "truncate(datum.value, 12)",
               },
               align: {
                 signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'"
+                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
               },
               baseline: {
                 signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'"
-              }
-            }
-          }
-        }
-      }
+                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+              },
+            },
+          },
+        },
+      },
     ];
   }
 
@@ -122,25 +140,25 @@ export default class BarsVertical implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
-            fill: {
-              signal: "datum._w_e_color"
-            },
+            ...(this.colorApplied
+              ? { fill: { scale: "color", field: sqlFields.category } }
+              : {}),
             tooltip: {
-              signal: "{'Label': datum.x, 'Value': datum.y }"
-            }
+              signal: "{'Label': datum.x, 'Value': datum.y }",
+            },
           },
           update: {
             opacity: { value: 1 },
             x: { scale: "x", value: 0 },
             x2: { scale: "x", field: sqlFields.category },
             y: { scale: "y", field: "x" },
-            height: { scale: "y", band: 1 }
+            height: { scale: "y", band: 1 },
           },
           hover: {
-            opacity: { value: 0.8 }
-          }
-        }
-      }
+            opacity: { value: 0.8 },
+          },
+        },
+      },
     ];
   }
 
@@ -154,39 +172,32 @@ export default class BarsVertical implements Charts.Bars {
               column: "y",
               property: "y",
               type: "number",
-              format: ".2s"
+              format: ".2s",
             },
             {
               column: "x",
               property: "x",
               type: "string",
-              format: ".2f"
-            }
-          ]
-        }
-      }
+              format: ".2f",
+            },
+          ],
+        },
+      },
     ];
   }
 
   bindData(): Vega.Data[] {
     const { widgetData, scheme } = this;
 
-    const serialize = widgetData.map((d, index) => ({
-      ...d,
-      _w_e_color: this.colorApplied
-        ? scheme.category[index]
-        : scheme.mainColor || this.schema.config.rect.fill
-    }));
-
     return [
       {
-        values: serialize,
+        values: widgetData,
         name: "table",
         transform: [
           { type: "identifier", as: "id" },
-          { type: "joinaggregate", as: ["count"] }
-        ]
-      }
+          { type: "joinaggregate", as: ["count"] },
+        ],
+      },
     ];
   }
 

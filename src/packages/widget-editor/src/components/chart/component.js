@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import * as vega from "vega";
 import vegaTooltip from "vega-tooltip";
 
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import isEmpty from "lodash/isEmpty";
 
 import QueryValues from "components/query-values";
 
@@ -23,7 +22,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-const getTooltipConfigFields = widget => {
+const getTooltipConfigFields = (widget) => {
   // We don't have the interaction config object defined
   if (
     !widget ||
@@ -34,7 +33,7 @@ const getTooltipConfigFields = widget => {
   }
 
   const tooltipConfig = widget.interaction_config.find(
-    c => c.name === "tooltip"
+    (c) => c.name === "tooltip"
   );
 
   // We don't have the tooltip config defined
@@ -52,68 +51,78 @@ const getTooltipConfigFields = widget => {
 
 const instantiateTooltip = (view, widget) => {
   const fields = getTooltipConfigFields(widget);
-  const res = vegaTooltip(view, {
+  vegaTooltip(view, {
     showAllFields: false,
     fields: fields.map(({ column, property, type, format }) => ({
       field: column,
       title: property,
       formatType: type === "date" ? "time" : type,
-      format
-    }))
+      format,
+    })),
   });
 };
 
-const Chart = ({ editor, widget }) => {
-  const chart = useRef();
-  const vegaContainer = useRef();
-  const memoryStoreWidget = useRef();
+class Chart extends React.Component {
+  constructor(props) {
+    super(props);
+    this.vega = null;
+  }
 
-  // TODO: CLEANUP, probably better to just utalise a traditional Rclass here
-  useEffect(() => {
-    if (
-      chart.current &&
-      !isEmpty(widget) &&
-      !isEqual(widget, memoryStoreWidget)
-    ) {
-      const runtime = vega.parse(widget);
-      const width = chart.current.offsetWidth;
+  componentDidMount() {
+    this.generateVegaChart();
+  }
 
-      vegaContainer.current = new vega.View(runtime)
-        .initialize(chart.current)
-        .renderer("canvas")
-        .width(width - 40)
-        .hover()
-        .run();
-      memoryStoreWidget.current = widget;
-
-      // We only show the tooltip if the interaction_config
-      // object is defined
-      if (
-        vegaContainer.current &&
-        widget.interaction_config &&
-        widget.interaction_config.length
-      ) {
-        instantiateTooltip(vegaContainer.current, widget);
-      }
-
-      vegaContainer.current.resize = () => {
-        if (chart && chart.current) {
-          const width = chart.current.offsetWidth;
-          vegaContainer.current.width(width - 40).run();
-          instantiateTooltip(vegaContainer.current, widget);
-        }
-      };
-
-      window.addEventListener("resize", vegaContainer.current.resize);
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.widget, this.props.widget)) {
+      this.generateVegaChart();
     }
-  }, [chart, editor, widget]);
+  }
 
-  return (
-    <StyledContainer>
-      <div className="c-chart" ref={chart}></div>
-      <QueryValues />
-    </StyledContainer>
-  );
-};
+  generateVegaChart() {
+    const { widget: vegaConfiguration } = this.props;
+
+    const { chart } = this;
+
+    const runtime = vega.parse(vegaConfiguration, vegaConfiguration.config);
+    const width = chart.offsetWidth;
+    this.vega = new vega.View(runtime)
+      .initialize(chart)
+      .renderer("canvas")
+      .width(width - 40)
+      .hover()
+      .run();
+
+    if (
+      vegaConfiguration.interaction_config &&
+      vegaConfiguration.interaction_config.length
+    ) {
+      instantiateTooltip(this.vega, vegaConfiguration);
+    }
+
+    this.vega.resize = () => {
+      if (chart && chart.current) {
+        const width = chart.current.offsetWidth;
+        this.vega.width(width - 40).run();
+        instantiateTooltip(this.vega, vegaConfiguration);
+      }
+    };
+
+    window.addEventListener("resize", this.vega.resize);
+  }
+
+  render() {
+    return (
+      <StyledContainer>
+        <div
+          className="c-chart"
+          ref={(c) => {
+            this.chart = c;
+          }}
+        ></div>
+        <QueryValues />
+      </StyledContainer>
+    );
+  }
+}
 
 export default Chart;

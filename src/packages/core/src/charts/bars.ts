@@ -35,8 +35,15 @@ export default class Bars implements Charts.Bars {
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
       config: {
-        ...this.scheme.config
-      }
+        ...this.scheme.config,
+        ...(!this.colorApplied
+          ? {
+              rect: {
+                fill: this.scheme.mainColor,
+              },
+            }
+          : {}),
+      },
     };
   }
 
@@ -46,36 +53,47 @@ export default class Bars implements Charts.Bars {
       height: 400,
       autosize: {
         type: "fit",
-        contains: "padding"
+        contains: "padding",
       },
-      padding: 20
+      padding: 20,
     };
   }
 
   setScales() {
-    return [
+    const scale = [
       {
         name: "x",
         type: "band",
         domain: {
           data: "table",
-          field: "id"
+          field: "id",
         },
         range: "width",
-        padding: 0.05
+        padding: 0.05,
       },
       {
         name: "y",
         type: "linear",
         domain: {
           data: "table",
-          field: sqlFields.category
+          field: sqlFields.category,
         },
         nice: true,
         zero: true,
-        range: "height"
-      }
+        range: "height",
+      },
     ];
+
+    if (this.colorApplied) {
+      scale.push({
+        name: "color",
+        type: "ordinal",
+        domain: { data: "table", field: sqlFields.category },
+        range: this.scheme.category,
+      });
+    }
+
+    return scale;
   }
 
   setMarks() {
@@ -85,25 +103,25 @@ export default class Bars implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
-            fill: {
-              signal: "datum._w_e_color"
-            },
             tooltip: {
-              signal: "{'Label': datum.x, 'Value': datum.y }"
-            }
+              signal: "{'Label': datum.x, 'Value': datum.y }",
+            },
+            ...(this.colorApplied
+              ? { fill: { scale: "color", field: sqlFields.category } }
+              : {}),
           },
           update: {
             opacity: { value: 1 },
             x: { scale: "x", field: "id" },
             width: { scale: "x", band: 1 },
             y: { scale: "y", field: "y" },
-            y2: { scale: "y", value: 0 }
+            y2: { scale: "y", value: 0 },
           },
           hover: {
-            opacity: { value: 0.8 }
-          }
-        }
-      }
+            opacity: { value: 0.8 },
+          },
+        },
+      },
     ];
   }
 
@@ -117,17 +135,17 @@ export default class Bars implements Charts.Bars {
               column: "y",
               property: "y",
               type: "number",
-              format: ".2s"
+              format: ".2s",
             },
             {
               column: "x",
               property: "x",
               type: "string",
-              format: ".2f"
-            }
-          ]
-        }
-      }
+              format: ".2f",
+            },
+          ],
+        },
+      },
     ];
   }
 
@@ -145,22 +163,22 @@ export default class Bars implements Charts.Bars {
             update: {
               text: {
                 signal:
-                  "width < 300 || data('table')[0].count > 10 ? truncate(data('table')[datum.value - 1].x, 12) : data('table')[datum.value - 1].x"
+                  "width < 300 || data('table')[0].count > 10 ? truncate(data('table')[datum.value - 1].x, 12) : data('table')[datum.value - 1].x",
               },
               align: {
                 signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'"
+                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
               },
               baseline: {
                 signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'"
+                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
               },
               angle: {
-                signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0"
-              }
-            }
-          }
-        }
+                signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0",
+              },
+            },
+          },
+        },
       },
       {
         ...this.schema.axis,
@@ -173,33 +191,26 @@ export default class Bars implements Charts.Bars {
           labels: {
             update: {
               align: { value: "right" },
-              baseline: { value: "bottom" }
-            }
-          }
-        }
-      }
+              baseline: { value: "bottom" },
+            },
+          },
+        },
+      },
     ];
   }
 
   bindData(): Vega.Data[] {
     const { widgetData, scheme } = this;
 
-    const serialize = widgetData.map((d, index) => ({
-      ...d,
-      _w_e_color: this.colorApplied
-        ? scheme.category[index]
-        : scheme.mainColor || this.schema.config.rect.fill
-    }));
-
     return [
       {
-        values: serialize,
+        values: widgetData,
         name: "table",
         transform: [
           { type: "identifier", as: "id" },
-          { type: "joinaggregate", as: ["count"] }
-        ]
-      }
+          { type: "joinaggregate", as: ["count"] },
+        ],
+      },
     ];
   }
 
