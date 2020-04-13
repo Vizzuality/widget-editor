@@ -53,23 +53,25 @@ import package from "@packages/{package}";
 
 ---
 
-## Packages documentation
+## Main entry point
+
+Our main package that gets distributed to NPM is under `packages/widget-editor`.
+
+Here we are exposing the editor, renderer, and redux related logic to the consumer. More documentation for the main package can be found [@packages/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
 
 #### Applications
 
-- [@applications/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/renderer)
 - [@applications/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/widget-editor)
 
 #### Packages
 
+- [@packages/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
 - [@packages/core](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/core)
+- [@packages/shared](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/shared)
+- [@packages/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/renderer)
 - [@packages/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter)
 - [@packages/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types)
 
 ### Components
 
-For our components we are using `styled-components` [documentation](https://www.styled-components.com/) More to be documented.
-
-## General notes
-
-If you're working with an application and update a package, you need to re-run the start application command so all the TS code will be re-compiled and understood by the react application.
+For our components we are using `styled-components` [documentation](https://www.styled-components.com/) .
