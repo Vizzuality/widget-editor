@@ -1,10 +1,10 @@
 import styled, { css } from "styled-components";
-import { FOOTER_HEIGHT } from "style-constants";
+import { FOOTER_HEIGHT } from "@packages/shared/lib/styles/style-constants";
 
 export const StyledContainer = styled.div`
   width: 100%;
 
-  ${props =>
+  ${(props) =>
     props.isCompact
       ? css`
           box-sizing: border-box;

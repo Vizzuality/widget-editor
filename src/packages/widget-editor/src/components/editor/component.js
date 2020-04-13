@@ -42,10 +42,12 @@ class Editor extends React.Component {
   }
 
   componentWillMount() {
-    const { authenticated } = this.props;
+    const { authenticated, disabled } = this.props;
     if (authenticated) {
       this.resolveAuthentication();
     }
+
+    this.resolveEditorFunctionality();
   }
 
   componentDidUpdate(prevProps) {
@@ -56,14 +58,7 @@ class Editor extends React.Component {
       schemes: prevSchemes,
       authenticated: prevAuthenticated,
     } = prevProps;
-    const {
-      datasetId,
-      widgetId,
-      theme,
-      schemes,
-      adapter,
-      authenticated,
-    } = this.props;
+    const { datasetId, widgetId, theme, schemes, authenticated } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
     if (
@@ -92,6 +87,13 @@ class Editor extends React.Component {
     const { setEditor } = this.props;
     setEditor({ authenticated });
   }, 1000);
+
+  resolveEditorFunctionality() {
+    const { setEditor, disable } = this.props;
+    if (disable && Array.isArray(disable)) {
+      setEditor({ disabledFeatures: disable });
+    }
+  }
 
   initializeRestoration = debounce((datasetId, widgetId) => {
     this.dataService.restoreEditor(datasetId, widgetId);

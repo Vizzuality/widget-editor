@@ -22,8 +22,8 @@ const THEMES = [
       "#B23912",
       "#BAD6AF",
       "#C9C857",
-      "#665436"
-    ]
+      "#665436",
+    ],
   },
   {
     name: "wind",
@@ -43,9 +43,9 @@ const THEMES = [
       "#B1D193",
       "#294260",
       "#49ACDB",
-      "#2A75C3"
-    ]
-  }
+      "#2A75C3",
+    ],
+  },
 ];
 
 class Editor extends React.Component {
@@ -59,7 +59,7 @@ class Editor extends React.Component {
 
   render() {
     const {
-      editorOptions: { compactMode, authToken, dataset, widget, theme }
+      editorOptions: { compactMode, authToken, dataset, widget, theme },
     } = this.props;
 
     const authenticated = !!authToken && authToken.length > 0;
@@ -69,6 +69,7 @@ class Editor extends React.Component {
         <WidgetEditor
           schemes={THEMES}
           compact={compactMode}
+          disable={[]}
           datasetId={dataset}
           widgetId={widget}
           onSave={this.handleOnSave}

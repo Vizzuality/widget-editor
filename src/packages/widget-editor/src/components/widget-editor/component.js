@@ -11,8 +11,9 @@ class WidgetEditor extends React.Component {
       widgetId = null,
       adapter,
       theme,
+      disable,
       schemes,
-      compact = true
+      compact = true,
     } = this.props;
 
     if (typeof adapter !== "function") {
@@ -28,6 +29,7 @@ class WidgetEditor extends React.Component {
     return (
       <Editor
         authenticated={authenticated}
+        disable={disable}
         application={application}
         onSave={onSave}
         datasetId={datasetId}
@@ -38,8 +40,8 @@ class WidgetEditor extends React.Component {
           ...theme,
           compact: {
             isCompact: compact,
-            isOpen: false
-          }
+            isOpen: false,
+          },
         }}
       />
     );

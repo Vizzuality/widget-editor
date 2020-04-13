@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import styled, { css } from "styled-components";
 
 import { Accordion, AccordionSection } from "components/accordion";
@@ -7,13 +7,17 @@ import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import GroupValues from "components/group-values";
 import QueryLimit from "components/query-limit";
-import TableView from "components/table-view";
-import JsonEditor from "components/json-editor";
 import Filter from "components/filter";
-import Typography from "components/typography";
-import ColorShemes from "components/color-shemes";
 
-import { FOOTER_HEIGHT, DEFAULT_BORDER } from "style-constants";
+import {
+  FOOTER_HEIGHT,
+  DEFAULT_BORDER,
+} from "@packages/shared/lib/styles/style-constants";
+
+const JsonEditor = React.lazy(() => import("../json-editor"));
+const TableView = React.lazy(() => import("../table-view"));
+const Typography = React.lazy(() => import("../typography"));
+const ColorShemes = React.lazy(() => import("../color-shemes"));
 
 const StyleEditorOptionsErrors = styled.div`
   position: absolute;
@@ -65,6 +69,7 @@ const StyledContainer = styled.div`
 `;
 
 const EditorOptions = ({
+  disabledFeatures,
   datasetId,
   limit,
   orderBy,
@@ -73,6 +78,8 @@ const EditorOptions = ({
   compact,
   dataService,
 }) => {
+  console.log(disabledFeatures);
+
   const handleChange = (value, type) => {
     if (type === "limit") {
       patchConfiguration({ limit: value });
@@ -127,22 +134,42 @@ const EditorOptions = ({
             </AccordionSection>
           </Accordion>
         </Tab>
+
         <Tab label="Visual style">
           <Accordion>
-            <AccordionSection title="Typography">
-              <Typography />
-            </AccordionSection>
-            <AccordionSection title="Color" openDefault>
-              <ColorShemes />
-            </AccordionSection>
+            {disabledFeatures.indexOf("typogrophy") === -1 && (
+              <AccordionSection title="Typography">
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Typography />
+                </Suspense>
+              </AccordionSection>
+            )}
+
+            {disabledFeatures.indexOf("theme-selection") === -1 && (
+              <AccordionSection title="Color" openDefault>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ColorShemes />
+                </Suspense>
+              </AccordionSection>
+            )}
           </Accordion>
         </Tab>
-        <Tab label="Advanced">
-          <JsonEditor />
-        </Tab>
-        <Tab label="Table view">
-          <TableView />
-        </Tab>
+
+        {disabledFeatures.indexOf("advanced-editor") === -1 && (
+          <Tab label="Advanced">
+            <Suspense fallback={<div>Loading...</div>}>
+              <JsonEditor />
+            </Suspense>
+          </Tab>
+        )}
+
+        {disabledFeatures.indexOf("table-view") === -1 && (
+          <Tab label="Table view">
+            <Suspense fallback={<div>Loading...</div>}>
+              <TableView />
+            </Suspense>
+          </Tab>
+        )}
       </Tabs>
     </StyledContainer>
   );

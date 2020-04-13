@@ -5,7 +5,7 @@ import { Button } from "@packages/shared";
 
 import { Modal } from "components/modal";
 
-import { FOOTER_HEIGHT } from "style-constants";
+import { FOOTER_HEIGHT } from "@packages/shared/lib/styles/style-constants";
 
 const StyledFooter = styled.footer`
   width: 100%;

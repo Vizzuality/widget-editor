@@ -13,15 +13,21 @@ const TabButton = (props) => {
 };
 
 export const Tabs = ({ children }) => {
+  const serializeChildren = children.filter((c) => !!c);
+
   const [active, setActive] = useState(0);
+
   useEffect(() => {
-    const defaultNum = children.findIndex((child) => child.props.default);
+    const defaultNum = serializeChildren.findIndex(
+      (child) => child.props.default
+    );
     setActive(defaultNum === -1 ? 0 : defaultNum);
   }, []);
+
   return (
     <StyledTabsContainer>
       <StyledList>
-        {children.map((child, num) => {
+        {serializeChildren.map((child, num) => {
           const { label } = child.props;
           return label ? (
             <StyledListLabel key={num}>
@@ -33,7 +39,7 @@ export const Tabs = ({ children }) => {
         })}
       </StyledList>
       <StyledTabsContentBox>
-        {children.map((child, num) => {
+        {serializeChildren.map((child, num) => {
           const { children: tabContent } = child.props;
           return (
             <StyledTabsContent key={num} active={num === active}>

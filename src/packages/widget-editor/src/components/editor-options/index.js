@@ -5,6 +5,7 @@ import EditorOptionsComponent from "./component";
 
 export default connectState(
   (state) => ({
+    disabledFeatures: state.editor.disabledFeatures,
     datasetId:
       state.editor.dataset && state.editor.dataset.id
         ? state.editor.dataset.id
