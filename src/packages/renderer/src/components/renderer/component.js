@@ -10,13 +10,16 @@ const Chart = React.lazy(() => import("../chart"));
 const SelectChart = React.lazy(() => import("../select-chart"));
 const ChartColorFilter = React.lazy(() => import("../chart-color-filter"));
 
-const Renderer = ({ widget, editor }) => {
+// -- If a widget config is suplied, we are consuming the renderer outside of the editor
+const Renderer = ({ widget, editor, widgetConfig = null }) => {
   const { restoring, initialized } = editor;
   return (
     <StyledContainer>
-      <Suspense fallback={<div>Loading...</div>}>
-        <SelectChart />
-      </Suspense>
+      {!widgetConfig && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <SelectChart />
+        </Suspense>
+      )}
 
       {initialized && !restoring && (
         <Suspense
@@ -26,7 +29,7 @@ const Renderer = ({ widget, editor }) => {
             </RestoringWidget>
           }
         >
-          <Chart />
+          <Chart widgetConfig={widgetConfig} />
         </Suspense>
       )}
 
@@ -35,15 +38,18 @@ const Renderer = ({ widget, editor }) => {
           <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
         </RestoringWidget>
       )}
+
       {restoring && (
         <RestoringWidget>
           <RestoringWidgetTitle>Building widget...</RestoringWidgetTitle>
         </RestoringWidget>
       )}
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <ChartColorFilter />
-      </Suspense>
+      {!widgetConfig && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <ChartColorFilter />
+        </Suspense>
+      )}
     </StyledContainer>
   );
 };

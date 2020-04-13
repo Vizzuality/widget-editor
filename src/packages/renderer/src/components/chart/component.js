@@ -65,6 +65,7 @@ const instantiateTooltip = (view, widget) => {
 class Chart extends React.Component {
   constructor(props) {
     super(props);
+    this.externalRenderer = !!props.widgetConfig;
     this.vega = null;
   }
 
@@ -78,12 +79,13 @@ class Chart extends React.Component {
     }
   }
 
-  generateVegaChart() {
-    const { widget: vegaConfiguration } = this.props;
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.vega.resize);
+  }
 
+  generateRuntime(configuration) {
     const { chart } = this;
-
-    const runtime = vega.parse(vegaConfiguration, vegaConfiguration.config);
+    const runtime = vega.parse(configuration, configuration.config);
     const width = chart.offsetWidth;
     this.vega = new vega.View(runtime)
       .initialize(chart)
@@ -93,21 +95,30 @@ class Chart extends React.Component {
       .run();
 
     if (
-      vegaConfiguration.interaction_config &&
-      vegaConfiguration.interaction_config.length
+      configuration.interaction_config &&
+      configuration.interaction_config.length
     ) {
-      instantiateTooltip(this.vega, vegaConfiguration);
+      instantiateTooltip(this.vega, configuration);
     }
 
     this.vega.resize = () => {
       if (chart && chart.current) {
         const width = chart.current.offsetWidth;
         this.vega.width(width - 40).run();
-        instantiateTooltip(this.vega, vegaConfiguration);
+        instantiateTooltip(this.vega, configuration);
       }
     };
 
     window.addEventListener("resize", this.vega.resize);
+  }
+
+  generateVegaChart() {
+    const { widget: vegaConfiguration, widgetConfig } = this.props;
+    if (this.externalRenderer) {
+      this.generateRuntime(widgetConfig);
+    } else {
+      this.generateRuntime(vegaConfiguration);
+    }
   }
 
   render() {
