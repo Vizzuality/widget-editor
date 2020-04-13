@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import Button from "components/button";
+import { Button } from "@packages/shared";
 
-import { Modal } from "components/modal"
+import { Modal } from "components/modal";
 
 import { FOOTER_HEIGHT } from "style-constants";
 
@@ -19,18 +19,16 @@ const StyledFooter = styled.footer`
 `;
 
 const Footer = ({ authenticated, onSave }) => {
-
-  const[modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <StyledFooter>
-      <Modal 
-        isOpen={modalOpen} 
-        closeModal={() => setModalOpen(false)}
-      >
+      <Modal isOpen={modalOpen} closeModal={() => setModalOpen(false)}>
         <h2>How to customize the visualization</h2>
       </Modal>
-      <Button onClick={() => setModalOpen(true)} type="highlight">Need help?</Button>
+      <Button onClick={() => setModalOpen(true)} type="highlight">
+        Need help?
+      </Button>
       {authenticated && (
         <Button type="cta" onClick={onSave}>
           Save widget

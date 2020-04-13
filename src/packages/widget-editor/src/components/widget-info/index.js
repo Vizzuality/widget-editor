@@ -1,13 +1,13 @@
-import { connectState } from "helpers/redux";
+import { connectState } from "@packages/shared/lib/helpers/redux";
 
-import { patchConfiguration } from "modules/configuration/actions";
+import { patchConfiguration } from "@packages/shared/lib/modules/configuration/actions";
 
 import WidgetInfoComponent from "./component";
 
 export default connectState(
-  state => ({
+  (state) => ({
     theme: state.theme,
-    configuration: state.configuration
+    configuration: state.configuration,
   }),
   { patchConfiguration }
 )(WidgetInfoComponent);

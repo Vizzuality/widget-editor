@@ -1,6 +1,5 @@
 import React from "react";
-import Slider from "react-slick";
-import Select from "components/select";
+import { Select } from "@packages/shared";
 import isObjectLike from "lodash/isObjectLike";
 
 import {
@@ -10,17 +9,6 @@ import {
   StyledColorDot,
   StyledDropdownBox,
 } from "./style";
-
-const settings = {
-  dots: false,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  initialSlide: 2,
-  adaptiveHeight: true,
-  arrows: false,
-};
 
 let c = 0;
 const resolveSchemeColor = (scheme, index) => {

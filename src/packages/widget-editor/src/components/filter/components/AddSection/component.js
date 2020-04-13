@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import Button from "components/button";
+import { Button } from "@packages/shared";
 
 import { StyledAddSection } from "./style";
 

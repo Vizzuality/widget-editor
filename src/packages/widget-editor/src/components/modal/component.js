@@ -1,6 +1,5 @@
-import React from 'react';
-import CloseIcon from 'components/icons/CloseIcon';
-import Button from "components/button";
+import React from "react";
+import { Button, CloseIcon } from "@packages/shared";
 
 import {
   StyledModalBox,
@@ -8,10 +7,10 @@ import {
   StyledModalContent,
   StyledModalCloseBtn,
   StyledActions,
-} from './style';
+} from "./style";
 
 export const Modal = ({ isOpen, closeModal, children }) => {
-  return(
+  return (
     <StyledModalBox isOpen={isOpen}>
       <StyledModalContainer isOpen={isOpen}>
         <StyledModalContent>
@@ -20,10 +19,12 @@ export const Modal = ({ isOpen, closeModal, children }) => {
           </StyledModalCloseBtn>
           {children}
           <StyledActions>
-            <Button onClick={() => closeModal()} type="cta">Ok, got it!</Button>
+            <Button onClick={() => closeModal()} type="cta">
+              Ok, got it!
+            </Button>
           </StyledActions>
         </StyledModalContent>
       </StyledModalContainer>
     </StyledModalBox>
   );
-}
+};

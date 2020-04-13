@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import Select from "components/select";
+import { Select } from "@packages/shared";
 
 const QueryValues = ({ columns, configuration, patchConfiguration }) => {
   const {

@@ -1,5 +1,8 @@
-import styled from 'styled-components';
-import { FOOTER_HEIGHT, DEFAULT_BORDER } from 'style-constants';
+import styled from "styled-components";
+import {
+  FOOTER_HEIGHT,
+  DEFAULT_BORDER,
+} from "@packages/shared/lib/styles/style-constants";
 
 export const StyledContainer = styled.div`
   position: relative;
@@ -17,9 +20,9 @@ export const RestoringWidget = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 export const RestoringWidgetTitle = styled.h4`
   color: #a9a9a9;
   font-size: 21px;
-`
+`;

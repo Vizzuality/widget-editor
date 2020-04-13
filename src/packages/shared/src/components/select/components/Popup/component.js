@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import CategoryIcon from "components/icons/CategoryIcon";
+import { CategoryIcon } from "@packages/shared";
 import { ALIGN_HORIZONTAL } from "../../const";
 import {
   StyledPopupContainer,
