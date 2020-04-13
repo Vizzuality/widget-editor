@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 import * as vega from "vega";
 import vegaTooltip from "vega-tooltip";
 
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 
-import QueryValues from "components/query-values";
+const QueryValues = React.lazy(() => import("../query-values"));
 
 const StyledContainer = styled.div`
   /* flex 1; */
@@ -130,7 +130,11 @@ class Chart extends React.Component {
             this.chart = c;
           }}
         ></div>
-        <QueryValues />
+        {!this.externalRenderer && (
+          <Suspense fallback={<div>Loading...</div>}>
+            <QueryValues />
+          </Suspense>
+        )}
       </StyledContainer>
     );
   }
