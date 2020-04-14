@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "release": "dotenv release-it",
+    "lerna:publish": "lerna publish --conventional-commits --yes --skip-npm --skip-git",
     "build": "rimraf -f dist && lerna run build",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
