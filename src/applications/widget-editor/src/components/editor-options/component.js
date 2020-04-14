@@ -1,125 +1,178 @@
-import React, { Fragment } from "react";
+import React, { Suspense } from "react";
+import styled, { css } from "styled-components";
 
-import "./styles.css";
+import { Accordion, AccordionSection } from "components/accordion";
+import { Tabs, Tab } from "components/tabs";
+import WidgetInfo from "components/widget-info";
+import OrderValues from "components/order-values";
+import GroupValues from "components/group-values";
+import QueryLimit from "components/query-limit";
+import Filter from "components/filter";
 
-class EditorOptions extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      widgets: []
-    };
+import {
+  FOOTER_HEIGHT,
+  DEFAULT_BORDER,
+} from "@packages/shared/lib/styles/style-constants";
 
-    const widgetEndpoint = `https://api.resourcewatch.org/v1/widget?includes=metadata,user,vocabulary`;
-    const widgets = fetch(widgetEndpoint)
-      .then(response => response.json())
-      .then(widgetPayload => {
-        this.setState({ widgets: widgetPayload.data });
-      });
+const JsonEditor = React.lazy(() => import("../json-editor"));
+const TableView = React.lazy(() => import("../table-view"));
+const Typography = React.lazy(() => import("../typography"));
+const ColorShemes = React.lazy(() => import("../color-shemes"));
+
+const StyleEditorOptionsErrors = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform: translate(-50%, -50%);
+  h3 {
+    color: #ff6464;
+    text-align: center;
   }
+  p {
+    color: #bfbfbf;
+    font-size: 12px;
+  }
+`;
 
-  render() {
-    const { widgets } = this.state;
-    const {
-      editorOptions: {
-        compactMode,
-        authToken,
-        dataset,
-        widget,
-        optionsOpen,
-        theme
-      },
-      modifyOptions
-    } = this.props;
+const StyledContainer = styled.div`
+  position: relative;
+  flex: 1;
+  background: #fff;
+  height: calc(100% - ${FOOTER_HEIGHT} - 20px);
+  padding: 0 0 0 30px;
+  margin: 10px 0;
+  overflow-y: hidden;
+  ${DEFAULT_BORDER(1, 1, 1, 0)}
+  ${(props) =>
+    props.compact.isCompact &&
+    css`
+      visibility: hidden;
+      /* z-index: -1; */
+      max-height: 0;
+      position: absolute;
+      top: 65px;
+      left: 0;
+      margin: 0;
+      width: 100%;
+      transition: all 0.3s ease-in-out;
+    `}
+  ${(props) =>
+    props.compact.isCompact &&
+    props.compact.isOpen &&
+    css`
+      box-sizing: border-box;
+      display: block;
+      z-index: auto;
+      visibility: visible;
+      max-height: calc(100% - ${FOOTER_HEIGHT} - 65px);
+    `}
+`;
 
-    const clx = `c-playground-options ${optionsOpen ? "-open" : ""}`;
+const EditorOptions = ({
+  disabledFeatures,
+  datasetId,
+  limit,
+  orderBy,
+  groupBy,
+  patchConfiguration,
+  compact,
+  dataService,
+}) => {
+  console.log(disabledFeatures);
 
+  const handleChange = (value, type) => {
+    if (type === "limit") {
+      patchConfiguration({ limit: value });
+    }
+    if (type === "orderBy") {
+      patchConfiguration({ orderBy: value });
+    }
+    if (type === "groupBy") {
+      patchConfiguration({ groupBy: value });
+    }
+  };
+
+  if (!datasetId) {
     return (
-      <div className={clx}>
-        <h4>Widget editor options</h4>
-        <label htmlFor="token">Auth token</label>
-        <input
-          id="token"
-          type="text"
-          placeholder="Bearer token"
-          value={authToken}
-          onChange={e => modifyOptions({ authToken: e.target.value })}
-        />
-        <label htmlFor="dataset">Active Dataset</label>
-        <select
-          id="dataset"
-          value={dataset}
-          onChange={e =>
-            modifyOptions({ widget: null, dataset: e.target.value })
-          }
-        >
-          <option value="03bfb30e-829f-4299-bab9-b2be1b66b5d4">
-            Forest Sector Economic Contribution
-          </option>
-          <option value="1ad53858-f5da-47cb-8006-5b4aa5aad589">
-            Countries lacking access to electricity (urban)
-          </option>
-          <option value="20cc5eca-8c63-4c41-8e8e-134dcf1e6d76">Fires</option>
-          <option value="a86d906d-9862-4783-9e30-cdb68cd808b8">
-            Global Power Plant Database
-          </option>
-          <option value="1bc94710-d7ec-46f9-aa27-edddd87b1625">
-            Cold Water Corals
-          </option>
-        </select>
-
-        <label htmlFor="widget">Select widget</label>
-        <select
-          id="widget"
-          value={!!widget ? widget : "NO_WIDGET_SELECTED"}
-          onChange={e => {
-            if (e.target.value === "NO_WIDGET_SELECTED") {
-              modifyOptions({
-                widget: null,
-                dataset: "d446a52e-c4c1-4e74-ae30-3204620a0365"
-              });
-            } else {
-              modifyOptions({
-                dataset: widgets.find(w => w.id === e.target.value).attributes
-                  .dataset,
-                widget: e.target.value
-              });
-            }
-          }}
-        >
-          <option value="NO_WIDGET_SELECTED">-</option>
-          {widgets.map(rwWidget => {
-            return (
-              <option key={rwWidget.id} value={rwWidget.id}>
-                {rwWidget.attributes.name}
-              </option>
-            );
-          })}
-        </select>
-
-        <label htmlFor="editor-compact-mode">Toggle Compact mode</label>
-        <button onClick={() => modifyOptions({ compactMode: !compactMode })}>
-          {compactMode ? "Set Default mode" : "Set Compact mode"}
-        </button>
-
-        <label htmlFor="theme-color">
-          <span
-            className="color-presentation"
-            style={{ background: theme.color }}
-          />{" "}
-          THEME - Color
-        </label>
-        <input
-          id="theme-color"
-          type="text"
-          placeholder="#00000"
-          value={theme.color}
-          onChange={e =>
-            modifyOptions({ theme: { ...theme, color: e.target.value } })
-          }
-        />
-      </div>
+      <StyledContainer compact={compact}>
+        <StyleEditorOptionsErrors>
+          <h3>Error loading dataset</h3>
+          <p>Dataset not accessible at this moment.</p>
+        </StyleEditorOptionsErrors>
+      </StyledContainer>
     );
   }
-}
+
+  return (
+    <StyledContainer compact={compact}>
+      <Tabs>
+        <Tab label="General">
+          <Accordion>
+            <AccordionSection title="Description and labels" default>
+              <WidgetInfo />
+            </AccordionSection>
+            <AccordionSection title="Filters">
+              <Filter dataService={dataService} />
+            </AccordionSection>
+            <AccordionSection title="Order">
+              <OrderValues
+                onChange={(value) => handleChange(value, "orderBy")}
+              />
+              <GroupValues
+                onChange={(value) => handleChange(value, "groupBy")}
+              />
+              {limit && (
+                <QueryLimit
+                  min={0}
+                  max={500}
+                  onChange={(value) => handleChange(value, "limit")}
+                  handleOnChangeValue={(value) => handleChange(value, "limit")}
+                  label="Limit"
+                  value={limit}
+                />
+              )}
+            </AccordionSection>
+          </Accordion>
+        </Tab>
+
+        <Tab label="Visual style">
+          <Accordion>
+            {disabledFeatures.indexOf("typogrophy") === -1 && (
+              <AccordionSection title="Typography">
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Typography />
+                </Suspense>
+              </AccordionSection>
+            )}
+
+            {disabledFeatures.indexOf("theme-selection") === -1 && (
+              <AccordionSection title="Color" openDefault>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ColorShemes />
+                </Suspense>
+              </AccordionSection>
+            )}
+          </Accordion>
+        </Tab>
+
+        {disabledFeatures.indexOf("advanced-editor") === -1 && (
+          <Tab label="Advanced">
+            <Suspense fallback={<div>Loading...</div>}>
+              <JsonEditor />
+            </Suspense>
+          </Tab>
+        )}
+
+        {disabledFeatures.indexOf("table-view") === -1 && (
+          <Tab label="Table view">
+            <Suspense fallback={<div>Loading...</div>}>
+              <TableView />
+            </Suspense>
+          </Tab>
+        )}
+      </Tabs>
+    </StyledContainer>
+  );
+};
 
 export default EditorOptions;

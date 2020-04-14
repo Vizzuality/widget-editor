@@ -1,12 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import WidgetEditor from "components/widget-editor";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+export { default as Renderer } from "@applications/renderer";
+export { default as reducers } from "@packages/shared/lib/modules";
+export { default as middleware } from "middleware";
+export { default as sagas } from "sagas";
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+export { default as RwAdapter } from "@adapters/rw-adapter";
+
+export default WidgetEditor;

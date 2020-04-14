@@ -1,0 +1,64 @@
+{
+  "name": "@applications/renderer",
+  "version": "0.1.0",
+  "directories": {
+    "src": "src"
+  },
+  "files": [
+    "src"
+  ],
+  "private": true,
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@packages/core": "1.0.0",
+    "@packages/types": "^1.0.0",
+    "@packages/shared": "0.1.0",
+    "babel-plugin-styled-components": "^1.10.6",
+    "lodash": "^4.17.15",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-json-editor-ajrm": "^2.5.9",
+    "react-redux": "^7.1.3",
+    "react-resize-detector": "^4.2.1",
+    "react-select": "^3.0.8",
+    "react-slick": "^0.25.2",
+    "react-slider": "^1.0.2",
+    "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-saga": "^1.1.3",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "slick-carousel": "^1.8.1",
+    "styled-components": "^4.4.1",
+    "vega": "^5.9.0",
+    "vega-tooltip": "^0.21.0",
+    "vizzuality-redux-tools": "^4.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-react": "^7.7.4",
+    "babel-plugin-module-resolver": "^4.0.0"
+  },
+  "scripts": {
+    "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
+    "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
+    "compile": "NODE_ENV=production babel src --out-dir lib --copy-files"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "main": "lib/index.js"
+}

@@ -1,68 +1,81 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Widget editor V2
 
-## Available Scripts
+This is the second iteration of the widget editor. The widget editor is a tool to generate charts based on vega configurations. You can plug in any api using Adapters. Currently, we support out of the box the resource watch API.
 
-In the project directory, you can run:
+## Getting started
 
-### `yarn start`
+Installing through NPM `npm install widget-editor`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Instaling with Yarn(v1) `yarn install widget-editor`
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+There are two parts to the editor. Eather, you can use the entire editor by merely importing the `WidgetEditor` component. Or if you want to display the configured charts, you should import the `Renderer`.
 
-### `yarn test`
+## Using the editor
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```jsx
+import WidgetEditor from "widget-editor";
 
-### `yarn build`
+const App = () => {
+  return <WidgetEditor />;
+};
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The editor has a few properties, some required. Below you have all properties listed.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## adapter (required)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+First of all, we need to plug in an `adapter` to the editor. This adapter is responsible for proxying and resolving any necessary information into the editor itself. Currently, we only have an adapter written for the resource watch API.
 
-### `yarn eject`
+## datasetId (required)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+This tells the editor what dataset to utilize. (note\* this might change in the future)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## widgetId
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+widgetId is used together with a datasetId. This will make another request fetching the necessary widget.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## schemes
 
-## Learn More
+Schemes allow you to add custom themes to the editor. This takes an array of objects of this format:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```json
+{
+  "name": "theme name",
+  "mainColor": "#hex",
+  "category": ["#hex"]
+}
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## compact (boolean, default false)
 
-### Code Splitting
+This property renders the editor in a compact mode. By default, the editor is a two-column layout. Enabling this setting will render one column & overlay the options.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## disable
 
-### Analyzing the Bundle Size
+This property allows you to disable specific features in the editor, read more here.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+# All properties listed
 
-### Making a Progressive Web App
+```jsx
+import WidgetEditor, { RwAdapter } from "widget-editor";
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+<WidgetEditor
+  disable={[string]}
+  schemes={[theme_objects]}
+  datasetId="string"
+  widgetId="string"
+  adapter={RwAdapter}
+/>;
+```
 
-### Advanced Configuration
+# Using the renderer
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+The renderer allows you to render a chart based on a widget configuration. It takes one parameter, which is a widget configuration.
 
-### Deployment
+```jsx
+import { Renderer } from "widget-editor";
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+const App = () => {
+  return <Renderer widgetConfig={...} />;
+};
+```

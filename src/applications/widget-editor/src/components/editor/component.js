@@ -1,84 +1,138 @@
 import React from "react";
-
-import RwAdapter from "@packages/rw-adapter";
-import WidgetEditor from "@packages/widget-editor";
-
-const THEMES = [
-  {
-    name: "pine",
-    mainColor: "#907A59",
-    category: [
-      "#907A59",
-      "#6AAC9F",
-      "#D5C0A1",
-      "#5C7D86",
-      "#F9AF38",
-      "#F05B3F",
-      "#89AD24",
-      "#CE4861",
-      "#F5808F",
-      "#86C48F",
-      "#F28627",
-      "#B23912",
-      "#BAD6AF",
-      "#C9C857",
-      "#665436",
-    ],
-  },
-  {
-    name: "wind",
-    mainColor: "#5A7598",
-    category: [
-      "#5A7598",
-      "#C1CCDC",
-      "#DBB86F",
-      "#B7597B",
-      "#5FAB55",
-      "#8D439E",
-      "#CD87CA",
-      "#6BC8CB",
-      "#C58857",
-      "#712932",
-      "#ACE3E9",
-      "#B1D193",
-      "#294260",
-      "#49ACDB",
-      "#2A75C3",
-    ],
-  },
-];
+import isEqual from "lodash/isEqual";
+import debounce from "lodash/debounce";
+import Renderer from "@applications/renderer";
+import EditorOptions from "components/editor-options";
+import Footer from "components/footer";
+import { DataService } from "@packages/core";
+import { constants } from "@packages/core";
+import { StyledContainer } from "./style";
 
 class Editor extends React.Component {
   constructor(props) {
     super(props);
+    const {
+      datasetId,
+      widgetId,
+      adapter,
+      setEditor,
+      dispatch,
+      theme,
+      schemes,
+    } = this.props;
+
+    this.onSave = this.onSave.bind(this);
+
+    this.dataService = new DataService(
+      datasetId,
+      widgetId,
+      adapter,
+      setEditor,
+      dispatch
+    );
+
+    this.dataService.resolveInitialState();
+    this.resolveTheme(theme);
+    this.resolveSchemes(schemes);
+
+    props.dispatch({
+      type: constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
+      payload: adapter,
+    });
   }
-  handleOnSave(diff) {
-    console.log("on save called from consumer with:");
-    console.log(diff);
+
+  componentWillMount() {
+    const { authenticated, disabled } = this.props;
+    if (authenticated) {
+      this.resolveAuthentication();
+    }
+
+    this.resolveEditorFunctionality();
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      datasetId: prevDatasetId,
+      widgetId: prevWidgetId,
+      theme: prevTheme,
+      schemes: prevSchemes,
+      authenticated: prevAuthenticated,
+    } = prevProps;
+    const { datasetId, widgetId, theme, schemes, authenticated } = this.props;
+
+    // When datasetId changes, we need to restore the editor itself
+    if (
+      !isEqual(datasetId, prevDatasetId) ||
+      !isEqual(widgetId, prevWidgetId)
+    ) {
+      this.initializeRestoration(datasetId, widgetId);
+    }
+
+    if (!isEqual(theme, prevTheme)) {
+      this.resolveTheme(theme);
+    }
+
+    if (!isEqual(schemes, prevSchemes)) {
+      this.resolveSchemes(schemes);
+    }
+
+    if (!isEqual(authenticated, prevAuthenticated)) {
+      this.resolveAuthentication(authenticated);
+    }
+  }
+
+  // We debounce all properties here
+  // Then we dont have to care if debouncing is set on the client
+  resolveAuthentication = debounce((authenticated) => {
+    const { setEditor } = this.props;
+    setEditor({ authenticated });
+  }, 1000);
+
+  resolveEditorFunctionality() {
+    const { setEditor, disable } = this.props;
+    if (disable && Array.isArray(disable)) {
+      setEditor({ disabledFeatures: disable });
+    }
+  }
+
+  initializeRestoration = debounce((datasetId, widgetId) => {
+    this.dataService.restoreEditor(datasetId, widgetId);
+  }, 1000);
+
+  // We debounce all properties here
+  // Then we dont have to care if debouncing is set on the client
+  resolveTheme = debounce((theme) => {
+    const { setTheme } = this.props;
+    setTheme(theme);
+  }, 1000);
+
+  resolveSchemes = debounce((schemes) => {
+    const { setScheme } = this.props;
+    setScheme(schemes);
+  }, 1000);
+
+  onSave() {
+    const { onSave, dispatch, editorState, adapter, application } = this.props;
+    if (typeof onSave === "function") {
+      adapter.handleSave(onSave, this.dataService, application, editorState);
+    }
+    dispatch({ type: constants.sagaEvents.EDITOR_SAVE });
   }
 
   render() {
     const {
-      editorOptions: { compactMode, authToken, dataset, widget, theme },
+      configuration,
+      adapter,
+      theme: { compact },
     } = this.props;
-
-    const authenticated = !!authToken && authToken.length > 0;
-
     return (
-      <div className="widget-editor-wrapper">
-        <WidgetEditor
-          schemes={THEMES}
-          compact={compactMode}
-          disable={[]}
-          datasetId={dataset}
-          widgetId={widget}
-          onSave={this.handleOnSave}
-          authenticated={authenticated}
-          application="rw"
-          adapter={RwAdapter}
-          theme={theme}
-        />
-      </div>
+      <StyledContainer {...compact}>
+        <Renderer />
+        {configuration.limit && (
+          <EditorOptions adapter={adapter} dataService={this.dataService} />
+        )}
+        <Footer onSave={this.onSave} />
+      </StyledContainer>
     );
   }
 }

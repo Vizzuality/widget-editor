@@ -8,21 +8,22 @@
   },
   "workspaces": [
     "src/applications/*",
-    "src/packages/*"
+    "src/packages/*",
+    "src/playground/*",
+    "src/adapters/*"
   ],
   "scripts": {
     "build": "rimraf -f dist && lerna run build",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
-    "watch:widget-editor": "lerna run start --parallel --scope @applications/widget-editor --stream",
+    "watch:widget-editor": "lerna run start --parallel --scope @playground/widget-editor --stream",
     "start:widget-editor": "npm-run-all --parallel watch:*",
-    "build:widget-editor": "cd src/applications/widget-editor && npm run build",
-    "test:widget-editor": "cd src/applications/widget-editor && yarn test --watchAll=false",
-    "test:renderer": "cd src/applications/renderer && yarn test --watchAll=false",
+    "build:widget-editor": "cd src/playground/widget-editor && npm run build",
+    "test:widget-editor": "cd src/playground/widget-editor && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
-    "test": "jest --verbose ./src/packages && (cd src/applications/renderer && yarn test --watchAll=false) && (cd src/applications/widget-editor && yarn test --watchAll=false)",
+    "test": "jest --verbose ./src/packages",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "deploy:widget-editor": "cd src/applications/widget-editor && npm run deploy"
+    "deploy:widget-editor": "cd src/playground/widget-editor && npm run deploy"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",
