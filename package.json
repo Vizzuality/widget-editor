@@ -13,6 +13,7 @@
     "src/adapters/*"
   ],
   "scripts": {
+    "release": "release-it",
     "build": "rimraf -f dist && lerna run build",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
@@ -33,6 +34,7 @@
     "lerna": "latest",
     "npm-run-all": "^4.1.5",
     "react-test-renderer": "^16.12.0",
+    "release-it": "^13.5.2",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.2"
   },
