@@ -11,6 +11,7 @@
     "src/packages/*"
   ],
   "scripts": {
+    "build": "rimraf -f dist && lerna run build",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
     "watch:widget-editor": "lerna run start --parallel --scope @applications/widget-editor --stream",
@@ -33,5 +34,8 @@
     "react-test-renderer": "^16.12.0",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "rimraf": "^3.0.2"
   }
 }

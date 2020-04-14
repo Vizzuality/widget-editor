@@ -1,9 +1,11 @@
-import { connectState } from "helpers/redux";
-import { patchConfiguration } from "modules/configuration/actions";
+import { connectState } from "@packages/shared/lib/helpers/redux";
+
+import { patchConfiguration } from "@packages/shared/lib/modules/configuration/actions";
 import EditorOptionsComponent from "./component";
 
 export default connectState(
   (state) => ({
+    disabledFeatures: state.editor.disabledFeatures,
     datasetId:
       state.editor.dataset && state.editor.dataset.id
         ? state.editor.dataset.id

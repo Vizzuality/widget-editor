@@ -10,7 +10,7 @@ import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import styled from "styled-components";
 
-import isFloat from "helpers/isFloat";
+import isFloat from "@packages/shared/lib/helpers/isFloat";
 
 const StyledSliderBox = styled.div`
   width: 100%;
@@ -22,7 +22,8 @@ const StyledInputBox = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: ${props => (props.isDouble ? "space-between" : "flex-end")};
+  justify-content: ${(props) =>
+    props.isDouble ? "space-between" : "flex-end"};
   input {
     max-width: 100px;
   }
@@ -34,8 +35,8 @@ const QueryLimit = ({
   max = null,
   value,
   minDistance = 1,
-  onChange = data => {},
-  handleOnChangeValue = (data, key) => {}
+  onChange = (data) => {},
+  handleOnChangeValue = (data, key) => {},
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
   const debouncedValue = useDebounce(localValue, 400);
@@ -66,7 +67,7 @@ const QueryLimit = ({
 
   const minMaxProps = {
     ...(min !== null && { min }),
-    ...(max !== null && { max })
+    ...(max !== null && { max }),
   };
 
   return (
@@ -78,7 +79,7 @@ const QueryLimit = ({
           step={isFloatingPoint ? 0.1 : 1}
           value={isDouble ? [minValue, maxValue] : maxValue}
           defaultValue={isDouble ? min : [min, max]}
-          onChange={value => setLocalValue({ value, key: null })}
+          onChange={(value) => setLocalValue({ value, key: null })}
         />
       </StyledSliderBox>
       <StyledInputBox isDouble={isDouble}>
@@ -88,7 +89,7 @@ const QueryLimit = ({
             value={minValue}
             type="number"
             name="options-limit"
-            onChange={e =>
+            onChange={(e) =>
               setLocalValue({ value: e.target.value, key: "minValue" })
             }
           />
@@ -98,7 +99,7 @@ const QueryLimit = ({
           value={maxValue}
           type="number"
           name="options-limit"
-          onChange={e =>
+          onChange={(e) =>
             setLocalValue({ value: e.target.value, key: "maxValue" })
           }
         />

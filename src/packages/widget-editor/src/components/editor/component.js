@@ -1,7 +1,7 @@
 import React from "react";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
-import Renderer from "components/renderer";
+import Renderer from "@packages/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 import { DataService } from "@packages/core";
@@ -18,7 +18,7 @@ class Editor extends React.Component {
       setEditor,
       dispatch,
       theme,
-      schemes
+      schemes,
     } = this.props;
 
     this.onSave = this.onSave.bind(this);
@@ -37,15 +37,17 @@ class Editor extends React.Component {
 
     props.dispatch({
       type: constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
-      payload: adapter
+      payload: adapter,
     });
   }
 
   componentWillMount() {
-    const { authenticated } = this.props;
+    const { authenticated, disabled } = this.props;
     if (authenticated) {
       this.resolveAuthentication();
     }
+
+    this.resolveEditorFunctionality();
   }
 
   componentDidUpdate(prevProps) {
@@ -54,16 +56,9 @@ class Editor extends React.Component {
       widgetId: prevWidgetId,
       theme: prevTheme,
       schemes: prevSchemes,
-      authenticated: prevAuthenticated
+      authenticated: prevAuthenticated,
     } = prevProps;
-    const {
-      datasetId,
-      widgetId,
-      theme,
-      schemes,
-      adapter,
-      authenticated
-    } = this.props;
+    const { datasetId, widgetId, theme, schemes, authenticated } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
     if (
@@ -88,10 +83,17 @@ class Editor extends React.Component {
 
   // We debounce all properties here
   // Then we dont have to care if debouncing is set on the client
-  resolveAuthentication = debounce(authenticated => {
+  resolveAuthentication = debounce((authenticated) => {
     const { setEditor } = this.props;
     setEditor({ authenticated });
   }, 1000);
+
+  resolveEditorFunctionality() {
+    const { setEditor, disable } = this.props;
+    if (disable && Array.isArray(disable)) {
+      setEditor({ disabledFeatures: disable });
+    }
+  }
 
   initializeRestoration = debounce((datasetId, widgetId) => {
     this.dataService.restoreEditor(datasetId, widgetId);
@@ -99,12 +101,12 @@ class Editor extends React.Component {
 
   // We debounce all properties here
   // Then we dont have to care if debouncing is set on the client
-  resolveTheme = debounce(theme => {
+  resolveTheme = debounce((theme) => {
     const { setTheme } = this.props;
     setTheme(theme);
   }, 1000);
 
-  resolveSchemes = debounce(schemes => {
+  resolveSchemes = debounce((schemes) => {
     const { setScheme } = this.props;
     setScheme(schemes);
   }, 1000);
@@ -121,7 +123,7 @@ class Editor extends React.Component {
     const {
       configuration,
       adapter,
-      theme: { compact }
+      theme: { compact },
     } = this.props;
     return (
       <StyledContainer {...compact}>

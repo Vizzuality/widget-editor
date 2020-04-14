@@ -12,6 +12,8 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@packages/core": "1.0.0",
     "@packages/types": "^1.0.0",
+    "@packages/renderer": "0.1.0",
+    "@packages/shared": "0.1.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",

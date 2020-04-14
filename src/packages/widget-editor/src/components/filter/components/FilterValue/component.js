@@ -2,7 +2,7 @@ import React from "react";
 import Input from "styles-common/input";
 import styled from "styled-components";
 
-import isFloat from "helpers/isFloat";
+import isFloat from "@packages/shared/lib/helpers/isFloat";
 
 import { TYPE_VALUE } from "components/filter/const";
 
@@ -14,7 +14,7 @@ const FilterValue = ({
   filter,
   disabled = false,
   setData,
-  isNumeric = true
+  isNumeric = true,
 }) => {
   const { values } = filter.filter;
   const { min, max } = filter.fieldInfo
@@ -32,7 +32,7 @@ const FilterValue = ({
       value={values}
       type={isNumeric ? "number" : "text"}
       name={`filter-value-${filter.id}`}
-      onChange={e => setData(e.target.value, filter.id, TYPE_VALUE)}
+      onChange={(e) => setData(e.target.value, filter.id, TYPE_VALUE)}
     />
   );
 };

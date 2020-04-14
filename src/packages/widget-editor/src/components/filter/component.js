@@ -3,7 +3,7 @@ import React from "react";
 import { FiltersService } from "@packages/core";
 
 import InputGroup from "styles-common/input-group";
-import Button from "components/button";
+import { Button } from "@packages/shared";
 import uniqueId from "lodash/uniqueId";
 
 // FieldsService
@@ -20,7 +20,7 @@ import {
   FILTER_NUMBER_INDICATOR_TYPES,
   FILTER_STRING_INDICATOR_TYPES,
   STRING_TYPES,
-  NUMBER_TYPES
+  NUMBER_TYPES,
 } from "./const";
 
 import NotNullInput from "./components/NotNullInput";
@@ -36,7 +36,7 @@ import {
   StyledEmpty,
   StyledFilterSection,
   StyledFilter,
-  StyledDeleteBox
+  StyledDeleteBox,
 } from "./style";
 
 const Filter = ({
@@ -45,16 +45,16 @@ const Filter = ({
   filters = [],
   fields = [],
   configuration,
-  dataset
+  dataset,
 }) => {
-  const availableColumns = fields.map(field => {
+  const availableColumns = fields.map((field) => {
     return {
       label:
         field.metadata && field.metadata.alias
           ? field.metadata.alias
           : field.columnName.replace(/_/gi, " "),
       value: field.columnName,
-      dataType: field.type
+      dataType: field.type,
     };
   });
 
@@ -68,7 +68,7 @@ const Filter = ({
     );
 
     setFilters({
-      list: patch
+      list: patch,
     });
     // XXX: Update Data Service with applied filters
     dataService.requestWithFilters(patch, configuration);
@@ -77,17 +77,17 @@ const Filter = ({
   const addFilter = () => {
     const patch = [
       ...filters,
-      { ...COLUMN_FILTER_GROUP, id: uniqueId("we-filter-") }
+      { ...COLUMN_FILTER_GROUP, id: uniqueId("we-filter-") },
     ];
     setFilters({
-      list: patch
+      list: patch,
     });
   };
 
-  const removeFilter = id => {
-    const patch = filters.filter(f => f.id !== id) || [];
+  const removeFilter = (id) => {
+    const patch = filters.filter((f) => f.id !== id) || [];
     setFilters({
-      list: patch
+      list: patch,
     });
   };
 
@@ -98,7 +98,7 @@ const Filter = ({
         <StyledEmpty>No filters found. Please, add them.</StyledEmpty>
       )}
 
-      {filters.map(filter => (
+      {filters.map((filter) => (
         <StyledFilterSection key={filter.id}>
           <InputGroup noMargins={true}>
             <FilterColumn

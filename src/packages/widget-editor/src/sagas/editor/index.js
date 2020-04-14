@@ -1,24 +1,23 @@
 import { takeLatest, put, select } from "redux-saga/effects";
-import { getAction } from "helpers/redux";
 import { constants } from "@packages/core";
 
-import { setConfiguration } from "modules/configuration/actions";
+import { setConfiguration } from "@packages/shared/lib/modules/configuration/actions";
 
 function* preloadData() {
   const {
     widgetEditor: {
       editor: {
         widget: {
-          attributes: { name, description, widgetConfig }
-        }
-      }
-    }
+          attributes: { name, description, widgetConfig },
+        },
+      },
+    },
   } = yield select();
 
   const configuration = {
     ...widgetConfig.paramsConfig,
     title: name,
-    caption: description
+    caption: description,
   };
 
   yield put(setConfiguration(configuration));

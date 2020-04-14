@@ -1,16 +1,16 @@
 import { takeLatest, put, call, select } from "redux-saga/effects";
 
-import { getAction } from "helpers/redux";
+import { getAction } from "@packages/shared/lib/helpers/redux";
 
 import {
   FiltersService,
   constants,
   VegaService,
-  StateProxy
+  StateProxy,
 } from "@packages/core";
 
-import { setEditor } from "modules/editor/actions";
-import { setWidget } from "modules/widget/actions";
+import { setEditor } from "@packages/shared/lib/modules/editor/actions";
+import { setWidget } from "@packages/shared/lib/modules/widget/actions";
 
 const stateProxy = new StateProxy();
 let adapterConfiguration = null;
@@ -19,7 +19,7 @@ async function getWidgetData(editorState) {
   const {
     configuration,
     filters,
-    editor: { dataset }
+    editor: { dataset },
   } = editorState;
   const filtersService = new FiltersService(configuration, filters, dataset);
   const sqlQuery = filtersService.getQuery();
@@ -38,7 +38,7 @@ function* storeAdapterConfigInState({ payload }) {
 
 function* preloadData() {
   const {
-    widgetEditor: { editor, configuration, theme }
+    widgetEditor: { editor, configuration, theme },
   } = yield select();
 
   const { widgetData } = editor;
@@ -68,7 +68,7 @@ function* resolveWithProxy() {
 
 function* updateWidget() {
   const {
-    widgetEditor: { editor, configuration, theme }
+    widgetEditor: { editor, configuration, theme },
   } = yield select();
 
   if (editor.initialized) {

@@ -1,10 +1,10 @@
-import { connectState } from "helpers/redux";
+import { connectState } from "@packages/shared/lib/helpers/redux";
 
-import { setFilters } from "modules/filters/actions";
+import { setFilters } from "@packages/shared/lib/modules/filters/actions";
 
 import OrderValuesComponent from "./component";
 
-import * as selectors from "modules/widget/selectors";
+import * as selectors from "@packages/shared/lib/modules/widget/selectors";
 
 export default connectState(
   (state) => ({
