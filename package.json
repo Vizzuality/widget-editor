@@ -13,7 +13,7 @@
     "src/adapters/*"
   ],
   "scripts": {
-    "release": "dotenv ./src/applications/widget-editor release-it",
+    "release": "dotenv release-it",
     "build": "rimraf -f dist && lerna run build",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
