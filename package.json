@@ -2,7 +2,7 @@
   "name": "widget-editor",
   "version": "2.0.0-beta.1",
   "main": "./src/applications/widget-editor/dist/index.js",
-  "private": false,
+  "private": true,
   "engines": {
     "yarn": ">=1.17.3"
   },
