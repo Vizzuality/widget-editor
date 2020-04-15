@@ -1,13 +1,13 @@
 {
-  "name": "@applications/widget-editor",
-  "version": "2.0.0-v2-beta.1",
+  "name": "widget-editor",
+  "version": "2.0.0-v2-beta.0",
   "directories": {
     "src": "src"
   },
   "files": [
     "src"
   ],
-  "private": true,
+  "private": false,
   "dependencies": {
     "@applications/renderer": "2.0.0-v2-beta.1",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -61,5 +61,5 @@
       "last 1 safari version"
     ]
   },
-  "main": "lib/index.js"
+  "main": "dist/index.js"
 }

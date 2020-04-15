@@ -5,10 +5,6 @@
   "github": {
     "release": true
   },
-  "plugins": {
-    "release-it-yarn-workspaces": true
-  },
-  "npm": false,
   "hooks": {
     "before:init": ["yarn"],
     "after:bump": "yarn build",
