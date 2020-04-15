@@ -13,15 +13,15 @@ const Renderer = ({
     restoring,
     initialized
   } = editor;
-  return React.createElement(StyledContainer, null, !widgetConfig && React.createElement(Suspense, {
-    fallback: React.createElement("div", null, "Loading...")
-  }, React.createElement(SelectChart, null)), initialized && !restoring && React.createElement(Suspense, {
-    fallback: React.createElement(RestoringWidget, null, React.createElement(RestoringWidgetTitle, null, "Loading widget..."))
-  }, React.createElement(Chart, {
+  return /*#__PURE__*/React.createElement(StyledContainer, null, !widgetConfig && /*#__PURE__*/React.createElement(Suspense, {
+    fallback: /*#__PURE__*/React.createElement("div", null, "Loading...")
+  }, /*#__PURE__*/React.createElement(SelectChart, null)), initialized && !restoring && /*#__PURE__*/React.createElement(Suspense, {
+    fallback: /*#__PURE__*/React.createElement(RestoringWidget, null, /*#__PURE__*/React.createElement(RestoringWidgetTitle, null, "Loading widget..."))
+  }, /*#__PURE__*/React.createElement(Chart, {
     widgetConfig: widgetConfig
-  })), !initialized && React.createElement(RestoringWidget, null, React.createElement(RestoringWidgetTitle, null, "Loading widget...")), restoring && React.createElement(RestoringWidget, null, React.createElement(RestoringWidgetTitle, null, "Building widget...")), !widgetConfig && React.createElement(Suspense, {
-    fallback: React.createElement("div", null, "Loading...")
-  }, React.createElement(ChartColorFilter, null)));
+  })), !initialized && /*#__PURE__*/React.createElement(RestoringWidget, null, /*#__PURE__*/React.createElement(RestoringWidgetTitle, null, "Loading widget...")), restoring && /*#__PURE__*/React.createElement(RestoringWidget, null, /*#__PURE__*/React.createElement(RestoringWidgetTitle, null, "Building widget...")), !widgetConfig && /*#__PURE__*/React.createElement(Suspense, {
+    fallback: /*#__PURE__*/React.createElement("div", null, "Loading...")
+  }, /*#__PURE__*/React.createElement(ChartColorFilter, null)));
 };
 
 export default Renderer;

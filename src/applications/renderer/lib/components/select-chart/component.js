@@ -54,11 +54,11 @@ const SelectChart = ({
     });
   };
 
-  return React.createElement(StyledContainer, {
+  return /*#__PURE__*/React.createElement(StyledContainer, {
     isCompact: isCompact
-  }, React.createElement(StyledSelectBox, {
+  }, /*#__PURE__*/React.createElement(StyledSelectBox, {
     isCompact: isCompact
-  }, React.createElement(Select, {
+  }, /*#__PURE__*/React.createElement(Select, {
     onChange: handleChange,
     onMenuOpen: () => setIsOpenMenu(true),
     onMenuClose: () => setIsOpenMenu(false),
@@ -69,7 +69,7 @@ const SelectChart = ({
       Menu: ChartMenu
     },
     menuIsOpen: isOpenMenu
-  })), isCompact && React.createElement(Button, {
+  })), isCompact && /*#__PURE__*/React.createElement(Button, {
     type: "highlight",
     onClick: () => hadleSettings()
   }, "Settings"));

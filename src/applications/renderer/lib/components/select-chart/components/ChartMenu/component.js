@@ -10,7 +10,7 @@ const ChartList = ({
   setData,
   title
 }) => {
-  return React.createElement(Fragment, null, list.length > 0 && React.createElement("div", null, React.createElement(StyledTitle, null, title), React.createElement(StyledIcons, null, list.map((el, key) => React.createElement(ChartIcon, _extends({
+  return /*#__PURE__*/React.createElement(Fragment, null, list.length > 0 && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(StyledTitle, null, title), /*#__PURE__*/React.createElement(StyledIcons, null, list.map((el, key) => /*#__PURE__*/React.createElement(ChartIcon, _extends({
     key: key,
     setData: setData
   }, el))))));
@@ -43,17 +43,17 @@ const ChartMenu = ({
     if (dataSet) setValue(dataSet);
   };
 
-  return React.createElement(StyledContainer, _extends({
+  return /*#__PURE__*/React.createElement(StyledContainer, _extends({
     ref: innerRef
-  }, innerProps), React.createElement(StyledMenu, null, React.createElement(ChartList, {
+  }, innerProps), /*#__PURE__*/React.createElement(StyledMenu, null, /*#__PURE__*/React.createElement(ChartList, {
     title: "Columns",
     setData: setData,
     list: columns
-  }), React.createElement(ChartList, {
+  }), /*#__PURE__*/React.createElement(ChartList, {
     title: "Bars",
     setData: setData,
     list: bars
-  }), React.createElement(ChartList, {
+  }), /*#__PURE__*/React.createElement(ChartList, {
     title: "More",
     setData: setData,
     list: more

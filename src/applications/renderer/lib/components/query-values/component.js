@@ -72,7 +72,7 @@ const QueryValues = ({
     });
   };
 
-  return React.createElement(Fragment, null, chartType === "pie" && React.createElement(Select, {
+  return /*#__PURE__*/React.createElement(Fragment, null, chartType === "pie" && /*#__PURE__*/React.createElement(Select, {
     align: "horizontal",
     menuPlacement: "top",
     value: chartOptions.chartValue,
@@ -83,7 +83,7 @@ const QueryValues = ({
     configuration: configuration,
     isCustom: true,
     isPopup: true
-  }), chartType !== "pie" && React.createElement(Select, {
+  }), chartType !== "pie" && /*#__PURE__*/React.createElement(Select, {
     align: "vertical",
     menuPlacement: "top",
     value: chartOptions.chartValue,
@@ -94,7 +94,7 @@ const QueryValues = ({
     configuration: configuration,
     isCustom: true,
     isPopup: true
-  }), chartType !== "pie" && React.createElement(Select, {
+  }), chartType !== "pie" && /*#__PURE__*/React.createElement(Select, {
     align: "horizontal",
     menuPlacement: "top",
     value: chartOptions.chartCategory,

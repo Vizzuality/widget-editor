@@ -100,14 +100,14 @@ class Chart extends React.Component {
   }
 
   render() {
-    return React.createElement(StyledContainer, null, React.createElement("div", {
+    return /*#__PURE__*/React.createElement(StyledContainer, null, /*#__PURE__*/React.createElement("div", {
       className: "c-chart",
       ref: c => {
         this.chart = c;
       }
-    }), !this.externalRenderer && React.createElement(Suspense, {
-      fallback: React.createElement("div", null, "Loading...")
-    }, React.createElement(QueryValues, null)));
+    }), !this.externalRenderer && /*#__PURE__*/React.createElement(Suspense, {
+      fallback: /*#__PURE__*/React.createElement("div", null, "Loading...")
+    }, /*#__PURE__*/React.createElement(QueryValues, null)));
   }
 
 }

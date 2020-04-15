@@ -45,23 +45,23 @@ const ChartColorFilter = ({
     }
   };
 
-  return React.createElement(StyledContainer, null, isSingleColorSelection && React.createElement(StyledColorsBoxContainer, {
+  return /*#__PURE__*/React.createElement(StyledContainer, null, isSingleColorSelection && /*#__PURE__*/React.createElement(StyledColorsBoxContainer, {
     overflowIsHidden: false,
     alignCenter: !isObjectLike(color)
-  }, React.createElement(StyledColorsBox, {
+  }, /*#__PURE__*/React.createElement(StyledColorsBox, {
     alignCenter: false
-  }, React.createElement(StyledColorDot, {
+  }, /*#__PURE__*/React.createElement(StyledColorDot, {
     color: schemeColor
-  }), "Single color")), !isSingleColorSelection && React.createElement(StyledColorsBoxContainer, {
+  }), "Single color")), !isSingleColorSelection && /*#__PURE__*/React.createElement(StyledColorsBoxContainer, {
     overflowIsHidden: true
   }, widgetData && widgetData.map((node, index) => {
-    return React.createElement(StyledColorsBox, {
+    return /*#__PURE__*/React.createElement(StyledColorsBox, {
       alignCenter: true,
       key: `${node.x}-${index}`
-    }, React.createElement(StyledColorDot, {
+    }, /*#__PURE__*/React.createElement(StyledColorDot, {
       color: resolveSchemeColor(activeScheme.category, index)
     }), node.x);
-  })), React.createElement(StyledDropdownBox, null, React.createElement(Select, {
+  })), /*#__PURE__*/React.createElement(StyledDropdownBox, null, /*#__PURE__*/React.createElement(Select, {
     align: "horizontal",
     relative: true,
     menuPlacement: "top",
