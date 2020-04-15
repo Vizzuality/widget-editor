@@ -62,3 +62,4 @@ typings/
 # Exlude all ts builds
 src/packages/*/lib
 src/packages/*/build
+src/applications/*/dist
