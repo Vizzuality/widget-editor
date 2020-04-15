@@ -6,6 +6,7 @@
     "watch": "tsc --watch",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
+  "private": true,
   "directories": {
     "build": "build",
     "src": "src",

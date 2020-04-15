@@ -1,7 +1,7 @@
 {
   "name": "@playground/widget-editor",
   "version": "2.0.0-v2-beta.1",
-  "private": false,
+  "private": true,
   "homepage": "http://vizzuality.github.io/widget-editor",
   "dependencies": {
     "gh-pages": "^2.2.0",

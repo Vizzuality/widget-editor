@@ -5,6 +5,10 @@
   "github": {
     "release": true
   },
+  "npm": {
+    "publish": true,
+    "publishPath": "./src/applications/widget-editor/dist/"
+  },
   "hooks": {
     "before:init": ["yarn"],
     "after:bump": "yarn build",
