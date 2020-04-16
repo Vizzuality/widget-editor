@@ -1,6 +1,6 @@
 {
   "name": "@adapters/rw-adapter",
-  "version": "2.0.2-alpha.0",
+  "version": "2.0.3-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -20,8 +20,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@packages/core": "^2.0.2-alpha.0",
-    "@packages/types": "^2.0.2-alpha.0",
+    "@packages/core": "^2.0.3-alpha.0",
+    "@packages/types": "^2.0.3-alpha.0",
     "lodash": "^4.17.15"
   },
   "gitHead": "54938ac5e5c6b221b90566d87295dd2b5fc5a497"
