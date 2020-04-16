@@ -1,6 +1,6 @@
 {
   "name": "@tomasmoosee/core",
-  "version": "2.0.20-alpha.0",
+  "version": "2.0.21-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -25,7 +25,7 @@
   },
   "main": "build/index.js",
   "dependencies": {
-    "@tomasmoosee/types": "^2.0.20-alpha.0"
+    "@tomasmoosee/types": "^2.0.21-alpha.0"
   },
   "gitHead": "1d6d977413e63d476f3af0ab060c7fb8fee4b97e"
 }
