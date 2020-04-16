@@ -1,6 +1,6 @@
 {
   "name": "@packages/core",
-  "version": "2.0.5-alpha.0",
+  "version": "2.0.6-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -23,7 +23,7 @@
   },
   "main": "build/index.js",
   "dependencies": {
-    "@packages/types": "^2.0.5-alpha.0"
+    "@packages/types": "^2.0.6-alpha.0"
   },
   "gitHead": "84da47259bdc40c15cf97dc1b8b5c463f7676f10"
 }
