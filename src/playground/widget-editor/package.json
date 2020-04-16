@@ -1,6 +1,6 @@
 {
   "name": "@playground/widget-editor",
-  "version": "2.0.14-alpha.0",
+  "version": "2.0.15-alpha.0",
   "licence": "MIT",
   "private": false,
   "homepage": "http://vizzuality.github.io/widget-editor",
@@ -39,5 +39,5 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "gitHead": "6f40b59dafe99afe6bd3406d3a0bec743702770a"
+  "gitHead": "7d7d6902546b293f91462d1656c4227c57df3e38"
 }
