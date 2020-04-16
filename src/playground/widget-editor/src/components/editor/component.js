@@ -1,6 +1,6 @@
 import React from "react";
 
-import WidgetEditor, { RwAdapter } from "widget-editor";
+import WidgetEditor, { RwAdapter } from "@widget-editor/widget-editor";
 
 const THEMES = [
   {

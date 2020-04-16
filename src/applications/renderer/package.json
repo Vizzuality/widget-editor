@@ -1,5 +1,5 @@
 {
-  "name": "@tomasmoosee/renderer",
+  "name": "@widget-editor/renderer",
   "version": "2.0.31-alpha.0",
   "licence": "MIT",
   "directories": {
@@ -13,9 +13,9 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@tomasmoosee/core": "^2.0.31-alpha.0",
-    "@tomasmoosee/shared": "^2.0.31-alpha.0",
-    "@tomasmoosee/types": "^2.0.31-alpha.0",
+    "@widget-editor/core": "^2.0.31-alpha.0",
+    "@widget-editor/shared": "^2.0.31-alpha.0",
+    "@widget-editor/types": "^2.0.31-alpha.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",

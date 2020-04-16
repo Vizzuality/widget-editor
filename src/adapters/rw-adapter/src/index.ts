@@ -1,6 +1,10 @@
 import { Adapter, Dataset, Widget, Config } from "@widget-editor/types";
 
-import { DatasetService, WidgetService, FiltersService } from "@widget-editor/core";
+import {
+  DatasetService,
+  WidgetService,
+  FiltersService,
+} from "@widget-editor/core";
 
 import ConfigHelper from "./helpers/config";
 
@@ -40,14 +44,14 @@ export default class RwAdapter implements Adapter.Service {
     "filters",
     "areaIntersection",
     "band",
-    "layer"
+    "layer",
   ];
 
   constructor() {
     const asConfig: Config.Payload = {
       applications: this.applications,
       env: this.env,
-      locale: this.locale
+      locale: this.locale,
     };
 
     this.config = ConfigHelper(asConfig);
@@ -60,7 +64,7 @@ export default class RwAdapter implements Adapter.Service {
   payload() {
     return {
       applications: this.applications,
-      env: this.env
+      env: this.env,
     };
   }
 
@@ -71,8 +75,8 @@ export default class RwAdapter implements Adapter.Service {
         const response = await fetch(url, {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${this.AUTH_TOKEN}`
-          }
+            Authorization: `Bearer ${this.AUTH_TOKEN}`,
+          },
         });
         return await response.json();
       } catch (error) {
@@ -164,13 +168,13 @@ export default class RwAdapter implements Adapter.Service {
     const {
       configuration,
       widget,
-      filters: { list: editorFilters }
+      filters: { list: editorFilters },
     } = editorState;
     const {
       dataset: {
         id,
-        attributes: { tableName }
-      }
+        attributes: { tableName },
+      },
     } = dataService;
 
     this.setDatasetId(id);
@@ -178,7 +182,7 @@ export default class RwAdapter implements Adapter.Service {
 
     let widgetParams = {};
 
-    this.widget_params.forEach(param => {
+    this.widget_params.forEach((param) => {
       if (param in configuration) {
         widgetParams = { ...widgetParams, [param]: configuration[param] };
       }
@@ -192,7 +196,7 @@ export default class RwAdapter implements Adapter.Service {
       name: configuration.title || null,
       description: configuration.description || null,
       application,
-      widgetConfig
+      widgetConfig,
     };
 
     consumerOnSave(out);
@@ -201,22 +205,22 @@ export default class RwAdapter implements Adapter.Service {
   // Called when filters are updated
   // Its up to the adapter to serialize these in a format the api wants
   filterSerializer(filters: any) {
-    const serialize = filters.map(filter => ({
+    const serialize = filters.map((filter) => ({
       value:
         filter.indicator === "FILTER_ON_VALUES"
-          ? filter.filter.values.map(v => v.value)
+          ? filter.filter.values.map((v) => v.value)
           : filter.filter.values,
       type: filter.dataType,
       name: filter.column,
       datasetID: this.datasetId,
       tableName: this.tableName,
-      alias: filter.column // TODO: Fix me
+      alias: filter.column, // TODO: Fix me
     }));
 
     // If any of these props are empty, dont apply the filter
     const REQUIRED_PROPS = ["value", "type", "datasetID", "tableName"];
 
-    const validateProperty = prop => {
+    const validateProperty = (prop) => {
       if (Array.isArray(prop) && prop.length === 0) {
         return false;
       }
@@ -227,9 +231,9 @@ export default class RwAdapter implements Adapter.Service {
     };
 
     return serialize.filter(
-      f =>
-        [...REQUIRED_PROPS].filter(prop => validateProperty(f[prop])).length ===
-        REQUIRED_PROPS.length
+      (f) =>
+        [...REQUIRED_PROPS].filter((prop) => validateProperty(f[prop]))
+          .length === REQUIRED_PROPS.length
     );
   }
 
@@ -247,13 +251,13 @@ export default class RwAdapter implements Adapter.Service {
     }
 
     const {
-      attributes: { name, description, widgetConfig }
+      attributes: { name, description, widgetConfig },
     } = widget;
 
     const configuration = {
       ...widgetConfig.paramsConfig,
       title: name,
-      caption: description
+      caption: description,
     };
 
     const out = await FiltersService.handleFilters(
@@ -261,7 +265,7 @@ export default class RwAdapter implements Adapter.Service {
       {
         column: "name",
         values: "value",
-        type: "type"
+        type: "type",
       },
       { configuration, dataset, fields, widget }
     );
