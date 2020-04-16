@@ -1,6 +1,6 @@
 {
   "name": "@packages/core",
-  "version": "2.0.0-v2-beta.1",
+  "version": "1.0.0",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc --watch",
@@ -18,6 +18,6 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@packages/types": "^2.0.0-v2-beta.1"
+    "@packages/types": "1.0.0"
   }
 }

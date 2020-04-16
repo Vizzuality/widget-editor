@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 
 import configureStore from "store";
 
-import Editor from "components/editor";
+import Editor from "./components/editor";
 import EditorOptions from "components/editor-options";
 import ToggleOptions from "components/toggle-options";
 

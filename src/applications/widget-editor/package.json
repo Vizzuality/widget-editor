@@ -1,6 +1,6 @@
 {
-  "name": "widget-editor-testing-more",
-  "version": "2.0.0-v2-beta.0",
+  "name": "@applications/widget-editor",
+  "version": "1.0.0",
   "directories": {
     "src": "src"
   },
@@ -11,9 +11,9 @@
   "dependencies": {
     "@applications/renderer": "2.0.0-v2-beta.1",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@packages/core": "2.0.0-v2-beta.1",
-    "@packages/shared": "2.0.0-v2-beta.1",
-    "@packages/types": "^2.0.0-v2-beta.1",
+    "@packages/core": "1.0.0",
+    "@packages/shared": "1.0.0",
+    "@packages/types": "1.0.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",

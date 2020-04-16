@@ -59,6 +59,8 @@ typings/
 # dotenv environment variables file
 .env
 
+src/applications/*/lib
+
 # Exlude all ts builds
 src/packages/*/lib
 src/packages/*/build
