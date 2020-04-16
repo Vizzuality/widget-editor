@@ -1,6 +1,6 @@
 {
   "name": "@packages/core",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha.0",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc --watch",
@@ -18,6 +18,6 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@packages/types": "1.0.0"
+    "@packages/types": "^2.0.0-alpha.0"
   }
 }
