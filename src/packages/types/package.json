@@ -1,6 +1,6 @@
 {
   "name": "@packages/types",
-  "version": "2.0.15-alpha.0",
+  "version": "2.0.16-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -23,5 +23,5 @@
     "access": "public"
   },
   "main": "build/index.js",
-  "gitHead": "7d7d6902546b293f91462d1656c4227c57df3e38"
+  "gitHead": "5495e390efa46418a66f40c00669f224303325f1"
 }
