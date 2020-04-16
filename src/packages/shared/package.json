@@ -1,6 +1,6 @@
 {
-  "name": "@widget-editor/shared",
-  "version": "2.0.19-alpha.0",
+  "name": "@tomasmoosee/shared",
+  "version": "2.0.20-alpha.0",
   "licence": "MIT",
   "directories": {
     "src": "src"

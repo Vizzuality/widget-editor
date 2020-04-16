@@ -1,6 +1,6 @@
 {
-  "name": "@widget-editor/rw-adapter",
-  "version": "2.0.19-alpha.0",
+  "name": "@tomasmoosee/rw-adapter",
+  "version": "2.0.20-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -21,8 +21,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@widget-editor/core": "^2.0.19-alpha.0",
-    "@widget-editor/types": "^2.0.19-alpha.0",
+    "@tomasmoosee/core": "^2.0.20-alpha.0",
+    "@tomasmoosee/types": "^2.0.20-alpha.0",
     "lodash": "^4.17.15"
   },
   "publishConfig": {
