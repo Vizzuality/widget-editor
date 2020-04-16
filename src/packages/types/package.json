@@ -1,6 +1,6 @@
 {
   "name": "@tomasmoosee/types",
-  "version": "2.0.27-alpha.0",
+  "version": "2.0.28-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -23,5 +23,5 @@
     "access": "public"
   },
   "main": "build/index.js",
-  "gitHead": "23e4215d9cd76bde48916fe3192648c2d801e498"
+  "gitHead": "5b47573c66f3cab2794327be072a472531d9c786"
 }
