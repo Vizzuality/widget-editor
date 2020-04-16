@@ -1,6 +1,6 @@
 {
   "name": "@tomasmoosee/shared",
-  "version": "2.0.23-alpha.0",
+  "version": "2.0.24-alpha.0",
   "licence": "MIT",
   "directories": {
     "src": "src"
@@ -65,5 +65,5 @@
     "access": "public"
   },
   "main": "lib/index.js",
-  "gitHead": "416e2eb303c156f3c4761e8e7367dbdc7c711e69"
+  "gitHead": "97d9a6558014aecdc234c4e799fdd2f1d1bd3167"
 }
