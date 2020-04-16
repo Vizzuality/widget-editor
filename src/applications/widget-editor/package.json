@@ -1,6 +1,6 @@
 {
   "name": "@tomasmoosee/widget-editor",
-  "version": "2.0.22-alpha.0",
+  "version": "2.0.23-alpha.0",
   "licence": "MIT",
   "directories": {
     "src": "src"
@@ -11,10 +11,10 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@tomasmoosee/core": "^2.0.22-alpha.0",
-    "@tomasmoosee/renderer": "^2.0.22-alpha.0",
-    "@tomasmoosee/shared": "^2.0.22-alpha.0",
-    "@tomasmoosee/types": "^2.0.22-alpha.0",
+    "@tomasmoosee/core": "^2.0.23-alpha.0",
+    "@tomasmoosee/renderer": "^2.0.23-alpha.0",
+    "@tomasmoosee/shared": "^2.0.23-alpha.0",
+    "@tomasmoosee/types": "^2.0.23-alpha.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
@@ -38,6 +38,7 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
+    "directory": "lib",
     "access": "public"
   },
   "devDependencies": {
@@ -49,8 +50,8 @@
   "scripts": {
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
-    "build": "BABEL_ENV=build babel src --out-dir dist --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments",
-    "publish-npm": "npm publish --access public"
+    "build": "BABEL_ENV=build babel src --out-dir lib --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments",
+    "prepublish": "yarn build"
   },
   "eslintConfig": {
     "extends": "react-app"

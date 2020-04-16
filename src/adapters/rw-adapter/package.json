@@ -1,6 +1,6 @@
 {
   "name": "@tomasmoosee/rw-adapter",
-  "version": "2.0.22-alpha.0",
+  "version": "2.0.23-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -21,8 +21,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@tomasmoosee/core": "^2.0.22-alpha.0",
-    "@tomasmoosee/types": "^2.0.22-alpha.0",
+    "@tomasmoosee/core": "^2.0.23-alpha.0",
+    "@tomasmoosee/types": "^2.0.23-alpha.0",
     "lodash": "^4.17.15"
   },
   "publishConfig": {
