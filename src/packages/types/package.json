@@ -18,6 +18,9 @@
     "build",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "build/index.js",
-  "gitHead": "49dc6d02b29279dd1e7b9292f7d0dea7fc96731b"
+  "gitHead": "84da47259bdc40c15cf97dc1b8b5c463f7676f10"
 }
