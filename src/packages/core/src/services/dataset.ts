@@ -1,4 +1,4 @@
-import { Dataset, Config } from "@packages/types";
+import { Dataset, Config } from "@widget-editor/types";
 
 export default class DatasetService implements Dataset.Service {
   config: Config.Payload;

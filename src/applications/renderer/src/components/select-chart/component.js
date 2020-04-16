@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import find from "lodash/find";
-import { Button } from "@packages/shared";
+import { Button } from "@widget-editor/shared";
 import Select from "react-select";
 import ChartMenu from "./components/ChartMenu";
 import {

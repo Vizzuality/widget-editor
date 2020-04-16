@@ -1,6 +1,6 @@
 import { pick } from "lodash";
 
-import { Config } from "@packages/types";
+import { Config } from "@widget-editor/types";
 
 class ConfigHelper implements Config.Service {
   config: Config.Payload;
@@ -18,7 +18,7 @@ class ConfigHelper implements Config.Service {
       "assetsPath",
       "userToken",
       "userEmail",
-      "locale"
+      "locale",
     ]);
     this.config = { ...this.config, ...acceptedParams };
   }

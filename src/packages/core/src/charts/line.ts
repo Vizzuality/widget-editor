@@ -1,4 +1,4 @@
-import { Charts, Vega, Generic, Widget } from "@packages/types";
+import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
@@ -6,7 +6,7 @@ export default class Line implements Charts.Line {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
-  scheme: any
+  scheme: any;
 
   constructor(
     schema: Vega.Schema,
@@ -35,12 +35,16 @@ export default class Line implements Charts.Line {
         ...this.schema.config,
         line: {
           ...this.schema.config.line,
-          stroke: this.scheme ? this.scheme.mainColor : this.schema.config.line.stroke
+          stroke: this.scheme
+            ? this.scheme.mainColor
+            : this.schema.config.line.stroke,
         },
         symbol: {
           ...this.schema.config.symbol,
-          fill: this.scheme ? this.scheme.mainColor : this.schema.config.symbol.fill
-        }
+          fill: this.scheme
+            ? this.scheme.mainColor
+            : this.schema.config.symbol.fill,
+        },
       },
       signals: [
         {
@@ -49,15 +53,15 @@ export default class Line implements Charts.Line {
           on: [
             {
               events: "@cell:mouseover",
-              update: "datum"
+              update: "datum",
             },
             {
               events: "@cell:mouseout",
-              update: "null"
-            }
-          ]
-        }
-      ]
+              update: "null",
+            },
+          ],
+        },
+      ],
     };
   }
 
@@ -67,9 +71,9 @@ export default class Line implements Charts.Line {
       height: 400,
       autosize: {
         type: "fit",
-        contains: "padding"
+        contains: "padding",
       },
-      padding: 20
+      padding: 20,
     };
   }
 
@@ -83,16 +87,16 @@ export default class Line implements Charts.Line {
               column: "y",
               property: "y",
               type: "number",
-              format: ".2s"
+              format: ".2s",
             },
             {
               column: "x",
               property: "x",
-              type: "string"
-            }
-          ]
-        }
-      }
+              type: "string",
+            },
+          ],
+        },
+      },
     ];
   }
 
@@ -102,7 +106,7 @@ export default class Line implements Charts.Line {
         name: "x",
         type: "point",
         range: "width",
-        domain: { data: "table", field: "x" }
+        domain: { data: "table", field: "x" },
       },
       {
         name: "y",
@@ -110,8 +114,8 @@ export default class Line implements Charts.Line {
         range: "height",
         nice: true,
         zero: true,
-        domain: { data: "table", field: sqlFields.category }
-      }
+        domain: { data: "table", field: sqlFields.category },
+      },
     ];
   }
 
@@ -128,9 +132,9 @@ export default class Line implements Charts.Line {
             y: { scale: "y", field: "y" },
             strokeCap: { value: "round" },
             strokeWidth: { value: 2 },
-            strokeJoin: { value: "round" }
-          }
-        }
+            strokeJoin: { value: "round" },
+          },
+        },
       },
       {
         name: "points",
@@ -140,12 +144,12 @@ export default class Line implements Charts.Line {
         encode: {
           enter: {
             x: { scale: "x", field: "x" },
-            y: { scale: "y", field: "y" }
+            y: { scale: "y", field: "y" },
           },
           update: {
-            opacity: { value: 1 }
-          }
-        }
+            opacity: { value: 1 },
+          },
+        },
       },
       {
         name: "cell",
@@ -156,22 +160,22 @@ export default class Line implements Charts.Line {
             type: "voronoi",
             x: "datum.x",
             y: "datum.y",
-            size: [{ signal: "width" }, { signal: "height" }]
-          }
+            size: [{ signal: "width" }, { signal: "height" }],
+          },
         ],
         encode: {
           enter: {
             tooltip: {
-              signal: "{'Value': datum.x }"
-            }
+              signal: "{'Value': datum.x }",
+            },
           },
           update: {
             path: { field: "path" },
             fill: { value: "red" },
-            opacity: { value: 0 }
-          }
-        }
-      }
+            opacity: { value: 0 },
+          },
+        },
+      },
     ];
   }
 
@@ -183,7 +187,7 @@ export default class Line implements Charts.Line {
         orient: "bottom",
         scale: "x",
         labelOverlap: "parity",
-        ticks: false
+        ticks: false,
       },
       {
         ...this.schema.axis,
@@ -196,11 +200,11 @@ export default class Line implements Charts.Line {
           labels: {
             update: {
               align: { value: "right" },
-              baseline: { value: "bottom" }
-            }
-          }
-        }
-      }
+              baseline: { value: "bottom" },
+            },
+          },
+        },
+      },
     ];
   }
 
@@ -212,8 +216,8 @@ export default class Line implements Charts.Line {
         name: "table",
         transform: [
           { type: "identifier", as: "id" },
-          { type: "joinaggregate", as: ["count"] }
-        ]
+          { type: "joinaggregate", as: ["count"] },
+        ],
       },
       {
         name: "dots",
@@ -221,10 +225,10 @@ export default class Line implements Charts.Line {
         transform: [
           {
             type: "filter",
-            expr: "hover && hover.datum.x === datum.x"
-          }
-        ]
-      }
+            expr: "hover && hover.datum.x === datum.x",
+          },
+        ],
+      },
     ];
   }
 

@@ -1,4 +1,4 @@
-import { Config } from "@packages/types";
+import { Config } from "@widget-editor/types";
 
 import capitalize from "../helpers/capitalize";
 
@@ -22,11 +22,11 @@ export default class FieldsService {
       // TODO: This url should come from adapter
       `https://api.resourcewatch.org/v1/query/${this.dataset.id}?${q}`
     )
-      .then(response => {
+      .then((response) => {
         if (response.status >= 400) throw new Error(response.statusText);
         return response.json();
       })
-      .then(jsonData => jsonData.data);
+      .then((jsonData) => jsonData.data);
   }
 
   private getTableName() {
@@ -43,7 +43,7 @@ export default class FieldsService {
 
     const query = `SELECT MIN(${columnName}) AS min, MAX(${columnName}) AS max FROM ${tableName}`;
 
-    return this.query(`sql=${query}`).then(data => (data ? data[0] : {}));
+    return this.query(`sql=${query}`).then((data) => (data ? data[0] : {}));
   }
 
   // TODO: Geostore
@@ -54,13 +54,13 @@ export default class FieldsService {
     const uniqQueryPart = uniq ? `GROUP BY ${columnName}` : "";
     const query = `SELECT ${columnName} FROM ${tableName} ${uniqQueryPart} ORDER BY ${columnName}`;
 
-    return this.query(`sql=${query}`).then(data =>
-      (data || []).map(d => d[columnName])
+    return this.query(`sql=${query}`).then((data) =>
+      (data || []).map((d) => d[columnName])
     );
   }
 
   async getFieldInfo(field: any, column: string) {
-    const selectedField = this.fields.find(f => f.columnName === column);
+    const selectedField = this.fields.find((f) => f.columnName === column);
 
     if (
       selectedField.type === this.NUMERIC_TYPE ||
@@ -72,7 +72,7 @@ export default class FieldsService {
 
     if (selectedField.type === this.COLUMN_TYPE) {
       const res = await this.getColumnValues(selectedField);
-      return res.map(r => ({ value: r, label: capitalize(r) }));
+      return res.map((r) => ({ value: r, label: capitalize(r) }));
     }
 
     return `${selectedField.type} Not implemented.`;

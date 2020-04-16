@@ -1,10 +1,10 @@
-import { Charts, Vega, Generic, Widget } from "@packages/types";
+import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class Bars implements Charts.Bars {
   schema: any;
-  widgetConfig: any
+  widgetConfig: any;
   widgetData: Generic.ObjectPayload;
   colorApplied: boolean;
   scheme: any;

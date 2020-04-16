@@ -1,4 +1,4 @@
-import { Charts, Vega, Generic, Widget } from "@packages/types";
+import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
@@ -29,7 +29,7 @@ export default class Pie implements Charts.Pie {
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData(),
-      interaction_config: this.interactionConfig()
+      interaction_config: this.interactionConfig(),
     };
   }
 
@@ -37,7 +37,7 @@ export default class Pie implements Charts.Pie {
     this.schema = {
       ...this.schema,
       width: 400,
-      height: 400
+      height: 400,
     };
   }
 
@@ -51,17 +51,17 @@ export default class Pie implements Charts.Pie {
               column: "y",
               property: "y",
               type: "number",
-              format: ".2s"
+              format: ".2s",
             },
             {
               column: "x",
               property: "x",
               type: "string",
-              format: ".2f"
-            }
-          ]
-        }
-      }
+              format: ".2f",
+            },
+          ],
+        },
+      },
     ];
   }
 
@@ -71,8 +71,8 @@ export default class Pie implements Charts.Pie {
         name: "c",
         type: "ordinal",
         domain: { data: "table", field: sqlFields.value },
-        range: this.scheme ? this.scheme.category : "category20"
-      }
+        range: this.scheme ? this.scheme.category : "category20",
+      },
     ];
   }
 
@@ -84,23 +84,23 @@ export default class Pie implements Charts.Pie {
         encode: {
           enter: {
             tooltip: {
-              signal: "{'Label': datum.x, 'Value': datum.y }"
+              signal: "{'Label': datum.x, 'Value': datum.y }",
             },
             fill: { scale: "c", field: sqlFields.value },
             x: { signal: "width / 2" },
-            y: { signal: "height / 2" }
+            y: { signal: "height / 2" },
           },
           update: {
             startAngle: { field: "startAngle" },
             endAngle: { field: "endAngle" },
             innerRadius: {
-              signal: "width > height ? height / 3 : width / 3"
+              signal: "width > height ? height / 3 : width / 3",
             },
-            outerRadius: { signal: "width > height ? height / 2 : width / 2" }
+            outerRadius: { signal: "width > height ? height / 2 : width / 2" },
           },
-          hover: { opacity: { value: 0.8 } }
-        }
-      }
+          hover: { opacity: { value: 0.8 } },
+        },
+      },
     ];
   }
 
@@ -116,10 +116,10 @@ export default class Pie implements Charts.Pie {
             type: "pie",
             field: sqlFields.category,
             startAngle: 0,
-            endAngle: 6.29
-          }
-        ]
-      }
+            endAngle: 6.29,
+          },
+        ],
+      },
     ];
   }
 

@@ -1,4 +1,4 @@
-import { Adapter, Dataset, Widget } from "@packages/types";
+import { Adapter, Dataset, Widget } from "@widget-editor/types";
 export default class RwAdapter implements Adapter.Service {
     endpoint: string;
     dataEndpoint: string;

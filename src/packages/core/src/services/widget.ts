@@ -1,6 +1,6 @@
 import { find } from "lodash";
 
-import { Dataset, Widget, Config } from '@packages/types';
+import { Dataset, Widget, Config } from "@widget-editor/types";
 
 export default class WidgetService implements Widget.Service {
   config: Config.Payload;
@@ -12,7 +12,7 @@ export default class WidgetService implements Widget.Service {
   fromDataset(dataset: Dataset.Payload): Widget.Payload {
     return find(
       dataset.attributes.widget,
-      widget => !!widget.attributes.defaultEditableWidget
+      (widget) => !!widget.attributes.defaultEditableWidget
     );
   }
 
@@ -20,7 +20,7 @@ export default class WidgetService implements Widget.Service {
     // const { provider, tableName } = dataset.attributes;
     // let query: string = getQueryByFilters(tableName, provider);
     // return `${query} LIMIT 10`;
-    return '';
+    return "";
   }
 
   async fetchWidgetData(url: string): Promise<[object]> {

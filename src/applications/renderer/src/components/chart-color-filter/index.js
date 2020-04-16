@@ -1,13 +1,13 @@
-import { redux } from "@packages/shared";
+import { redux } from "@widget-editor/shared";
 
-import { setFilters } from "@packages/shared/lib/modules/filters/actions";
-import { patchConfiguration } from "@packages/shared/lib/modules/configuration/actions";
+import { setFilters } from "@widget-editor/shared/lib/modules/filters/actions";
+import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 // Components
 import ChartColorFilter from "./component";
 
-import * as widgetSelectors from "@packages/shared/lib/modules/widget/selectors";
-import * as themeSelectors from "@packages/shared/lib/modules/theme/selectors";
+import * as widgetSelectors from "@widget-editor/shared/lib/modules/widget/selectors";
+import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selectors";
 
 export default redux.connectState(
   (state) => ({

@@ -1,4 +1,4 @@
-import { redux } from "@packages/shared";
+import { redux } from "@widget-editor/shared";
 
 // Components
 import ChartComponent from "./component";

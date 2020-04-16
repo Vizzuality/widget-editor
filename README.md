@@ -7,7 +7,7 @@ This is the repo for the new version of the widget editor currently under develo
 ## Getting started
 
 1. Install packages in `root` by typing `yarn`
-2. inside `@applications/widget-editor` add `.env` with these credentials:
+2. inside `widget-editor` add `.env` with these credentials:
 
 ```
 NODE_ENV=develop
@@ -27,13 +27,13 @@ Happy coding!
 
 1. Install packages by in root writing `yarn` in the terminal. This will add all dependencies for all of the packages.
 2. Start an application by running `yarn start:{widget-editor|renderer}`.
-3. Run tests globally by running `yarn test` run them locally by running `yarn test:{@applications|@packages}/{package}`
+3. Run tests globally by running `yarn test` run them locally by running `yarn test:{@widget-editor|@widget-editor}/{package}`
 4. Run linting by running `yarn lint`
 
 #### Adding and managing packages
 
-1. In applications `yarn workspace @applications/{package} add {package}`
-2. In packages `yarn workspace @packages/{package} add {package}`
+1. In applications `yarn workspace @widget-editor/{package} add {package}`
+2. In packages `yarn workspace @widget-editor/{package} add {package}`
 
 We recommend not adding packages globally (unless it's for building or dev dependencies), but if you have to you can run: `yarn add {package} --dev -W`
 
@@ -48,7 +48,7 @@ We are using Redux sagas for side effects. We are handling what should be update
 You can reference packages by using this import format:
 
 ```
-import package from "@packages/{package}";
+import package from "@widget-editor/{package}";
 ```
 
 ---
@@ -57,20 +57,20 @@ import package from "@packages/{package}";
 
 Our main package that gets distributed to NPM is under `packages/widget-editor`.
 
-Here we are exposing the editor, renderer, and redux related logic to the consumer. More documentation for the main package can be found [@packages/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
+Here we are exposing the editor, renderer, and redux related logic to the consumer. More documentation for the main package can be found [widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
 
 #### Applications
 
-- [@applications/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/widget-editor)
+- [widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/widget-editor)
 
 #### Packages
 
-- [@packages/widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
-- [@packages/core](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/core)
-- [@packages/shared](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/shared)
-- [@packages/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/renderer)
-- [@packages/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter)
-- [@packages/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types)
+- [widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
+- [@widget-editor/core](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/core)
+- [@widget-editor/shared](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/shared)
+- [@widget-editor/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/renderer)
+- [@widget-editor/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter)
+- [@widget-editor/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types)
 
 ### Components
 

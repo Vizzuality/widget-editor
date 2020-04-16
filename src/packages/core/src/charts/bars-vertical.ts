@@ -1,4 +1,4 @@
-import { Charts, Vega, Generic, Widget } from "@packages/types";
+import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 

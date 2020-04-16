@@ -1,16 +1,16 @@
 import { takeLatest, put, call, select } from "redux-saga/effects";
 
-import { getAction } from "@packages/shared/lib/helpers/redux";
+import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
 import {
   FiltersService,
   constants,
   VegaService,
   StateProxy,
-} from "@packages/core";
+} from "@widget-editor/core";
 
-import { setEditor } from "@packages/shared/lib/modules/editor/actions";
-import { setWidget } from "@packages/shared/lib/modules/widget/actions";
+import { setEditor } from "@widget-editor/shared/lib/modules/editor/actions";
+import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 
 const stateProxy = new StateProxy();
 let adapterConfiguration = null;

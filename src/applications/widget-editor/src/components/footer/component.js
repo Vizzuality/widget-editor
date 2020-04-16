@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { Button } from "@packages/shared";
+import { Button } from "@widget-editor/shared";
 
 import { Modal } from "components/modal";
 
-import { FOOTER_HEIGHT } from "@packages/shared/lib/styles/style-constants";
+import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants";
 
 const StyledFooter = styled.footer`
   width: 100%;

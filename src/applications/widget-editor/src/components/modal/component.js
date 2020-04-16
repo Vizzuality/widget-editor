@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, CloseIcon } from "@packages/shared";
+import { Button, CloseIcon } from "@widget-editor/shared";
 
 import {
   StyledModalBox,

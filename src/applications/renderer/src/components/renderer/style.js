@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   FOOTER_HEIGHT,
   DEFAULT_BORDER,
-} from "@packages/shared/lib/styles/style-constants";
+} from "@widget-editor/shared/lib/styles/style-constants";
 
 export const StyledContainer = styled.div`
   position: relative;

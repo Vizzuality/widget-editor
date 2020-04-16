@@ -5,4 +5,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 1.0.1 (2020-04-15)
 
-**Note:** Version bump only for package @applications/widget-editor
+**Note:** Version bump only for package widget-editor

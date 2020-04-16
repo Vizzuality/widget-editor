@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button } from "@packages/shared";
+import { Button } from "@widget-editor/shared";
 
 import { StyledAddSection } from "./style";
 

@@ -1,6 +1,6 @@
 import isObjectLike from "lodash/isObjectLike";
 
-import { Dataset, Widget, Adapter, Generic } from "@packages/types";
+import { Dataset, Widget, Adapter, Generic } from "@widget-editor/types";
 
 import FiltersService from "./filters";
 import VegaService from "./vega";
@@ -66,7 +66,7 @@ export default class DataService {
     if (filters && Array.isArray(filters) && filters.length > 0) {
       // --- Handle orderBy if it exsists
       // --- If a filter does not include an operation
-      const serializedFilters = filters.filter(f => !!f.operation);
+      const serializedFilters = filters.filter((f) => !!f.operation);
 
       // --- If orderby exsists, assign it to stores
       if (isObjectLike(paramsConfig.orderBy)) {
@@ -86,14 +86,14 @@ export default class DataService {
 
       this.dispatch({
         type: reduxActions.EDITOR_SET_FILTERS,
-        payload: { color, orderBy, list: normalizeFilters }
+        payload: { color, orderBy, list: normalizeFilters },
       });
     }
   }
 
   isFieldAllowed(field) {
     const fieldTypeAllowed = ALLOWED_FIELD_TYPES.find(
-      val => val.name.toLowerCase() === field.type.toLowerCase()
+      (val) => val.name.toLowerCase() === field.type.toLowerCase()
     );
     const isCartodbId = field.columnName === "cartodb_id";
     const result = !isCartodbId && fieldTypeAllowed;
@@ -110,12 +110,12 @@ export default class DataService {
     this.allowedFields = [];
 
     if (fields && Object.keys(fields).length > 0) {
-      Object.keys(fields).forEach(field => {
+      Object.keys(fields).forEach((field) => {
         if (columns && field in columns) {
           const f = {
             ...fields[field],
             columnName: field,
-            metadata: columns[field]
+            metadata: columns[field],
           };
           if (this.isFieldAllowed(f)) {
             this.allowedFields.push(f);

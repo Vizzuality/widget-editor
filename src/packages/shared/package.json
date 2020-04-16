@@ -1,5 +1,5 @@
 {
-  "name": "@packages/shared",
+  "name": "@widget-editor/shared",
   "version": "2.0.16-alpha.0",
   "licence": "MIT",
   "directories": {
@@ -64,5 +64,5 @@
     "access": "public"
   },
   "main": "lib/index.js",
-  "gitHead": "5495e390efa46418a66f40c00669f224303325f1"
+  "gitHead": "3b79da70c47f92be2b235f17714d8ab1ef963365"
 }

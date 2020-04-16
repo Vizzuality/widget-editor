@@ -1,10 +1,10 @@
-import { connectState } from "@packages/shared/lib/helpers/redux";
+import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 
-import { setEditor } from "@packages/shared/lib/modules/editor/actions";
+import { setEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 import {
   setTheme,
   setScheme,
-} from "@packages/shared/lib/modules/theme/actions";
+} from "@widget-editor/shared/lib/modules/theme/actions";
 
 // Components
 import EditorComponent from "./component";

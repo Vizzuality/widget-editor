@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { createAction as VzCreateAction } from "vizzuality-redux-tools";
 
-import { constants } from "@packages/core";
+import { constants } from "@widget-editor/core";
 
 /*
   REDUX util to connect to our state

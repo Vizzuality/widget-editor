@@ -1,8 +1,8 @@
-import { redux } from "@packages/shared";
+import { redux } from "@widget-editor/shared";
 
-import { patchConfiguration } from "@packages/shared/lib/modules/configuration/actions";
+import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
-import * as selectors from "@packages/shared/lib/modules/widget/selectors";
+import * as selectors from "@widget-editor/shared/lib/modules/widget/selectors";
 
 import QueryValuesComponent from "./component";
 

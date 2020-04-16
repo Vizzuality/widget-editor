@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Select } from "@packages/shared";
+import { Select } from "@widget-editor/shared";
 
 const QueryValues = ({ columns, configuration, patchConfiguration }) => {
   const {

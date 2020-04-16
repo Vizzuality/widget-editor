@@ -1,7 +1,7 @@
-import { redux } from "@packages/shared";
+import { redux } from "@widget-editor/shared";
 
-import { patchConfiguration } from "@packages/shared/lib/modules/configuration/actions";
-import { setTheme } from "@packages/shared/lib/modules/theme/actions";
+import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import { setTheme } from "@widget-editor/shared/lib/modules/theme/actions";
 
 // Components
 import SelectChartComponent from "./component";

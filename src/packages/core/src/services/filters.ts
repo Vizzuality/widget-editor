@@ -4,7 +4,7 @@
 import isPlainObject from "lodash/isPlainObject";
 import isArray from "lodash/isArray";
 
-import { Filters, Config } from "@packages/types";
+import { Filters, Config } from "@widget-editor/types";
 
 import FieldsService from "./fields";
 
@@ -109,7 +109,7 @@ export default class FiltersService implements Filters.Service {
   ): string {
     let out = sql;
     return `${out} ${column} IN (${values
-      .map(v => this.escapeValue(v.value, dataType))
+      .map((v) => this.escapeValue(v.value, dataType))
       .join(",")})`;
   }
 
@@ -173,7 +173,7 @@ export default class FiltersService implements Filters.Service {
           indicator,
           column,
           dataType,
-          filter: { values }
+          filter: { values },
         } = weFilter;
 
         out = index > 0 ? `${out} AND ` : out;
@@ -265,14 +265,14 @@ export default class FiltersService implements Filters.Service {
     const {
       column: configuredColumn,
       type: configuredType,
-      values: configuredValues
+      values: configuredValues,
     } = config;
 
     const { configuration, dataset, fields, widget } = payload;
 
     const out = [];
 
-    const assignIndicator = val => {
+    const assignIndicator = (val) => {
       if (isPlainObject(val)) {
         return Object.keys(val).length === 2 ? "range" : "value";
       }
@@ -295,9 +295,9 @@ export default class FiltersService implements Filters.Service {
         dataType: type,
         filter: {
           values: values,
-          notNull: true
+          notNull: true,
         },
-        fieldInfo: await fieldService.getFieldInfo(filter, column)
+        fieldInfo: await fieldService.getFieldInfo(filter, column),
       });
     });
 

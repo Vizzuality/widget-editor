@@ -1,11 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import {
-  reducers,
-  middleware as WEmiddleware,
-  sagas,
-} from "@applications/widget-editor";
+import { reducers, middleware as WEmiddleware, sagas } from "widget-editor";
 
 import thunk from "redux-thunk";
 

@@ -1,6 +1,6 @@
-import { connectState } from "@packages/shared/lib/helpers/redux";
+import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 
-import { setFilters } from "@packages/shared/lib/modules/filters/actions";
+import { setFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
 import FilterComponent from "./component";
 

@@ -15,13 +15,13 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "release": "dotenv release-it",
+    "publish": "lerna publish --force-publish",
     "rollup": "rollup --config rollup.config.js",
     "lerna:publish": "lerna publish --conventional-commits --yes --skip-npm --skip-git",
-    "build_old": "rimraf -f dist && lerna run compile && lerna run tsc && ./bin/build.sh",
+    "build": "rimraf -f dist && lerna run compile && lerna run tsc",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
-    "watch:widget-editor": "lerna run start --parallel --scope @playground/widget-editor --stream",
+    "watch:widget-editor": "lerna run start --parallel --scope @widget-editor/playground --stream",
     "start:widget-editor": "npm-run-all --parallel watch:*",
     "build:widget-editor": "cd src/playground/widget-editor && npm run build",
     "test:widget-editor": "cd src/playground/widget-editor && yarn test --watchAll=false",

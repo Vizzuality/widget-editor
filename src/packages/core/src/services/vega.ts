@@ -1,6 +1,6 @@
 import isObjectLike from "lodash/isObjectLike";
 
-import { Charts, Vega } from "@packages/types";
+import { Charts, Vega } from "@widget-editor/types";
 
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
@@ -148,7 +148,7 @@ export default class VegaService implements Charts.Service {
         this.schema,
         this.widgetConfig,
         data,
-        this.scheme,
+        this.scheme
       ).getChart();
     }
 
@@ -182,11 +182,7 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "scatter") {
-      chart = new Scatter(
-        this.schema,
-        this.widgetConfig,
-        data
-      ).getChart();
+      chart = new Scatter(this.schema, this.widgetConfig, data).getChart();
     }
 
     this.schema = {

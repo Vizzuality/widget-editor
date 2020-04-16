@@ -1,4 +1,4 @@
-import { connectState } from "@packages/shared/lib/helpers/redux";
+import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 
 import QueryLimitComponent from "./component";
 

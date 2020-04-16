@@ -1,5 +1,5 @@
 import React from "react";
-import { Select } from "@packages/shared";
+import { Select } from "@widget-editor/shared";
 import isObjectLike from "lodash/isObjectLike";
 
 import {

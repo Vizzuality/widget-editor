@@ -10,7 +10,7 @@ import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import styled from "styled-components";
 
-import isFloat from "@packages/shared/lib/helpers/isFloat";
+import isFloat from "@widget-editor/shared/lib/helpers/isFloat";
 
 const StyledSliderBox = styled.div`
   width: 100%;

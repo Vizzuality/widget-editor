@@ -1,7 +1,7 @@
 import { takeLatest, put, select } from "redux-saga/effects";
-import { constants } from "@packages/core";
+import { constants } from "@widget-editor/core";
 
-import { setConfiguration } from "@packages/shared/lib/modules/configuration/actions";
+import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 function* preloadData() {
   const {

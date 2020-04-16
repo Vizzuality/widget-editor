@@ -1,6 +1,6 @@
-import { connectState } from "@packages/shared/lib/helpers/redux";
+import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 
-import { patchConfiguration } from "@packages/shared/lib/modules/configuration/actions";
+import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 import WidgetInfoComponent from "./component";
 

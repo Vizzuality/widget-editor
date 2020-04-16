@@ -1,5 +1,5 @@
 {
-  "name": "@applications/widget-editor",
+  "name": "widget-editor",
   "version": "2.0.16-alpha.0",
   "licence": "MIT",
   "directories": {
@@ -10,11 +10,11 @@
   ],
   "private": false,
   "dependencies": {
-    "@applications/renderer": "^2.0.16-alpha.0",
+    "@widget-editor/renderer": "^2.0.16-alpha.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@packages/core": "^2.0.16-alpha.0",
-    "@packages/shared": "^2.0.16-alpha.0",
-    "@packages/types": "^2.0.16-alpha.0",
+    "@widget-editor/core": "^2.0.16-alpha.0",
+    "@widget-editor/shared": "^2.0.16-alpha.0",
+    "@widget-editor/types": "^2.0.16-alpha.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
@@ -49,8 +49,7 @@
   "scripts": {
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
-    "build": "webpack -p --config ../../webpack.config.js",
-    "buildme": "BABEL_ENV=build babel src --out-dir dist --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments"
+    "build": "BABEL_ENV=build babel src --out-dir dist --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -67,6 +66,6 @@
       "last 1 safari version"
     ]
   },
-  "main": "dist/index.js",
-  "gitHead": "5495e390efa46418a66f40c00669f224303325f1"
+  "main": "lib/index.js",
+  "gitHead": "3b79da70c47f92be2b235f17714d8ab1ef963365"
 }

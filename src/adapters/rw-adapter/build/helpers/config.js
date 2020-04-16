@@ -14,7 +14,7 @@ class ConfigHelper {
             "assetsPath",
             "userToken",
             "userEmail",
-            "locale"
+            "locale",
         ]);
         this.config = Object.assign(Object.assign({}, this.config), acceptedParams);
     }

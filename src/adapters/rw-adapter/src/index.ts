@@ -1,6 +1,6 @@
-import { Adapter, Dataset, Widget, Config } from "@packages/types";
+import { Adapter, Dataset, Widget, Config } from "@widget-editor/types";
 
-import { DatasetService, WidgetService, FiltersService } from "@packages/core";
+import { DatasetService, WidgetService, FiltersService } from "@widget-editor/core";
 
 import ConfigHelper from "./helpers/config";
 

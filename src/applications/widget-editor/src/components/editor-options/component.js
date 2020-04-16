@@ -12,7 +12,7 @@ import Filter from "components/filter";
 import {
   FOOTER_HEIGHT,
   DEFAULT_BORDER,
-} from "@packages/shared/lib/styles/style-constants";
+} from "@widget-editor/shared/lib/styles/style-constants";
 
 const JsonEditor = React.lazy(() => import("../json-editor"));
 const TableView = React.lazy(() => import("../table-view"));

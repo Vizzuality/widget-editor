@@ -1,9 +1,9 @@
 import React from "react";
 
-import { FiltersService } from "@packages/core";
+import { FiltersService } from "@widget-editor/core";
 
 import InputGroup from "styles-common/input-group";
-import { Button } from "@packages/shared";
+import { Button } from "@widget-editor/shared";
 import uniqueId from "lodash/uniqueId";
 
 // FieldsService

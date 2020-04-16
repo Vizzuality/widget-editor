@@ -1,11 +1,11 @@
 import React from "react";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
-import Renderer from "@applications/renderer";
+import Renderer from "@widget-editor/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
-import { DataService } from "@packages/core";
-import { constants } from "@packages/core";
+import { DataService } from "@widget-editor/core";
+import { constants } from "@widget-editor/core";
 import { StyledContainer } from "./style";
 
 class Editor extends React.Component {

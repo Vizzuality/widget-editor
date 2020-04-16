@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { FOOTER_HEIGHT } from "@packages/shared/lib/styles/style-constants";
+import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants";
 
 export const StyledContainer = styled.div`
   width: 100%;

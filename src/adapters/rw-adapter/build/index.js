@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = require("@packages/core");
+const core_1 = require("@widget-editor/core");
 const config_1 = __importDefault(require("./helpers/config"));
 function asyncForEach(array, callback) {
     return __awaiter(this, void 0, void 0, function* () {
