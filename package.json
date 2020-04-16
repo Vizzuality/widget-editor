@@ -18,7 +18,7 @@
     "release": "dotenv release-it",
     "rollup": "rollup --config rollup.config.js",
     "lerna:publish": "lerna publish --conventional-commits --yes --skip-npm --skip-git",
-    "build": "rimraf -f dist && lerna run compile && lerna run tsc && ./bin/build.sh",
+    "build_old": "rimraf -f dist && lerna run compile && lerna run tsc && ./bin/build.sh",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
     "watch:widget-editor": "lerna run start --parallel --scope @playground/widget-editor --stream",
@@ -49,7 +49,8 @@
     "release-it": "^13.5.2",
     "rollup-plugin-babel": "^4.4.0",
     "ts-jest": "^24.2.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "webpack-cli": "^3.3.11"
   },
   "dependencies": {
     "rimraf": "^3.0.2"

@@ -1,6 +1,7 @@
 {
   "name": "@packages/core",
   "version": "2.0.1-alpha.0",
+  "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc --watch",
@@ -20,5 +21,6 @@
   "main": "build/index.js",
   "dependencies": {
     "@packages/types": "^2.0.1-alpha.0"
-  }
+  },
+  "gitHead": "54938ac5e5c6b221b90566d87295dd2b5fc5a497"
 }
