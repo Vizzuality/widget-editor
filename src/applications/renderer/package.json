@@ -1,6 +1,6 @@
 {
   "name": "@applications/renderer",
-  "version": "2.0.3-alpha.0",
+  "version": "2.0.4-alpha.0",
   "licence": "MIT",
   "directories": {
     "src": "src"
@@ -11,9 +11,9 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@packages/core": "^2.0.3-alpha.0",
-    "@packages/shared": "^2.0.3-alpha.0",
-    "@packages/types": "^2.0.3-alpha.0",
+    "@packages/core": "^2.0.4-alpha.0",
+    "@packages/shared": "^2.0.4-alpha.0",
+    "@packages/types": "^2.0.4-alpha.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
@@ -62,5 +62,5 @@
     ]
   },
   "main": "lib/index.js",
-  "gitHead": "54938ac5e5c6b221b90566d87295dd2b5fc5a497"
+  "gitHead": "192f26a286953339189695d78368e10ae550015b"
 }

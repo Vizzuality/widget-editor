@@ -1,8 +1,8 @@
 {
   "name": "@playground/widget-editor",
-  "version": "2.0.3-alpha.0",
+  "version": "2.0.4-alpha.0",
   "licence": "MIT",
-  "private": true,
+  "private": false,
   "homepage": "http://vizzuality.github.io/widget-editor",
   "dependencies": {
     "gh-pages": "^2.2.0",
