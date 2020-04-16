@@ -1,6 +1,6 @@
 {
   "name": "@tomasmoosee/rw-adapter",
-  "version": "2.0.29-alpha.0",
+  "version": "2.0.30-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -20,13 +20,13 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@tomasmoosee/core": "^2.0.29-alpha.0",
-    "@tomasmoosee/types": "^2.0.29-alpha.0",
+    "@tomasmoosee/core": "^2.0.30-alpha.0",
+    "@tomasmoosee/types": "^2.0.30-alpha.0",
     "lodash": "^4.17.15"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "gitHead": "5b47573c66f3cab2794327be072a472531d9c786"
+  "gitHead": "4d8b8d7983ca426b016fb2291010d3c4115068a0"
 }

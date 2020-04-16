@@ -1,6 +1,6 @@
 {
   "name": "@tomasmoosee/renderer",
-  "version": "2.0.29-alpha.0",
+  "version": "2.0.30-alpha.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -13,9 +13,9 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@tomasmoosee/core": "^2.0.29-alpha.0",
-    "@tomasmoosee/shared": "^2.0.29-alpha.0",
-    "@tomasmoosee/types": "^2.0.29-alpha.0",
+    "@tomasmoosee/core": "^2.0.30-alpha.0",
+    "@tomasmoosee/shared": "^2.0.30-alpha.0",
+    "@tomasmoosee/types": "^2.0.30-alpha.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
@@ -69,5 +69,5 @@
     "access": "public"
   },
   "main": "lib/index.js",
-  "gitHead": "5b47573c66f3cab2794327be072a472531d9c786"
+  "gitHead": "4d8b8d7983ca426b016fb2291010d3c4115068a0"
 }
