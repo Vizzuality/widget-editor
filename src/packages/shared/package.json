@@ -1,13 +1,13 @@
 {
   "name": "@packages/shared",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.1-alpha.0",
   "directories": {
     "src": "src"
   },
   "files": [
     "src"
   ],
-  "private": true,
+  "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "babel-plugin-styled-components": "^1.10.6",
@@ -34,11 +34,13 @@
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
-    "babel-plugin-module-resolver": "^4.0.0"
+    "babel-plugin-module-resolver": "^4.0.0",
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
+    "build": "webpack -p --config ../../webpack.config.js",
     "compile": "NODE_ENV=production babel src --out-dir lib --copy-files"
   },
   "eslintConfig": {

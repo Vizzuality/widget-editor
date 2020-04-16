@@ -1,18 +1,18 @@
 {
   "name": "@applications/renderer",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.1-alpha.0",
   "directories": {
     "src": "src"
   },
   "files": [
     "src"
   ],
-  "private": true,
+  "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@packages/core": "^2.0.0-alpha.0",
-    "@packages/shared": "^2.0.0-alpha.0",
-    "@packages/types": "^2.0.0-alpha.0",
+    "@packages/core": "^2.0.1-alpha.0",
+    "@packages/shared": "^2.0.1-alpha.0",
+    "@packages/types": "^2.0.1-alpha.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",

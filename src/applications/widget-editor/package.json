@@ -1,6 +1,6 @@
 {
   "name": "@applications/widget-editor",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.1-alpha.0",
   "directories": {
     "src": "src"
   },
@@ -9,11 +9,11 @@
   ],
   "private": false,
   "dependencies": {
-    "@applications/renderer": "^2.0.0-alpha.0",
+    "@applications/renderer": "^2.0.1-alpha.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@packages/core": "^2.0.0-alpha.0",
-    "@packages/shared": "^2.0.0-alpha.0",
-    "@packages/types": "^2.0.0-alpha.0",
+    "@packages/core": "^2.0.1-alpha.0",
+    "@packages/shared": "^2.0.1-alpha.0",
+    "@packages/types": "^2.0.1-alpha.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
@@ -47,7 +47,7 @@
   "scripts": {
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
-    "build": "rollup --config rollup.config.js",
+    "build": "webpack -p --config ../../webpack.config.js",
     "buildme": "BABEL_ENV=build babel src --out-dir dist --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments"
   },
   "eslintConfig": {
@@ -65,5 +65,6 @@
       "last 1 safari version"
     ]
   },
-  "main": "dist/index.js"
+  "main": "dist/index.js",
+  "gitHead": "b0dece9f9491f6d72f14639850e21f5c3eee4e75"
 }
