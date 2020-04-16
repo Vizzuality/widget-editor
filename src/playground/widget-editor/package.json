@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/playground",
-  "version": "2.0.17-alpha.0",
+  "version": "2.0.18-alpha.0",
   "licence": "MIT",
   "private": false,
   "homepage": "http://vizzuality.github.io/widget-editor",
@@ -18,7 +18,8 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "publish-npm": "npm publish --access public"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,5 +40,5 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "gitHead": "3b79da70c47f92be2b235f17714d8ab1ef963365"
+  "gitHead": "146bd1e98f606f9faeef1d00c38ed5ab942a02d5"
 }

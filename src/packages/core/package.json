@@ -1,12 +1,13 @@
 {
   "name": "@widget-editor/core",
-  "version": "2.0.17-alpha.0",
+  "version": "2.0.18-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc --watch",
     "build": "webpack -p --config ../../webpack.config.js",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "publish-npm": "npm publish --access public"
   },
   "private": false,
   "directories": {
@@ -24,7 +25,7 @@
   },
   "main": "build/index.js",
   "dependencies": {
-    "@widget-editor/types": "^2.0.17-alpha.0"
+    "@widget-editor/types": "^2.0.18-alpha.0"
   },
-  "gitHead": "3b79da70c47f92be2b235f17714d8ab1ef963365"
+  "gitHead": "146bd1e98f606f9faeef1d00c38ed5ab942a02d5"
 }

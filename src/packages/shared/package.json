@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/shared",
-  "version": "2.0.17-alpha.0",
+  "version": "2.0.18-alpha.0",
   "licence": "MIT",
   "directories": {
     "src": "src"
@@ -42,7 +42,8 @@
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "build": "webpack -p --config ../../webpack.config.js",
-    "compile": "NODE_ENV=production babel src --out-dir lib --copy-files"
+    "compile": "NODE_ENV=production babel src --out-dir lib --copy-files",
+    "publish-npm": "npm publish --access public"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -64,5 +65,5 @@
     "access": "public"
   },
   "main": "lib/index.js",
-  "gitHead": "3b79da70c47f92be2b235f17714d8ab1ef963365"
+  "gitHead": "146bd1e98f606f9faeef1d00c38ed5ab942a02d5"
 }
