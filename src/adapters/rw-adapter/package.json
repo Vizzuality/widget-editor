@@ -1,11 +1,10 @@
 {
   "name": "@tomasmoosee/rw-adapter",
-  "version": "2.0.28-alpha.0",
+  "version": "2.0.29-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc --watch",
-    "build": "webpack -p --config ../../webpack.config.js",
     "test": "echo \"Error: run tests from root\" && exit 1",
     "publish-npm": "npm publish --access public"
   },
@@ -21,8 +20,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@tomasmoosee/core": "^2.0.28-alpha.0",
-    "@tomasmoosee/types": "^2.0.28-alpha.0",
+    "@tomasmoosee/core": "^2.0.29-alpha.0",
+    "@tomasmoosee/types": "^2.0.29-alpha.0",
     "lodash": "^4.17.15"
   },
   "publishConfig": {

@@ -1,12 +1,13 @@
 {
   "name": "@tomasmoosee/types",
-  "version": "2.0.28-alpha.0",
+  "version": "2.0.29-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc --watch",
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "publish-npm": "npm publish --access public"
+    "publish-npm": "npm publish --access public",
+    "build": "echo \"No build steps\""
   },
   "private": false,
   "directories": {
