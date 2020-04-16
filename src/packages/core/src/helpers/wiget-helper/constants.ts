@@ -1,4 +1,4 @@
-export const defaultVegaSchema = scheme => {
+export const defaultVegaSchema = () => {
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: 100,

@@ -1,5 +1,5 @@
 {
-  "name": "widget-editor",
+  "name": "widget-editor-testing-more",
   "version": "2.0.0-v2-beta.0",
   "directories": {
     "src": "src"
@@ -47,7 +47,8 @@
   "scripts": {
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
-    "compile": "BABEL_ENV=build babel src --out-dir dist --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments"
+    "build": "rollup --config rollup.config.js",
+    "buildme": "BABEL_ENV=build babel src --out-dir dist --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments"
   },
   "eslintConfig": {
     "extends": "react-app"

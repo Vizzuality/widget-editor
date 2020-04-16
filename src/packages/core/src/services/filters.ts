@@ -91,7 +91,7 @@ export default class FiltersService implements Filters.Service {
   private rangeCondition(
     sql: string,
     column: string,
-    values: [string | number],
+    values: any,
     dataType: string
   ): string {
     let out = sql;
@@ -104,7 +104,7 @@ export default class FiltersService implements Filters.Service {
   private valueRange(
     sql: string,
     column: string,
-    values: [string | number],
+    values: any,
     dataType: string
   ): string {
     let out = sql;
@@ -116,7 +116,7 @@ export default class FiltersService implements Filters.Service {
   private textContains(
     sql: string,
     column: string,
-    values: [string | number],
+    values: any,
     dataType: string
   ): string {
     let out = sql;
@@ -126,7 +126,7 @@ export default class FiltersService implements Filters.Service {
   private valueEquals(
     sql: string,
     column: string,
-    values: [string | number],
+    values: any,
     dataType: string
   ): string {
     let out = sql;
@@ -136,7 +136,7 @@ export default class FiltersService implements Filters.Service {
   private textNotContains(
     sql: string,
     column: string,
-    values: [string | number],
+    values: any,
     dataType: string
   ): string {
     let out = sql;
@@ -146,7 +146,7 @@ export default class FiltersService implements Filters.Service {
   private textStartsWith(
     sql: string,
     column: string,
-    values: [string | number],
+    values: any,
     dataType: string
   ): string {
     let out = sql;
@@ -156,7 +156,7 @@ export default class FiltersService implements Filters.Service {
   private textEndsWith(
     sql: string,
     column: string,
-    values: [string | number],
+    values: any,
     dataType: string
   ): string {
     let out = sql;

@@ -12,6 +12,7 @@ export interface Payload {
   attributes: {
     provider: string;
     tableName: string;
+    metadata: any;
     widget: Widget.Payload[] | null;
   };
   id: Id;

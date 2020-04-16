@@ -3,14 +3,15 @@ import { Charts, Vega, Generic, Widget } from "@packages/types";
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class Bars implements Charts.Bars {
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
+  schema: any;
+  widgetConfig: any
   widgetData: Generic.ObjectPayload;
+  colorApplied: boolean;
   scheme: any;
 
   constructor(
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
+    schema: any,
+    widgetConfig: any,
     widgetData: Generic.ObjectPayload,
     scheme: any,
     colorApplied: boolean
@@ -60,7 +61,7 @@ export default class Bars implements Charts.Bars {
   }
 
   setScales() {
-    const scale = [
+    const scale: any = [
       {
         name: "x",
         type: "band",

@@ -39,7 +39,7 @@ export default class FieldsService {
   // TODO: Geostore
   private getColumnMinAndMax(field: any) {
     const { columnName } = field;
-    const tableName = this.getTableName(true);
+    const tableName = this.getTableName();
 
     const query = `SELECT MIN(${columnName}) AS min, MAX(${columnName}) AS max FROM ${tableName}`;
 
@@ -49,7 +49,6 @@ export default class FieldsService {
   // TODO: Geostore
   private getColumnValues(field, uniq = true) {
     const { columnName } = field;
-    console.log(field, "FIELD");
     const tableName = this.getTableName();
 
     const uniqQueryPart = uniq ? `GROUP BY ${columnName}` : "";

@@ -1,2 +1,0 @@
-// Components
-export * from "./component";

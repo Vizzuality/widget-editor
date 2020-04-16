@@ -7,7 +7,7 @@ export default class DatasetService implements Dataset.Service {
     this.config = config;
   }
 
-  async fetchData(url: string): Promise<[Dataset.Payload]> {
+  async fetchData(url: string): Promise<any> {
     try {
       const response = await fetch(url);
 

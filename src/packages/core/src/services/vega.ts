@@ -149,7 +149,6 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        true
       ).getChart();
     }
 
@@ -178,8 +177,7 @@ export default class VegaService implements Charts.Service {
         this.schema,
         this.widgetConfig,
         data,
-        this.scheme,
-        this.colorApplied
+        this.scheme
       ).getChart();
     }
 
@@ -187,9 +185,7 @@ export default class VegaService implements Charts.Service {
       chart = new Scatter(
         this.schema,
         this.widgetConfig,
-        data,
-        this.scheme,
-        this.colorApplied
+        data
       ).getChart();
     }
 

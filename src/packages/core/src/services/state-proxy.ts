@@ -3,6 +3,8 @@ import isEqual from "lodash/isEqual";
 
 export default class StateProxy {
   chartCache: object;
+  configuration: object;
+  
   constructor() {
     // These are the properties that we will check for updates
     this.chartCache = {

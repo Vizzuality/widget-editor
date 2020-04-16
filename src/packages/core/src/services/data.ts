@@ -14,6 +14,7 @@ export default class DataService {
   widget: Widget.Payload;
   widgetData: any;
   cachedState: object;
+  allowedFields: any;
   setEditor: Generic.Dispatcher;
   dispatch: Generic.Dispatcher;
 

@@ -10,7 +10,7 @@ export interface Payload {
     description: string;
     application: [string];
     widgetConfig: {
-      paramsConfig: object;
+      paramsConfig: any;
     };
     defaultEditableWidget: boolean;
     env: string;

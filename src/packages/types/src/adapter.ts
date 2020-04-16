@@ -21,9 +21,10 @@ export interface Service {
   // Used when saving data
   // This will be grabbed and put into onSave on any request
   payload(): object;
-
+  filterSerializer(filters: any): any;
+  requestData(query: string, dataset: Dataset.Payload): any;
   getDataset(): Promise<Dataset.Payload>;
-  getWidget(dataset: Dataset.Payload): Promise<Widget.Payload>;
+  getWidget(dataset: Dataset.Payload, widget: Widget.Id): Promise<Widget.Payload>;
   getFields(): Promise<[object]>;
   getLayers(): Promise<[object]>;
   getWidgetData(
@@ -31,5 +32,5 @@ export interface Service {
     widget: Widget.Payload
   ): Promise<[object]>;
   setDatasetId(datasetId: datasetId): void;
-  filterUpdate(filters: any, fields: any, widget: Widget.Payload): void;
+  filterUpdate(filters: any, fields: any, widget: Widget.Payload, dataet: Dataset.Payload): void;
 }
