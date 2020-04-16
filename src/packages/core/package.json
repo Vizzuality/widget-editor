@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/core",
-  "version": "2.0.16-alpha.0",
+  "version": "2.0.17-alpha.0",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
@@ -24,7 +24,7 @@
   },
   "main": "build/index.js",
   "dependencies": {
-    "@widget-editor/types": "^2.0.16-alpha.0"
+    "@widget-editor/types": "^2.0.17-alpha.0"
   },
   "gitHead": "3b79da70c47f92be2b235f17714d8ab1ef963365"
 }
