@@ -1,11 +1,13 @@
 {
   "name": "@tomasmoosee/shared",
-  "version": "2.0.25-alpha.0",
+  "version": "2.0.26-alpha.0",
   "licence": "MIT",
   "directories": {
+    "lib": "lib",
     "src": "src"
   },
   "files": [
+    "lib",
     "src"
   ],
   "private": false,
@@ -41,7 +43,6 @@
   "scripts": {
     "start": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
     "watch": "NODE_ENV=development babel src --out-dir lib --copy-files --watch",
-    "build": "webpack -p --config ../../webpack.config.js",
     "compile": "NODE_ENV=production babel src --out-dir lib --copy-files",
     "publish-npm": "npm publish --access public"
   },
@@ -65,5 +66,5 @@
     "access": "public"
   },
   "main": "lib/index.js",
-  "gitHead": "9218af92586885276c5a8586b75c1a241512d08a"
+  "gitHead": "52185cec335249a1a8c16672b40fa2d574e4a058"
 }
