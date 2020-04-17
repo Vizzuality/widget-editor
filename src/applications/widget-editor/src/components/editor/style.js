@@ -3,7 +3,7 @@ import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants"
 
 export const StyledContainer = styled.div`
   width: 100%;
-
+  min-height: 740px;
   ${(props) =>
     props.isCompact
       ? css`

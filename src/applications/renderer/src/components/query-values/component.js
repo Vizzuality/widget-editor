@@ -4,38 +4,31 @@ import { Select } from "@widget-editor/shared";
 const QueryValues = ({ columns, configuration, patchConfiguration }) => {
   const { chartType, xAxisTitle, yAxisTitle } = configuration;
 
-  const categoryName = configuration?.category?.name || "";
-  const categoryAlias = configuration?.category?.alias || "";
+  const categoryName = configuration?.category?.name || null;
+  const valueName = configuration?.value?.name || null;
 
-  const valueName = configuration?.value?.aliass || "";
-  const valueAlias = configuration?.value?.alias || "";
+  const selectedValue = columns.find((col) => col.identifier === valueName);
+  const selectedCategory = columns.find(
+    (col) => col.identifier === categoryName
+  );
 
   const [chartOptions, setChartOptions] = useState({
-    chartValue: {
-      alias: xAxisTitle || categoryAlias || categoryName,
-      name: categoryName,
-    },
-    chartCategory: {
-      alias: yAxisTitle || valueAlias || valueName,
-      name: valueName,
-    },
+    chartValue: selectedValue,
+    chartCategory: selectedCategory,
   });
 
   useEffect(() => {
-    const { xAxisTitle, yAxisTitle } = configuration;
+    const valueName = configuration?.value?.name || null;
+    const categoryName = configuration?.category?.name || null;
 
-    const valueName = configuration?.value?.aliass || "";
-    const valueAlias = configuration?.value?.alias || "";
+    const selectedValue = columns.find((col) => col.identifier === valueName);
+    const selectedCategory = columns.find(
+      (col) => col.identifier === categoryName
+    );
 
     setChartOptions({
-      chartValue: {
-        alias: xAxisTitle || categoryAlias || categoryName,
-        name: categoryName,
-      },
-      chartCategory: {
-        alias: yAxisTitle || valueAlias || valueName,
-        name: valueName,
-      },
+      chartValue: selectedValue,
+      chartCategory: selectedCategory,
     });
   }, [configuration]);
 
@@ -66,7 +59,7 @@ const QueryValues = ({ columns, configuration, patchConfiguration }) => {
           menuPlacement="top"
           value={chartOptions.chartValue}
           onChange={handleChangeValue}
-          getOptionLabel={(option) => option.alias}
+          getOptionLabel={(option) => (yAxisTitle ? yAxisTitle : option.alias)}
           getOptionValue={(option) => option.identifier}
           options={columns}
           configuration={configuration}
@@ -80,7 +73,7 @@ const QueryValues = ({ columns, configuration, patchConfiguration }) => {
           menuPlacement="top"
           value={chartOptions.chartValue}
           onChange={handleChangeCategory}
-          getOptionLabel={(option) => option.alias}
+          getOptionLabel={(option) => (yAxisTitle ? yAxisTitle : option.alias)}
           getOptionValue={(option) => option.identifier}
           options={columns}
           configuration={configuration}
@@ -94,7 +87,7 @@ const QueryValues = ({ columns, configuration, patchConfiguration }) => {
           menuPlacement="top"
           value={chartOptions.chartCategory}
           onChange={handleChangeValue}
-          getOptionLabel={(option) => option.alias}
+          getOptionLabel={(option) => (xAxisTitle ? xAxisTitle : option.alias)}
           getOptionValue={(option) => option.identifier}
           options={columns}
           configuration={configuration}
