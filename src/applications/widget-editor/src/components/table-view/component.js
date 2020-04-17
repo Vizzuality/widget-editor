@@ -1,40 +1,38 @@
-import React from 'react';
+import React from "react";
 
-import { 
+import {
   StyledTableBox,
   StyledTable,
   StyledTr,
   StyledTh,
-  StyledTd
-} from './style';
+  StyledTd,
+} from "./style";
 
 const TableView = ({ widgetData, configuration }) => {
-
-  const {
-    value: { alias: valueAlias} ,
-    category: { alias: categoryAlias } 
-  } = configuration;
+  const value = configuration?.value?.alias || "";
+  const category = configuration?.category?.alias || "";
 
   return (
     <StyledTableBox>
       <StyledTable>
         <thead>
           <StyledTr>
-            <StyledTh>{categoryAlias}</StyledTh>
-            <StyledTh>{valueAlias}</StyledTh>
+            <StyledTh>{category}</StyledTh>
+            <StyledTh>{value}</StyledTh>
           </StyledTr>
         </thead>
         <tbody>
-          {widgetData && widgetData.map((el, key) => (
-            <StyledTr key={key}>
-              <StyledTd>{el.x}</StyledTd>
-              <StyledTd center>{el.y}</StyledTd>
-            </StyledTr>
-          ))}
+          {widgetData &&
+            widgetData.map((el, key) => (
+              <StyledTr key={key}>
+                <StyledTd>{el.x}</StyledTd>
+                <StyledTd center>{el.y}</StyledTd>
+              </StyledTr>
+            ))}
         </tbody>
       </StyledTable>
     </StyledTableBox>
   );
-}
+};
 
 export default TableView;

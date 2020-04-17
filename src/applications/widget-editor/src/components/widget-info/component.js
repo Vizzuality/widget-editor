@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import Slider from "components/slider";
+import React from "react";
 import isEqual from "lodash/isEqual";
 
 import FlexContainer from "styles-common/flex";
@@ -7,8 +6,6 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import debounce from "lodash/debounce";
-
-import * as helpers from "./helpers";
 
 class WidgetInfo extends React.Component {
   constructor(props) {
@@ -32,10 +29,10 @@ class WidgetInfo extends React.Component {
 
   stateFromProps(configuration) {
     return {
-      title: configuration ? configuration.title : "",
-      caption: configuration ? configuration.caption : "",
-      yAxis: configuration ? configuration.category.alias : "",
-      xAxis: configuration ? configuration.value.alias : "",
+      title: configuration?.title ? configuration.title : "",
+      caption: configuration?.caption ? configuration.caption : "",
+      yAxis: configuration?.category?.alias ? configuration.category.alias : "",
+      xAxis: configuration?.value?.alias ? configuration.value.alias : "",
     };
   }
 

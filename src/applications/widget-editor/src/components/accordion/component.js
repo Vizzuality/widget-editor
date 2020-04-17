@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import ReactResizeDetector from 'react-resize-detector';
+import React, { useState, useRef, useEffect } from "react";
+import ReactResizeDetector from "react-resize-detector";
 
 import {
   StyledAccordionSection,
   StyledAccordionContent,
   StyledAccordionButton,
-  StyledAccordion
-} from './style';
+  StyledAccordion,
+} from "./style";
 
 export const AccordionSection = ({ title, openDefault, children }) => {
   const contentRef = useRef({});
@@ -16,20 +16,22 @@ export const AccordionSection = ({ title, openDefault, children }) => {
   const clickToTitle = () => {
     setOpen(!isOpen);
     const panel = contentRef.current;
-    const height = outerHeight ? 0 : panel.scrollHeight;
-    setOuterHeight(height);
+    if (panel) {
+      const height = outerHeight ? 0 : panel.scrollHeight;
+      setOuterHeight(height);
+    }
   };
 
   const updateHeight = () => {
     const panel = contentRef.current;
-    if (panel.scrollHeight > 0 && isOpen) {
+    if (panel && panel.scrollHeight > 0 && isOpen) {
       const height = panel.scrollHeight;
       setOuterHeight(height);
     }
-  }
+  };
 
   useEffect(() => {
-    setTimeout(() => openDefault ? clickToTitle() : null, 0);
+    setTimeout(() => (openDefault ? clickToTitle() : null), 0);
   }, []);
 
   return (
@@ -37,18 +39,9 @@ export const AccordionSection = ({ title, openDefault, children }) => {
       <StyledAccordionButton onClick={() => clickToTitle()}>
         {title}
       </StyledAccordionButton>
-      <StyledAccordionContent 
-        ref={contentRef}
-        scrollHeight={outerHeight}
-      >
-        <ReactResizeDetector 
-          handleHeight
-          skipOnMount
-          onResize={updateHeight}
-        >
-          <div>
-            {children}
-          </div>
+      <StyledAccordionContent ref={contentRef} scrollHeight={outerHeight}>
+        <ReactResizeDetector handleHeight skipOnMount onResize={updateHeight}>
+          <div>{children}</div>
         </ReactResizeDetector>
       </StyledAccordionContent>
     </StyledAccordionSection>

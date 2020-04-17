@@ -1,6 +1,7 @@
 import React from "react";
 
-import WidgetEditor, { RwAdapter } from "@widget-editor/widget-editor";
+import RwAdapter from "@widget-editor/rw-adapter";
+import WidgetEditor from "@widget-editor/widget-editor";
 
 const THEMES = [
   {
@@ -69,7 +70,7 @@ class Editor extends React.Component {
           schemes={THEMES}
           compact={compactMode}
           disable={[]}
-          datasetId={dataset}
+          datasetId="aeb0afc3-b5f2-4018-98fa-127ccb29e139"
           widgetId={widget}
           onSave={this.handleOnSave}
           authenticated={authenticated}

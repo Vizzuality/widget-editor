@@ -2,13 +2,13 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Select } from "@widget-editor/shared";
 
 const QueryValues = ({ columns, configuration, patchConfiguration }) => {
-  const {
-    chartType,
-    xAxisTitle,
-    yAxisTitle,
-    category: { alias: categoryAlias, name: categoryName },
-    value: { alias: valueAlias, name: valueName },
-  } = configuration;
+  const { chartType, xAxisTitle, yAxisTitle } = configuration;
+
+  const categoryName = configuration?.category?.name || "";
+  const categoryAlias = configuration?.category?.alias || "";
+
+  const valueName = configuration?.value?.aliass || "";
+  const valueAlias = configuration?.value?.alias || "";
 
   const [chartOptions, setChartOptions] = useState({
     chartValue: {
@@ -22,12 +22,11 @@ const QueryValues = ({ columns, configuration, patchConfiguration }) => {
   });
 
   useEffect(() => {
-    const {
-      xAxisTitle,
-      yAxisTitle,
-      category: { alias: categoryAlias, name: categoryName },
-      value: { alias: valueAlias, name: valueName },
-    } = configuration;
+    const { xAxisTitle, yAxisTitle } = configuration;
+
+    const valueName = configuration?.value?.aliass || "";
+    const valueAlias = configuration?.value?.alias || "";
+
     setChartOptions({
       chartValue: {
         alias: xAxisTitle || categoryAlias || categoryName,
