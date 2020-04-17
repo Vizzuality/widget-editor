@@ -70,7 +70,7 @@ class Editor extends React.Component {
           schemes={THEMES}
           compact={compactMode}
           disable={[]}
-          datasetId="aeb0afc3-b5f2-4018-98fa-127ccb29e139"
+          datasetId={dataset}
           widgetId={widget}
           onSave={this.handleOnSave}
           authenticated={authenticated}
