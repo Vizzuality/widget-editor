@@ -78,8 +78,6 @@ const EditorOptions = ({
   compact,
   dataService,
 }) => {
-  console.log(disabledFeatures);
-
   const handleChange = (value, type) => {
     if (type === "limit") {
       patchConfiguration({ limit: value });

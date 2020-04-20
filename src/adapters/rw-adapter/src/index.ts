@@ -114,9 +114,23 @@ export default class RwAdapter implements Adapter.Service {
     )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
 
     const { data: dataset } = await this.datasetService.fetchData(url);
+
     this.tableName = dataset?.attributes?.tableName || null;
 
-    return dataset;
+
+    // -- Serialize widgets
+    // -- We dont want to expose widgets where { published: true }
+    // -- These are user created widgets
+
+    const serializeDataset = {
+      ...dataset,
+      attributes: {
+        ...dataset.attributes,
+        widget: dataset.attributes.widget.filter(w => !!w.attributes.published) 
+      }
+    }
+
+    return serializeDataset;
   }
 
   async getFields() {
@@ -131,8 +145,10 @@ export default class RwAdapter implements Adapter.Service {
     const includes = "metadata";
 
     const resolveWidgetId = !widgetId
-      ? this.widgetService.fromDataset(dataset).id
+      ? this.widgetService.fromDataset(dataset)?.id
       : widgetId;
+
+    if (!resolveWidgetId) return null;
 
     const url = `${this.endpoint}/widget/${resolveWidgetId}?${applications.join(
       ","

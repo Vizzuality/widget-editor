@@ -58,6 +58,8 @@ export default class DataService {
   }
 
   async handleFilters() {
+    if (!this.widget) return null;
+
     const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
     const filters = paramsConfig?.filters;
     let orderBy = null;

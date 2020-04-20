@@ -11,7 +11,7 @@ export default class WidgetService implements Widget.Service {
 
   fromDataset(dataset: Dataset.Payload): Widget.Payload {
     return find(
-      dataset.attributes.widget,
+      dataset.attributes?.widget,
       (widget) => !!widget.attributes.defaultEditableWidget
     );
   }

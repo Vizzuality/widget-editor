@@ -4,23 +4,18 @@ import { constants } from "@widget-editor/core";
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 function* preloadData() {
-  const {
-    widgetEditor: {
-      editor: {
-        widget: {
-          attributes: { name, description, widgetConfig },
-        },
-      },
-    },
-  } = yield select();
+  const { widgetEditor: { editor } } = yield select();
 
-  const configuration = {
-    ...widgetConfig.paramsConfig,
-    title: name,
-    caption: description,
-  };
+  if (editor.widget) {
+    const { widget: { attributes: { name, description, widgetConfig } } } = editor;
+    const configuration = {
+      ...widgetConfig.paramsConfig,
+      title: name,
+      caption: description,
+    };
 
-  yield put(setConfiguration(configuration));
+    yield put(setConfiguration(configuration));
+  }
 }
 
 export default function* baseSaga() {

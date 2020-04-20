@@ -66,5 +66,7 @@ src/packages/*/lib
 src/packages/*/build
 src/adapters/*/build
 
+
 src/applications/*/dist
 src/adapters/rw-adapter/build
+

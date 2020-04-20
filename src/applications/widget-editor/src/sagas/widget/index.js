@@ -41,14 +41,16 @@ function* preloadData() {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
 
-  const { widgetData } = editor;
-  const { widgetConfig } = editor.widget.attributes;
+  if (editor.widget) {
+    const { widgetData } = editor;
+    const { widgetConfig } = editor.widget.attributes;
 
-  const vega = new VegaService(widgetConfig, widgetData, configuration, theme);
-  yield put(setWidget(vega.getChart()));
+    const vega = new VegaService(widgetConfig, widgetData, configuration, theme);
+    yield put(setWidget(vega.getChart()));
 
-  const { widgetEditor } = yield select();
-  stateProxy.cacheChart(widgetEditor);
+    const { widgetEditor } = yield select();
+    stateProxy.cacheChart(widgetEditor);
+  }
 }
 
 function* resolveWithProxy() {
