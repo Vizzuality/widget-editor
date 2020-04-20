@@ -3,6 +3,7 @@ import {
   TYPE_COLUMN,
   TYPE_LINE,
   DIRECTION_HORIZONTAL,
+  DIRECTION_VERTICAL,
   TYPE_SCATTERPLOT,
   TYPE_RING,
   TYPE_BAR,
@@ -14,10 +15,10 @@ import {
   Scatterplot, 
   Ring, 
   Pie, 
-  ColumnA, 
-  ColumnB, 
-  BarA, 
-  BarB 
+  ColumnVertical, 
+  ColumnHorizontal, 
+  BarVertical, 
+  BarHorizontal 
 } from './svg';
 
 const ChartIcon = ({
@@ -33,8 +34,11 @@ const ChartIcon = ({
         {type === TYPE_SCATTERPLOT && <Scatterplot />}        
         {type === TYPE_RING && <Ring />}
         {type === TYPE_PIE && <Pie />}
-        {type === TYPE_BAR && <BarA />}
-        {type === TYPE_COLUMN && <ColumnA />}
+        {type === TYPE_BAR && direction === DIRECTION_HORIZONTAL && <BarHorizontal />}
+        {type === TYPE_BAR && direction === DIRECTION_VERTICAL && <BarVertical />}
+
+        {type === TYPE_COLUMN && direction === DIRECTION_HORIZONTAL && <ColumnHorizontal />}
+        {type === TYPE_COLUMN && direction === DIRECTION_VERTICAL && <ColumnVertical />}
       </StyledIcon>
     </StyledBox>
   );

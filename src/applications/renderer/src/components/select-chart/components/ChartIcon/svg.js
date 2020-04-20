@@ -10,6 +10,7 @@ export const Line = () => (
     </g>
   </svg>
 );
+
 export const Scatterplot = () => (
   <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
     <g id="chart-scatterplot" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -70,64 +71,65 @@ export const Pie = () => (
   </svg>
 );
 
-export const ColumnB = () => (
-  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
-    <g id="chart-columns-b" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-        <g id="Group-14" transform="translate(10.000000, 3.000000)">
-            <rect id="Rectangle" fill="#2C75B0" x="0" y="16" width="8" height="13"></rect>
-            <rect id="Rectangle" fill="#2C75B0" x="42" y="16" width="8" height="13"></rect>
-            <rect id="Rectangle" fill="#2C75B0" x="14" y="24" width="8" height="5"></rect>
-            <rect id="Rectangle" fill="#2C75B0" x="28" y="19" width="8" height="10"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="0" y="10" width="8" height="5"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="42" y="10" width="8" height="5"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="14" y="0" width="8" height="23"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="28" y="5" width="8" height="13"></rect>
+export const ColumnVertical = () => (
+<svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+        <g id="Group-14" transform="translate(8.000000, 5.000000)">
+            <rect fill="#2C75B0" x="0" y="0" width="38" height="4"></rect>
+            <rect fill="#2C75B0" x="0" y="15" width="55" height="4"></rect>
+            <rect fill="#3BB2D0" x="0" y="5" width="18" height="4"></rect>
+            <rect fill="#3BB2D0" x="0" y="20" width="44" height="4"></rect>
         </g>
     </g>
-  </svg>
+</svg>
 );
 
-export const ColumnA = () => (
-  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
+export const ColumnHorizontal = () => (
+<svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
     <g id="chart-columns-a" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="Group-13" transform="translate(8.000000, 3.000000)">
             <g id="Group-14">
-                <rect id="Rectangle" fill="#2C75B0" x="0" y="15" width="4" height="13"></rect>
-                <rect id="Rectangle" fill="#2C75B0" x="45" y="15" width="4" height="13"></rect>
-                <rect id="Rectangle" fill="#2C75B0" x="15" y="5" width="4" height="23"></rect>
-                <rect id="Rectangle" fill="#2C75B0" x="30" y="18" width="4" height="10"></rect>
-                <rect id="Rectangle" fill="#3BB2D0" x="5" y="10" width="4" height="18"></rect>
-                <rect id="Rectangle" fill="#3BB2D0" x="50" y="10" width="4" height="18"></rect>
-                <rect id="Rectangle" fill="#3BB2D0" x="20" y="0" width="4" height="28"></rect>
-                <rect id="Rectangle" fill="#3BB2D0" x="35" y="20" width="4" height="8"></rect>
+                <rect fill="#2C75B0" x="0" y="15" width="4" height="13"></rect>
+                <rect fill="#2C75B0" x="45" y="15" width="4" height="13"></rect>
+                <rect fill="#2C75B0" x="15" y="5" width="4" height="23"></rect>
+                <rect fill="#2C75B0" x="30" y="18" width="4" height="10"></rect>
+                <rect fill="#3BB2D0" x="5" y="10" width="4" height="18"></rect>
+                <rect fill="#3BB2D0" x="50" y="10" width="4" height="18"></rect>
+                <rect fill="#3BB2D0" x="20" y="0" width="4" height="28"></rect>
+                <rect fill="#3BB2D0" x="35" y="20" width="4" height="8"></rect>
             </g>
         </g>
     </g>
-  </svg>
+</svg>
 );
 
-export const BarB = () => (
-  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1" >
+
+export const BarVertical = () => (
+<svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
     <g id="chart-bars-b" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="Group-14" transform="translate(8.000000, 6.000000)">
-            <rect id="Rectangle" fill="#2C75B0" x="0" y="0" width="27" height="8"></rect>
-            <rect id="Rectangle" fill="#2C75B0" x="0" y="15" width="18" height="8"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="28" y="0" width="6" height="8"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="19" y="15" width="35" height="8"></rect>
+            <rect fill="#2C75B0" x="0" y="0" width="27" height="8"></rect>
+            <rect fill="#2C75B0" x="0" y="15" width="18" height="8"></rect>
+            <rect fill="#3BB2D0" x="28" y="0" width="6" height="8"></rect>
+            <rect fill="#3BB2D0" x="19" y="15" width="35" height="8"></rect>
         </g>
     </g>
-  </svg>
+</svg>
 );
 
-export const BarA = () => (
-  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
-    <g id="chart-bars-a" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-        <g id="Group-14" transform="translate(8.000000, 5.000000)">
-            <rect id="Rectangle" fill="#2C75B0" x="0" y="0" width="38" height="4"></rect>
-            <rect id="Rectangle" fill="#2C75B0" x="0" y="15" width="55" height="4"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="0" y="5" width="18" height="4"></rect>
-            <rect id="Rectangle" fill="#3BB2D0" x="0" y="20" width="44" height="4"></rect>
+export const BarHorizontal = () => (
+<svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
+    <g id="chart-columns-b" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+        <g id="Group-14" transform="translate(10.000000, 3.000000)">
+            <rect fill="#2C75B0" x="0" y="16" width="8" height="13"></rect>
+            <rect fill="#2C75B0" x="42" y="16" width="8" height="13"></rect>
+            <rect fill="#2C75B0" x="14" y="24" width="8" height="5"></rect>
+            <rect fill="#2C75B0" x="28" y="19" width="8" height="10"></rect>
+            <rect fill="#3BB2D0" x="0" y="10" width="8" height="5"></rect>
+            <rect fill="#3BB2D0" x="42" y="10" width="8" height="5"></rect>
+            <rect fill="#3BB2D0" x="14" y="0" width="8" height="23"></rect>
+            <rect fill="#3BB2D0" x="28" y="5" width="8" height="13"></rect>
         </g>
     </g>
-  </svg>
+</svg>
 );
