@@ -26,7 +26,7 @@ const ChartIcon = ({
   direction = DIRECTION_HORIZONTAL,
   active = false,
   disabled = false,
-  setData = (data) => {console.log(data)}}) => {
+  setData = (data) => {}}) => {
   return (
     <StyledBox>
       <StyledIcon active={active} disabled={disabled} onClick={()=> setData({ type, direction })}>
