@@ -13,7 +13,7 @@ const ChartColorFilter = React.lazy(() => import("../chart-color-filter"));
 // -- If a widget config is suplied, we are consuming the renderer outside of the editor
 const Renderer = ({ widget, editor, widgetConfig = null }) => {
   const { restoring, initialized } = editor;
-  const missingWidget = Object.keys(widget).length === 0 && !widgetConfig;
+  const missingWidget = initialized && !restoring && Object.keys(widget).length === 0 && !widgetConfig;
 
   return (
     <StyledContainer>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import find from "lodash/find";
 import { Button } from "@widget-editor/shared";
 import Select from "react-select";
@@ -18,6 +18,12 @@ import {
  * {isOpenMenu && < onClick={() => setIsOpenMenu(false)} />}
  */
 
+const NON_DIRECTIONAL_CHARTS = ['pie', 'scatter', 'map'];
+
+const isNonDirectionalChart = chart => {
+  return NON_DIRECTIONAL_CHARTS.indexOf(chart) > -1;
+}
+
 const SelectChart = ({
   patchConfiguration,
   options,
@@ -27,8 +33,15 @@ const SelectChart = ({
   setTheme,
 }) => {
   const [selected, setSelected] = useState(
-    find(options, { chartType, direction })
+    find(options, isNonDirectionalChart(chartType) ? { chartType } : { chartType, direction })
   );
+
+  useEffect(() => {
+    if (selected && selected.chartType !== chartType) {
+      setSelected(find(options, isNonDirectionalChart(chartType) ? { chartType } : { chartType, direction }));
+    }
+  }, [chartType, selected, direction, options]);
+
   const {
     compact: { isCompact, isOpen },
   } = theme;

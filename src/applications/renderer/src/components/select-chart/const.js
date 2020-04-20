@@ -3,7 +3,7 @@
 // all column types
 export const TYPE_COLUMN = 'column';
 export const TYPE_BAR = 'bar';
-export const TYPE_SCATTERPLOT = 'scatterplot';
+export const TYPE_SCATTERPLOT = 'scatter';
 export const TYPE_LINE = 'line';
 export const TYPE_PIE = 'pie';
 export const TYPE_DONUT = 'donut';

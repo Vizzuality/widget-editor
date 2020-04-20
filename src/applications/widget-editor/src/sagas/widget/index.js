@@ -73,7 +73,7 @@ function* updateWidget() {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
 
-  if (editor.initialized) {
+  if (editor.initialized && editor.widgetData) {
     const { widgetData } = editor;
     const { widgetConfig } = editor.widget.attributes;
     const vega = new VegaService(

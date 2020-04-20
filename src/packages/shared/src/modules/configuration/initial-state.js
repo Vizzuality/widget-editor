@@ -21,6 +21,6 @@ export default {
       label: "Bar (Vertical)",
     },
     { value: "line", chartType: "line", direction: null, label: "Line" },
-    { value: "scatter", direction: "horizontal", label: "Scatter" },
+    { value: "scatter", chartType: "scatter", direction: null, label: "Scatter" },
   ],
 };
