@@ -1,6 +1,7 @@
 export default {
   title: "",
   caption: "",
+  format: "",
   visualizationType: "chart",
   chartType: "bar",
   direction: "horizontal",
@@ -21,6 +22,11 @@ export default {
       label: "Bar (Vertical)",
     },
     { value: "line", chartType: "line", direction: null, label: "Line" },
-    { value: "scatter", chartType: "scatter", direction: null, label: "Scatter" },
+    {
+      value: "scatter",
+      chartType: "scatter",
+      direction: null,
+      label: "Scatter",
+    },
   ],
 };

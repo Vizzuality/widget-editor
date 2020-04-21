@@ -179,6 +179,11 @@ export default class Line implements Charts.Line {
     ];
   }
 
+  resolveFormat() {
+    const format = this.widgetConfig?.paramsConfig?.format || "s";
+    return format;
+  }
+
   setAxes() {
     return [
       {
@@ -195,7 +200,7 @@ export default class Line implements Charts.Line {
         orient: "left",
         scale: "y",
         labelOverlap: "parity",
-        format: "s",
+        format: this.resolveFormat(),
         encode: {
           labels: {
             update: {

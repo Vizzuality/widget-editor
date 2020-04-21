@@ -4,17 +4,25 @@ import { constants } from "@widget-editor/core";
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 function* preloadData() {
-  const { widgetEditor: { editor } } = yield select();
+  const {
+    widgetEditor: { editor },
+  } = yield select();
 
   if (editor.widget) {
-    const { widget: { attributes: { name, description, widgetConfig } } } = editor;
+    const {
+      widget: {
+        attributes: { name, description, widgetConfig },
+      },
+    } = editor;
     const configuration = {
       ...widgetConfig.paramsConfig,
       title: name,
       caption: description,
     };
 
-    yield put(setConfiguration(configuration));
+    const format = widgetConfig?.paramsConfig?.value?.format || "s";
+
+    yield put(setConfiguration({ ...configuration, format }));
   }
 }
 

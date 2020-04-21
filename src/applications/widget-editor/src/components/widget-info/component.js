@@ -6,11 +6,18 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import debounce from "lodash/debounce";
+import Select from "react-select";
+
+import { InputStyles } from "./style";
+
+import VALUE_FORMAT_OPTIONS from "@widget-editor/shared/lib/constants/value-formats";
 
 class WidgetInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.stateFromProps(props.configuration);
+
+    this.setValueFormat = this.setValueFormat.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -33,19 +40,27 @@ class WidgetInfo extends React.Component {
       caption: configuration?.caption ? configuration.caption : "",
       yAxis: configuration?.category?.alias ? configuration.category.alias : "",
       xAxis: configuration?.value?.alias ? configuration.value.alias : "",
+      format: this.resolveFormat(configuration),
     };
+  }
+
+  resolveFormat(configuration) {
+    const format = configuration?.value?.format || "s";
+    const selectedFormat = VALUE_FORMAT_OPTIONS.find((f) => f.value === format);
+    return selectedFormat;
   }
 
   handleUpdate = debounce(() => {
     const { configuration, patchConfiguration } = this.props;
-    const { title, caption, yAxis, xAxis } = this.state;
+    const { title, caption, yAxis, xAxis, format } = this.state;
     patchConfiguration({
       title,
       caption,
+      format: format.value,
       xAxisTitle: xAxis,
       yAxisTitle: yAxis,
       category: { ...configuration.category },
-      value: { ...configuration.value },
+      value: { ...configuration.value, format: format.value },
     });
   }, 1000);
 
@@ -69,8 +84,13 @@ class WidgetInfo extends React.Component {
     this.handleUpdate();
   }
 
+  setValueFormat(format) {
+    this.setState({ format });
+    this.handleUpdate();
+  }
+
   render() {
-    const { title, caption, xAxis, yAxis } = this.state;
+    const { title, caption, xAxis, yAxis, format } = this.state;
 
     return (
       <FlexContainer>
@@ -116,6 +136,15 @@ class WidgetInfo extends React.Component {
             />
           </InputGroup>
         </FlexContainer>
+        <InputGroup>
+          <FormLabel htmlFor="options-title">Value format</FormLabel>
+          <Select
+            value={format}
+            onChange={this.setValueFormat}
+            options={VALUE_FORMAT_OPTIONS}
+            styles={InputStyles}
+          />
+        </InputGroup>
       </FlexContainer>
     );
   }

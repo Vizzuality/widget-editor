@@ -150,6 +150,11 @@ export default class Bars implements Charts.Bars {
     ];
   }
 
+  resolveFormat() {
+    const format = this.widgetConfig?.paramsConfig?.format || "s";
+    return format;
+  }
+
   setAxes() {
     return [
       {
@@ -187,7 +192,7 @@ export default class Bars implements Charts.Bars {
         orient: "left",
         scale: "y",
         labelOverlap: "parity",
-        format: "s",
+        format: this.resolveFormat(),
         encode: {
           labels: {
             update: {

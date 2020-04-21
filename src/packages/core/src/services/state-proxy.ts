@@ -4,7 +4,7 @@ import isEqual from "lodash/isEqual";
 export default class StateProxy {
   chartCache: object;
   configuration: object;
-  
+
   constructor() {
     // These are the properties that we will check for updates
     this.chartCache = {
@@ -14,6 +14,7 @@ export default class StateProxy {
 
     this.configuration = {
       value: null,
+      format: null,
       category: null,
       orderBy: null,
       groupBy: null,
@@ -34,9 +35,13 @@ export default class StateProxy {
 
   chartHasUpdate(state) {
     const { editor } = state;
-    const { chartType, direction } = state.configuration;
-    const hasUpdate = !isEqual(this.chartCache, { chartType, direction });
-    this.chartCache = { chartType, direction };
+    const { chartType, direction, format } = state.configuration;
+    const hasUpdate = !isEqual(this.chartCache, {
+      chartType,
+      direction,
+      format,
+    });
+    this.chartCache = { chartType, direction, format };
     return hasUpdate && editor.initialized;
   }
 
@@ -47,6 +52,7 @@ export default class StateProxy {
       category,
       orderBy,
       groupBy,
+      format,
       color,
       aggregateFunction,
       filters,
@@ -61,6 +67,7 @@ export default class StateProxy {
       category,
       orderBy,
       groupBy,
+      format,
       color,
       aggregateFunction,
       filters,

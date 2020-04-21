@@ -1,7 +1,7 @@
 export default {
   compact: {
     isCompact: true,
-    isOpen: false
+    isOpen: false,
   },
   schemes: [
     {
@@ -22,18 +22,18 @@ export default {
         "#B9D765",
         "#393F44",
         "#CACCD0",
-        "#717171"
-      ]
-    }
+        "#717171",
+      ],
+    },
   ],
   color: "#C32D7B",
   slider: {
     track: "#a3daf3",
-    trackBackground: "#f5f5f5"
+    trackBackground: "#f5f5f5",
   },
-  selectedScheme: 'default',
-  font: 'lato',
-  titleSize: 'auto',
-  captionSize: 'auto',
-  axisTitleSize: 'auto'
+  selectedScheme: "default",
+  font: "lato",
+  titleSize: "auto",
+  captionSize: "auto",
+  axisTitleSize: "auto",
 };

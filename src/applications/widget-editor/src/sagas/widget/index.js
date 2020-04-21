@@ -45,7 +45,15 @@ function* preloadData() {
     const { widgetData } = editor;
     const { widgetConfig } = editor.widget.attributes;
 
-    const vega = new VegaService(widgetConfig, widgetData, configuration, theme);
+    const vega = new VegaService(
+      {
+        ...widgetConfig,
+        paramsConfig: { ...widgetConfig.paramsConfig, ...configuration },
+      },
+      widgetData,
+      configuration,
+      theme
+    );
     yield put(setWidget(vega.getChart()));
 
     const { widgetEditor } = yield select();
@@ -76,8 +84,12 @@ function* updateWidget() {
   if (editor.initialized && editor.widgetData) {
     const { widgetData } = editor;
     const { widgetConfig } = editor.widget.attributes;
+
     const vega = new VegaService(
-      widgetConfig,
+      {
+        ...widgetConfig,
+        paramsConfig: { ...widgetConfig.paramsConfig, ...configuration },
+      },
       widgetData,
       configuration,
       theme

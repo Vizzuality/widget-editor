@@ -94,6 +94,11 @@ export default class BarsVertical implements Charts.Bars {
     return scale;
   }
 
+  resolveFormat() {
+    const format = this.widgetConfig?.paramsConfig?.value?.format || "s";
+    return format;
+  }
+
   setAxes() {
     return [
       {
@@ -101,6 +106,7 @@ export default class BarsVertical implements Charts.Bars {
         ...this.schema.axisX,
         orient: "bottom",
         scale: "x",
+        format: this.resolveFormat(),
         grid: true,
         labelOverlap: "parity",
       },
