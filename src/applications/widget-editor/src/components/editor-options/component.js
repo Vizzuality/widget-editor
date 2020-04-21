@@ -106,7 +106,7 @@ const EditorOptions = ({
       <Tabs>
         <Tab label="General">
           <Accordion>
-            <AccordionSection title="Description and labels" default>
+            <AccordionSection title="Description and labels" openDefault>
               <WidgetInfo />
             </AccordionSection>
             <AccordionSection title="Filters">
