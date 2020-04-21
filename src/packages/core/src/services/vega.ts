@@ -15,6 +15,28 @@ import {
   sqlFields,
 } from "../helpers/wiget-helper/constants";
 
+const DEFAULT_SCHEME = {
+  name: "pine",
+  mainColor: "#907A59",
+  category: [
+    "#907A59",
+    "#6AAC9F",
+    "#D5C0A1",
+    "#5C7D86",
+    "#F9AF38",
+    "#F05B3F",
+    "#89AD24",
+    "#CE4861",
+    "#F5808F",
+    "#86C48F",
+    "#F28627",
+    "#B23912",
+    "#BAD6AF",
+    "#C9C857",
+    "#665436",
+  ],
+};
+
 export default class VegaService implements Charts.Service {
   widgetConfig: any;
   widgetData: any;
@@ -29,9 +51,13 @@ export default class VegaService implements Charts.Service {
     configuration: any,
     theme: any
   ) {
-    this.scheme = theme.schemes.find(
-      (scheme) => scheme.name === theme.selectedScheme
-    );
+    if (theme) {
+      this.scheme = theme.schemes.find(
+        (scheme) => scheme.name === theme.selectedScheme
+      );
+    } else {
+      this.scheme = DEFAULT_SCHEME;
+    }
 
     this.colorApplied = isObjectLike(configuration.color);
 

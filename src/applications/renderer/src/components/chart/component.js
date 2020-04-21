@@ -65,8 +65,8 @@ const instantiateTooltip = (view, widget) => {
 class Chart extends React.Component {
   constructor(props) {
     super(props);
-    this.externalRenderer = !!props.widgetConfig;
     this.vega = null;
+    this.standalone = props.standalone || false;
   }
 
   componentDidMount() {
@@ -80,7 +80,9 @@ class Chart extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.vega.resize);
+    if (this.vega) {
+      window.removeEventListener("resize", this.vega.resize);
+    }
   }
 
   generateRuntime(configuration) {
@@ -113,9 +115,9 @@ class Chart extends React.Component {
   }
 
   generateVegaChart() {
-    const { widget: vegaConfiguration, widgetConfig } = this.props;
-    if (this.externalRenderer) {
-      this.generateRuntime(widgetConfig);
+    const { widget: vegaConfiguration, standaloneConfiguration } = this.props;
+    if (this.standalone && standaloneConfiguration) {
+      this.generateRuntime(standaloneConfiguration);
     } else {
       this.generateRuntime(vegaConfiguration);
     }
@@ -130,7 +132,7 @@ class Chart extends React.Component {
             this.chart = c;
           }}
         ></div>
-        {!this.externalRenderer && (
+        {!this.standalone && (
           <Suspense fallback={<div>Loading...</div>}>
             <QueryValues />
           </Suspense>

@@ -44,10 +44,15 @@ class Editor extends React.Component {
   componentWillMount() {
     const { authenticated, disabled } = this.props;
     if (authenticated) {
-      this.resolveAuthentication();
+      this.resolveAuthentication(authenticated);
     }
 
     this.resolveEditorFunctionality();
+  }
+
+  componentWillUnmount() {
+    const { setEditor } = this.props;
+    setEditor({ initialized: false });
   }
 
   componentDidUpdate(prevProps) {
@@ -126,7 +131,7 @@ class Editor extends React.Component {
     } = this.props;
     return (
       <StyledContainer {...compact}>
-        <Renderer />
+        <Renderer standalone={false} />
         <EditorOptions adapter={adapter} dataService={this.dataService} />
         <Footer onSave={this.onSave} />
       </StyledContainer>

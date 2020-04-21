@@ -9,19 +9,40 @@ import {
 const Chart = React.lazy(() => import("../chart"));
 const SelectChart = React.lazy(() => import("../select-chart"));
 const ChartColorFilter = React.lazy(() => import("../chart-color-filter"));
+const Standalone = React.lazy(() => import("../standalone"));
 
 // -- If a widget config is suplied, we are consuming the renderer outside of the editor
-const Renderer = ({ widget, editor, widgetConfig = null }) => {
+const Renderer = ({
+  widget,
+  editor,
+  widgetConfig = null,
+  standalone = true,
+  theme = null,
+}) => {
   const { restoring, initialized } = editor;
-  const missingWidget = initialized && !restoring && Object.keys(widget).length === 0 && !widgetConfig;
+  const missingWidget =
+    initialized && !restoring && Object.keys(widget).length === 0;
+
+  if (standalone) {
+    return (
+      <Suspense
+        fallback={
+          <RestoringWidget>
+            <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
+          </RestoringWidget>
+        }
+      >
+        <Standalone widgetConfig={widgetConfig} theme={theme} />
+      </Suspense>
+    );
+  }
 
   return (
     <StyledContainer>
-
       {missingWidget && (
         <RestoringWidget>
           <RestoringWidgetTitle>No widget available</RestoringWidgetTitle>
-        </RestoringWidget>  
+        </RestoringWidget>
       )}
 
       {!widgetConfig && !missingWidget && (
