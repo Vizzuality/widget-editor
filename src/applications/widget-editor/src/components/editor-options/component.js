@@ -18,6 +18,7 @@ const JsonEditor = React.lazy(() => import("../json-editor"));
 const TableView = React.lazy(() => import("../table-view"));
 const Typography = React.lazy(() => import("../typography"));
 const ColorShemes = React.lazy(() => import("../color-shemes"));
+const DonutRadius = React.lazy(() => import("../donut-radius"));
 
 const StyleEditorOptionsErrors = styled.div`
   position: absolute;
@@ -72,6 +73,7 @@ const EditorOptions = ({
   disabledFeatures,
   datasetId,
   limit,
+  donutRadius,
   orderBy,
   groupBy,
   patchConfiguration,
@@ -87,6 +89,9 @@ const EditorOptions = ({
     }
     if (type === "groupBy") {
       patchConfiguration({ groupBy: value });
+    }
+    if (type === "donut-radius") {
+      patchConfiguration({ donutRadius: parseInt(value) });
     }
   };
 
@@ -150,6 +155,18 @@ const EditorOptions = ({
                 </Suspense>
               </AccordionSection>
             )}
+
+            <AccordionSection title="Miscellaneous">
+              <Suspense fallback={<div>Loading...</div>}>
+                <DonutRadius
+                  value={donutRadius}
+                  onChange={(value) => handleChange(value, "donut-radius")}
+                  handleOnChangeValue={(value) =>
+                    handleChange(value, "donut-radius")
+                  }
+                />
+              </Suspense>
+            </AccordionSection>
           </Accordion>
         </Tab>
 

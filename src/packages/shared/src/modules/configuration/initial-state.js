@@ -5,10 +5,12 @@ export default {
   visualizationType: "chart",
   chartType: "bar",
   direction: "horizontal",
+  donutRadius: 100,
   xAxisTitle: null,
   yAxisTitle: null,
   availableCharts: [
     { value: "pie", chartType: "pie", direction: null, label: "Pie" },
+    { value: "donut", chartType: "donut", direction: null, label: "Donut" },
     {
       value: "bar-horizontal",
       chartType: "bar",

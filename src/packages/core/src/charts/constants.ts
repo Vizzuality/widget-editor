@@ -1,5 +1,11 @@
-export const SUPPORTED_CHARTS: string[] = ["pie", "bar", "line", "scatter"];
+export const SUPPORTED_CHARTS: string[] = [
+  "pie",
+  "bar",
+  "line",
+  "scatter",
+  "donut",
+];
 
 export default {
-  SUPPORTED_CHARTS
+  SUPPORTED_CHARTS,
 };

@@ -5,7 +5,7 @@ import ReactSlider from "react-slider";
 const StyledSlider = styled(ReactSlider)`
   height: 4px;
   width: inherit;
-  background: ${props =>
+  background: ${(props) =>
     props.array ? "transparent" : props.theme.slider.track};
 `;
 
@@ -14,7 +14,7 @@ const StyledThumb = styled.div`
   line-height: 18px;
   width: 18px;
   background-color: #fff;
-  border: 3px solid ${props => props.theme.slider.track};
+  border: 3px solid ${(props) => props.theme.slider.track};
   border-radius: 50%;
   transform: translateY(-50%);
   z-index: 0 !important;
@@ -25,7 +25,7 @@ const StyledThumb = styled.div`
 const StyledTrack = styled.div`
   top: 0;
   bottom: 0;
-  background: ${props => {
+  background: ${(props) => {
     if (props.isArray) {
       return props.isArray && props.index === 1
         ? props.theme.slider.track
@@ -58,7 +58,7 @@ const Slider = ({
   defaultValue,
   theme,
   onChange = () => {},
-  onDone = () => {}
+  onDone = () => {},
 }) => {
   return (
     <ThemeProvider theme={theme}>

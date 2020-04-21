@@ -11,6 +11,7 @@ export default connectState(
         ? state.editor.dataset.id
         : null,
     limit: state.configuration.limit,
+    donutRadius: state.configuration.donutRadius,
     orderBy: state.configuration.orderBy,
     groupBy: state.configuration.groupBy,
     compact: state.theme.compact,

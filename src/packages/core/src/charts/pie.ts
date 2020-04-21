@@ -76,6 +76,15 @@ export default class Pie implements Charts.Pie {
     ];
   }
 
+  resolveInnerRadius() {
+    const chartType = this.widgetConfig?.paramsConfig?.chartType || "pie";
+    const radius = this.widgetConfig?.paramsConfig?.donutRadius || 100;
+    if (chartType === "pie") {
+      return "0";
+    }
+    return radius;
+  }
+
   setMarks() {
     return [
       {
@@ -94,7 +103,7 @@ export default class Pie implements Charts.Pie {
             startAngle: { field: "startAngle" },
             endAngle: { field: "endAngle" },
             innerRadius: {
-              signal: "width > height ? height / 3 : width / 3",
+              signal: this.resolveInnerRadius(),
             },
             outerRadius: { signal: "width > height ? height / 2 : width / 2" },
           },

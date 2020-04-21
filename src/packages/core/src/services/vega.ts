@@ -148,7 +148,7 @@ export default class VegaService implements Charts.Service {
   resolveDataFormat() {
     const { chartType, direction } = this.configuration;
 
-    if (chartType === "pie") {
+    if (chartType === "pie" || chartType === "donut") {
       return this.groupByTop(this.widgetData);
     }
 
@@ -169,7 +169,7 @@ export default class VegaService implements Charts.Service {
       );
     }
 
-    if (chartType === "pie") {
+    if (chartType === "pie" || chartType === "donut") {
       chart = new Pie(
         this.schema,
         this.widgetConfig,

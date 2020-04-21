@@ -16,6 +16,7 @@ export default class StateProxy {
       value: null,
       format: null,
       category: null,
+      donutRadius: null,
       orderBy: null,
       groupBy: null,
       color: null,
@@ -35,13 +36,20 @@ export default class StateProxy {
 
   chartHasUpdate(state) {
     const { editor } = state;
-    const { chartType, direction, format } = state.configuration;
+    const { chartType, direction, format, donutRadius } = state.configuration;
+
     const hasUpdate = !isEqual(this.chartCache, {
       chartType,
+      donutRadius,
       direction,
       format,
     });
-    this.chartCache = { chartType, direction, format };
+
+    if (this.chartCache.donutRadius !== donutRadius && editor.initialized) {
+      return true;
+    }
+
+    this.chartCache = { chartType, direction, format, donutRadius };
     return hasUpdate && editor.initialized;
   }
 

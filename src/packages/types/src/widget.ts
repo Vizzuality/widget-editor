@@ -3,6 +3,7 @@ export type Id = string | number | null;
 export interface Payload {
   id: Id;
   type: string;
+  paramsConfig: any;
   attributes: {
     name: string;
     dataset: string;
