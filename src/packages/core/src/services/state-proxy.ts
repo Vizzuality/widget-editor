@@ -36,11 +36,18 @@ export default class StateProxy {
 
   chartHasUpdate(state) {
     const { editor } = state;
-    const { chartType, direction, format, donutRadius } = state.configuration;
+    const {
+      chartType,
+      direction,
+      format,
+      donutRadius,
+      slizeCount,
+    } = state.configuration;
 
     const hasUpdate = !isEqual(this.chartCache, {
       chartType,
       donutRadius,
+      slizeCount,
       direction,
       format,
     });
@@ -49,7 +56,11 @@ export default class StateProxy {
       return true;
     }
 
-    this.chartCache = { chartType, direction, format, donutRadius };
+    if (this.chartCache.slizeCount !== slizeCount && editor.initialized) {
+      return true;
+    }
+
+    this.chartCache = { chartType, direction, format, donutRadius, slizeCount };
     return hasUpdate && editor.initialized;
   }
 

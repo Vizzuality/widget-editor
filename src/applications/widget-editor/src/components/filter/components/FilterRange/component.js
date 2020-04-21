@@ -4,17 +4,27 @@ import QueryLimit from "components/query-limit";
 import { TYPE_RANGE } from "components/filter/const";
 
 // TODO: Move to utils
-const yearToUTC = y => new Date(Date.UTC(y)).toISOString();
-const UTCToYear = utcString => new Date(utcString).getFullYear();
+const yearToUTC = (y) => new Date(Date.UTC(y)).toISOString();
+const UTCToYear = (utcString) => new Date(utcString).getFullYear();
+
+const convertToRange = (value, min, max) => {
+  if (value > min) {
+    return [min, value];
+  }
+  return [value, max];
+};
 
 const FilterRange = ({ filter, disabled = false, setData }) => {
   const { values } = filter.filter;
   const { min, max } = filter.fieldInfo
     ? filter.fieldInfo
     : { min: 0, max: 100 };
-  const [minValue, maxValue] = values;
 
-  const onSetData = values => {
+  const [minValue, maxValue] = Array.isArray(values)
+    ? values
+    : convertToRange(values, min, max);
+
+  const onSetData = (values) => {
     let serializeValues;
     if (filter.dataType === "date") {
       serializeValues = [yearToUTC(values[0]), yearToUTC(values[1])];
@@ -49,7 +59,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
         max={UTCToYear(max)}
         disabled={disabled}
         value={[UTCToYear(minValue), UTCToYear(maxValue)]}
-        onChange={value => onSetData(value)}
+        onChange={(value) => onSetData(value)}
         handleOnChangeValue={handleOnChangeValue}
       />
     );
@@ -61,7 +71,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
       max={max}
       disabled={disabled}
       value={[minValue, maxValue]}
-      onChange={value => onSetData(value)}
+      onChange={(value) => onSetData(value)}
       handleOnChangeValue={handleOnChangeValue}
     />
   );

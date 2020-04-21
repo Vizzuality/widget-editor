@@ -1,4 +1,3 @@
-// TODO: Rename this filter!
 import React, { useState, useEffect } from "react";
 
 import useDebounce from "hooks/use-debounce";
@@ -22,10 +21,25 @@ const StyledInputBox = styled.div`
   margin: 0 0 0 30px;
 `;
 
-const DonutRadius = ({
+// TODO: Move me
+const getGroupedCount = (data) => {
+  const out = {};
+
+  data.forEach((entry) => {
+    if (out.hasOwnProperty(entry.x)) {
+      out[entry.x] = out[entry.x] + 1;
+    } else {
+      out[entry.x] = 1;
+    }
+  });
+
+  return Object.values(out).length;
+};
+
+const SlizeCount = ({
   min = 1,
-  max = 150,
   value = 40,
+  data = null,
   minDistance = 1,
   onChange = (data) => {},
   handleOnChangeValue = (data, key) => {},
@@ -43,12 +57,14 @@ const DonutRadius = ({
 
   return (
     <InputGroup>
-      <FormLabel htmlFor="options-donut-radius">Donut radius</FormLabel>
+      <FormLabel htmlFor="options-donut-radius">
+        Slize count (donut and pie charts)
+      </FormLabel>
       <FlexContainer row={true}>
         <StyledSliderBox>
           <Slider
             min={min}
-            max={max}
+            max={data ? getGroupedCount(data) : 10}
             value={localValue.value}
             onChange={(v) => setLocalValue({ value: v, key: null })}
           />
@@ -59,7 +75,7 @@ const DonutRadius = ({
             type="number"
             name="options-donut-radius"
             onChange={(e) =>
-              setLocalValue({ value: e.target.value, key: "donut-radius" })
+              setLocalValue({ value: e.target.value, key: "slize-count" })
             }
           />
         </StyledInputBox>
@@ -68,4 +84,4 @@ const DonutRadius = ({
   );
 };
 
-export default DonutRadius;
+export default SlizeCount;

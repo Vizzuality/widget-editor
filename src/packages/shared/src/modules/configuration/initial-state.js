@@ -5,6 +5,7 @@ export default {
   visualizationType: "chart",
   chartType: "bar",
   direction: "horizontal",
+  slizeCount: 5,
   donutRadius: 100,
   xAxisTitle: null,
   yAxisTitle: null,

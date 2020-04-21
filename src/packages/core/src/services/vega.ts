@@ -66,6 +66,8 @@ export default class VegaService implements Charts.Service {
     this.widgetData = widgetData;
     this.configuration = configuration;
 
+    this.slizeCount = configuration?.slizeCount || 5;
+
     this.setConfig();
     this.resolveChart();
   }
@@ -93,7 +95,7 @@ export default class VegaService implements Charts.Service {
     return out;
   }
 
-  groupByTop(data, am = 5) {
+  groupByTop(data) {
     function sortHighToLow(a, b) {
       if (a.y > b.y) return -1;
       if (b.y > a.y) return 1;
@@ -103,8 +105,8 @@ export default class VegaService implements Charts.Service {
     const combine = this.groupSimilar(data);
 
     const sortValues = combine.sort(sortHighToLow);
-    const top5 = sortValues.slice(0, am);
-    const others = sortValues.slice(am, sortValues.length + 1);
+    const top5 = sortValues.slice(0, this.slizeCount);
+    const others = sortValues.slice(this.slizeCount, sortValues.length + 1);
 
     const out = [];
     let othersNode = { x: "Others", y: 0 };

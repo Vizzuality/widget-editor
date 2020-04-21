@@ -1,54 +1,18 @@
 import React from "react";
 import styled, { ThemeProvider } from "styled-components";
-import ReactSlider from "react-slider";
+import RcSlider, { Range } from "rc-slider";
 
-const StyledSlider = styled(ReactSlider)`
-  height: 4px;
-  width: inherit;
-  background: ${(props) =>
-    props.array ? "transparent" : props.theme.slider.track};
+import "rc-slider/assets/index.css";
+
+const StyledSlider = styled.div`
+  width: 100%;
+  .slider {
+    position: relative;
+    height: 4px;
+    width: 100%;
+    background: ${(props) => props.theme.slider.track};
+  }
 `;
-
-const StyledThumb = styled.div`
-  height: 18px;
-  line-height: 18px;
-  width: 18px;
-  background-color: #fff;
-  border: 3px solid ${(props) => props.theme.slider.track};
-  border-radius: 50%;
-  transform: translateY(-50%);
-  z-index: 0 !important;
-  top: 50%;
-  cursor: grab;
-`;
-
-const StyledTrack = styled.div`
-  top: 0;
-  bottom: 0;
-  background: ${(props) => {
-    if (props.isArray) {
-      return props.isArray && props.index === 1
-        ? props.theme.slider.track
-        : props.theme.slider.trackBackground;
-    } else {
-      return props.index === 2
-        ? props.theme.slider.track
-        : props.index === 1
-        ? props.theme.slider.trackBackground
-        : props.theme.slider.track;
-    }
-  }};
-  border-radius: 999px;
-`;
-
-const Thumb = (props, state) => <StyledThumb {...props} />;
-const Track = (props, state) => (
-  <StyledTrack
-    {...props}
-    isArray={Array.isArray(state.value)}
-    index={state.index}
-  />
-);
 
 const Slider = ({
   min = 1,
@@ -60,19 +24,42 @@ const Slider = ({
   onChange = () => {},
   onDone = () => {},
 }) => {
+  const isRange = Array.isArray(value);
+
   return (
     <ThemeProvider theme={theme}>
-      <StyledSlider
-        onAfterChange={onDone}
-        onChange={onChange}
-        renderTrack={Track}
-        renderThumb={Thumb}
-        value={value}
-        step={step}
-        defaultValue={defaultValue}
-        max={max}
-        min={min}
-      />
+      <StyledSlider>
+        {isRange && (
+          <Range
+            value={value}
+            step={step}
+            min={min}
+            max={max}
+            handleStyle={{
+              width: "20px",
+              height: "20px",
+              top: "2px",
+            }}
+            onChange={onChange}
+            onDone={onDone}
+          />
+        )}
+        {!isRange && (
+          <RcSlider
+            onAfterChange={onDone}
+            onChange={onChange}
+            handleStyle={{
+              width: "20px",
+              height: "20px",
+              top: "2px",
+            }}
+            value={value}
+            step={step}
+            max={max}
+            min={min}
+          />
+        )}
+      </StyledSlider>
     </ThemeProvider>
   );
 };

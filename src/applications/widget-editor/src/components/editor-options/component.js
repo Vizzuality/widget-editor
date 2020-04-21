@@ -19,6 +19,7 @@ const TableView = React.lazy(() => import("../table-view"));
 const Typography = React.lazy(() => import("../typography"));
 const ColorShemes = React.lazy(() => import("../color-shemes"));
 const DonutRadius = React.lazy(() => import("../donut-radius"));
+const SlizeCount = React.lazy(() => import("../slize-count"));
 
 const StyleEditorOptionsErrors = styled.div`
   position: absolute;
@@ -74,6 +75,8 @@ const EditorOptions = ({
   datasetId,
   limit,
   donutRadius,
+  slizeCount,
+  data,
   orderBy,
   groupBy,
   patchConfiguration,
@@ -93,6 +96,9 @@ const EditorOptions = ({
     if (type === "donut-radius") {
       patchConfiguration({ donutRadius: parseInt(value) });
     }
+    if (type === "slize-count") {
+      patchConfiguration({ slizeCount: parseInt(value) });
+    }
   };
 
   if (!datasetId) {
@@ -105,7 +111,6 @@ const EditorOptions = ({
       </StyledContainer>
     );
   }
-
   return (
     <StyledContainer compact={compact}>
       <Tabs>
@@ -135,6 +140,31 @@ const EditorOptions = ({
                 />
               )}
             </AccordionSection>
+            <AccordionSection title="Chart specific">
+              <Suspense fallback={<div>Loading...</div>}>
+                {donutRadius && (
+                  <DonutRadius
+                    value={donutRadius}
+                    onChange={(value) => handleChange(value, "donut-radius")}
+                    handleOnChangeValue={(value) =>
+                      handleChange(value, "donut-radius")
+                    }
+                  />
+                )}
+              </Suspense>
+              <Suspense fallback={<div>Loading...</div>}>
+                {slizeCount && data && (
+                  <SlizeCount
+                    value={slizeCount}
+                    data={data}
+                    onChange={(value) => handleChange(value, "slize-count")}
+                    handleOnChangeValue={(value) =>
+                      handleChange(value, "slize-count")
+                    }
+                  />
+                )}
+              </Suspense>
+            </AccordionSection>
           </Accordion>
         </Tab>
 
@@ -155,18 +185,6 @@ const EditorOptions = ({
                 </Suspense>
               </AccordionSection>
             )}
-
-            <AccordionSection title="Miscellaneous">
-              <Suspense fallback={<div>Loading...</div>}>
-                <DonutRadius
-                  value={donutRadius}
-                  onChange={(value) => handleChange(value, "donut-radius")}
-                  handleOnChangeValue={(value) =>
-                    handleChange(value, "donut-radius")
-                  }
-                />
-              </Suspense>
-            </AccordionSection>
           </Accordion>
         </Tab>
 
