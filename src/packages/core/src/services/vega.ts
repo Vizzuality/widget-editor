@@ -182,23 +182,23 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "bar") {
-      if (direction === "horizontal") {
-        chart = new Bars(
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme,
-          this.colorApplied
-        ).getChart();
-      } else {
-        chart = new BarsVertical(
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme,
-          this.colorApplied
-        ).getChart();
-      }
+      chart = new BarsVertical(
+        this.schema,
+        this.widgetConfig,
+        data,
+        this.scheme,
+        this.colorApplied
+      ).getChart();
+    }
+
+    if (chartType === "bar_vertical") {
+      chart = new Bars(
+        this.schema,
+        this.widgetConfig,
+        data,
+        this.scheme,
+        this.colorApplied
+      ).getChart();
     }
 
     if (chartType === "line") {

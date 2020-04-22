@@ -1,5 +1,10 @@
 import React, { Fragment } from "react";
-import { MENU_DATA, TYPE_COLUMN, TYPE_BAR } from "../../const";
+import {
+  MENU_DATA,
+  TYPE_COLUMN,
+  TYPE_BAR,
+  TYPE_BAR_VERTICAL,
+} from "../../const";
 import { StyledContainer, StyledMenu, StyledTitle, StyledIcons } from "./style";
 import ChartIcon from "../ChartIcon";
 
@@ -26,29 +31,24 @@ const ChartList = ({ list, setData, title }) => {
 const ChartMenu = ({ options, getValue, setValue, innerRef, innerProps }) => {
   const data = getValue()[0];
   const menu = MENU_DATA.map((m) => {
-    m.active =
-      m.type === data.chartType && m.direction === data.direction
-        ? true
-        : false;
-    m.disabled = options.find(
-      (o) => o.chartType === m.type && o.direction === m.direction
-    )
-      ? false
-      : true;
+    m.active = m.type === data.chartType ? true : false;
+    m.disabled = options.find((o) => o.chartType === m.type) ? false : true;
     return m;
   });
 
   const columns = menu.filter((m) => m.type === TYPE_COLUMN);
-  const bars = menu.filter((m) => m.type === TYPE_BAR);
+  const bars = menu.filter(
+    (m) => m.type === TYPE_BAR || m.type === TYPE_BAR_VERTICAL
+  );
   const more = menu.filter(
-    (m) => m.type !== TYPE_BAR && m.type !== TYPE_COLUMN
+    (m) =>
+      m.type !== TYPE_BAR &&
+      m.type !== TYPE_BAR_VERTICAL &&
+      m.type !== TYPE_COLUMN
   );
 
   const setData = (selected) => {
-    const dataSet = options.find(
-      (el) =>
-        el.chartType === selected.type && el.direction === selected.direction
-    );
+    const dataSet = options.find((el) => el.chartType === selected.type);
     if (dataSet) setValue(dataSet);
   };
 

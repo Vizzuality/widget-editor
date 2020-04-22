@@ -7,7 +7,7 @@ import {
   StateProxy,
 } from "@widget-editor/core";
 
-const useWidgetData = (widgetConfig, theme) => {
+const useWidgetData = (widgetConfig, theme, isMap) => {
   const [data, setData] = useState(null);
   const [dataURL, setDataURL] = useState(widgetConfig?.data?.[0]?.url);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,9 @@ const useWidgetData = (widgetConfig, theme) => {
       }
       setIsLoading(false);
     };
-    fetchData();
+    if (!isMap) {
+      fetchData();
+    }
   }, []);
   return [{ data, isLoading, isError }, setDataURL];
 };

@@ -1,0 +1,58 @@
+{
+  "name": "@widget-editor/map",
+  "version": "2.0.12-beta.0",
+  "licence": "MIT",
+  "directories": {
+    "lib": "lib",
+    "src": "src"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "private": false,
+  "dependencies": {
+    "layer-manager": "^2.0.9",
+    "luma.gl": "^7.1.1",
+    "deck.gl": "^7.1.10",
+    "viewport-mercator-project": "^6.1.1",
+    "axios": "^0.18.0"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-react": "^7.7.4",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "scripts": {
+    "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
+    "watch": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
+    "build": "NODE_ENV=production babel src --out-dir lib --copy-files",
+    "publish-npm": "npm publish --access public"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "main": "lib/index.js"
+}

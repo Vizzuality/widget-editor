@@ -11,7 +11,7 @@ export default class StateProxy {
     // These are the properties that we will check for updates
     this.chartCache = {
       chartType: null,
-      direction: null,
+      visualizationType: null,
     };
 
     this.configuration = {
@@ -32,15 +32,15 @@ export default class StateProxy {
   }
 
   cacheChart(state) {
-    const { chartType = null, direction = null } = state.configuration;
-    this.chartCache = { chartType, direction };
+    const { chartType = null, visualizationType = null } = state.configuration;
+    this.chartCache = { chartType, visualizationType };
   }
 
   chartHasUpdate(state) {
     const { editor } = state;
     const {
       chartType,
-      direction,
+      visualizationType,
       format,
       donutRadius,
       slizeCount,
@@ -48,9 +48,9 @@ export default class StateProxy {
 
     const hasUpdate = !isEqual(this.chartCache, {
       chartType,
+      visualizationType,
       donutRadius,
       slizeCount,
-      direction,
       format,
     });
 
@@ -62,7 +62,7 @@ export default class StateProxy {
       return true;
     }
 
-    this.chartCache = { chartType, direction, format, donutRadius, slizeCount };
+    this.chartCache = { chartType, format, donutRadius, slizeCount };
     return hasUpdate && editor.initialized;
   }
 

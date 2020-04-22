@@ -10,7 +10,6 @@ export default redux.connectState(
   (state) => ({
     options: state.configuration.availableCharts,
     chartType: state.configuration.chartType,
-    direction: state.configuration.direction,
     theme: state.theme,
   }),
   { patchConfiguration, setTheme }

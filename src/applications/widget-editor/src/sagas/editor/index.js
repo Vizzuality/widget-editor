@@ -1,5 +1,6 @@
 import { takeLatest, put, select } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
+import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
@@ -14,6 +15,7 @@ function* preloadData() {
         attributes: { name, description, widgetConfig },
       },
     } = editor;
+
     const configuration = {
       ...widgetConfig.paramsConfig,
       title: name,

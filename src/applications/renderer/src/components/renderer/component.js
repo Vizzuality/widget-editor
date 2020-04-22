@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Fragment, Suspense } from "react";
 
 import {
   StyledContainer,
@@ -11,6 +11,8 @@ const SelectChart = React.lazy(() => import("../select-chart"));
 const ChartColorFilter = React.lazy(() => import("../chart-color-filter"));
 const Standalone = React.lazy(() => import("../standalone"));
 
+const Map = React.lazy(() => import("@widget-editor/map"));
+
 // -- If a widget config is suplied, we are consuming the renderer outside of the editor
 const Renderer = ({
   widget,
@@ -18,10 +20,23 @@ const Renderer = ({
   widgetConfig = null,
   standalone = true,
   theme = null,
+  configuration,
 }) => {
   const { restoring, initialized } = editor;
   const missingWidget =
     initialized && !restoring && Object.keys(widget).length === 0;
+
+  const isMap = configuration.visualizationType === "map";
+
+  if (restoring) {
+    return (
+      <StyledContainer>
+        <RestoringWidget>
+          <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
+        </RestoringWidget>
+      </StyledContainer>
+    );
+  }
 
   if (standalone) {
     return (
@@ -39,19 +54,19 @@ const Renderer = ({
 
   return (
     <StyledContainer>
-      {missingWidget && (
+      {missingWidget && !isMap && (
         <RestoringWidget>
           <RestoringWidgetTitle>No widget available</RestoringWidgetTitle>
         </RestoringWidget>
       )}
 
-      {!widgetConfig && !missingWidget && (
+      {!widgetConfig && initialized && (
         <Suspense fallback={<div>Loading...</div>}>
           <SelectChart />
         </Suspense>
       )}
 
-      {initialized && !restoring && !missingWidget && (
+      {initialized && !restoring && !missingWidget && !isMap && (
         <Suspense
           fallback={
             <RestoringWidget>
@@ -60,6 +75,21 @@ const Renderer = ({
           }
         >
           <Chart widgetConfig={widgetConfig} />
+        </Suspense>
+      )}
+
+      {initialized && !restoring && isMap && (
+        <Suspense fallback={<div>Loading...</div>}>
+          {editor.widget && editor.layers && (
+            <Map
+              setMapParams={({ zoom, latLng, bounds }) => {
+                console.log("map params update", zoom, latLng, bounds);
+              }}
+              interactionEnabled={!standalone}
+              widget={editor.widget}
+              layers={editor.layers}
+            />
+          )}
         </Suspense>
       )}
 

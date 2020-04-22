@@ -3,12 +3,7 @@ import find from "lodash/find";
 import { Button } from "@widget-editor/shared";
 import Select from "react-select";
 import ChartMenu from "./components/ChartMenu";
-import {
-  StyledContainer,
-  StyledSelectBox,
-  InputStyles,
-  StyledOverflow,
-} from "./style";
+import { StyledContainer, StyledSelectBox, InputStyles } from "./style";
 
 /**
  * FIXME
@@ -18,29 +13,20 @@ import {
  * {isOpenMenu && < onClick={() => setIsOpenMenu(false)} />}
  */
 
-const NON_DIRECTIONAL_CHARTS = ['pie', 'scatter', 'map'];
-
-const isNonDirectionalChart = chart => {
-  return NON_DIRECTIONAL_CHARTS.indexOf(chart) > -1;
-}
-
 const SelectChart = ({
   patchConfiguration,
   options,
   chartType,
-  direction,
   theme,
   setTheme,
 }) => {
-  const [selected, setSelected] = useState(
-    find(options, isNonDirectionalChart(chartType) ? { chartType } : { chartType, direction })
-  );
+  const [selected, setSelected] = useState(find(options, { chartType }));
 
   useEffect(() => {
     if (selected && selected.chartType !== chartType) {
-      setSelected(find(options, isNonDirectionalChart(chartType) ? { chartType } : { chartType, direction }));
+      setSelected(find(options, { chartType }));
     }
-  }, [chartType, selected, direction, options]);
+  }, [chartType, selected, options]);
 
   const {
     compact: { isCompact, isOpen },
@@ -48,8 +34,8 @@ const SelectChart = ({
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
   const handleChange = (option) => {
-    const { chartType, direction } = option;
-    patchConfiguration({ chartType, direction });
+    const { chartType } = option;
+    patchConfiguration({ chartType });
     setSelected(option);
     setIsOpenMenu(false);
   };

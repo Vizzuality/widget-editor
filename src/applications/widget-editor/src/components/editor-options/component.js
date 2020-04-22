@@ -20,6 +20,7 @@ const Typography = React.lazy(() => import("../typography"));
 const ColorShemes = React.lazy(() => import("../color-shemes"));
 const DonutRadius = React.lazy(() => import("../donut-radius"));
 const SlizeCount = React.lazy(() => import("../slize-count"));
+const Layers = React.lazy(() => import("../layers"));
 
 const StyleEditorOptionsErrors = styled.div`
   position: absolute;
@@ -82,6 +83,7 @@ const EditorOptions = ({
   patchConfiguration,
   compact,
   dataService,
+  isMap,
 }) => {
   const handleChange = (value, type) => {
     if (type === "limit") {
@@ -117,54 +119,69 @@ const EditorOptions = ({
         <Tab label="General">
           <Accordion>
             <AccordionSection title="Description and labels" openDefault>
-              <WidgetInfo />
+              <WidgetInfo isMap={isMap} />
             </AccordionSection>
-            <AccordionSection title="Filters">
-              <Filter dataService={dataService} />
-            </AccordionSection>
-            <AccordionSection title="Order">
-              <OrderValues
-                onChange={(value) => handleChange(value, "orderBy")}
-              />
-              <GroupValues
-                onChange={(value) => handleChange(value, "groupBy")}
-              />
-              {limit && (
-                <QueryLimit
-                  min={0}
-                  max={500}
-                  onChange={(value) => handleChange(value, "limit")}
-                  handleOnChangeValue={(value) => handleChange(value, "limit")}
-                  label="Limit"
-                  value={limit}
+            {!isMap && (
+              <AccordionSection title="Filters">
+                <Filter dataService={dataService} />
+              </AccordionSection>
+            )}
+            {!isMap && (
+              <AccordionSection title="Order">
+                <OrderValues
+                  onChange={(value) => handleChange(value, "orderBy")}
                 />
-              )}
-            </AccordionSection>
-            <AccordionSection title="Chart specific">
-              <Suspense fallback={<div>Loading...</div>}>
-                {donutRadius && (
-                  <DonutRadius
-                    value={donutRadius}
-                    onChange={(value) => handleChange(value, "donut-radius")}
+                <GroupValues
+                  onChange={(value) => handleChange(value, "groupBy")}
+                />
+                {limit && (
+                  <QueryLimit
+                    min={0}
+                    max={500}
+                    onChange={(value) => handleChange(value, "limit")}
                     handleOnChangeValue={(value) =>
-                      handleChange(value, "donut-radius")
+                      handleChange(value, "limit")
                     }
+                    label="Limit"
+                    value={limit}
                   />
                 )}
-              </Suspense>
-              <Suspense fallback={<div>Loading...</div>}>
-                {slizeCount && data && (
-                  <SlizeCount
-                    value={slizeCount}
-                    data={data}
-                    onChange={(value) => handleChange(value, "slize-count")}
-                    handleOnChangeValue={(value) =>
-                      handleChange(value, "slize-count")
-                    }
-                  />
-                )}
-              </Suspense>
-            </AccordionSection>
+              </AccordionSection>
+            )}
+            {!isMap && (
+              <AccordionSection title="Chart specific">
+                <Suspense fallback={<div>Loading...</div>}>
+                  {donutRadius && (
+                    <DonutRadius
+                      value={donutRadius}
+                      onChange={(value) => handleChange(value, "donut-radius")}
+                      handleOnChangeValue={(value) =>
+                        handleChange(value, "donut-radius")
+                      }
+                    />
+                  )}
+                </Suspense>
+                <Suspense fallback={<div>Loading...</div>}>
+                  {slizeCount && data && (
+                    <SlizeCount
+                      value={slizeCount}
+                      data={data}
+                      onChange={(value) => handleChange(value, "slize-count")}
+                      handleOnChangeValue={(value) =>
+                        handleChange(value, "slize-count")
+                      }
+                    />
+                  )}
+                </Suspense>
+              </AccordionSection>
+            )}
+            {isMap && (
+              <AccordionSection title="Map configuration">
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Layers />
+                </Suspense>
+              </AccordionSection>
+            )}
           </Accordion>
         </Tab>
 

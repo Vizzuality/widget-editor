@@ -2,12 +2,12 @@ import React from "react";
 import {
   TYPE_COLUMN,
   TYPE_LINE,
-  DIRECTION_HORIZONTAL,
-  DIRECTION_VERTICAL,
   TYPE_SCATTERPLOT,
   TYPE_DONUT,
   TYPE_BAR,
+  TYPE_BAR_VERTICAL,
   TYPE_PIE,
+  TYPE_MAP,
 } from "../../const";
 import { StyledBox, StyledIcon } from "./style";
 import {
@@ -15,7 +15,6 @@ import {
   Scatterplot,
   Donut,
   Pie,
-  ColumnVertical,
   ColumnHorizontal,
   BarVertical,
   BarHorizontal,
@@ -23,7 +22,6 @@ import {
 
 const ChartIcon = ({
   type = TYPE_COLUMN,
-  direction = DIRECTION_HORIZONTAL,
   active = false,
   disabled = false,
   setData = (data) => {},
@@ -33,25 +31,18 @@ const ChartIcon = ({
       <StyledIcon
         active={active}
         disabled={disabled}
-        onClick={() => setData({ type, direction })}
+        onClick={() => setData({ type })}
       >
         {type === TYPE_LINE && <Line />}
         {type === TYPE_SCATTERPLOT && <Scatterplot />}
         {type === TYPE_DONUT && <Donut />}
         {type === TYPE_PIE && <Pie />}
-        {type === TYPE_BAR && direction === DIRECTION_HORIZONTAL && (
-          <BarHorizontal />
-        )}
-        {type === TYPE_BAR && direction === DIRECTION_VERTICAL && (
-          <BarVertical />
-        )}
+        {type === TYPE_MAP && <p>Map</p>}
 
-        {type === TYPE_COLUMN && direction === DIRECTION_HORIZONTAL && (
-          <ColumnHorizontal />
-        )}
-        {type === TYPE_COLUMN && direction === DIRECTION_VERTICAL && (
-          <ColumnVertical />
-        )}
+        {type === TYPE_BAR && <BarHorizontal />}
+        {type === TYPE_BAR_VERTICAL && <BarVertical />}
+
+        {type === TYPE_COLUMN && <ColumnHorizontal />}
       </StyledIcon>
     </StyledBox>
   );

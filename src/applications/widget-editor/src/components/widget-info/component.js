@@ -91,7 +91,7 @@ class WidgetInfo extends React.Component {
 
   render() {
     const { title, caption, xAxis, yAxis, format } = this.state;
-
+    const { isMap } = this.props;
     return (
       <FlexContainer>
         <InputGroup>
@@ -114,37 +114,41 @@ class WidgetInfo extends React.Component {
             onChange={(e) => this.setCaption(e.target.value)}
           />
         </InputGroup>
-        <FlexContainer row={true}>
+        {!isMap && (
+          <FlexContainer row={true}>
+            <InputGroup>
+              <FormLabel htmlFor="options-x-axis">X axis</FormLabel>
+              <Input
+                type="text"
+                placeholder="Overwrite axis name"
+                name="options-x-axis"
+                value={xAxis}
+                onChange={(e) => this.setXAxis(e.target.value)}
+              />
+            </InputGroup>
+            <InputGroup>
+              <FormLabel htmlFor="options-y-axis">Y axis</FormLabel>
+              <Input
+                type="text"
+                placeholder="Overwrite axis name"
+                name="options-y-axis"
+                value={yAxis}
+                onChange={(e) => this.setYAxis(e.target.value)}
+              />
+            </InputGroup>
+          </FlexContainer>
+        )}
+        {!isMap && (
           <InputGroup>
-            <FormLabel htmlFor="options-x-axis">X axis</FormLabel>
-            <Input
-              type="text"
-              placeholder="Overwrite axis name"
-              name="options-x-axis"
-              value={xAxis}
-              onChange={(e) => this.setXAxis(e.target.value)}
+            <FormLabel htmlFor="options-title">Value format</FormLabel>
+            <Select
+              value={format}
+              onChange={this.setValueFormat}
+              options={VALUE_FORMAT_OPTIONS}
+              styles={InputStyles}
             />
           </InputGroup>
-          <InputGroup>
-            <FormLabel htmlFor="options-y-axis">Y axis</FormLabel>
-            <Input
-              type="text"
-              placeholder="Overwrite axis name"
-              name="options-y-axis"
-              value={yAxis}
-              onChange={(e) => this.setYAxis(e.target.value)}
-            />
-          </InputGroup>
-        </FlexContainer>
-        <InputGroup>
-          <FormLabel htmlFor="options-title">Value format</FormLabel>
-          <Select
-            value={format}
-            onChange={this.setValueFormat}
-            options={VALUE_FORMAT_OPTIONS}
-            styles={InputStyles}
-          />
-        </InputGroup>
+        )}
       </FlexContainer>
     );
   }

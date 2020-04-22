@@ -40,6 +40,7 @@ export default class DataService {
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset, this.widgetId);
 
+
     this.setEditor({ dataset: this.dataset, widget: this.widget });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }

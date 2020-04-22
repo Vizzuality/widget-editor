@@ -13,6 +13,7 @@ export default connectState(
     limit: state.configuration.limit,
     donutRadius: state.configuration.donutRadius,
     slizeCount: state.configuration.slizeCount,
+    isMap: state.configuration.chartType === "map",
     data: state.editor.widgetData,
     orderBy: state.configuration.orderBy,
     groupBy: state.configuration.groupBy,

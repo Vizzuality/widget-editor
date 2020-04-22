@@ -11,6 +11,7 @@ import {
 
 import { setEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
+import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 const stateProxy = new StateProxy();
 let adapterConfiguration = null;
@@ -41,10 +42,10 @@ function* preloadData() {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
 
-  if (editor.widget) {
-    const { widgetData } = editor;
-    const { widgetConfig } = editor.widget.attributes;
+  const { widgetData } = editor;
+  const { widgetConfig } = editor.widget.attributes;
 
+  if (configuration.visualizationType !== "map") {
     const vega = new VegaService(
       {
         ...widgetConfig,
@@ -57,13 +58,13 @@ function* preloadData() {
     yield put(setWidget(vega.getChart()));
 
     const { widgetEditor } = yield select();
+
     stateProxy.cacheChart(widgetEditor);
   }
 }
 
 function* resolveWithProxy() {
   const { widgetEditor } = yield select();
-
   // Check and patch current state based on user configuration
   const proxyResult = yield call([stateProxy, "sync"], widgetEditor);
 
@@ -81,7 +82,11 @@ function* updateWidget() {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
 
-  if (editor.initialized && editor.widgetData) {
+  if (
+    editor.initialized &&
+    editor.widgetData &&
+    configuration.visualizationType !== "map"
+  ) {
     const { widgetData } = editor;
     const { widgetConfig } = editor.widget.attributes;
 
@@ -100,15 +105,30 @@ function* updateWidget() {
 
 function* updateWidgetData() {
   const { widgetEditor } = yield select();
-  const widgetData = yield call(getWidgetData, widgetEditor);
 
-  if (widgetData.data) {
+  if (widgetEditor.configuration.visualizationType !== "map") {
+    const widgetData = yield call(getWidgetData, widgetEditor);
     yield put(setEditor({ widgetData: widgetData.data }));
     yield call(updateWidget);
     if (!widgetEditor.editor.initialized) {
       yield put({ type: constants.sagaEvents.DATA_FLOW_VISUALISATION_READY });
     }
+  } else {
+    yield call(updateWidget);
+    if (!widgetEditor.editor.initialized) {
+      yield put({ type: constants.sagaEvents.DATA_FLOW_VISUALISATION_READY });
+    }
   }
+
+  yield put(
+    setConfiguration({
+      visualizationType: widgetEditor.configuration.visualizationType,
+      chartType:
+        widgetEditor.configuration.visualizationType === "map"
+          ? "map"
+          : widgetEditor.configuration.chartType,
+    })
+  );
 }
 
 export default function* baseSaga() {

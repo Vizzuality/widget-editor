@@ -6,13 +6,13 @@ class EditorOptions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      widgets: []
+      widgets: [],
     };
 
     const widgetEndpoint = `https://api.resourcewatch.org/v1/widget?includes=metadata,user,vocabulary`;
     const widgets = fetch(widgetEndpoint)
-      .then(response => response.json())
-      .then(widgetPayload => {
+      .then((response) => response.json())
+      .then((widgetPayload) => {
         this.setState({ widgets: widgetPayload.data });
       });
   }
@@ -26,9 +26,9 @@ class EditorOptions extends React.Component {
         dataset,
         widget,
         optionsOpen,
-        theme
+        theme,
       },
-      modifyOptions
+      modifyOptions,
     } = this.props;
 
     const clx = `c-playground-options ${optionsOpen ? "-open" : ""}`;
@@ -42,16 +42,19 @@ class EditorOptions extends React.Component {
           type="text"
           placeholder="Bearer token"
           value={authToken}
-          onChange={e => modifyOptions({ authToken: e.target.value })}
+          onChange={(e) => modifyOptions({ authToken: e.target.value })}
         />
         <label htmlFor="dataset">Active Dataset</label>
         <select
           id="dataset"
           value={dataset}
-          onChange={e =>
+          onChange={(e) =>
             modifyOptions({ widget: null, dataset: e.target.value })
           }
         >
+          <option value="aeb0afc3-b5f2-4018-98fa-127ccb29e139">
+            MAP LAYER
+          </option>
           <option value="03bfb30e-829f-4299-bab9-b2be1b66b5d4">
             Forest Sector Economic Contribution
           </option>
@@ -71,23 +74,23 @@ class EditorOptions extends React.Component {
         <select
           id="widget"
           value={!!widget ? widget : "NO_WIDGET_SELECTED"}
-          onChange={e => {
+          onChange={(e) => {
             if (e.target.value === "NO_WIDGET_SELECTED") {
               modifyOptions({
                 widget: null,
-                dataset: "d446a52e-c4c1-4e74-ae30-3204620a0365"
+                dataset: "d446a52e-c4c1-4e74-ae30-3204620a0365",
               });
             } else {
               modifyOptions({
-                dataset: widgets.find(w => w.id === e.target.value).attributes
+                dataset: widgets.find((w) => w.id === e.target.value).attributes
                   .dataset,
-                widget: e.target.value
+                widget: e.target.value,
               });
             }
           }}
         >
           <option value="NO_WIDGET_SELECTED">-</option>
-          {widgets.map(rwWidget => {
+          {widgets.map((rwWidget) => {
             return (
               <option key={rwWidget.id} value={rwWidget.id}>
                 {rwWidget.attributes.name}
@@ -113,7 +116,7 @@ class EditorOptions extends React.Component {
           type="text"
           placeholder="#00000"
           value={theme.color}
-          onChange={e =>
+          onChange={(e) =>
             modifyOptions({ theme: { ...theme, color: e.target.value } })
           }
         />
