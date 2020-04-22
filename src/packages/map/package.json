@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/map",
-  "version": "2.0.12-beta.0",
+  "version": "2.0.13-beta.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -12,11 +12,11 @@
   ],
   "private": false,
   "dependencies": {
+    "axios": "^0.18.0",
+    "deck.gl": "^7.1.10",
     "layer-manager": "^2.0.9",
     "luma.gl": "^7.1.1",
-    "deck.gl": "^7.1.10",
-    "viewport-mercator-project": "^6.1.1",
-    "axios": "^0.18.0"
+    "viewport-mercator-project": "^6.1.1"
   },
   "peerDependencies": {
     "react": "^16.12.0",
