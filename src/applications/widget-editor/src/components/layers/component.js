@@ -46,20 +46,11 @@ const Layers = ({ editor, configuration, patchConfiguration }) => {
         <FormLabel htmlFor="options-title">Layers</FormLabel>
         <Select
           onChange={(option) => handleChange(option)}
-          value={selectedOption}
+          value={selectedOption || options[0]}
           options={options}
           styles={InputStyles}
         />
       </InputGroup>
-      {/* <InputGroup> */}
-      {/*   <FormLabel htmlFor="options-title">Ascending or Descending</FormLabel> */}
-      {/*   <Select */}
-      {/*     onChange={option => handleChange(option, "orderByType")} */}
-      {/*     value={orderType} */}
-      {/*     options={ORDER_TYPES} */}
-      {/*     styles={InputStyles} */}
-      {/*   /> */}
-      {/* </InputGroup> */}
     </FlexContainer>
   );
 };

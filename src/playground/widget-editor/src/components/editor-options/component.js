@@ -53,7 +53,16 @@ class EditorOptions extends React.Component {
           }
         >
           <option value="aeb0afc3-b5f2-4018-98fa-127ccb29e139">
-            MAP LAYER
+            MAP LAYER 1
+          </option>
+          <option value="f8d3e79c-c3d0-4f9a-9b68-9c5ad1f025e4">
+            MAP LAYER 2
+          </option>
+          <option value="266ed113-396c-4c69-885a-ead30df95810">
+            MAP LAYER 3
+          </option>
+          <option value="0e565ddf-74fd-4f90-a6b8-c89d747a89ab">
+            MAP LAYER 4
           </option>
           <option value="03bfb30e-829f-4299-bab9-b2be1b66b5d4">
             Forest Sector Economic Contribution

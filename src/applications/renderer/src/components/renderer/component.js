@@ -54,17 +54,19 @@ const Renderer = ({
 
   return (
     <StyledContainer>
-      {missingWidget && !isMap && (
-        <RestoringWidget>
-          <RestoringWidgetTitle>No widget available</RestoringWidgetTitle>
-        </RestoringWidget>
-      )}
-
       {!widgetConfig && initialized && (
         <Suspense fallback={<div>Loading...</div>}>
           <SelectChart />
         </Suspense>
       )}
+
+      {!initialized ||
+        restoring ||
+        (missingWidget && (
+          <RestoringWidget>
+            <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
+          </RestoringWidget>
+        ))}
 
       {initialized && !restoring && !missingWidget && !isMap && (
         <Suspense
@@ -85,6 +87,7 @@ const Renderer = ({
               setMapParams={({ zoom, latLng, bounds }) => {
                 console.log("map params update", zoom, latLng, bounds);
               }}
+              layerId={configuration.layer}
               interactionEnabled={!standalone}
               widget={editor.widget}
               layers={editor.layers}

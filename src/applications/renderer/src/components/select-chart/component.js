@@ -35,7 +35,10 @@ const SelectChart = ({
 
   const handleChange = (option) => {
     const { chartType } = option;
-    patchConfiguration({ chartType });
+    patchConfiguration({
+      chartType,
+      visualizationType: chartType === "map" ? "map" : "chart",
+    });
     setSelected(option);
     setIsOpenMenu(false);
   };

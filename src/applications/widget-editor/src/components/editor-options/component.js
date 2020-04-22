@@ -176,7 +176,7 @@ const EditorOptions = ({
               </AccordionSection>
             )}
             {isMap && (
-              <AccordionSection title="Map configuration">
+              <AccordionSection title="Map configuration" openDefault>
                 <Suspense fallback={<div>Loading...</div>}>
                   <Layers />
                 </Suspense>

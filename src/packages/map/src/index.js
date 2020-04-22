@@ -4,8 +4,6 @@ import LayerManager from "helpers/layer-manager";
 
 import { BASEMAPS, LABELS, BOUNDARIES } from "constants";
 
-import { setConfig } from "helpers/ConfigHelper";
-
 import { StyledMapContainer } from "./styles";
 
 const MAP_CONFIG = {
@@ -27,21 +25,23 @@ class Map extends React.Component {
     this.widgetConfig = this.widget.attributes.widgetConfig;
 
     this.layers = props.layers;
-    this.createLayerGroups();
+    this.layerGroups = this.createLayerGroups(this.layers, props.layerId);
 
     if (this.widgetConfig?.basemapLayers?.basemap) {
       this.basemap = BASEMAPS[this.widgetConfig.basemapLayers.basemap];
+    } else {
+      this.basemap = BASEMAPS.dark;
     }
   }
 
-  createLayerGroups() {
-    this.layerGroups = this.layers.map(({ id, attributes }) => ({
+  createLayerGroups(layers, layerId) {
+    return layers.map(({ id, attributes }) => ({
       dataset: attributes.dataset,
       visible: true,
       layers: [
         {
           id: id || attributes.layerConfig.id,
-          active: true,
+          active: layerId ? id === layerId : attributes.default,
           ...attributes,
         },
       ],
@@ -50,13 +50,16 @@ class Map extends React.Component {
 
   getMapOptions() {
     const FROM_PROPS = {
-      zoom: this.widgetConfig.zoom,
-      lat: this.widgetConfig.lat,
-      lng: this.widgetConfig.lng,
+      zoom: this.widgetConfig.zoom || 2,
+      lat: this.widgetConfig.lat || 0,
+      lng: this.widgetConfig.lng || 0,
     };
     const mapOptions = { ...FROM_PROPS, ...MAP_CONFIG };
 
-    mapOptions.center = [this.widgetConfig.lat, this.widgetConfig.lng];
+    mapOptions.center = [
+      this.widgetConfig.lat || 0,
+      this.widgetConfig.lng || 0,
+    ];
 
     return mapOptions;
   }
@@ -74,6 +77,23 @@ class Map extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const loadingChanged = this.state.loading !== nextState.loading;
     return loadingChanged;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.layerId !== this.props.layerId) {
+      const expectedLayerGroups = this.createLayerGroups(
+        nextProps.layers,
+        nextProps.layerId
+      );
+
+      const layers = expectedLayerGroups
+        .filter((l) => l.visible)
+        .map((l) => l.layers.find((la) => la.active))
+        .filter(Boolean);
+
+      this.layerManager.removeLayers();
+      this.addLayers(layers);
+    }
   }
 
   instantiateMap() {
@@ -114,7 +134,8 @@ class Map extends React.Component {
 
     const layers = this.layerGroups
       .filter((l) => l.visible)
-      .map((l) => l.layers.find((la) => la.active));
+      .map((l) => l.layers.find((la) => la.active))
+      .filter(Boolean);
 
     this.addLayers(layers);
   }
