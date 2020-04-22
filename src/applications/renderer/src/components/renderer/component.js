@@ -21,6 +21,7 @@ const Renderer = ({
   standalone = true,
   theme = null,
   configuration,
+  compact,
 }) => {
   const { restoring, initialized } = editor;
   const missingWidget =
@@ -76,7 +77,7 @@ const Renderer = ({
             </RestoringWidget>
           }
         >
-          <Chart widgetConfig={widgetConfig} />
+          <Chart compact={compact} widgetConfig={widgetConfig} />
         </Suspense>
       )}
 
@@ -110,7 +111,7 @@ const Renderer = ({
 
       {!widgetConfig && (
         <Suspense fallback={<div>Loading...</div>}>
-          <ChartColorFilter />
+          <ChartColorFilter compact={compact} />
         </Suspense>
       )}
     </StyledContainer>

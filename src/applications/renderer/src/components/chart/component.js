@@ -12,6 +12,11 @@ const StyledContainer = styled.div`
   display: flex;
   position: relative;
   width: 100%;
+  ${(props) =>
+    props.compact &&
+    `
+        padding-bottom: 50px;
+    `}
   .c-chart {
     flex: 1;
     text-align: center;
@@ -19,6 +24,12 @@ const StyledContainer = styled.div`
     margin: 20px;
     max-height: 400px;
     align-self: center;
+
+    ${(props) =>
+      props.compact &&
+      `
+    height: 400px;
+    `}
   }
 `;
 
@@ -125,7 +136,7 @@ class Chart extends React.Component {
 
   render() {
     return (
-      <StyledContainer>
+      <StyledContainer compact={this.props.compact}>
         <div
           className="c-chart"
           ref={(c) => {
@@ -134,7 +145,7 @@ class Chart extends React.Component {
         ></div>
         {!this.standalone && (
           <Suspense fallback={<div>Loading...</div>}>
-            <QueryValues />
+            <QueryValues compact={this.props.compact} />
           </Suspense>
         )}
       </StyledContainer>

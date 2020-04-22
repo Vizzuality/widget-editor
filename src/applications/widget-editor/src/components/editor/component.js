@@ -6,7 +6,7 @@ import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 import { DataService } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
-import { StyledContainer } from "./style";
+import { StyledContainer, StyleEditorContainer } from "./style";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -131,8 +131,10 @@ class Editor extends React.Component {
     } = this.props;
     return (
       <StyledContainer {...compact}>
-        <Renderer standalone={false} />
-        <EditorOptions adapter={adapter} dataService={this.dataService} />
+        <StyleEditorContainer>
+          <Renderer standalone={false} />
+          <EditorOptions adapter={adapter} dataService={this.dataService} />
+        </StyleEditorContainer>
         <Footer onSave={this.onSave} />
       </StyledContainer>
     );

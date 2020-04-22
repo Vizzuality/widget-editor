@@ -30,6 +30,7 @@ const ChartColorFilter = ({
   widgetData,
   setFilters,
   patchConfiguration,
+  compact,
 }) => {
   const isPie = configuration.chartType === "pie";
   const isSingleColorSelection = !isPie && !isObjectLike(color);
@@ -48,7 +49,7 @@ const ChartColorFilter = ({
   };
 
   return (
-    <StyledContainer>
+    <StyledContainer compact={compact}>
       {isSingleColorSelection && (
         <StyledColorsBoxContainer
           overflowIsHidden={false}

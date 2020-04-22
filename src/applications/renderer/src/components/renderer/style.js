@@ -8,7 +8,6 @@ export const StyledContainer = styled.div`
   position: relative;
   display: flex;
   flex-flow: column;
-  height: calc(100% - ${FOOTER_HEIGHT});
   background: #fff;
   flex: 1;
   width: 100%;

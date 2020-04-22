@@ -1,7 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Select } from "@widget-editor/shared";
 
-const QueryValues = ({ columns, configuration, patchConfiguration }) => {
+const QueryValues = ({
+  compact,
+  columns,
+  configuration,
+  patchConfiguration,
+}) => {
   const { chartType, xAxisTitle, yAxisTitle } = configuration;
 
   const categoryName = configuration?.category?.name || null;
@@ -57,6 +62,7 @@ const QueryValues = ({ columns, configuration, patchConfiguration }) => {
         <Select
           align="horizontal"
           menuPlacement="top"
+          compact={compact}
           value={chartOptions.chartValue}
           onChange={handleChangeValue}
           getOptionLabel={(option) => (yAxisTitle ? yAxisTitle : option.alias)}
@@ -84,6 +90,7 @@ const QueryValues = ({ columns, configuration, patchConfiguration }) => {
       {chartType !== "pie" && (
         <Select
           align="horizontal"
+          compact={compact}
           menuPlacement="top"
           value={chartOptions.chartCategory}
           onChange={handleChangeValue}

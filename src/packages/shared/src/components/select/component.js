@@ -13,16 +13,17 @@ const CustomSelect = ({
   relative = false,
   configuration = {},
   align = ALIGN_HORIZONTAL,
+  compact = false,
   onChange = () => {},
   ...otherProps
 }) => {
-  const handleChange = option => {
+  const handleChange = (option) => {
     onChange(option);
   };
 
   return (
     <Fragment>
-      <StyledSelectBox align={align} relative={relative}>
+      <StyledSelectBox compact={compact} align={align} relative={relative}>
         <Select
           align={align}
           onChange={handleChange}

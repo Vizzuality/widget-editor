@@ -5,15 +5,21 @@ export const StyledSelectBox = styled.div`
   max-width: 300px;
   margin: 0 auto;
 
-  ${props =>
+  ${(props) =>
     !props.relative &&
     css`
       position: absolute;
-      bottom: -30px;
+      bottom: 10px;
       left: calc(50% - 150px);
     `}
 
-  ${props =>
+    ${(props) =>
+      !props.compact &&
+      css`
+        bottom: -30px;
+      `}
+
+  ${(props) =>
     props.align === "vertical" &&
     css`
       bottom: 0;
@@ -41,19 +47,19 @@ export const InputStyles = {
     display: "flex",
     border: "1px solid rgba(202,204,208,0.85)",
     borderRadius: "4px",
-    padding: "3px 0"
-  })
+    padding: "3px 0",
+  }),
 };
 
 export const CustomStyles = {
   container: () => ({
     position: "relative",
     boxSizing: "border-box",
-    cursor: "pointer"
+    cursor: "pointer",
   }),
 
   indicatorSeparator: () => ({
-    display: "none"
+    display: "none",
   }),
 
   dropdownIndicator: (provided, state) => {
@@ -62,7 +68,7 @@ export const CustomStyles = {
       color: "#c32d7b",
       transform:
         menuIsOpen && align === "horizontal" ? "rotate(180deg)" : "none",
-      transition: "all 0.2s ease-out"
+      transition: "all 0.2s ease-out",
     };
   },
 
@@ -73,7 +79,7 @@ export const CustomStyles = {
     transition: "color 150ms",
     boxSizing: "border-box",
     position: "relative",
-    top: "5px"
+    top: "5px",
   }),
 
   control: (provided, state) => {
@@ -82,7 +88,7 @@ export const CustomStyles = {
     const additionalProps =
       align === "vertical"
         ? {
-            transform: "rotate(-90deg)"
+            transform: "rotate(-90deg)",
           }
         : null;
     return {
@@ -93,7 +99,7 @@ export const CustomStyles = {
       borderRadius: "4px",
       maxWidth: "210px",
       padding: "3px 0",
-      ...additionalProps
+      ...additionalProps,
     };
   },
 
@@ -106,12 +112,12 @@ export const CustomStyles = {
             left: "100px",
             top: "-50px",
             bottom: "auto",
-            width: "300px"
+            width: "300px",
           }
         : null;
     return {
       ...provided,
-      ...additionalProps
+      ...additionalProps,
     };
-  }
+  },
 };

@@ -65,7 +65,7 @@ const StyledContainer = styled.div`
     css`
       box-sizing: border-box;
       display: block;
-      z-index: auto;
+      z-index: 2;
       visibility: visible;
       max-height: calc(100% - ${FOOTER_HEIGHT} - 65px);
     `}

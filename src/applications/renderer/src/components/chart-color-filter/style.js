@@ -7,14 +7,14 @@ export const StyledDropdownBox = styled.div`
 export const StyledColorsBoxContainer = styled.div`
   flex: 0 0 70%;
 
-  ${props =>
+  ${(props) =>
     props.alignCenter &&
     css`
       align-items: center;
       display: flex;
     `}
 
-  ${props =>
+  ${(props) =>
     props.overflowIsHidden &&
     css`
       max-height: 70px;
@@ -27,7 +27,7 @@ export const StyledColorsBox = styled.div`
   align-items: center;
   font-size: 14px;
   color: #717171;
-  ${props =>
+  ${(props) =>
     props.alignCenter &&
     css`
       float: left;
@@ -46,7 +46,7 @@ export const StyledColorsBox = styled.div`
 `;
 
 export const StyledColorDot = styled.span`
-  ${props =>
+  ${(props) =>
     props.color &&
     css`
       background: ${props.color};
@@ -62,14 +62,18 @@ export const StyledColorDot = styled.span`
 export const StyledContainer = styled.div`
   box-sizing: border-box;
   border-top: 1px solid #d7d7d7;
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
   min-height: 55px;
   padding: 15px 36px;
   display: flex;
   justify-content: space-between;
+
+  ${(props) =>
+    !props.compact &&
+    css`
+      position: absolute;
+      bottom: 0;
+    `}
 
   * {
     box-sizing: border-box;
