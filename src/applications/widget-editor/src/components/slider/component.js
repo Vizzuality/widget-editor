@@ -2,7 +2,7 @@ import React from "react";
 import styled, { ThemeProvider } from "styled-components";
 import RcSlider, { Range } from "rc-slider";
 
-import "rc-slider/assets/index.css";
+import rcSliderStyles from "./rc-slider";
 
 const StyledSlider = styled.div`
   width: 100%;
@@ -12,6 +12,7 @@ const StyledSlider = styled.div`
     width: 100%;
     background: ${(props) => props.theme.slider.track};
   }
+  ${rcSliderStyles}
 `;
 
 const Slider = ({

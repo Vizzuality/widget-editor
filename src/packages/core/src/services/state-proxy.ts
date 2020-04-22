@@ -2,8 +2,10 @@ import { sagaEvents } from "../constants";
 import isEqual from "lodash/isEqual";
 
 export default class StateProxy {
-  chartCache: object;
+  chartCache: any;
   configuration: object;
+  donutRadius?: number;
+  slizeCount?: number;
 
   constructor() {
     // These are the properties that we will check for updates

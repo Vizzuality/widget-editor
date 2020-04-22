@@ -1,5 +1,5 @@
-import * as Vega from './vega';
-import * as Generic from './generic';
+import * as Vega from "./vega";
+import * as Generic from "./generic";
 
 export interface Bars {
   setAxes(): object;
@@ -38,6 +38,7 @@ export interface Scatter {
 
 export interface Service {
   schema: Vega.Schema;
+  slizeCount: number;
   widgetConfig: object;
   widgetData: object;
   resolveChart(): void;

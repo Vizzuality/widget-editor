@@ -41,6 +41,7 @@ export default class VegaService implements Charts.Service {
   widgetConfig: any;
   widgetData: any;
   configuration: any;
+  slizeCount: number;
   scheme: any;
   schema: Vega.Schema;
   colorApplied: boolean;
