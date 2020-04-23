@@ -53,8 +53,13 @@ class Editor extends React.Component {
     super(props);
   }
   handleOnSave(diff) {
-    console.log("on save called from consumer with:");
-    console.log(diff);
+    const formatSavedJson = JSON.stringify(diff, null, 2);
+    const x = window.open();
+    x.document.open();
+    x.document.write(
+      "<html><body><pre>" + formatSavedJson + "</pre></body></html>"
+    );
+    x.document.close();
   }
 
   render() {
@@ -62,7 +67,7 @@ class Editor extends React.Component {
       editorOptions: { compactMode, authToken, dataset, widget, theme },
     } = this.props;
 
-    const authenticated = !!authToken && authToken.length > 0;
+    // const authenticated = !!authToken && authToken.length > 0;
 
     return (
       <div className="widget-editor-wrapper">
@@ -73,7 +78,7 @@ class Editor extends React.Component {
           datasetId={dataset}
           widgetId={widget}
           onSave={this.handleOnSave}
-          authenticated={authenticated}
+          authenticated={true}
           application="rw"
           adapter={RwAdapter}
           theme={theme}

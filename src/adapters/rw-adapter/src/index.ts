@@ -117,7 +117,6 @@ export default class RwAdapter implements Adapter.Service {
 
     this.tableName = dataset?.attributes?.tableName || null;
 
-
     // -- Serialize widgets
     // -- We dont want to expose widgets where { published: true }
     // -- These are user created widgets
@@ -126,9 +125,11 @@ export default class RwAdapter implements Adapter.Service {
       ...dataset,
       attributes: {
         ...dataset.attributes,
-        widget: dataset.attributes.widget.filter(w => !!w.attributes.published) 
-      }
-    }
+        widget: dataset.attributes.widget.filter(
+          (w) => !!w.attributes.published
+        ),
+      },
+    };
 
     return serializeDataset;
   }
@@ -206,6 +207,8 @@ export default class RwAdapter implements Adapter.Service {
 
     let widgetConfig = widget;
     delete widgetConfig.data;
+    delete widgetConfig.$schema;
+
     widgetConfig.filters = this.filterSerializer(editorFilters);
 
     const out = {
