@@ -60,7 +60,7 @@ const StyledButton = styled.button`
 
 const Button = ({ type = "button", theme, children, ...props }) => {
   return (
-    <StyledButton {...props} color={theme.color} type={type}>
+    <StyledButton {...props} color={theme.color} role="button" type={type}>
       {children}
     </StyledButton>
   );

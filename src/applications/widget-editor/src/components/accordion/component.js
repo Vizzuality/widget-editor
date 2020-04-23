@@ -36,7 +36,11 @@ export const AccordionSection = ({ title, openDefault, children }) => {
 
   return (
     <StyledAccordionSection>
-      <StyledAccordionButton onClick={() => clickToTitle()}>
+      <StyledAccordionButton
+        type="button"
+        role="button"
+        onClick={() => clickToTitle()}
+      >
         {title}
       </StyledAccordionButton>
       <StyledAccordionContent ref={contentRef} scrollHeight={outerHeight}>
