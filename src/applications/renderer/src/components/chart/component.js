@@ -17,6 +17,7 @@ const StyledContainer = styled.div`
     `
         padding-bottom: 50px;
     `}
+
   .c-chart {
     flex: 1;
     text-align: center;
@@ -24,6 +25,14 @@ const StyledContainer = styled.div`
     margin: 20px;
     max-height: 400px;
     align-self: center;
+
+    ${(props) =>
+      props.thumbnail &&
+      `
+      margin: 0;  
+      height: 100%;
+      display: flex;
+    `}
 
     ${(props) =>
       props.compact &&
@@ -125,17 +134,34 @@ class Chart extends React.Component {
   }
 
   generateVegaChart() {
-    const { widget: vegaConfiguration, standaloneConfiguration } = this.props;
+    const {
+      widget: vegaConfiguration,
+      standaloneConfiguration,
+      thumbnail,
+    } = this.props;
+
     if (this.standalone && standaloneConfiguration) {
-      this.generateRuntime(standaloneConfiguration);
+      if (thumbnail) {
+        let clearAxis = standaloneConfiguration;
+        delete clearAxis.axisX;
+        delete clearAxis.axisY;
+        delete clearAxis.axes;
+        delete clearAxis.axis;
+        clearAxis.padding = 10;
+        this.generateRuntime(clearAxis);
+      } else {
+        this.generateRuntime(standaloneConfiguration);
+      }
     } else {
       this.generateRuntime(vegaConfiguration);
     }
   }
 
   render() {
+    const { thumbnail } = this.props;
+
     return (
-      <StyledContainer compact={this.props.compact}>
+      <StyledContainer thumbnail={thumbnail} compact={this.props.compact}>
         <div
           className="c-chart"
           ref={(c) => {

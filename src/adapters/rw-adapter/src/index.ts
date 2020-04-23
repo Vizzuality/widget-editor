@@ -206,24 +206,38 @@ export default class RwAdapter implements Adapter.Service {
     });
 
     let widgetConfig = widget;
-    delete widgetConfig.data;
     delete widgetConfig.$schema;
+    delete widgetConfig.signals;
+    delete widgetConfig.autosize;
 
-    if (editorState.configuration.visualizationType === "map") {
-      widgetConfig = editorState.editor.widget.attributes.widgetConfig;
-      widgetConfig.layer = editorState.configuration.layer;
-      widgetConfig.visualizationType = "map";
-      widgetConfig.chartType = "map";
-    } else {
-      widgetConfig.filters = this.filterSerializer(editorFilters);
-    }
+    widgetConfig.paramsConfig = {
+      visualizationType: editorState.configuration.visualizationType,
+      chartType: editorState.configuration.chartType,
+      value: editorState.configuration.value,
+      category: editorState.configuration.category,
+      caption: editorState.configuration.caption,
+      limit: editorState.configuration.limit,
+      slizeCount: editorState.configuration.slizeCount,
+      donutRadius: editorState.configuration.donutRadius,
+      color: editorState.configuration.color,
+      size: editorState.configuration.size,
+      orderBy: editorState.configuration.orderBy,
+      aggregateFunction: editorState.configuration.aggregateFunction,
+      areaIntersection: editorState.configuration.areaIntersection,
+      band: editorState.configuration.band,
+      layer: editorState.configuration.layer,
+      ...(editorState.configuration.visualizationType !== "map"
+        ? { filters: this.filterSerializer(editorFilters) }
+        : { filters: [] }),
+    };
 
     const out = {
       id: editorState.editor.widget.id,
       type: "widget",
       name: configuration.title || null,
+      caption: configuration.caption || null,
       description: configuration.description || null,
-      application,
+      application: [application],
       widgetConfig,
     };
 

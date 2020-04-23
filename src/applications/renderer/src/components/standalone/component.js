@@ -6,7 +6,7 @@ import useLayerData from "./fetch-layers-hook";
 const Chart = React.lazy(() => import("../chart"));
 const Map = React.lazy(() => import("@widget-editor/map"));
 
-const Standalone = ({ widgetConfig, adapter, theme }) => {
+const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
   const isMap = widgetConfig.type === "map";
 
   const [{ data, isLoading, isError }] = useWidgetData(
@@ -32,7 +32,11 @@ const Standalone = ({ widgetConfig, adapter, theme }) => {
     <Fragment>
       {!isMap && (
         <Suspense>
-          <Chart standalone standaloneConfiguration={data} />
+          <Chart
+            thumbnail={thumbnail}
+            standalone
+            standaloneConfiguration={data}
+          />
         </Suspense>
       )}
       {isMap && (

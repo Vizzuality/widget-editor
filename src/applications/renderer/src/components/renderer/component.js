@@ -20,6 +20,7 @@ const Renderer = ({
   widgetConfig = null,
   standalone = true,
   theme = null,
+  thumbnail = false,
   configuration,
   compact,
 }) => {
@@ -48,7 +49,11 @@ const Renderer = ({
           </RestoringWidget>
         }
       >
-        <Standalone widgetConfig={widgetConfig} theme={theme} />
+        <Standalone
+          thumbnail={thumbnail}
+          widgetConfig={widgetConfig}
+          theme={theme}
+        />
       </Suspense>
     );
   }

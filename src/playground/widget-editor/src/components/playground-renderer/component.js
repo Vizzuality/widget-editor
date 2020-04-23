@@ -7,7 +7,12 @@ const PlaygroundRenderer = ({ activeWidget }) => {
     return "Loading renderer...";
   }
 
-  return <Renderer widgetConfig={activeWidget.attributes.widgetConfig} />;
+  return (
+    <Renderer
+      thumbnail={true}
+      widgetConfig={activeWidget.attributes.widgetConfig}
+    />
+  );
 };
 
 export default PlaygroundRenderer;

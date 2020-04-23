@@ -37,6 +37,7 @@ class WidgetInfo extends React.Component {
   stateFromProps(configuration) {
     return {
       title: configuration?.title ? configuration.title : "",
+      description: configuration?.description ? configuration.description : "",
       caption: configuration?.caption ? configuration.caption : "",
       yAxis: configuration?.category?.alias ? configuration.category.alias : "",
       xAxis: configuration?.value?.alias ? configuration.value.alias : "",
@@ -52,9 +53,10 @@ class WidgetInfo extends React.Component {
 
   handleUpdate = debounce(() => {
     const { configuration, patchConfiguration } = this.props;
-    const { title, caption, yAxis, xAxis, format } = this.state;
+    const { title, description, caption, yAxis, xAxis, format } = this.state;
     patchConfiguration({
       title,
+      description,
       caption,
       format: format.value,
       xAxisTitle: xAxis,
@@ -66,6 +68,11 @@ class WidgetInfo extends React.Component {
 
   setTitle(title) {
     this.setState({ title });
+    this.handleUpdate();
+  }
+
+  setDescription(description) {
+    this.setState({ description });
     this.handleUpdate();
   }
 
@@ -90,7 +97,7 @@ class WidgetInfo extends React.Component {
   }
 
   render() {
-    const { title, caption, xAxis, yAxis, format } = this.state;
+    const { title, description, caption, xAxis, yAxis, format } = this.state;
     const { isMap } = this.props;
     return (
       <FlexContainer>
@@ -105,7 +112,17 @@ class WidgetInfo extends React.Component {
           />
         </InputGroup>
         <InputGroup>
-          <FormLabel htmlFor="options-title">Caption</FormLabel>
+          <FormLabel htmlFor="options-description">Description</FormLabel>
+          <Input
+            type="text"
+            placeholder="Add description"
+            name="options-decription"
+            value={description}
+            onChange={(e) => this.setDescription(e.target.value)}
+          />
+        </InputGroup>
+        <InputGroup>
+          <FormLabel htmlFor="options-caption">Caption</FormLabel>
           <Input
             type="text"
             placeholder="Add caption"
