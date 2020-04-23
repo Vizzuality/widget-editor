@@ -5,6 +5,12 @@ export default {
     return { ...state, ...payload };
   },
   [actions.setScheme]: (state, { payload }) => {
-    return { ...state, schemes: [...state.schemes, ...payload] };
-  }
+    return {
+      ...state,
+      schemes: [
+        ...state.schemes,
+        ...(typeof payload === "object" ? payload : {}),
+      ],
+    };
+  },
 };

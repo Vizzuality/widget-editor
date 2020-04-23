@@ -11,14 +11,14 @@ const StyledButton = styled.button`
   border-radius: 5px;
   outline: 1;
 
-  ${props =>
+  ${(props) =>
     props.size &&
     props.size === "small" &&
     css`
       padding: 7px 15px;
     `}
 
-  ${props =>
+  ${(props) =>
     props.type &&
     props.type === "cta" &&
     css`
@@ -27,7 +27,7 @@ const StyledButton = styled.button`
       border: 1px solid transparent;
     `}
 
-  ${props =>
+  ${(props) =>
     props.type &&
     props.type === "highlight" &&
     css`
@@ -35,13 +35,13 @@ const StyledButton = styled.button`
       border: 1px solid ${props.color};
     `}
 
-  ${props =>
+  ${(props) =>
     props.type &&
     props.type === "default" &&
     css`
       &:hover,
       &.active {
-        ${props =>
+        ${(props) =>
           props.color &&
           css`
             border: 1px solid ${props.color};
@@ -50,7 +50,7 @@ const StyledButton = styled.button`
       }
     `}
 
-  ${props =>
+  ${(props) =>
     props.active &&
     css`
       border: 1px solid ${props.color};
@@ -58,7 +58,7 @@ const StyledButton = styled.button`
     `}
 `;
 
-const Button = ({ type = "default", theme, children, ...props }) => {
+const Button = ({ type = "button", theme, children, ...props }) => {
   return (
     <StyledButton {...props} color={theme.color} type={type}>
       {children}

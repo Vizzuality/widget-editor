@@ -113,7 +113,9 @@ class Editor extends React.Component {
 
   resolveSchemes = debounce((schemes) => {
     const { setScheme } = this.props;
-    setScheme(schemes);
+    if (typeof schemes === "object") {
+      setScheme(schemes);
+    }
   }, 1000);
 
   onSave() {
