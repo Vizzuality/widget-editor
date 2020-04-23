@@ -209,9 +209,18 @@ export default class RwAdapter implements Adapter.Service {
     delete widgetConfig.data;
     delete widgetConfig.$schema;
 
-    widgetConfig.filters = this.filterSerializer(editorFilters);
+    if (editorState.configuration.visualizationType === "map") {
+      widgetConfig = editorState.editor.widget.attributes.widgetConfig;
+      widgetConfig.layer = editorState.configuration.layer;
+      widgetConfig.visualizationType = "map";
+      widgetConfig.chartType = "map";
+    } else {
+      widgetConfig.filters = this.filterSerializer(editorFilters);
+    }
 
     const out = {
+      id: editorState.editor.widget.id,
+      type: "widget",
       name: configuration.title || null,
       description: configuration.description || null,
       application,

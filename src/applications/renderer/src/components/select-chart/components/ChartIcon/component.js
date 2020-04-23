@@ -18,6 +18,7 @@ import {
   ColumnHorizontal,
   BarVertical,
   BarHorizontal,
+  MapIcon,
 } from "./svg";
 
 const ChartIcon = ({
@@ -37,7 +38,7 @@ const ChartIcon = ({
         {type === TYPE_SCATTERPLOT && <Scatterplot />}
         {type === TYPE_DONUT && <Donut />}
         {type === TYPE_PIE && <Pie />}
-        {type === TYPE_MAP && <p>Map</p>}
+        {type === TYPE_MAP && <MapIcon />}
 
         {type === TYPE_BAR && <BarHorizontal />}
         {type === TYPE_BAR_VERTICAL && <BarVertical />}

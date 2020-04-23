@@ -52,10 +52,6 @@ export default class Bars implements Charts.Bars {
     this.schema = {
       ...this.schema,
       height: 400,
-      autosize: {
-        type: "fit",
-        contains: "padding",
-      },
       padding: 20,
     };
   }

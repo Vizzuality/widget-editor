@@ -7,10 +7,12 @@ import {
 export const StyledContainer = styled.div`
   position: relative;
   display: flex;
+  flex-shrink: 1;
+  flex-grow: 1;
   flex-flow: column;
   background: #fff;
-  flex: 1;
-  width: 100%;
+  flex: 0 0 50%;
+  width: 50%;
   ${DEFAULT_BORDER()}
 `;
 

@@ -11,6 +11,7 @@ export default redux.connectState(
     options: state.configuration.availableCharts,
     chartType: state.configuration.chartType,
     theme: state.theme,
+    disabledFeatures: state.editor.disabledFeatures,
   }),
   { patchConfiguration, setTheme }
 )(SelectChartComponent);

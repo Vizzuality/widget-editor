@@ -117,10 +117,12 @@ class Chart extends React.Component {
     this.vega.resize = () => {
       if (chart && chart.current) {
         const width = chart.current.offsetWidth;
-        this.vega.width(width - 40).run();
+        // this.vega.view.width(width).run();
+
         instantiateTooltip(this.vega, configuration);
       }
     };
+    window.dispatchEvent(new Event("resize"));
 
     window.addEventListener("resize", this.vega.resize);
   }

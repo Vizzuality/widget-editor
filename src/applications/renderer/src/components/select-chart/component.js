@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import find from "lodash/find";
+import filter from "lodash/filter";
 import { Button } from "@widget-editor/shared";
 import Select from "react-select";
 import ChartMenu from "./components/ChartMenu";
@@ -19,6 +20,7 @@ const SelectChart = ({
   chartType,
   theme,
   setTheme,
+  disabledFeatures,
 }) => {
   const [selected, setSelected] = useState(find(options, { chartType }));
 
@@ -47,6 +49,11 @@ const SelectChart = ({
     setTheme({ ...theme, compact: { isCompact, isOpen: !isOpen } });
   };
 
+  const filterOutDisabledCharts = filter(
+    options,
+    (o) => disabledFeatures.indexOf(o.value) === -1
+  );
+
   return (
     <StyledContainer isCompact={isCompact}>
       <StyledSelectBox isCompact={isCompact}>
@@ -55,7 +62,7 @@ const SelectChart = ({
           onMenuOpen={() => setIsOpenMenu(true)}
           onMenuClose={() => setIsOpenMenu(false)}
           value={selected}
-          options={options}
+          options={filterOutDisabledCharts}
           styles={InputStyles}
           components={{ Menu: ChartMenu }}
           menuIsOpen={isOpenMenu}

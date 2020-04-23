@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense } from "react";
+import React, { Suspense } from "react";
 
 import {
   StyledContainer,
@@ -60,14 +60,6 @@ const Renderer = ({
           <SelectChart />
         </Suspense>
       )}
-
-      {!initialized ||
-        restoring ||
-        (missingWidget && (
-          <RestoringWidget>
-            <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
-          </RestoringWidget>
-        ))}
 
       {initialized && !restoring && !missingWidget && !isMap && (
         <Suspense

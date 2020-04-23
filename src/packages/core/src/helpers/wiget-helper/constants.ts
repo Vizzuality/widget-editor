@@ -6,7 +6,38 @@ export const defaultVegaSchema = () => {
     data: [],
     legend: [],
     config: {},
-    signals: [],
+    signals: [
+      {
+        name: "width",
+        value: "",
+        on: [
+          {
+            events: {
+              source: "window",
+              type: "resize",
+            },
+            update: "containerSize()[0]*0.95",
+          },
+        ],
+      },
+      {
+        name: "height",
+        value: "",
+        on: [
+          {
+            events: {
+              source: "window",
+              type: "resize",
+            },
+            update: "containerSize()[1]*0.95",
+          },
+        ],
+      },
+    ],
+    autosize: {
+      type: "fit",
+      resize: true,
+    },
     scales: [],
     axes: [],
     marks: [],
@@ -19,14 +50,14 @@ export const defaultVegaSchema = () => {
       tickSize: 8,
       tickColor: "#A9ABAD",
       tickOpacity: 0.5,
-      tickExtra: false
+      tickExtra: false,
     },
     axisX: {
       bandPosition: 0.5,
       domainWidth: 1.2,
       domainColor: "#A9ABAD",
       labelAlign: "center",
-      labelBaseline: "top"
+      labelBaseline: "top",
     },
     axisY: {
       domain: false,
@@ -36,16 +67,16 @@ export const defaultVegaSchema = () => {
       grid: true,
       ticks: false,
       gridColor: "#A9ABAD",
-      gridOpacity: 0.5
+      gridOpacity: 0.5,
     },
     symbol: {
-      fill: "#3BB2D0"
+      fill: "#3BB2D0",
     },
     line: {
       interpolate: "linear",
       stroke: "#3BB2D0",
-      fillOpacity: 0
-    }
+      fillOpacity: 0,
+    },
   };
 };
 
@@ -55,10 +86,10 @@ export const defaultVegaSchema = () => {
 // And we can in the @core/services/filters modify our querries saftly
 export const sqlFields = {
   value: "x",
-  category: "y"
+  category: "y",
 };
 
 export default {
   defaultVegaSchema,
-  sqlFields
+  sqlFields,
 };
