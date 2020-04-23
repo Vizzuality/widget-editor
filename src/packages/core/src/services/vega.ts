@@ -211,7 +211,13 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "scatter") {
-      chart = new Scatter(this.schema, this.widgetConfig, data).getChart();
+      chart = new Scatter(
+        this.schema,
+        this.widgetConfig,
+        data,
+        this.scheme,
+        this.colorApplied
+      ).getChart();
     }
 
     this.schema = {

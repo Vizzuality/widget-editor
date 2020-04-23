@@ -28,5 +28,5 @@ export const StyledContainer = styled.div`
 export const StyleEditorContainer = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 660px;
 `;

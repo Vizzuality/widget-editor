@@ -38,8 +38,26 @@ export default class Pie implements Charts.Pie {
       ...this.schema,
       width: 400,
       height: 400,
-      autosize: { type: "fit", contains: "padding" },
-      signals: [],
+      autosize: {
+        type: "fit",
+        contains: "padding",
+        resize: true,
+      },
+      signals: [
+        {
+          name: "width",
+          value: "",
+          on: [
+            {
+              events: {
+                source: "window",
+                type: "resize",
+              },
+              update: "containerSize()[0]*0.95",
+            },
+          ],
+        },
+      ],
     };
   }
 

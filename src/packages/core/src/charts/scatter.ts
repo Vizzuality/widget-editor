@@ -6,15 +6,22 @@ export default class Scatter implements Charts.Scatter {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
+  colorApplied: boolean;
+  scheme: any;
 
   constructor(
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload
+    widgetData: Generic.ObjectPayload,
+    scheme: any,
+    colorApplied: boolean
   ) {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
+    this.colorApplied = colorApplied;
+
+    this.scheme = scheme;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -27,34 +34,61 @@ export default class Scatter implements Charts.Scatter {
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData(),
+      config: {
+        ...this.scheme.config,
+        ...(!this.colorApplied
+          ? {
+              symbol: {
+                fill: this.scheme.mainColor,
+              },
+            }
+          : {}),
+      },
     };
   }
 
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 300,
+      height: 400,
+      padding: 20,
       autosize: {
         type: "fit",
         contains: "padding",
+        resize: true,
       },
-      padding: 20,
+      signals: [
+        {
+          name: "width",
+          value: "",
+          on: [
+            {
+              events: {
+                source: "window",
+                type: "resize",
+              },
+              update: "containerSize()[0]*0.95",
+            },
+          ],
+        },
+      ],
     };
   }
 
   setScales() {
-    return [
+    const scale: any = [
       {
-        name: "xscale",
-        type: "linear",
-        round: true,
-        nice: true,
-        zero: false,
-        domain: { data: "table", field: sqlFields.value },
+        name: "x",
+        type: "band",
+        domain: {
+          data: "table",
+          field: "id",
+        },
         range: "width",
+        padding: 0.05,
       },
       {
-        name: "yscale",
+        name: "y",
         type: "linear",
         round: true,
         nice: true,
@@ -63,6 +97,16 @@ export default class Scatter implements Charts.Scatter {
         range: "height",
       },
     ];
+    if (this.colorApplied) {
+      scale.push({
+        name: "color",
+        type: "ordinal",
+        domain: { data: "table", field: sqlFields.category },
+        range: this.scheme.category,
+      });
+    }
+
+    return scale;
   }
 
   setMarks() {
@@ -72,9 +116,14 @@ export default class Scatter implements Charts.Scatter {
         type: "symbol",
         from: { data: "table" },
         encode: {
+          enter: {
+            ...(this.colorApplied
+              ? { fill: { scale: "color", field: sqlFields.category } }
+              : {}),
+          },
           update: {
-            x: { scale: "xscale", field: "x" },
-            y: { scale: "yscale", field: "y" },
+            x: { scale: "x", field: "x" },
+            y: { scale: "y", field: "y" },
             strokeOpacity: { value: 0 },
             zindex: { value: 0 },
             opacity: { value: 0.5 },
@@ -89,26 +138,57 @@ export default class Scatter implements Charts.Scatter {
     ];
   }
 
+  resolveFormat() {
+    const format = this.widgetConfig?.paramsConfig?.format || "s";
+    return format;
+  }
+
   setAxes() {
     return [
       {
-        scale: "xscale",
-        labelOverlap: "parity",
+        ...this.schema.axis,
+        ...this.schema.axisX,
         orient: "bottom",
+        scale: "x",
+        labelOverlap: "parity",
+        ticks: false,
         encode: {
           labels: {
             update: {
-              align: { value: "center" },
-              baseline: { value: "top" },
+              text: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? truncate(data('table')[datum.value - 1].x, 12) : data('table')[datum.value - 1].x",
+              },
+              align: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+              },
+              baseline: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+              },
+              angle: {
+                signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0",
+              },
             },
           },
         },
       },
       {
-        scale: "yscale",
+        ...this.schema.axis,
+        ...this.schema.axisY,
+        scale: "y",
         labelOverlap: "parity",
         orient: "left",
-        format: "s",
+        encode: {
+          labels: {
+            update: {
+              align: { value: "right" },
+              baseline: { value: "bottom" },
+            },
+          },
+        },
+        format: this.resolveFormat(),
       },
     ];
   }
@@ -119,6 +199,10 @@ export default class Scatter implements Charts.Scatter {
       {
         values: widgetData,
         name: "table",
+        transform: [
+          { type: "identifier", as: "id" },
+          { type: "joinaggregate", as: ["count"] },
+        ],
       },
     ];
   }

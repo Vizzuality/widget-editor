@@ -46,6 +46,11 @@ export default class Line implements Charts.Line {
             : this.schema.config.symbol.fill,
         },
       },
+      autosize: {
+        type: "fit",
+        contains: "padding",
+        resize: true,
+      },
       signals: [
         {
           name: "hover",
@@ -58,6 +63,19 @@ export default class Line implements Charts.Line {
             {
               events: "@cell:mouseout",
               update: "null",
+            },
+          ],
+        },
+        {
+          name: "width",
+          value: "",
+          on: [
+            {
+              events: {
+                source: "window",
+                type: "resize",
+              },
+              update: "containerSize()[0]*0.95",
             },
           ],
         },

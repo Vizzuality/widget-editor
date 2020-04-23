@@ -23,7 +23,7 @@ export const StyledSelectBox = styled.div`
     props.align === "vertical" &&
     css`
       bottom: 0;
-      left: 0;
+      left: -10px;
       max-width: 60px;
       height: 100%;
       display: flex;
