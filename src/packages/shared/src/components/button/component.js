@@ -19,8 +19,8 @@ const StyledButton = styled.button`
     `}
 
   ${(props) =>
-    props.type &&
-    props.type === "cta" &&
+    props.btnType &&
+    props.btnType === "cta" &&
     css`
       background: ${props.color};
       color: #fff;
@@ -28,16 +28,16 @@ const StyledButton = styled.button`
     `}
 
   ${(props) =>
-    props.type &&
-    props.type === "highlight" &&
+    props.btnType &&
+    props.btnType === "highlight" &&
     css`
       color: ${props.color};
       border: 1px solid ${props.color};
     `}
 
   ${(props) =>
-    props.type &&
-    props.type === "default" &&
+    props.btnType &&
+    props.btnType === "default" &&
     css`
       &:hover,
       &.active {
@@ -58,9 +58,15 @@ const StyledButton = styled.button`
     `}
 `;
 
-const Button = ({ type = "button", theme, children, ...props }) => {
+const Button = ({ type, btnType = "default", theme, children, ...props }) => {
   return (
-    <StyledButton {...props} color={theme.color} role="button" type={type}>
+    <StyledButton
+      {...props}
+      color={theme.color}
+      role="button"
+      btnType={btnType}
+      type={type}
+    >
       {children}
     </StyledButton>
   );

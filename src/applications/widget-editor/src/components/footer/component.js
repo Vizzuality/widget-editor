@@ -26,11 +26,16 @@ const Footer = ({ authenticated, onSave }) => {
       <Modal isOpen={modalOpen} closeModal={() => setModalOpen(false)}>
         <h2>How to customize the visualization</h2>
       </Modal>
-      <Button onClick={() => setModalOpen(true)} type="highlight">
+      <Button
+        role="button"
+        type="button"
+        onClick={() => setModalOpen(true)}
+        btnType="highlight"
+      >
         Need help?
       </Button>
       {authenticated && (
-        <Button type="cta" onClick={onSave}>
+        <Button role="button" type="button" btnType="cta" onClick={onSave}>
           Save widget
         </Button>
       )}
