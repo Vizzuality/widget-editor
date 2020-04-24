@@ -5,6 +5,7 @@ import Select from "react-select";
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
+import Input from "styles-common/input";
 
 const InputStyles = {
   control: () => ({
@@ -29,7 +30,7 @@ const generateOptions = (layers) => {
   }));
 };
 
-const Layers = ({ editor, configuration, patchConfiguration }) => {
+const MapInfo = ({ editor, configuration, patchConfiguration }) => {
   const { layers = null } = editor;
   const options = generateOptions(layers);
   const selectedOption = options.find((o) => o.value === configuration.layer);
@@ -51,8 +52,38 @@ const Layers = ({ editor, configuration, patchConfiguration }) => {
           styles={InputStyles}
         />
       </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-zoom">Map Zoom</FormLabel>
+        <Input
+          type="text"
+          className="read-only"
+          readOnly
+          name="options-zoom"
+          value={configuration.map.zoom}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-lat-lng">Latitude & Longitude</FormLabel>
+        <Input
+          type="text"
+          className="read-only"
+          readOnly
+          name="options-lat-lng"
+          value={`${configuration.map.lat},${configuration.map.lng}`}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-bbox">Bounding box</FormLabel>
+        <Input
+          type="text"
+          className="read-only"
+          readOnly
+          name="options-bbox"
+          value={`[${configuration.map.bbox.join()}]`}
+        />
+      </InputGroup>
     </FlexContainer>
   );
 };
 
-export default Layers;
+export default MapInfo;

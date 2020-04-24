@@ -82,9 +82,7 @@ const Renderer = ({
         <Suspense fallback={<div>Loading...</div>}>
           {editor.widget && editor.layers && (
             <Map
-              setMapParams={({ zoom, latLng, bounds }) => {
-                console.log("map params update", zoom, latLng, bounds);
-              }}
+              mapConfiguration={configuration.map}
               caption={configuration.caption}
               layerId={configuration.layer}
               interactionEnabled={!standalone}

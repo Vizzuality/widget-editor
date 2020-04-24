@@ -20,7 +20,7 @@ const Typography = React.lazy(() => import("../typography"));
 const ColorShemes = React.lazy(() => import("../color-shemes"));
 const DonutRadius = React.lazy(() => import("../donut-radius"));
 const SlizeCount = React.lazy(() => import("../slize-count"));
-const Layers = React.lazy(() => import("../layers"));
+const MapInfo = React.lazy(() => import("../map-info"));
 
 const StyleEditorOptionsErrors = styled.div`
   position: absolute;
@@ -178,7 +178,7 @@ const EditorOptions = ({
             {isMap && (
               <AccordionSection title="Map configuration" openDefault>
                 <Suspense fallback={<div>Loading...</div>}>
-                  <Layers />
+                  <MapInfo />
                 </Suspense>
               </AccordionSection>
             )}

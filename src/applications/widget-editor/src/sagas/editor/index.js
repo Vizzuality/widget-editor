@@ -1,12 +1,11 @@
 import { takeLatest, put, select } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
-import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 function* preloadData() {
   const {
-    widgetEditor: { editor },
+    widgetEditor: { editor, configuration: storeConfiguration },
   } = yield select();
 
   if (editor.widget) {
@@ -16,14 +15,27 @@ function* preloadData() {
       },
     } = editor;
 
+    const mapSpecifics = {
+      ...storeConfiguration.map,
+      ...(widgetConfig.hasOwnProperty("lat") ? { lat: widgetConfig.lat } : {}),
+      ...(widgetConfig.hasOwnProperty("lng") ? { lat: widgetConfig.lng } : {}),
+      ...(widgetConfig.hasOwnProperty("bbox")
+        ? { bbox: widgetConfig.bbox }
+        : {}),
+      ...(widgetConfig.hasOwnProperty("basemapLayers")
+        ? { basemap: widgetConfig.basemapLayers }
+        : {}),
+      ...(widgetConfig.hasOwnProperty("zoom")
+        ? { zoom: widgetConfig.zoom }
+        : {}),
+    };
+
     const configuration = {
       ...widgetConfig.paramsConfig,
       title: name,
       description,
       caption,
-      ...(editor.dataset?.attributes?.type === "raster"
-        ? { rasterOnly: true }
-        : { rasterOnly: false }),
+      map: mapSpecifics,
     };
 
     const format = widgetConfig?.paramsConfig?.value?.format || "s";

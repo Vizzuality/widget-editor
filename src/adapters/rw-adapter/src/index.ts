@@ -30,23 +30,6 @@ export default class RwAdapter implements Adapter.Service {
   env = "production";
   locale = "en";
 
-  // What params are we interested in when saving our widget?
-  widget_params = [
-    "chartType",
-    "visualizationType",
-    "limit",
-    "value",
-    "category",
-    "color",
-    "size",
-    "orderBy",
-    "aggregateFunction",
-    "filters",
-    "areaIntersection",
-    "band",
-    "layer",
-  ];
-
   constructor() {
     const asConfig: Config.Payload = {
       applications: this.applications,
@@ -197,14 +180,6 @@ export default class RwAdapter implements Adapter.Service {
     this.setDatasetId(id);
     this.setTableName(tableName);
 
-    let widgetParams = {};
-
-    this.widget_params.forEach((param) => {
-      if (param in configuration) {
-        widgetParams = { ...widgetParams, [param]: configuration[param] };
-      }
-    });
-
     let widgetConfig = widget;
     delete widgetConfig.$schema;
     delete widgetConfig.signals;
@@ -212,11 +187,12 @@ export default class RwAdapter implements Adapter.Service {
 
     widgetConfig.paramsConfig = {
       visualizationType: editorState.configuration.visualizationType,
+      caption: editorState.configuration.caption || null,
       chartType: editorState.configuration.chartType,
-      value: editorState.configuration.value,
-      category: editorState.configuration.category,
-      caption: editorState.configuration.caption,
-      limit: editorState.configuration.limit,
+      value: editorState.configuration.value || null,
+      category: editorState.configuration.category || null,
+      caption: editorState.configuration.caption || null,
+      limit: editorState.configuration.limit || 50,
       slizeCount: editorState.configuration.slizeCount,
       donutRadius: editorState.configuration.donutRadius,
       color: editorState.configuration.color,
@@ -229,13 +205,20 @@ export default class RwAdapter implements Adapter.Service {
       ...(editorState.configuration.visualizationType !== "map"
         ? { filters: this.filterSerializer(editorFilters) }
         : { filters: [] }),
+      ...widgetConfig,
     };
+
+    if (editorState.configuration.visualizationType === "map") {
+      widgetConfig.zoom = editorState.configuration.map.zoom;
+      widgetConfig.lat = editorState.configuration.map.lat;
+      widgetConfig.lng = editorState.configuration.map.lng;
+      widgetConfig.bbox = editorState.configuration.map.bbox;
+    }
 
     const out = {
       id: editorState.editor.widget.id,
       type: "widget",
       name: configuration.title || null,
-      caption: configuration.caption || null,
       description: configuration.description || null,
       application: [application],
       widgetConfig,

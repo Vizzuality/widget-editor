@@ -42,13 +42,18 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
       {isMap && (
         <Suspense>
           <Map
-            setMapParams={() => {}}
             widget={{
               attributes: {
                 widgetConfig,
               },
             }}
-            caption={widgetConfig?.attributes?.caption || null}
+            mapConfiguration={{
+              lat: widgetConfig.lat || 0,
+              lng: widgetConfig.lng || 0,
+              bbox: widgetConfig.bbox || 0,
+              zoom: widgetConfig.zoom || 2,
+            }}
+            caption={widgetConfig?.paramsConfig?.caption || null}
             layers={[layerData]}
           />
         </Suspense>

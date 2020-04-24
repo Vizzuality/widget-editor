@@ -16,6 +16,11 @@ const Input = styled.input`
     box-sizing: content-box;
     padding: 8px 10px;
   }
+
+  &.read-only {
+    color: #c5c5c5;
+    outline: none;
+  }
 `;
 
 export default Input;

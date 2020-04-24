@@ -1,10 +1,20 @@
+import { redux } from "@widget-editor/shared";
 import React from "react";
+
+import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 import LayerManager from "helpers/layer-manager";
 
 import { BASEMAPS, LABELS, BOUNDARIES } from "constants";
 
 import { StyledMapContainer, StyledCaption } from "./styles";
+
+const DEFAULT_MAP_PROPERTIES = {
+  zoom: 2,
+  lat: 0,
+  lng: 0,
+  bbox: [0, 0, 0, 0],
+};
 
 const MAP_CONFIG = {
   minZoom: 2,
@@ -22,13 +32,17 @@ class Map extends React.Component {
     this.labels = props.labels || LABELS["none"];
     this.widget = props.widget;
 
+    this.mapConfiguration = props?.mapConfiguration
+      ? props.mapConfiguration
+      : DEFAULT_MAP_PROPERTIES;
+
     this.widgetConfig = this.widget.attributes.widgetConfig;
 
     this.layers = props.layers;
     this.layerGroups = this.createLayerGroups(this.layers, props.layerId);
 
-    if (this.widgetConfig?.basemapLayers?.basemap) {
-      this.basemap = BASEMAPS[this.widgetConfig.basemapLayers.basemap];
+    if (this.mapConfiguration.basemap) {
+      this.basemap = BASEMAPS[this.mapConfiguration.basemap.basemap];
     } else {
       this.basemap = BASEMAPS.dark;
     }
@@ -50,15 +64,16 @@ class Map extends React.Component {
 
   getMapOptions() {
     const FROM_PROPS = {
-      zoom: this.widgetConfig.zoom || 2,
-      lat: this.widgetConfig.lat || 0,
-      lng: this.widgetConfig.lng || 0,
+      zoom: this.mapConfiguration.zoom || 2,
+      lat: this.mapConfiguration.lat || 0,
+      lng: this.mapConfiguration.lng || 0,
+      bbox: this.mapConfiguration.bbox || [0, 0, 0, 0],
     };
     const mapOptions = { ...FROM_PROPS, ...MAP_CONFIG };
 
     mapOptions.center = [
-      this.widgetConfig.lat || 0,
-      this.widgetConfig.lng || 0,
+      this.mapConfiguration.lat || 0,
+      this.mapConfiguration.lng || 0,
     ];
 
     return mapOptions;
@@ -127,7 +142,7 @@ class Map extends React.Component {
 
     this.setBasemap(this.basemap);
     this.setLabels(this.labels);
-    this.setBoundaries(this.props?.boundaries || false);
+    this.setBoundaries(!!this.props?.mapConfiguration?.bbox || false);
 
     this.setEventListeners();
 
@@ -190,20 +205,32 @@ class Map extends React.Component {
   }
 
   onMapChange() {
-    this.props.setMapParams(this.getMapParams());
+    const { patchConfiguration = null } = this.props;
+    if (patchConfiguration) {
+      const mapParams = this.getMapParams();
+      const { zoom } = mapParams;
+      const { lat, lng } = mapParams.latLng;
+      const [bbox1, bbox2] = mapParams.bounds;
+
+      patchConfiguration({
+        map: {
+          lat,
+          lng,
+          zoom,
+          bbox: [...bbox1, ...bbox2],
+        },
+      });
+    }
   }
 
   setEventListeners() {
-    if (this.props.setMapParams) {
-      this.map.on("zoomend", () => this.onMapChange());
-      this.map.on("dragend", () => this.onMapChange());
-    }
+    this.map.on("zoomend", () => this.onMapChange());
+    this.map.on("dragend", () => this.onMapChange());
   }
 
   setBoundaries(showBoundaries) {
     if (this.boundariesLayer) this.boundariesLayer.remove();
-
-    if (showBoundaries) {
+    if (showBoundaries && this.props.layerGroups) {
       this.boundariesLayer = L.tileLayer(
         BOUNDARIES.dark.value,
         BOUNDARIES.dark.options || {}
@@ -237,4 +264,9 @@ class Map extends React.Component {
   }
 }
 
-export default Map;
+export default redux.connectState(
+  (state) => ({
+    configuration: state.configuration,
+  }),
+  { patchConfiguration }
+)(Map);

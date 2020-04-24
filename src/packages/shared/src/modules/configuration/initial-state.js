@@ -7,6 +7,13 @@ export default {
   chartType: "bar",
   slizeCount: 5,
   donutRadius: 100,
+  map: {
+    zoom: 2,
+    lat: 0,
+    lng: 0,
+    bbox: [0, 0, 0, 0],
+    basemap: null,
+  },
   xAxisTitle: null,
   yAxisTitle: null,
   availableCharts: [
