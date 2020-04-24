@@ -191,7 +191,6 @@ export default class RwAdapter implements Adapter.Service {
       chartType: editorState.configuration.chartType,
       value: editorState.configuration.value || null,
       category: editorState.configuration.category || null,
-      caption: editorState.configuration.caption || null,
       limit: editorState.configuration.limit || 50,
       slizeCount: editorState.configuration.slizeCount,
       donutRadius: editorState.configuration.donutRadius,

@@ -13,18 +13,16 @@ export interface Service {
   endpoint: Endpoint;
   dataEndpoint: Endpoint;
   datasetId: datasetId;
-
-  // Used when saving data
-  // Specify what parameters from your widget api payload youre interested in
-  // So we can serialize the data in a clean way
-  widget_params: string[];
   // Used when saving data
   // This will be grabbed and put into onSave on any request
   payload(): object;
   filterSerializer(filters: any): any;
   requestData(query: string, dataset: Dataset.Payload): any;
   getDataset(): Promise<Dataset.Payload>;
-  getWidget(dataset: Dataset.Payload, widget: Widget.Id): Promise<Widget.Payload>;
+  getWidget(
+    dataset: Dataset.Payload,
+    widget: Widget.Id
+  ): Promise<Widget.Payload>;
   getFields(): Promise<[object]>;
   getLayers(): Promise<[object]>;
   getWidgetData(
@@ -32,5 +30,10 @@ export interface Service {
     widget: Widget.Payload
   ): Promise<[object]>;
   setDatasetId(datasetId: datasetId): void;
-  filterUpdate(filters: any, fields: any, widget: Widget.Payload, dataet: Dataset.Payload): void;
+  filterUpdate(
+    filters: any,
+    fields: any,
+    widget: Widget.Payload,
+    dataet: Dataset.Payload
+  ): void;
 }
