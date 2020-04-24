@@ -20,6 +20,7 @@ const SelectChart = ({
   chartType,
   theme,
   setTheme,
+  rasterOnly,
   disabledFeatures,
 }) => {
   const [selected, setSelected] = useState(find(options, { chartType }));
@@ -58,21 +59,26 @@ const SelectChart = ({
   );
 
   return (
-    <StyledContainer isCompact={isCompact || forceCompact}>
-      <StyledSelectBox isCompact={isCompact || forceCompact}>
-        <Select
-          onChange={handleChange}
-          onMenuOpen={() => setIsOpenMenu(true)}
-          onMenuClose={() => setIsOpenMenu(false)}
-          value={selected}
-          options={filterOutDisabledCharts}
-          styles={InputStyles}
-          components={{ Menu: ChartMenu }}
-          menuIsOpen={isOpenMenu}
-        />
-      </StyledSelectBox>
+    <StyledContainer
+      rasterOnly={rasterOnly}
+      isCompact={isCompact || forceCompact}
+    >
+      {!rasterOnly && (
+        <StyledSelectBox isCompact={isCompact || forceCompact}>
+          <Select
+            onChange={handleChange}
+            onMenuOpen={() => setIsOpenMenu(true)}
+            onMenuClose={() => setIsOpenMenu(false)}
+            value={selected}
+            options={filterOutDisabledCharts}
+            styles={InputStyles}
+            components={{ Menu: ChartMenu }}
+            menuIsOpen={isOpenMenu}
+          />
+        </StyledSelectBox>
+      )}
       {(isCompact || forceCompact) && (
-        <Button type="highlight" onClick={() => hadleSettings()}>
+        <Button btnType="highlight" onClick={() => hadleSettings()}>
           Settings
         </Button>
       )}

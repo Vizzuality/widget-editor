@@ -8,6 +8,13 @@ export const StyledContainer = styled.div`
       display: flex;
       align-items: center;
     `}
+
+  ${(props) =>
+    props.rasterOnly &&
+    !props.isCompact && !props.forceCompact &&
+    css`
+      margin: 0;
+    `}
 `;
 
 export const StyledSelectBox = styled.div`
