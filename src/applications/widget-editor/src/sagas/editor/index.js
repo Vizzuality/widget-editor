@@ -21,6 +21,9 @@ function* preloadData() {
       title: name,
       description,
       caption,
+      ...(editor.dataset?.attributes?.type === "raster"
+        ? { rasterOnly: true }
+        : { rasterOnly: false }),
     };
 
     const format = widgetConfig?.paramsConfig?.value?.format || "s";

@@ -3,6 +3,7 @@ export default {
   caption: "",
   format: "",
   visualizationType: "chart",
+  rasterOnly: false,
   chartType: "bar",
   slizeCount: 5,
   donutRadius: 100,

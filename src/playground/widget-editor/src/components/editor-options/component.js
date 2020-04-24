@@ -77,6 +77,9 @@ class EditorOptions extends React.Component {
           <option value="1bc94710-d7ec-46f9-aa27-edddd87b1625">
             Cold Water Corals
           </option>
+          <option value="c56ee507-9a3b-41d3-90ac-1406bee32c32">
+            Raster only dataset (Fire risk index)
+          </option>
         </select>
 
         <label htmlFor="widget">Select widget</label>

@@ -60,7 +60,7 @@ const Renderer = ({
 
   return (
     <StyledContainer compact={compact}>
-      {!widgetConfig && initialized && (
+      {!widgetConfig && initialized && !configuration.rasterOnly && (
         <Suspense fallback={<div>Loading...</div>}>
           <SelectChart />
         </Suspense>
