@@ -3,18 +3,17 @@ import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants"
 
 export const StyledContainer = styled.div`
   width: 100%;
+  height: 100%;
   min-height: 740px;
   ${(props) =>
-    props.isCompact
+    props.isCompact || props.forceCompact
       ? css`
           box-sizing: border-box;
           position: relative;
-          max-width: 600px;
           margin: 0 auto;
           height: calc(100% - ${FOOTER_HEIGHT});
         `
       : css`
-          height: 100%;
           display: flex;
           flex-flow: wrap;
           justify-content: space-between;

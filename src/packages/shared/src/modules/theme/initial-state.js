@@ -1,7 +1,8 @@
 export default {
   compact: {
-    isCompact: true,
+    isCompact: false,
     isOpen: false,
+    forceCompact: false,
   },
   schemes: [
     {

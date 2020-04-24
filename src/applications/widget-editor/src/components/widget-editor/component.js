@@ -36,13 +36,8 @@ class WidgetEditor extends React.Component {
         widgetId={widgetId}
         adapter={new adapter()}
         schemes={schemes}
-        theme={{
-          ...theme,
-          compact: {
-            isCompact: compact,
-            isOpen: false,
-          },
-        }}
+        userPassedCompact={compact}
+        userPassedTheme={theme}
       />
     );
   }

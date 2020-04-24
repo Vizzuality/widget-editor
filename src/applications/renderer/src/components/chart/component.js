@@ -159,7 +159,6 @@ class Chart extends React.Component {
 
   render() {
     const { thumbnail } = this.props;
-
     return (
       <StyledContainer thumbnail={thumbnail} compact={this.props.compact}>
         <div

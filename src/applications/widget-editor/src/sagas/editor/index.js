@@ -12,14 +12,15 @@ function* preloadData() {
   if (editor.widget) {
     const {
       widget: {
-        attributes: { name, description, widgetConfig },
+        attributes: { name, caption, description, widgetConfig },
       },
     } = editor;
 
     const configuration = {
       ...widgetConfig.paramsConfig,
       title: name,
-      caption: description,
+      description,
+      caption,
     };
 
     const format = widgetConfig?.paramsConfig?.value?.format || "s";

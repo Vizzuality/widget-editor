@@ -17,11 +17,12 @@ class Editor extends React.Component {
       adapter,
       setEditor,
       dispatch,
-      theme,
+      userPassedTheme,
       schemes,
     } = this.props;
 
     this.onSave = this.onSave.bind(this);
+    this.handleForceCompact = this.handleForceCompact.bind(this);
 
     this.dataService = new DataService(
       datasetId,
@@ -32,7 +33,7 @@ class Editor extends React.Component {
     );
 
     this.dataService.resolveInitialState();
-    this.resolveTheme(theme);
+    this.resolveTheme(userPassedTheme);
     this.resolveSchemes(schemes);
 
     props.dispatch({
@@ -50,20 +51,45 @@ class Editor extends React.Component {
     this.resolveEditorFunctionality();
   }
 
+  componentDidMount() {
+    window.addEventListener("resize", this.handleForceCompact);
+  }
+
   componentWillUnmount() {
     const { setEditor } = this.props;
     setEditor({ initialized: false });
+    window.removeEventListener("resize", this.handleForceCompact);
   }
+
+  handleForceCompact = debounce(() => {
+    const { setTheme } = this.props;
+    const theme = this.props?.theme;
+    const width = document.body.clientWidth;
+
+    const currentlyForced = theme.compact?.forceCompact || false;
+
+    if (width < 940 && !currentlyForced) {
+      setTheme({ compact: { ...theme.compact, forceCompact: true } });
+    } else if (width > 940 && currentlyForced) {
+      setTheme({ compact: { ...theme.compact, forceCompact: false } });
+    }
+  }, 1000);
 
   componentDidUpdate(prevProps) {
     const {
       datasetId: prevDatasetId,
       widgetId: prevWidgetId,
-      theme: prevTheme,
+      userPassedTheme: prevUserPassedTheme,
       schemes: prevSchemes,
       authenticated: prevAuthenticated,
     } = prevProps;
-    const { datasetId, widgetId, theme, schemes, authenticated } = this.props;
+    const {
+      datasetId,
+      widgetId,
+      userPassedTheme,
+      schemes,
+      authenticated,
+    } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
     if (
@@ -73,8 +99,8 @@ class Editor extends React.Component {
       this.initializeRestoration(datasetId, widgetId);
     }
 
-    if (!isEqual(theme, prevTheme)) {
-      this.resolveTheme(theme);
+    if (!isEqual(userPassedTheme, prevUserPassedTheme)) {
+      this.resolveTheme(userPassedTheme);
     }
 
     if (!isEqual(schemes, prevSchemes)) {
@@ -106,9 +132,15 @@ class Editor extends React.Component {
 
   // We debounce all properties here
   // Then we dont have to care if debouncing is set on the client
-  resolveTheme = debounce((theme) => {
-    const { setTheme } = this.props;
-    setTheme(theme);
+  resolveTheme = debounce((userPassedTheme) => {
+    const { setTheme, userPassedCompact } = this.props;
+    setTheme({
+      ...userPassedTheme,
+      compact: {
+        ...this.props.theme.compact,
+        forceCompact: userPassedCompact || false,
+      },
+    });
   }, 1000);
 
   resolveSchemes = debounce((schemes) => {

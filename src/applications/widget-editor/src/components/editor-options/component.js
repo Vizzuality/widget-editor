@@ -43,10 +43,11 @@ const StyledContainer = styled.div`
   background: #fff;
   padding: 0 0 0 30px;
   margin: 10px 0;
+  height: 100%;
   overflow-y: hidden;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
   ${(props) =>
-    props.compact.isCompact &&
+    (props.compact.isCompact || props.compact.forceCompact) &&
     css`
       visibility: hidden;
       /* z-index: -1; */
@@ -59,7 +60,7 @@ const StyledContainer = styled.div`
       transition: all 0.3s ease-in-out;
     `}
   ${(props) =>
-    props.compact.isCompact &&
+    (props.compact.isCompact || props.compact.forceCompact) &&
     props.compact.isOpen &&
     css`
       box-sizing: border-box;
@@ -195,7 +196,7 @@ const EditorOptions = ({
             )}
 
             {disabledFeatures.indexOf("theme-selection") === -1 && (
-              <AccordionSection title="Color" openDefault>
+              <AccordionSection title="Color">
                 <Suspense fallback={<div>Loading...</div>}>
                   <ColorShemes />
                 </Suspense>
@@ -212,7 +213,7 @@ const EditorOptions = ({
           </Tab>
         )}
 
-        {disabledFeatures.indexOf("table-view") === -1 && (
+        {disabledFeatures.indexOf("table-view") === -1 && !isMap && (
           <Tab label="Table view">
             <Suspense fallback={<div>Loading...</div>}>
               <TableView />

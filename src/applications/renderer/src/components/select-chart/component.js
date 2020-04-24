@@ -31,7 +31,7 @@ const SelectChart = ({
   }, [chartType, selected, options]);
 
   const {
-    compact: { isCompact, isOpen },
+    compact: { isCompact, forceCompact, isOpen },
   } = theme;
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
@@ -46,7 +46,10 @@ const SelectChart = ({
   };
 
   const hadleSettings = () => {
-    setTheme({ ...theme, compact: { isCompact, isOpen: !isOpen } });
+    setTheme({
+      ...theme,
+      compact: { isCompact, forceCompact, isOpen: !isOpen },
+    });
   };
 
   const filterOutDisabledCharts = filter(
@@ -55,8 +58,8 @@ const SelectChart = ({
   );
 
   return (
-    <StyledContainer isCompact={isCompact}>
-      <StyledSelectBox isCompact={isCompact}>
+    <StyledContainer isCompact={isCompact || forceCompact}>
+      <StyledSelectBox isCompact={isCompact || forceCompact}>
         <Select
           onChange={handleChange}
           onMenuOpen={() => setIsOpenMenu(true)}
@@ -68,7 +71,7 @@ const SelectChart = ({
           menuIsOpen={isOpenMenu}
         />
       </StyledSelectBox>
-      {isCompact && (
+      {(isCompact || forceCompact) && (
         <Button type="highlight" onClick={() => hadleSettings()}>
           Settings
         </Button>

@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  FOOTER_HEIGHT,
-  DEFAULT_BORDER,
-} from "@widget-editor/shared/lib/styles/style-constants";
+import { DEFAULT_BORDER } from "@widget-editor/shared/lib/styles/style-constants";
 
 export const StyledContainer = styled.div`
   position: relative;
@@ -13,6 +10,12 @@ export const StyledContainer = styled.div`
   background: #fff;
   flex: 0 0 50%;
   width: 50%;
+  ${(props) =>
+    props.compact &&
+    `
+    flex: 0 0 100%;
+    width: 100%;
+    `}
   ${DEFAULT_BORDER()}
 `;
 

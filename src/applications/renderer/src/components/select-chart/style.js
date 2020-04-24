@@ -2,19 +2,21 @@ import styled, { css } from "styled-components";
 
 export const StyledContainer = styled.div`
   margin: 10px;
-  ${props => props.isCompact && 
-  css`
-    display: flex;
-    align-items: center;
-  `}
+  ${(props) =>
+    (props.isCompact || props.forceCompact) &&
+    css`
+      display: flex;
+      align-items: center;
+    `}
 `;
 
 export const StyledSelectBox = styled.div`
-  ${props => props.isCompact && 
-  css`
-    width: 100%;
-    padding-right: 15px;
-  `}
+  ${(props) =>
+    (props.isCompact || props.forceCompact) &&
+    css`
+      width: 100%;
+      padding-right: 15px;
+    `}
 `;
 
 export const StyledOverflow = styled.div`
@@ -28,7 +30,6 @@ export const StyledOverflow = styled.div`
 `;
 
 export const InputStyles = {
-
   container: () => ({
     position: "relative",
     boxSizing: "border-box",
@@ -43,10 +44,10 @@ export const InputStyles = {
   }),
 
   dropdownIndicator: (provided, state) => {
-    return ({
+    return {
       color: "#c32d7b",
-      transition: "all 0.2s ease-out",    
-    });
+      transition: "all 0.2s ease-out",
+    };
   },
 
   indicatorsContainer: () => ({
@@ -63,7 +64,6 @@ export const InputStyles = {
     display: "flex",
     border: "none",
     borderRadius: "4px",
-    padding: "3px 0"
-  })
-}
-
+    padding: "3px 0",
+  }),
+};

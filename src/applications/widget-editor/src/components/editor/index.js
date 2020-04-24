@@ -12,6 +12,7 @@ import EditorComponent from "./component";
 export default connectState(
   (state) => ({
     editor: state.editor,
+    theme: state.theme,
     configuration: state.configuration,
     widget: state.widget,
     editorState: state,

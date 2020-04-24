@@ -59,7 +59,7 @@ const Renderer = ({
   }
 
   return (
-    <StyledContainer>
+    <StyledContainer compact={compact}>
       {!widgetConfig && initialized && (
         <Suspense fallback={<div>Loading...</div>}>
           <SelectChart />
@@ -106,7 +106,7 @@ const Renderer = ({
         </RestoringWidget>
       )}
 
-      {!widgetConfig && (
+      {!widgetConfig && !isMap && (
         <Suspense fallback={<div>Loading...</div>}>
           <ChartColorFilter compact={compact} />
         </Suspense>
