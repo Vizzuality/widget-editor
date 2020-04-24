@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/map",
-  "version": "2.0.18-beta.0",
+  "version": "2.0.19-beta.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
