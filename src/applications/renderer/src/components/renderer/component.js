@@ -85,6 +85,7 @@ const Renderer = ({
               setMapParams={({ zoom, latLng, bounds }) => {
                 console.log("map params update", zoom, latLng, bounds);
               }}
+              caption={configuration.caption}
               layerId={configuration.layer}
               interactionEnabled={!standalone}
               widget={editor.widget}

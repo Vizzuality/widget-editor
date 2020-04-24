@@ -12,3 +12,12 @@ export const StyledMapContainer = styled.div`
     width: 100%;
   }
 `;
+
+export const StyledCaption = styled.p`
+  position: absolute;
+  z-index: 2;
+  color: #fff;
+  font-size: 21px;
+  transform: translate(15px, 15px);
+  max-width: 85%;
+`;

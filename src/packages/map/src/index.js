@@ -4,7 +4,7 @@ import LayerManager from "helpers/layer-manager";
 
 import { BASEMAPS, LABELS, BOUNDARIES } from "constants";
 
-import { StyledMapContainer } from "./styles";
+import { StyledMapContainer, StyledCaption } from "./styles";
 
 const MAP_CONFIG = {
   minZoom: 2,
@@ -76,7 +76,8 @@ class Map extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const loadingChanged = this.state.loading !== nextState.loading;
-    return loadingChanged;
+    const captionChanged = this.props.caption !== nextProps.caption;
+    return loadingChanged || captionChanged;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -221,8 +222,10 @@ class Map extends React.Component {
   }
 
   render() {
+    const { caption = null } = this.props;
     return (
       <StyledMapContainer>
+        {caption && <StyledCaption>{caption}</StyledCaption>}
         <div
           ref={(node) => {
             this.mapNode = node;

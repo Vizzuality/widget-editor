@@ -48,6 +48,7 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
                 widgetConfig,
               },
             }}
+            caption={widgetConfig?.attributes?.caption || null}
             layers={[layerData]}
           />
         </Suspense>
