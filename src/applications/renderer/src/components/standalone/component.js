@@ -1,7 +1,8 @@
 import React, { Fragment, Suspense } from "react";
 
-import useWidgetData from "./fetch-data-hook";
 import useLayerData from "./fetch-layers-hook";
+
+import defaultConfig from "./constants";
 
 const Chart = React.lazy(() => import("../chart"));
 const Map = React.lazy(() => import("@widget-editor/map"));
@@ -9,24 +10,35 @@ const Map = React.lazy(() => import("@widget-editor/map"));
 const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
   const isMap = widgetConfig.type === "map";
 
-  const [{ data, isLoading, isError }] = useWidgetData(
-    widgetConfig,
-    theme,
-    isMap
-  );
-
   const [{ layerData, isLoadingLayers, isErrorLayers }] = useLayerData(
     widgetConfig?.layer_id,
     isMap
   );
 
-  if (isLoading || isLoadingLayers) {
+  if (isLoadingLayers) {
     return "Loading...";
   }
 
-  if (isError || isErrorLayers) {
+  if (isErrorLayers) {
     return "Error loading widget...";
   }
+
+  let wConfig = widgetConfig || {};
+
+  wConfig.autosize = wConfig.autosize
+    ? wConfig.autosize
+    : {
+        type: "fit",
+        contains: "padding",
+      };
+
+  wConfig.width = wConfig.width || 400;
+  wConfig.height = wConfig.width || 500;
+
+  wConfig.config = {
+    ...defaultConfig,
+    ...(wConfig.config ? wConfig.config : {}),
+  };
 
   return (
     <Fragment>
@@ -35,7 +47,7 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
           <Chart
             thumbnail={thumbnail}
             standalone
-            standaloneConfiguration={data}
+            standaloneConfiguration={wConfig}
           />
         </Suspense>
       )}

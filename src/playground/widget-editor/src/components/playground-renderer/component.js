@@ -8,10 +8,12 @@ const PlaygroundRenderer = ({ activeWidget }) => {
   }
 
   return (
-    <Renderer
-      thumbnail={true}
-      widgetConfig={activeWidget.attributes.widgetConfig}
-    />
+    <div className="renderer-wrapper">
+      <Renderer
+        thumbnail={true}
+        widgetConfig={activeWidget.attributes.widgetConfig}
+      />
+    </div>
   );
 };
 

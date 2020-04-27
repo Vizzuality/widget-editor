@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
 
-import {
-  FiltersService,
-  constants,
-  VegaService,
-  StateProxy,
-} from "@widget-editor/core";
-
 const useWidgetData = (widgetConfig, theme, isMap) => {
   const [data, setData] = useState(null);
   const [dataURL, setDataURL] = useState(widgetConfig?.data?.[0]?.url);
@@ -19,13 +12,7 @@ const useWidgetData = (widgetConfig, theme, isMap) => {
       try {
         const request = await fetch(dataURL);
         const { data } = await request.json();
-        const vega = new VegaService(
-          widgetConfig,
-          data,
-          widgetConfig.paramsConfig
-        );
-
-        setData(vega.getChart());
+        setData(data);
       } catch (error) {
         setIsError(true);
       }

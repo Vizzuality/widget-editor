@@ -13,12 +13,6 @@ export const StyledSelectBox = styled.div`
       left: calc(50% - 150px);
     `}
 
-    ${(props) =>
-      !props.compact &&
-      css`
-        bottom: -30px;
-      `}
-
   ${(props) =>
     props.align === "vertical" &&
     css`

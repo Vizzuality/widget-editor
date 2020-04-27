@@ -60,20 +60,12 @@ export const StyledColorDot = styled.span`
 `;
 
 export const StyledContainer = styled.div`
+  display: flex;
   box-sizing: border-box;
   border-top: 1px solid #d7d7d7;
   width: 100%;
   min-height: 55px;
   padding: 15px 36px;
-  display: flex;
-  justify-content: space-between;
-
-  ${(props) =>
-    !props.compact &&
-    css`
-      position: absolute;
-      bottom: 0;
-    `}
 
   * {
     box-sizing: border-box;

@@ -20,7 +20,7 @@ const resolveSchemeColor = (scheme, index) => {
   return color;
 };
 
-const ChartColorFilter = ({
+const Legend = ({
   color,
   configuration,
   schemeColor,
@@ -97,4 +97,4 @@ const ChartColorFilter = ({
   );
 };
 
-export default ChartColorFilter;
+export default Legend;

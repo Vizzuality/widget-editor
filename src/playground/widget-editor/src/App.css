@@ -58,3 +58,9 @@
   padding: 20px;
   background-color: #f1f1f1;
 }
+
+.renderer-wrapper {
+  width: 600px;
+  height: 400px;
+  margin: 90px auto 0 auto;
+}

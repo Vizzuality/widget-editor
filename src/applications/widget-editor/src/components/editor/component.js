@@ -68,11 +68,11 @@ class Editor extends React.Component {
 
     const currentlyForced = theme.compact?.forceCompact || false;
 
-    if (width < 940 && !currentlyForced) {
-      setTheme({ compact: { ...theme.compact, forceCompact: true } });
-    } else if (width > 940 && currentlyForced) {
-      setTheme({ compact: { ...theme.compact, forceCompact: false } });
-    }
+    // if (width < 940 && !currentlyForced) {
+    //   setTheme({ compact: { ...theme.compact, forceCompact: true } });
+    // } else if (width > 940 && currentlyForced) {
+    //   setTheme({ compact: { ...theme.compact, forceCompact: false } });
+    // }
   }, 1000);
 
   componentDidUpdate(prevProps) {

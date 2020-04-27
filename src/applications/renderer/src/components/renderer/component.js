@@ -8,7 +8,7 @@ import {
 
 const Chart = React.lazy(() => import("../chart"));
 const SelectChart = React.lazy(() => import("../select-chart"));
-const ChartColorFilter = React.lazy(() => import("../chart-color-filter"));
+const Legend = React.lazy(() => import("../legend"));
 const Standalone = React.lazy(() => import("../standalone"));
 
 const Map = React.lazy(() => import("@widget-editor/map"));
@@ -107,7 +107,7 @@ const Renderer = ({
 
       {!widgetConfig && !isMap && (
         <Suspense fallback={<div>Loading...</div>}>
-          <ChartColorFilter compact={compact} />
+          <Legend compact={compact} />
         </Suspense>
       )}
     </StyledContainer>

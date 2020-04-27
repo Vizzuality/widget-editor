@@ -8,10 +8,16 @@ import isEqual from "lodash/isEqual";
 const QueryValues = React.lazy(() => import("../query-values"));
 
 const StyledContainer = styled.div`
-  /* flex 1; */
-  display: flex;
   position: relative;
-  width: 100%;
+  flex-grow: 1;
+  flex: 1;
+  ${(props) =>
+    props.standalone &&
+    `
+      width: 100%;
+      height: 100%;
+    `}
+
   ${(props) =>
     props.compact &&
     `
@@ -19,19 +25,18 @@ const StyledContainer = styled.div`
     `}
 
   .c-chart {
+    position: relative;
     flex: 1;
     text-align: center;
     overflow: hidden;
-    margin: 20px;
-    max-height: 400px;
+    padding: 20px;
     align-self: center;
+    height: 100%;
 
     ${(props) =>
-      props.thumbnail &&
+      !props.standalone &&
       `
-      margin: 0;  
-      height: 100%;
-      display: flex;
+      max-height: 400px;
     `}
 
     ${(props) =>
@@ -87,10 +92,12 @@ class Chart extends React.Component {
     super(props);
     this.vega = null;
     this.standalone = props.standalone || false;
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentDidMount() {
     this.generateVegaChart();
+    window.addEventListener("resize", this.handleResize);
   }
 
   componentDidUpdate(prevProps) {
@@ -105,39 +112,72 @@ class Chart extends React.Component {
     }
   }
 
+  setSize() {
+    if (this.chart) {
+      const computedStyles = getComputedStyle(this.chart);
+      const padding = {
+        top: +computedStyles.paddingTop.replace("px", ""),
+        right: +computedStyles.paddingRight.replace("px", "") + 25,
+        bottom: +computedStyles.paddingBottom.replace("px", ""),
+        left: +computedStyles.paddingLeft.replace("px", ""),
+      };
+
+      this.width =
+        (this.props.width || this.chart.offsetWidth) -
+        (padding.left + padding.right);
+      this.height =
+        (this.props.height || this.chart.offsetHeight) -
+        (padding.top + padding.bottom);
+    }
+  }
+
+  handleResize() {
+    const { chart } = this;
+    if (chart) {
+      this.setSize();
+      this.vega = this.vega
+        .width(this.width)
+        .height(this.height)
+        .run();
+    }
+  }
+
   generateRuntime(configuration) {
     const { chart } = this;
-    const runtime = vega.parse(configuration, configuration.config);
-    const width = chart.offsetWidth;
-    this.vega = new vega.View(runtime)
-      .initialize(chart)
-      .renderer("canvas")
-      .width(width - 40)
-      .hover()
-      .run();
+    this.setSize();
 
-    if (
-      configuration.interaction_config &&
-      configuration.interaction_config.length
-    ) {
-      instantiateTooltip(this.vega, configuration);
-    }
+    if (chart) {
+      try {
+        const runtime = vega.parse(configuration, configuration.config);
+        this.vega = new vega.View(runtime)
+          .initialize(chart)
+          .renderer("canvas")
+          .width(this.width)
+          .height(this.height)
+          .hover()
+          .run();
 
-    this.vega.resize = () => {
-      if (chart) {
-        instantiateTooltip(this.vega, configuration);
+        if (
+          configuration.interaction_config &&
+          configuration.interaction_config.length
+        ) {
+          instantiateTooltip(this.vega, configuration);
+        }
+      } catch (err) {
+        console.error(
+          "Widget editor error: Could not parse vega",
+          err,
+          configuration
+        );
       }
-    };
-
-    window.dispatchEvent(new Event("resize"));
-    window.addEventListener("resize", this.vega.resize);
+    }
   }
 
   generateVegaChart() {
     const {
+      thumbnail,
       widget: vegaConfiguration,
       standaloneConfiguration,
-      thumbnail,
     } = this.props;
 
     if (this.standalone && standaloneConfiguration) {
@@ -147,7 +187,6 @@ class Chart extends React.Component {
         delete clearAxis.axisY;
         delete clearAxis.axes;
         delete clearAxis.axis;
-        clearAxis.padding = 10;
         this.generateRuntime(clearAxis);
       } else {
         this.generateRuntime(standaloneConfiguration);
@@ -158,9 +197,16 @@ class Chart extends React.Component {
   }
 
   render() {
-    const { thumbnail } = this.props;
+    const { thumbnail, standalone } = this.props;
     return (
-      <StyledContainer thumbnail={thumbnail} compact={this.props.compact}>
+      <StyledContainer
+        standalone={standalone}
+        thumbnail={thumbnail}
+        compact={this.props.compact}
+        ref={(c) => {
+          this.view = c;
+        }}
+      >
         <div
           className="c-chart"
           ref={(c) => {
