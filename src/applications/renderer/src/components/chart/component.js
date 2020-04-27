@@ -12,10 +12,9 @@ const StyledContainer = styled.div`
   flex-grow: 1;
   flex: 1;
   ${(props) =>
-    props.standalone &&
+    (props.standalone || props.thumbnail) &&
     `
       width: 100%;
-      height: 100%;
     `}
 
   ${(props) =>

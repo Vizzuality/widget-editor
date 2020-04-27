@@ -60,7 +60,15 @@
 }
 
 .renderer-wrapper {
-  width: 600px;
-  height: 400px;
-  margin: 90px auto 0 auto;
+  position: relative;
+  display: -webkit-box;
+  display: flex;
+  padding: 15px;
+  min-height: 350px;
+  max-height: 600px;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-box-flex: 1;
+  flex-grow: 1;
 }
