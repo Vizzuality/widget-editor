@@ -1,7 +1,7 @@
 export default `
  .rc-slider {
   position: relative;
-  height: 14px;
+  height: 20px;
   padding: 5px 0;
   width: 100%;
   border-radius: 6px;
@@ -17,21 +17,21 @@ export default `
 .rc-slider-rail {
   position: absolute;
   width: 100%;
-  background-color: #e9e9e9;
-  height: 4px;
+  background-color: #DEE0E1;
+  height: 5px;
   border-radius: 6px;
 }
 .rc-slider-track {
   position: absolute;
   left: 0;
-  height: 4px;
+  height: 5px;
   border-radius: 6px;
   background-color: #abe2fb;
 }
 .rc-slider-handle {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width:20px;
+  height: 20px;
   cursor: pointer;
   cursor: -webkit-grab;
   margin-top: -5px;
@@ -83,7 +83,7 @@ export default `
 .rc-slider-step {
   position: absolute;
   width: 100%;
-  height: 4px;
+  height: 5px;
   background: transparent;
 }
 .rc-slider-dot {

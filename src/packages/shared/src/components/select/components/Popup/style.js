@@ -17,7 +17,7 @@ export const StyledPopupContainer = styled.div`
   left: 50%;
   margin-left: -100px;
 
-  ${props =>
+  ${(props) =>
     props.align === ALIGN_VERTICAL &&
     css`
       padding-left: 20px;
@@ -39,7 +39,7 @@ export const StyledPopupInsideContainer = styled.div`
 
   cursor: initial;
 
-  ${props =>
+  ${(props) =>
       props.align === ALIGN_VERTICAL &&
       css`
         box-shadow: -10px -10px 30px 0 rgba(0, 0, 0, 0.15);
@@ -72,7 +72,7 @@ export const StyledPopupInsideContainer = styled.div`
     border-top: 12px solid #ffffff;
     z-index: 3;
 
-    ${props =>
+    ${(props) =>
       props.align === ALIGN_VERTICAL &&
       css`
         transform: rotate(90deg);
@@ -83,13 +83,22 @@ export const StyledPopupInsideContainer = styled.div`
   }
 `;
 
-export const StyledCategoryAlias = styled.h4`
+export const StyledOption = styled.div`
   position: relative;
   padding-left: 20px;
   margin-top: 0;
-  color: ${props => (props.active ? "#2C75B0" : "#393F44")};
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  margin-bottom: 10px;
 
-  ${props =>
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  color: ${(props) => (props.active ? "#2C75B0" : "#393F44")};
+
+  ${(props) =>
     props.nonSelectedCategory &&
     css`
       margin-bottom: 5px;
@@ -103,15 +112,6 @@ export const StyledCategoryAlias = styled.h4`
   }
 `;
 
-export const StyledCategoryDescription = styled.div`
-  position: relative;
-  padding-left: 20px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  color: #393f44;
-  font-size: 16px;
-  line-height: 25px;
-`;
 export const StyledValueAlias = styled.div`
   position: relative;
   padding-left: 20px;
@@ -132,7 +132,6 @@ export const StyledDescription = styled.p`
   font-size: 16px;
   color: #717171;
   font-style: italic;
-  padding-left: 20px;
 `;
 
 export const StyledCategoryInfoContainer = styled.div`

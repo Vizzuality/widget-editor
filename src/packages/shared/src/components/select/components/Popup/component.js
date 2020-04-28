@@ -4,9 +4,7 @@ import { ALIGN_HORIZONTAL } from "../../const";
 import {
   StyledPopupContainer,
   StyledPopupInsideContainer,
-  StyledCategoryInfoContainer,
-  StyledCategoryAlias,
-  StyledValueAlias,
+  StyledOption,
   StyledDescription,
   IconBox,
 } from "./style";
@@ -22,35 +20,32 @@ const Popup = ({
   const selected = getValue()[0];
   const { align = ALIGN_HORIZONTAL } = selectProps;
 
+  const resolveTitle = (op) => {
+    return op.alias || op.identifer;
+  };
+
   return (
     <StyledPopupContainer align={align} ref={innerRef} {...innerProps}>
       <StyledPopupInsideContainer align={align}>
         {options.map((op) => (
-          <Fragment key={op.identifier + op.name}>
-            <StyledCategoryAlias
-              nonSelectedCategory={op.identifier === "___single_color"}
-              active={selected && op.identifier === selected.identifier}
-              onClick={() => setValue(op)}
-            >
-              <IconBox>
-                <CategoryIcon />
-              </IconBox>
-              {op.identifier === "___single_color"
-                ? "Single color"
-                : op.identifier}
-            </StyledCategoryAlias>
+          <StyledOption
+            key={op.identifier + op.name}
+            nonSelectedCategory={op.identifier === "___single_color"}
+            active={selected && op.identifier === selected.identifier}
+            onClick={() => setValue(op)}
+          >
             {op.identifier !== "___single_color" && (
-              <StyledCategoryInfoContainer>
-                <StyledValueAlias>
-                  <IconBox>#</IconBox>
-                  {op.alias || op.name || op.identifier}
-                </StyledValueAlias>
-                {op.description && (
-                  <StyledDescription>{op.description}</StyledDescription>
-                )}
-              </StyledCategoryInfoContainer>
+              <IconBox>{op.type === "string" ? <CategoryIcon /> : "#"}</IconBox>
             )}
-          </Fragment>
+            <p>
+              {op.identifier === "___single_color"
+                ? "Select column"
+                : resolveTitle(op)}
+            </p>
+            {op.description && (
+              <StyledDescription>{op.description}</StyledDescription>
+            )}
+          </StyledOption>
         ))}
       </StyledPopupInsideContainer>
     </StyledPopupContainer>

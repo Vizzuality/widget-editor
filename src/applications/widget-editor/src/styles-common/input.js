@@ -13,7 +13,6 @@ const Input = styled.input`
   font-size: 14px;
 
   &[type="number"] {
-    box-sizing: content-box;
     padding: 8px 10px;
   }
 

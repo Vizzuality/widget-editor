@@ -40,10 +40,9 @@ const StyleEditorOptionsErrors = styled.div`
 const StyledContainer = styled.div`
   position: relative;
   flex: 1;
-  background: #fff;
   padding: 0 0 0 30px;
   margin: 10px 0;
-  height: 100%;
+  height: calc(100% - 20px);
   overflow-y: hidden;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
   ${(props) =>
@@ -57,6 +56,7 @@ const StyledContainer = styled.div`
       left: 0;
       margin: 0;
       width: 100%;
+      background: #fff;
       transition: all 0.3s ease-in-out;
     `}
   ${(props) =>

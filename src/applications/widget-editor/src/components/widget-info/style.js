@@ -5,7 +5,7 @@ export const InputStyles = {
     cursor: "pointer",
     border: "1px solid rgba(202,204,208,0.85)",
     borderRadius: "4px",
-    backgroundColor: "rgba(255,255,255,0)",
+    backgroundColor: "rgba(255,255,255,1)",
   }),
 
   indicatorSeparator: () => ({

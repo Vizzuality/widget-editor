@@ -13,9 +13,10 @@ import styled from "styled-components";
 import isFloat from "@widget-editor/shared/lib/helpers/isFloat";
 
 const StyledSliderBox = styled.div`
-  width: 100%;
+  width: calc(100% - 15px);
   display: flex;
   padding: 20px 0;
+  margin: 0 5px;
 `;
 
 const StyledInputBox = styled.div`

@@ -6,9 +6,26 @@ const SINGLE_COLOR_OPTION = {
   identifier: "___single_color",
 };
 
+const getColumnDataType = (columnName, fields) => {
+  let o = null;
+
+  if (!fields) {
+    return null;
+  }
+
+  fields.forEach((field) => {
+    if (field.columnName === columnName) {
+      o = field.type;
+    }
+  });
+  return o;
+};
+
 const getConfiguration = (state) => state.configuration;
 const getDataset = (state) => state.editor.dataset;
 const getFilters = (state) => state.filters;
+const getFields = (state) => state.editor.fields;
+
 const getProps = (_, props) => (props ? props : null);
 
 export const getWidgetSelectedColumn = createSelector(
@@ -55,8 +72,8 @@ export const getSelectedColor = createSelector(
 );
 
 export const getWidgetColumns = createSelector(
-  [getConfiguration, getDataset, getProps],
-  (configuration, dataset, props) => {
+  [getConfiguration, getDataset, getFields, getProps],
+  (configuration, dataset, fields, props) => {
     if (
       !dataset ||
       !dataset.id ||
@@ -70,6 +87,7 @@ export const getWidgetColumns = createSelector(
       ...dataset.attributes.metadata[0].attributes.columns[prop],
       identifier: prop,
       name: prop,
+      type: getColumnDataType(prop, fields),
     }));
 
     if (configuration.chartType === "pie") {

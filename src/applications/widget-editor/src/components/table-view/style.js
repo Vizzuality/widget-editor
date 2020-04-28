@@ -1,39 +1,41 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledTableBox = styled.div`
   width: 100%;
-  height: 100%;
+  max-height: 540px;
   overflow: auto;
+  border: 1px solid rgba(26, 28, 34, 0.1);
+  margin-bottom: 20px;
 `;
 
 export const StyledTable = styled.table`
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   width: 100%;
   padding: 0;
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid rgba(26,28,34,.1);
+  border: 1px solid rgba(26, 28, 34, 0.1);
   font-size: 14px;
-  margin-bottom: 20px;
 `;
 
 export const StyledTr = styled.tr`
-    background-color: #fff;
-    box-sizing: border-box;
+  background-color: #fff;
+  border-bottom: 1px solid #d2d3d6;
+  box-sizing: border-box;
 `;
 
 export const StyledTd = styled.td`
   width: 100%;
-  padding: 20px;
-  text-align: ${props => props.center ? 'center' : 'left'};
+  padding: 11px 20px;
+  font-size: 15px;
+  color: #393f44;
 `;
 
 export const StyledTh = styled.td`
   position: relative;
-  font-size: 14px;
+  font-size: 16px;
   color: #393f44;
   font-weight: 700;
   white-space: nowrap;
-  padding: 20px;
+  padding: 11px 20px;
 `;

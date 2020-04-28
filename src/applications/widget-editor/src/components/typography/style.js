@@ -1,12 +1,11 @@
 export const InputStyles = {
-
   container: () => ({
     position: "relative",
     boxSizing: "border-box",
     cursor: "pointer",
     border: "1px solid rgba(202,204,208,0.85)",
     borderRadius: "4px",
-    backgroundColor: "rgba(255,255,255,0)",
+    backgroundColor: "rgba(255,255,255,1)",
   }),
 
   indicatorSeparator: () => ({
@@ -14,10 +13,10 @@ export const InputStyles = {
   }),
 
   dropdownIndicator: (provided, state) => {
-    return ({
+    return {
       color: "#c32d7b",
-      transition: "all 0.2s ease-out",    
-    });
+      transition: "all 0.2s ease-out",
+    };
   },
 
   indicatorsContainer: () => ({
@@ -34,6 +33,6 @@ export const InputStyles = {
     display: "flex",
     border: "none",
     borderRadius: "4px",
-    padding: "3px 0"
-  })
+    padding: "3px 0",
+  }),
 };

@@ -40,6 +40,7 @@ export const InputStyles = {
   control: () => ({
     display: "flex",
     border: "1px solid rgba(202,204,208,0.85)",
+    background: "#FFF",
     borderRadius: "4px",
     padding: "3px 0",
   }),

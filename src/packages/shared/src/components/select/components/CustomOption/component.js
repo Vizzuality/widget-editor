@@ -1,24 +1,22 @@
 import React from "react";
-import { 
+import {
   StyledSelectOption,
   StyledSelectOptionTitle,
-  StyledSelectOptionDescription
-} from './style';
+  StyledSelectOptionDescription,
+} from "./style";
 
 const CustomOption = ({ data, isDisabled, innerProps }) => {
   const { description, alias } = data;
-  return ( !isDisabled ? (
+  return !isDisabled ? (
     <StyledSelectOption {...innerProps}>
-      <StyledSelectOptionTitle>
-        { alias }
-      </StyledSelectOptionTitle>
+      <StyledSelectOptionTitle>{alias}</StyledSelectOptionTitle>
       {description && description.length > 0 && (
         <StyledSelectOptionDescription>
-          { description }
+          {description}
         </StyledSelectOptionDescription>
       )}
     </StyledSelectOption>
-  ) : null);
+  ) : null;
 };
 
 export default CustomOption;

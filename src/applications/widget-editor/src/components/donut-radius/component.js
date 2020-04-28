@@ -12,9 +12,10 @@ import Input from "styles-common/input";
 import styled from "styled-components";
 
 const StyledSliderBox = styled.div`
-  width: 100%;
+  width: calc(100% - 15px);
   display: flex;
   padding: 20px 0;
+  margin: 0 5px;
 `;
 
 const StyledInputBox = styled.div`
