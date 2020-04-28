@@ -9,17 +9,25 @@ import debounce from "lodash/debounce";
 const QueryValues = React.lazy(() => import("../query-values"));
 
 const StyledContainer = styled.div`
-  position: relative;
-  flex-grow: 1;
-  flex: 1;
-  padding: 20px;
-  width: 100%;
-  box-sizing: border-box;
+  
+  ${(props) =>
+    !props.standalone &&
+    `
+      position: relative;
+      flex-grow: 1;
+      flex: 1;
+      padding: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    
+    `}
+
 
   ${(props) =>
     (props.standalone || props.thumbnail) &&
     `
       width: 100%;
+      height: auto;
     `}
 
   ${(props) =>
@@ -29,12 +37,10 @@ const StyledContainer = styled.div`
     `}
 
   .c-chart {
-    position: relative;
-    flex: 1;
-    text-align: center;
-    overflow: hidden;
-    align-self: center;
     width: 100%;
+    height: 100%;
+    background-position: 50%;
+    background-size: cover;
 
     ${(props) =>
       !props.standalone &&
