@@ -236,12 +236,16 @@ const PlaygroundRenderer = ({ activeWidget }) => {
   }
 
   return (
-    <div className="renderer-wrapper">
-      <Renderer
-        thumbnail={false}
-        // widgetConfig={widgetConfig}
-        widgetConfig={activeWidget.attributes.widgetConfig}
-      />
+    <div className="column">
+      <div className="c-widget-block">
+        <div className="renderer-wrapper">
+          <Renderer
+            thumbnail={false}
+            // widgetConfig={widgetConfig}
+            widgetConfig={activeWidget.attributes.widgetConfig}
+          />
+        </div>
+      </div>
     </div>
   );
 };

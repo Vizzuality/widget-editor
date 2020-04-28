@@ -125,6 +125,7 @@ class Chart extends React.Component {
   }
 
   setSize() {
+    const { standalone } = this.props;
     if (this.view) {
       const computedStyles = getComputedStyle(this.view);
       const boundingRect = this.view.getBoundingClientRect();
@@ -134,8 +135,15 @@ class Chart extends React.Component {
         bottom: +computedStyles.paddingBottom.replace("px", ""),
         left: +computedStyles.paddingLeft.replace("px", ""),
       };
-      this.width = boundingRect.width - 100 - (padding.left + padding.right);
-      this.height = boundingRect.height - 100 - (padding.top + padding.bottom);
+
+      this.width = boundingRect.width - (padding.left + padding.right);
+      this.height = boundingRect.height - (padding.top + padding.bottom);
+
+      // TODO: figure out why we need to do this to fit container height in editor
+      if (!standalone) {
+        this.width = this.width - 40;
+        this.height = this.height - 60;
+      }
     }
   }
 
