@@ -34,7 +34,6 @@ const StyledContainer = styled.div`
     text-align: center;
     overflow: hidden;
     align-self: center;
-    height: 100%;
     width: 100%;
 
     ${(props) =>

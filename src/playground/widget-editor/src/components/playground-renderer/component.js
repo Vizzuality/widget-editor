@@ -12,26 +12,37 @@ const widgetConfig = {
     {
       name: "table",
       url:
-        "https://api.resourcewatch.org/v1/query/b7148fae-fce4-4f25-8609-181077868acc?sql=SELECT year AS x, liquids, natural_gas, coal, nuclear, others FROM dash_energy_consumption_by_fuel ORDER BY year ASC",
+        "https://wri-rw.carto.com/api/v2/sql?q=SELECT data.incomegroup AS x, SUM(data.rural_population_data) AS rural_population, SUM(data.urban_population_data) AS urban_population FROM cli_022_populations_in_coastal_zones data WHERE EXTRACT(YEAR FROM datetime)=2010 GROUP BY data.incomegroup ORDER BY incomegroup!='Low income',incomegroup!='Lower middle income',incomegroup!='Upper middle income',incomegroup!='High income: OECD',incomegroup!='High income: nonOECD',incomegroup!='Not classified'",
       format: {
         type: "json",
-        property: "data",
+        property: "rows",
       },
       transform: [
         {
           type: "fold",
           as: ["c", "y"],
-          fields: ["nuclear", "others", "coal", "natural_gas", "liquids"],
+          fields: ["rural_population", "urban_population"],
         },
         {
-          type: "stack",
-          groupby: ["x"],
-          field: "y",
+          type: "formula",
+          as: "fraction_rural",
+          expr:
+            "datum.c=='rural_population' ? format(datum.rural_population / (datum.rural_population+datum.urban_population)*100,'.2r')+'%' : ''",
         },
         {
           type: "formula",
           as: "c",
-          expr: "replace(upper(slice(datum.c,0,1))+slice(datum.c,1),/_/g,' ')",
+          expr:
+            "replace(upper(slice(datum.c,0,1))+slice(datum.c,1,5),/_/g,' ')",
+        },
+        {
+          type: "stack",
+          groupby: ["x"],
+          sort: {
+            field: "c",
+            order: "descending",
+          },
+          field: "y",
         },
       ],
     },
@@ -60,8 +71,8 @@ const widgetConfig = {
     {
       name: "color",
       type: "ordinal",
-      range: "category20",
-      domain: ["Liquids", "Natural gas", "Coal", "Others", "Nuclear"],
+      range: "category",
+      domain: ["Rural", "Urban"],
     },
   ],
   axes: [
@@ -88,15 +99,26 @@ const widgetConfig = {
       },
     },
     {
-      title: "Energy Demand (Btu, quadrillions)",
+      title: "Coastal Population",
       orient: "left",
       scale: "y",
       zindex: 0,
       labelOverlap: "parity",
+      format: "g",
+      encode: {
+        labels: {
+          update: {
+            text: {
+              signal: "(datum.value/1000000)+'M'",
+            },
+          },
+        },
+      },
     },
   ],
   marks: [
     {
+      name: "bars",
       type: "rect",
       from: {
         data: "table",
@@ -137,10 +159,46 @@ const widgetConfig = {
         },
       },
     },
+    {
+      type: "text",
+      from: {
+        data: "bars",
+      },
+      encode: {
+        enter: {
+          x: {
+            field: "x",
+            offset: {
+              field: "width",
+              mult: 0.5,
+            },
+          },
+          y: {
+            field: "y",
+            offset: {
+              value: -6,
+            },
+          },
+          fill: {
+            scale: "color",
+            value: "Rural",
+          },
+          align: {
+            value: "center",
+          },
+          baseline: {
+            value: "middle",
+          },
+          text: {
+            field: "datum.fraction_rural",
+          },
+        },
+      },
+    },
   ],
   legends: [
     {
-      title: "Sector",
+      title: "Segment",
       fill: "color",
       orient: "right",
     },
@@ -152,18 +210,18 @@ const widgetConfig = {
         fields: [
           {
             column: "y",
-            property: "Energy Demand (Btu, quadrillions)",
+            property: "Population",
             type: "number",
             format: ".2s",
           },
           {
             column: "c",
-            property: "Sector",
+            property: "Segment",
             type: "string",
           },
           {
             column: "x",
-            property: "Year",
+            property: "Income Group",
             type: "string",
           },
         ],
