@@ -1,4 +1,4 @@
-export default (widgetConfig: Object, x: string, y: string) => {
+export default (widgetConfig: any, x: string, y: string) => {
   const format = widgetConfig.paramsConfig?.format;
   let res = JSON.stringify({
     [widgetConfig?.paramsConfig?.value?.alias]: x,
