@@ -2,6 +2,8 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
+import signalsHelper from "../helpers/signals-helper";
+
 export default class Pie implements Charts.Pie {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
@@ -113,7 +115,7 @@ export default class Pie implements Charts.Pie {
         encode: {
           enter: {
             tooltip: {
-              signal: "{'Label': datum.x, 'Value': datum.y }",
+              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
             },
             fill: { scale: "c", field: sqlFields.value },
             x: { signal: "width / 2" },

@@ -2,6 +2,8 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
+import signalsHelper from "../helpers/signals-helper";
+
 export default class Bars implements Charts.Bars {
   schema: any;
   widgetConfig: any;
@@ -101,7 +103,7 @@ export default class Bars implements Charts.Bars {
         encode: {
           enter: {
             tooltip: {
-              signal: "{'Label': datum.x, 'Value': datum.y }",
+              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
             },
             ...(this.colorApplied
               ? { fill: { scale: "color", field: sqlFields.category } }

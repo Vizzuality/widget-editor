@@ -4,6 +4,7 @@ import vegaTooltip from "vega-tooltip";
 
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
+import debounce from "lodash/debounce";
 
 const QueryValues = React.lazy(() => import("../query-values"));
 
@@ -11,6 +12,10 @@ const StyledContainer = styled.div`
   position: relative;
   flex-grow: 1;
   flex: 1;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+
   ${(props) =>
     (props.standalone || props.thumbnail) &&
     `
@@ -28,9 +33,9 @@ const StyledContainer = styled.div`
     flex: 1;
     text-align: center;
     overflow: hidden;
-    padding: 20px;
     align-self: center;
     height: 100%;
+    width: 100%;
 
     ${(props) =>
       !props.standalone &&
@@ -47,16 +52,18 @@ const StyledContainer = styled.div`
 `;
 
 const getTooltipConfigFields = (widget) => {
+  const vegaConfig = widget;
+
   // We don't have the interaction config object defined
   if (
-    !widget ||
-    !widget.interaction_config ||
-    !widget.interaction_config.length
+    !vegaConfig ||
+    !vegaConfig.interaction_config ||
+    !vegaConfig.interaction_config.length
   ) {
     return [];
   }
 
-  const tooltipConfig = widget.interaction_config.find(
+  const tooltipConfig = vegaConfig.interaction_config.find(
     (c) => c.name === "tooltip"
   );
 
@@ -75,6 +82,7 @@ const getTooltipConfigFields = (widget) => {
 
 const instantiateTooltip = (view, widget) => {
   const fields = getTooltipConfigFields(widget);
+
   vegaTooltip(view, {
     showAllFields: false,
     fields: fields.map(({ column, property, type, format }) => ({
@@ -91,7 +99,7 @@ class Chart extends React.Component {
     super(props);
     this.vega = null;
     this.standalone = props.standalone || false;
-    this.handleResize = this.handleResize.bind(this);
+    this.handleResize = debounce(this.handleResize.bind(this), 250);
   }
 
   componentDidMount() {
@@ -107,34 +115,30 @@ class Chart extends React.Component {
 
   componentWillUnmount() {
     if (this.vega) {
-      window.removeEventListener("resize", this.vega.resize);
+      window.removeEventListener("resize", this.handleResize);
     }
   }
 
   setSize() {
-    if (this.chart) {
-      const computedStyles = getComputedStyle(this.chart);
+    if (this.view) {
+      const computedStyles = getComputedStyle(this.view);
+      const boundingRect = this.view.getBoundingClientRect();
       const padding = {
         top: +computedStyles.paddingTop.replace("px", ""),
-        right: +computedStyles.paddingRight.replace("px", "") + 25,
+        right: +computedStyles.paddingRight.replace("px", ""),
         bottom: +computedStyles.paddingBottom.replace("px", ""),
         left: +computedStyles.paddingLeft.replace("px", ""),
       };
-
-      this.width =
-        (this.props.width || this.chart.offsetWidth) -
-        (padding.left + padding.right);
-      this.height =
-        (this.props.height || this.chart.offsetHeight) -
-        (padding.top + padding.bottom);
+      this.width = boundingRect.width - 100 - (padding.left + padding.right);
+      this.height = boundingRect.height - 100 - (padding.top + padding.bottom);
     }
   }
 
   handleResize() {
-    const { chart } = this;
-    if (chart) {
+    const { view } = this;
+    if (view) {
       this.setSize();
-      this.vega = this.vega
+      this.vega
         .width(this.width)
         .height(this.height)
         .run();
@@ -144,7 +148,6 @@ class Chart extends React.Component {
   generateRuntime(configuration) {
     const { chart } = this;
     this.setSize();
-
     if (chart) {
       try {
         const runtime = vega.parse(configuration, configuration.config);
@@ -221,5 +224,10 @@ class Chart extends React.Component {
     );
   }
 }
+
+Chart.defaultProps = {
+  width: 0,
+  height: 0,
+};
 
 export default Chart;

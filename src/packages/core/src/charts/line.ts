@@ -2,6 +2,8 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
+import signalsHelper from "../helpers/signals-helper";
+
 export default class Line implements Charts.Line {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
@@ -146,6 +148,9 @@ export default class Line implements Charts.Line {
         from: { data: "table" },
         encode: {
           enter: {
+            tooltip: {
+              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
+            },
             x: { scale: "x", field: "x" },
             y: { scale: "y", field: "y" },
             strokeCap: { value: "round" },

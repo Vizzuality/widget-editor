@@ -25,12 +25,11 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
 
   let wConfig = widgetConfig || {};
 
-  wConfig.autosize = wConfig.autosize
-    ? wConfig.autosize
-    : {
-        type: "fit",
-        contains: "padding",
-      };
+  wConfig.autosize = {
+    type: "fit",
+    contains: "padding",
+    resize: true,
+  };
 
   wConfig.width = wConfig.width || 400;
   wConfig.height = wConfig.width || 500;

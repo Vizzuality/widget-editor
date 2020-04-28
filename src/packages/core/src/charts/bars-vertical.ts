@@ -2,6 +2,8 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
+import signalsHelper from "../helpers/signals-helper";
+
 export default class BarsVertical implements Charts.Bars {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
@@ -142,12 +144,12 @@ export default class BarsVertical implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
+            tooltip: {
+              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
+            },
             ...(this.colorApplied
               ? { fill: { scale: "color", field: sqlFields.category } }
               : {}),
-            tooltip: {
-              signal: "{'Label': datum.x, 'Value': datum.y }",
-            },
           },
           update: {
             opacity: { value: 1 },
@@ -189,7 +191,7 @@ export default class BarsVertical implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData, scheme } = this;
+    const { widgetData, widgetConfig, scheme } = this;
 
     return [
       {
@@ -199,6 +201,13 @@ export default class BarsVertical implements Charts.Bars {
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
         ],
+      },
+      {
+        values: {
+          xCol: widgetConfig?.paramsConfig?.value?.alias,
+          yCol: widgetConfig?.paramsConfig?.category?.alias,
+        },
+        name: "properties",
       },
     ];
   }

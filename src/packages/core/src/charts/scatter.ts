@@ -2,6 +2,8 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
+import signalsHelper from "../helpers/signals-helper";
+
 export default class Scatter implements Charts.Scatter {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
@@ -117,6 +119,9 @@ export default class Scatter implements Charts.Scatter {
         from: { data: "table" },
         encode: {
           enter: {
+            tooltip: {
+              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
+            },
             ...(this.colorApplied
               ? { fill: { scale: "color", field: sqlFields.category } }
               : {}),
