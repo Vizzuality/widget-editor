@@ -32,7 +32,7 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
   };
 
   wConfig.width = wConfig.width || 400;
-  wConfig.height = wConfig.width || 500;
+  wConfig.height = wConfig.height || 500;
 
   wConfig.config = {
     ...defaultConfig,
