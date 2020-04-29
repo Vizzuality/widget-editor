@@ -75,7 +75,7 @@ export default class DataService {
     if (filters && Array.isArray(filters) && filters.length > 0) {
       // --- Handle orderBy if it exsists
       // --- If a filter does not include an operation
-      const serializedFilters = filters.filter((f) => !!f.operation);
+      const serializedFilters = filters.filter((f) => !!f.operation || f.type === 'date');
 
       // --- If orderby exsists, assign it to stores
       if (isObjectLike(paramsConfig.orderBy)) {

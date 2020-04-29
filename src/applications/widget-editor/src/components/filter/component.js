@@ -62,6 +62,7 @@ const Filter = ({
       dataset,
       fields
     );
+
     setFilters({
       list: patch,
     });
@@ -140,9 +141,10 @@ const Filter = ({
                       optionData={filter.fieldInfo}
                     />
                   )}
+
                   {filter.indicator !== TYPE_FILTER_ON_VALUES && (
                     <FilterValue
-                      isNumeric={false}
+                      isNumeric={filter.dataType.toLowerCase() !== 'string'}
                       filter={filter}
                       setData={setData}
                     />
@@ -162,6 +164,7 @@ const Filter = ({
 
                   {filter.indicator === TYPE_VALUE && (
                     <FilterValue
+                      isNumeric={filter.dataType.toLowerCase() !== 'string'}
                       disabled={filter.column === null}
                       filter={filter}
                       setData={setData}

@@ -128,7 +128,7 @@ export default class FiltersService implements Filters.Service {
     dataType: string
   ): string {
     let out = sql;
-    return `${out} ${column} = ${this.escapeValue(values, dataType)}`;
+    return `${out} ${column} LIKE \'%${values}%\'`;
   }
 
   private valueEquals(
@@ -148,7 +148,7 @@ export default class FiltersService implements Filters.Service {
     dataType: string
   ): string {
     let out = sql;
-    return `${out} ${column} != ${this.escapeValue(values, dataType)}`;
+    return `${out} ${column} NOT LIKE \'%${values}%\'`;
   }
 
   private textStartsWith(
@@ -241,6 +241,8 @@ export default class FiltersService implements Filters.Service {
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
+    } else {
+      this.sql = `${this.sql} ORDER BY x`;
     }
   }
 
@@ -249,6 +251,8 @@ export default class FiltersService implements Filters.Service {
     if (orderBy) {
       const { orderType } = orderBy;
       this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
+    } else {
+      this.sql = `${this.sql} desc`;
     }
   }
 
@@ -273,7 +277,7 @@ export default class FiltersService implements Filters.Service {
   }
 
   getQuery() {
-    return this.sql.replace(/ +(?= )/g, "");
+    return encodeURIComponent(this.sql.replace(/ +(?= )/g, ""));
   }
 
   static async handleFilters(filters, config, payload) {
@@ -287,7 +291,15 @@ export default class FiltersService implements Filters.Service {
 
     const out = [];
 
-    const assignIndicator = (val) => {
+    const assignIndicator = (val, filter) => {
+      if (filter?.operation === 'not-contain') {
+        return 'TEXT_NOT_CONTAINS';
+      }
+
+      if (filter?.operation === 'contains') {
+        return 'TEXT_CONTAINS';
+      }
+
       if (isPlainObject(val)) {
         return Object.keys(val).length === 2 ? "range" : "value";
       }
@@ -304,7 +316,7 @@ export default class FiltersService implements Filters.Service {
 
       out.push({
         column,
-        indicator: assignIndicator(values),
+        indicator: assignIndicator(values, filter),
         id: `we-filter-${column}-${index}`,
         exlude: !filter.operation,
         dataType: type,
@@ -315,7 +327,7 @@ export default class FiltersService implements Filters.Service {
         fieldInfo: await fieldService.getFieldInfo(filter, column),
       });
     });
-
+    
     return out;
   }
 

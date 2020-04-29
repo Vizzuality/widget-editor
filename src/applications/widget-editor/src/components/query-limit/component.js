@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import useDebounce from "hooks/use-debounce";
 
 import Slider from "components/slider";
-import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
@@ -32,6 +31,7 @@ const StyledInputBox = styled.div`
 
 const QueryLimit = ({
   label,
+  dateType=false,
   min = null,
   max = null,
   value,
@@ -73,8 +73,8 @@ const QueryLimit = ({
 
   return (
     <InputGroup>
-      {label && <FormLabel htmlFor="options-limit">{label}</FormLabel>}
-      <StyledSliderBox>
+      {label && <FormLabel htmlFor="options-limit-max">{label}</FormLabel>}
+      {!dateType && <StyledSliderBox>
         <Slider
           {...minMaxProps}
           step={isFloatingPoint ? 0.1 : 1}
@@ -82,14 +82,14 @@ const QueryLimit = ({
           defaultValue={isDouble ? min : [min, max]}
           onChange={(value) => setLocalValue({ value, key: null })}
         />
-      </StyledSliderBox>
+      </StyledSliderBox>}
       <StyledInputBox isDouble={isDouble}>
         {isDouble && (
           <Input
             {...minMaxProps}
             value={minValue}
-            type="number"
-            name="options-limit"
+            type={dateType ? 'date' : 'number'}
+            name="options-limit-min"
             onChange={(e) =>
               setLocalValue({ value: e.target.value, key: "minValue" })
             }
@@ -98,8 +98,8 @@ const QueryLimit = ({
         <Input
           {...minMaxProps}
           value={maxValue}
-          type="number"
-          name="options-limit"
+          type={dateType ? 'date' : 'number'}
+          name="options-limit-max"
           onChange={(e) =>
             setLocalValue({ value: e.target.value, key: "maxValue" })
           }

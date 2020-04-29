@@ -16,6 +16,13 @@ const Input = styled.input`
     padding: 8px 10px;
   }
 
+  &[type="date"] {
+    padding: 8px 10px;
+    margin-top: 10px;
+    max-width: 160px;
+  }
+
+
   &.read-only {
     color: #c5c5c5;
     outline: none;
