@@ -116,6 +116,7 @@ export default class BarsVertical implements Charts.Bars {
         scale: "y",
         ticks: false,
         grid: false,
+        labelOverlap: "parity",
         labelAlign: "right",
           encode: {
           labels: {
@@ -123,6 +124,14 @@ export default class BarsVertical implements Charts.Bars {
               text: {
                 signal:
                   "truncate(datum.value, 12)",
+              },  
+              align: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+              },
+              baseline: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
               },
             },
           },
