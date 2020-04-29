@@ -148,9 +148,6 @@ export default class Line implements Charts.Line {
         from: { data: "table" },
         encode: {
           enter: {
-            tooltip: {
-              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
-            },
             x: { scale: "x", field: "x" },
             y: { scale: "y", field: "y" },
             strokeCap: { value: "round" },
@@ -167,7 +164,7 @@ export default class Line implements Charts.Line {
         encode: {
           enter: {
             x: { scale: "x", field: "x" },
-            y: { scale: "y", field: "y" },
+            y: { scale: "y", field: "y" }
           },
           update: {
             opacity: { value: 1 },
@@ -188,8 +185,8 @@ export default class Line implements Charts.Line {
         ],
         encode: {
           enter: {
-            tooltip: {
-              signal: "{'Value': datum.x }",
+             tooltip: {
+              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
             },
           },
           update: {
@@ -215,7 +212,7 @@ export default class Line implements Charts.Line {
         orient: "bottom",
         scale: "x",
         labelOverlap: "parity",
-        ticks: false,
+        ticks: false
       },
       {
         ...this.schema.axis,
