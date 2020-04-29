@@ -5,6 +5,9 @@ import { Dataset, Widget, Adapter, Generic } from "@widget-editor/types";
 import FiltersService from "./filters";
 import VegaService from "./vega";
 
+import { setAdapter } from "../helpers/adapter";
+
+
 import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
 
 export default class DataService {
@@ -26,6 +29,9 @@ export default class DataService {
     dispatch: Generic.Dispatcher
   ) {
     this.adapter = adapter;
+
+    setAdapter(this.adapter);
+
     this.setEditor = setEditor;
     this.dispatch = dispatch;
     this.dataset = null;
@@ -148,7 +154,6 @@ export default class DataService {
       this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
     } else {
       this.setEditor({ widgetData: request.data });
-      this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
     }
   }
 
@@ -156,7 +161,7 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
-
+    this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
     this.setEditor({ initialized: true });
   }
 }

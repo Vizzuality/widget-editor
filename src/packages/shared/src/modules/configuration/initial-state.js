@@ -25,6 +25,11 @@ export default {
       label: "Bar (Horizontal)",
     },
     {
+      value: "stacked-bar",
+      chartType: "stacked-bar",
+      label: "Stacked bar"
+    },
+    {
       value: "bar-vertical",
       chartType: "bar_vertical",
       label: "Bar (Vertical)",

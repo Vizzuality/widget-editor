@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import {
   MENU_DATA,
   TYPE_COLUMN,
+  TYPE_STACKED_BAR,
   TYPE_BAR,
   TYPE_BAR_VERTICAL,
 } from "../../const";
@@ -36,7 +37,7 @@ const ChartMenu = ({ options, getValue, setValue, innerRef, innerProps }) => {
     return m;
   });
 
-  const columns = menu.filter((m) => m.type === TYPE_COLUMN);
+  const columns = menu.filter((m) => m.type === TYPE_COLUMN || m.type === TYPE_STACKED_BAR);
   const bars = menu.filter(
     (m) => m.type === TYPE_BAR || m.type === TYPE_BAR_VERTICAL
   );
@@ -44,7 +45,7 @@ const ChartMenu = ({ options, getValue, setValue, innerRef, innerProps }) => {
     (m) =>
       m.type !== TYPE_BAR &&
       m.type !== TYPE_BAR_VERTICAL &&
-      m.type !== TYPE_COLUMN
+      m.type !== TYPE_COLUMN && m.type !== TYPE_STACKED_BAR
   );
 
   const setData = (selected) => {

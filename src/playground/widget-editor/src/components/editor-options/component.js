@@ -80,6 +80,9 @@ class EditorOptions extends React.Component {
           <option value="c56ee507-9a3b-41d3-90ac-1406bee32c32">
             Raster only dataset (Fire risk index)
           </option>
+          <option value="47da0793-f248-4882-b913-40d84be96e05">
+            Stacked bar example
+          </option>
         </select>
 
         <label htmlFor="widget">Select widget</label>

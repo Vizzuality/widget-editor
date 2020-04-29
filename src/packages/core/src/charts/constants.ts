@@ -5,6 +5,7 @@ export const SUPPORTED_CHARTS: string[] = [
   "line",
   "scatter",
   "donut",
+  "stacked-bar"
 ];
 
 export default {

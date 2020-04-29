@@ -5,6 +5,7 @@ import { Charts, Vega } from "@widget-editor/types";
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
 import BarsVertical from "../charts/bars-vertical";
+import BarsStacked from "../charts/bars-stacked";
 import Line from "../charts/line";
 import Scatter from "../charts/scatter";
 
@@ -151,7 +152,7 @@ export default class VegaService implements Charts.Service {
   resolveDataFormat() {
     const { chartType, direction } = this.configuration;
 
-    if (chartType === "pie" || chartType === "donut") {
+    if (chartType === "pie" || chartType === "donut" && this.widgetData) {
       return this.groupByTop(this.widgetData);
     }
 
@@ -193,6 +194,16 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "bar_vertical") {
       chart = new Bars(
+        this.schema,
+        this.widgetConfig,
+        data,
+        this.scheme,
+        this.colorApplied
+      ).getChart();
+    }
+
+    if (chartType === "stacked-bar") {
+      chart = new BarsStacked(
         this.schema,
         this.widgetConfig,
         data,

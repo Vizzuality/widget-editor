@@ -9,11 +9,7 @@ import uniqueId from "lodash/uniqueId";
 // FieldsService
 
 import {
-  DEFAULT_RANGE_FILTER,
-  DEFAULT_VALUE_FILTER,
   TYPE_RANGE,
-  TYPE_COLUMNS,
-  TYPE_INDICATOR,
   TYPE_VALUE,
   COLUMN_FILTER_GROUP,
   TYPE_FILTER_ON_VALUES,
@@ -66,7 +62,6 @@ const Filter = ({
       dataset,
       fields
     );
-
     setFilters({
       list: patch,
     });

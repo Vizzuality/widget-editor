@@ -94,6 +94,7 @@ export const CustomStyles = {
       borderRadius: "4px",
       maxWidth: "210px",
       padding: "3px 0",
+      minWidth: "180px",
       ...additionalProps,
     };
   },

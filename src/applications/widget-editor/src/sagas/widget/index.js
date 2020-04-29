@@ -134,7 +134,7 @@ function* updateWidgetData() {
 export default function* baseSaga() {
   // --- Triggered once: When we have all nessesary information to render visualization
   yield takeLatest(
-    constants.sagaEvents.DATA_FLOW_FIELDS_AND_LAYERS_READY,
+    constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
     updateWidgetData
   );
 

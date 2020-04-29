@@ -1,6 +1,7 @@
 import React from "react";
 import {
   TYPE_COLUMN,
+  TYPE_STACKED_BAR,
   TYPE_LINE,
   TYPE_SCATTERPLOT,
   TYPE_DONUT,
@@ -42,7 +43,7 @@ const ChartIcon = ({
 
         {type === TYPE_BAR && <BarHorizontal />}
         {type === TYPE_BAR_VERTICAL && <BarVertical />}
-
+        {type === TYPE_STACKED_BAR && <ColumnHorizontal />}
         {type === TYPE_COLUMN && <ColumnHorizontal />}
       </StyledIcon>
     </StyledBox>

@@ -6,6 +6,8 @@ import isArray from "lodash/isArray";
 
 import { Filters, Config } from "@widget-editor/types";
 
+import { getAdapter } from "../helpers/adapter";
+
 import FieldsService from "./fields";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
@@ -31,6 +33,7 @@ export default class FiltersService implements Filters.Service {
     this.sql = "";
 
     this.dataset = dataset;
+
     this.prepareSelectStatement();
     this.prepareAggregate();
     this.prepareFilters();
@@ -108,6 +111,11 @@ export default class FiltersService implements Filters.Service {
     dataType: string
   ): string {
     let out = sql;
+
+    if (!Array.isArray(values) || values.length === 0) {
+      return `${out} ${column} IN ()`;
+    }
+
     return `${out} ${column} IN (${values
       .map((v) => this.escapeValue(v.value, dataType))
       .join(",")})`;
@@ -166,9 +174,11 @@ export default class FiltersService implements Filters.Service {
   prepareFilters() {
     let out = this.sql;
 
-    if (this.filters && this.filters.length > 0) {
+    const filters = Array.isArray(this.filters) ? this.filters : this.filters?.list;
+
+    if (filters && filters.length > 0) {
       out = `${out} WHERE `;
-      this.filters.forEach((weFilter, index) => {
+      filters.forEach((weFilter, index) => {
         const {
           indicator,
           column,
@@ -176,31 +186,36 @@ export default class FiltersService implements Filters.Service {
           filter: { values },
         } = weFilter;
 
-        out = index > 0 ? `${out} AND ` : out;
-
         if (indicator === "range") {
+          out = index > 0 ? `${out} AND ` : out;
           out = this.rangeCondition(out, column, values, dataType);
         }
-        if (indicator === "FILTER_ON_VALUES") {
+        if (indicator === "FILTER_ON_VALUES" && Array.isArray(values) && values.length > 0) {
+          out = index > 0 ? `${out} AND ` : out;
           out = this.valueRange(out, column, values, dataType);
         }
         if (indicator === "TEXT_CONTAINS") {
+          out = index > 0 ? `${out} AND ` : out;
           out = this.textContains(out, column, values, dataType);
         }
 
         if (indicator === "TEXT_NOT_CONTAINS") {
+          out = index > 0 ? `${out} AND ` : out;
           out = this.textNotContains(out, column, values, dataType);
         }
 
         if (indicator === "TEXT_STARTS_WITH") {
+          out = index > 0 ? `${out} AND ` : out;
           out = this.textStartsWith(out, column, values, dataType);
         }
 
         if (indicator === "TEXT_ENDS_WITH") {
+          out = index > 0 ? `${out} AND ` : out;
           out = this.textEndsWith(out, column, values, dataType);
         }
 
         if (indicator === "value") {
+          out = index > 0 ? `${out} AND ` : out;
           out = this.valueEquals(out, column, values, dataType);
         }
       });

@@ -7,13 +7,14 @@ export const TYPE_SCATTERPLOT = "scatter";
 export const TYPE_LINE = "line";
 export const TYPE_PIE = "pie";
 export const TYPE_DONUT = "donut";
+export const TYPE_STACKED_BAR = "stacked-bar";
 
 export const TYPE_MAP = "map";
 
 // charts for showing data
 export const MENU_DATA = [
   {
-    type: TYPE_COLUMN,
+    type: TYPE_STACKED_BAR,
   },
   {
     type: TYPE_COLUMN,
