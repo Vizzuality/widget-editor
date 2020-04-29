@@ -52,7 +52,23 @@ export const reduxActions = {
   EDITOR_SET_FILTERS: `${APP_NAMESPACE}/EDITOR/setFilters`
 };
 
+export const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+]
+
 export default {
+  MONTHS,
   APP_NAMESPACE,
   sagaEvents,
   reduxActions

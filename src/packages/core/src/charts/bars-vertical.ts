@@ -1,6 +1,7 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
+import { parseData } from "./helpers";
 
 import signalsHelper from "../helpers/signals-helper";
 
@@ -195,7 +196,7 @@ export default class BarsVertical implements Charts.Bars {
 
     return [
       {
-        values: widgetData,
+        values: parseData(widgetData),
         name: "table",
         transform: [
           { type: "identifier", as: "id" },

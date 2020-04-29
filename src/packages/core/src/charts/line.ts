@@ -2,6 +2,8 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
+import { parseData } from "./helpers";
+
 import signalsHelper from "../helpers/signals-helper";
 
 export default class Line implements Charts.Line {
@@ -212,7 +214,7 @@ export default class Line implements Charts.Line {
         orient: "bottom",
         scale: "x",
         labelOverlap: "parity",
-        ticks: false
+        ticks: false,
       },
       {
         ...this.schema.axis,
@@ -235,14 +237,15 @@ export default class Line implements Charts.Line {
 
   bindData(): Vega.Data[] {
     const { widgetData } = this;
+
     return [
       {
-        values: widgetData,
+        values: parseData(widgetData),
         name: "table",
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
-        ],
+        ]    
       },
       {
         name: "dots",
