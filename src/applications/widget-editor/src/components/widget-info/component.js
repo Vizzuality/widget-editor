@@ -2,11 +2,14 @@ import React from "react";
 import isEqual from "lodash/isEqual";
 
 import FlexContainer from "styles-common/flex";
+import InputInfo from "styles-common/input-info";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import debounce from "lodash/debounce";
 import Select from "react-select";
+import CreatableSelect from 'react-select/creatable';
+
 
 import { InputStyles } from "./style";
 
@@ -48,6 +51,12 @@ class WidgetInfo extends React.Component {
   resolveFormat(configuration) {
     const format = configuration?.value?.format || "s";
     const selectedFormat = VALUE_FORMAT_OPTIONS.find((f) => f.value === format);
+    if (!selectedFormat && format && format !== 's') {
+      return {
+        label: format,
+        value: format
+      }
+    }
     return selectedFormat;
   }
 
@@ -58,11 +67,11 @@ class WidgetInfo extends React.Component {
       title,
       description,
       caption,
-      format: format.value,
+      format: format?.value || "s",
       xAxisTitle: xAxis,
       yAxisTitle: yAxis,
       category: { ...configuration.category },
-      value: { ...configuration.value, format: format.value },
+      value: { ...configuration.value, format: format?.value || "s" },
     });
   }, 1000);
 
@@ -158,12 +167,14 @@ class WidgetInfo extends React.Component {
         {!isMap && (
           <InputGroup>
             <FormLabel htmlFor="options-title">Value format</FormLabel>
-            <Select
+            <CreatableSelect
+              isClearable
               value={format}
               onChange={this.setValueFormat}
               options={VALUE_FORMAT_OPTIONS}
               styles={InputStyles}
             />
+            <InputInfo>We are using d3-format for formating values, you can input your own format or select a predefined one from the list. Read more about formats: <a href="https://github.com/d3/d3-format" target="__BLANK">here</a>.</InputInfo>
           </InputGroup>
         )}
       </FlexContainer>

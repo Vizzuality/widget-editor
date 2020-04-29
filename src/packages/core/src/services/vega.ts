@@ -151,8 +151,7 @@ export default class VegaService implements Charts.Service {
 
   resolveDataFormat() {
     const { chartType, direction } = this.configuration;
-
-    if (chartType === "pie" || chartType === "donut" && this.widgetData) {
+    if ((chartType === "pie" || chartType === "donut") && this.widgetData) {
       return this.groupByTop(this.widgetData);
     }
 

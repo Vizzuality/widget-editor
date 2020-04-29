@@ -16,17 +16,18 @@ export const InputStyles = {
     return {
       color: "#c32d7b",
       transition: "all 0.2s ease-out",
+      display: "flex",
+      alignSelf: "center"
     };
   },
 
   indicatorsContainer: () => ({
     color: "#c32d7b",
     display: "flex",
-    padding: "8px",
+    padding: "0 8px",
     transition: "color 150ms",
     boxSizing: "border-box",
     position: "relative",
-    top: "5px",
   }),
 
   control: () => ({
