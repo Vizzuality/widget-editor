@@ -153,7 +153,7 @@ class Chart extends React.Component {
       this.setSize();
       this.vega
         .width(this.width)
-        .height(this.height)
+        // .height(this.height) // This is a test, currently the renderer resizes its height
         .run();
     }
   }

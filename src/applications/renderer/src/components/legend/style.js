@@ -61,6 +61,7 @@ export const StyledColorDot = styled.span`
 
 export const StyledContainer = styled.div`
   display: flex;
+  justify-content: space-between;
   box-sizing: border-box;
   border-top: 1px solid #d7d7d7;
   width: 100%;

@@ -114,27 +114,20 @@ export default class BarsVertical implements Charts.Bars {
         ...this.schema.axisY,
         orient: "left",
         scale: "y",
-        labelOverlap: "parity",
         ticks: false,
         grid: false,
-        encode: {
+        labelAlign: "right",
+          encode: {
           labels: {
             update: {
               text: {
-                signal: "truncate(datum.value, 12)",
-              },
-              align: {
                 signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
-              },
-              baseline: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+                  "truncate(datum.value, 12)",
               },
             },
           },
         },
-      },
+      },  
     ];
   }
 

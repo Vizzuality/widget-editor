@@ -168,7 +168,7 @@ export default class Bars implements Charts.Bars {
             update: {
               text: {
                 signal:
-                  "width < 300 || data('table')[0].count > 10 ? truncate(data('table')[datum.value - 1].x, 12) : data('table')[datum.value - 1].x",
+                  "truncate(data('table')[datum.value - 1].x, 12)",
               },
               align: {
                 signal:

@@ -25,6 +25,7 @@ export default createGlobalStyle`
 
       td.value {
         font-weight: 700;
+        max-width: 110px;
       }
 
       &:first-of-type {
