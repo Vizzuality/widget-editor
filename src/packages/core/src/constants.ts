@@ -30,7 +30,7 @@ export const ALLOWED_FIELD_TYPES = [
   // ------ BOOLEAN -----
   { name: "boolean", type: "boolean", provider: "sql" },
   // ------ ARRAY -------
-  { name: "array", type: "array", provider: "sql" }
+  { name: "array", type: "array", provider: "sql" },
 ];
 
 export const sagaEvents = {
@@ -39,37 +39,36 @@ export const sagaEvents = {
   DATA_FLOW_FIELDS_AND_LAYERS_READY: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/fields_and_layers_ready`,
   DATA_FLOW_DATA_READY: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/data_ready`,
   DATA_FLOW_VISUALISATION_READY: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/visualisation_ready`,
-  DATA_FLOW_WIDGET_DATA_READY: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/visualisation_ready`,
   DATA_FLOW_PROXY_UPDATE: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/proxy_update`,
   EDITOR_SAVE: `${APP_NAMESPACE}/CONFIGURATION/saveConfiguration`,
   DATA_FLOW_UPDATE_WIDGET: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/updateWidget`,
-  DATA_FLOW_CONFIGURATION_UPDATE: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/configurationUpdate`
+  DATA_FLOW_CONFIGURATION_UPDATE: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/configurationUpdate`,
 };
 
 export const reduxActions = {
   EDITOR_SET_CONFIGURATION: `${APP_NAMESPACE}/CONFIGURATION/setConfiguration`,
   EDITOR_SET_WIDGET: `${APP_NAMESPACE}/WIDGET/setWidget`,
-  EDITOR_SET_FILTERS: `${APP_NAMESPACE}/EDITOR/setFilters`
+  EDITOR_SET_FILTERS: `${APP_NAMESPACE}/EDITOR/setFilters`,
 };
 
 export const MONTHS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec'
-]
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 export default {
   MONTHS,
   APP_NAMESPACE,
   sagaEvents,
-  reduxActions
+  reduxActions,
 };

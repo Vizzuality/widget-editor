@@ -22,7 +22,6 @@ class Editor extends React.Component {
     } = this.props;
 
     this.onSave = this.onSave.bind(this);
-    this.handleForceCompact = this.handleForceCompact.bind(this);
 
     this.dataService = new DataService(
       datasetId,
@@ -33,6 +32,7 @@ class Editor extends React.Component {
     );
 
     this.dataService.resolveInitialState();
+
     this.resolveTheme(userPassedTheme);
     this.resolveSchemes(schemes);
 
@@ -51,29 +51,10 @@ class Editor extends React.Component {
     this.resolveEditorFunctionality();
   }
 
-  componentDidMount() {
-    window.addEventListener("resize", this.handleForceCompact);
-  }
-
   componentWillUnmount() {
     const { setEditor } = this.props;
     setEditor({ initialized: false });
-    window.removeEventListener("resize", this.handleForceCompact);
   }
-
-  handleForceCompact = debounce(() => {
-    const { setTheme } = this.props;
-    const theme = this.props?.theme;
-    const width = document.body.clientWidth;
-
-    const currentlyForced = theme.compact?.forceCompact || false;
-
-    // if (width < 940 && !currentlyForced) {
-    //   setTheme({ compact: { ...theme.compact, forceCompact: true } });
-    // } else if (width > 940 && currentlyForced) {
-    //   setTheme({ compact: { ...theme.compact, forceCompact: false } });
-    // }
-  }, 1000);
 
   componentDidUpdate(prevProps) {
     const {

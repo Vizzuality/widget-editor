@@ -7,7 +7,6 @@ import VegaService from "./vega";
 
 import { setAdapter } from "../helpers/adapter";
 
-
 import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
 
 export default class DataService {
@@ -46,7 +45,6 @@ export default class DataService {
     this.dataset = await this.adapter.getDataset();
     this.widget = await this.adapter.getWidget(this.dataset, this.widgetId);
 
-
     this.setEditor({ dataset: this.dataset, widget: this.widget });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
@@ -67,6 +65,8 @@ export default class DataService {
   async handleFilters() {
     if (!this.widget) return null;
 
+    debugger;
+
     const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
     const filters = paramsConfig?.filters;
     let orderBy = null;
@@ -75,7 +75,9 @@ export default class DataService {
     if (filters && Array.isArray(filters) && filters.length > 0) {
       // --- Handle orderBy if it exsists
       // --- If a filter does not include an operation
-      const serializedFilters = filters.filter((f) => !!f.operation || f.type === 'date');
+      const serializedFilters = filters.filter(
+        (f) => !!f.operation || f.type === "date"
+      );
 
       // --- If orderby exsists, assign it to stores
       if (isObjectLike(paramsConfig.orderBy)) {
@@ -161,7 +163,12 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
-    this.dispatch({ type: sagaEvents.DATA_FLOW_WIDGET_DATA_READY });
+    if (
+      this.widget?.attributes?.widgetConfig?.paramsConfig?.visualizationType !==
+      "map"
+    ) {
+      this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
+    }
     this.setEditor({ initialized: true });
   }
 }
