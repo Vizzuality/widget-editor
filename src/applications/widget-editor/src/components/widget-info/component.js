@@ -8,8 +8,7 @@ import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import debounce from "lodash/debounce";
 import Select from "react-select";
-import CreatableSelect from 'react-select/creatable';
-
+import CreatableSelect from "react-select/creatable";
 
 import { InputStyles } from "./style";
 
@@ -42,8 +41,8 @@ class WidgetInfo extends React.Component {
       title: configuration?.title ? configuration.title : "",
       description: configuration?.description ? configuration.description : "",
       caption: configuration?.caption ? configuration.caption : "",
-      yAxis: configuration?.category?.alias ? configuration.category.alias : "",
-      xAxis: configuration?.value?.alias ? configuration.value.alias : "",
+      xAxisTitle: configuration?.xAxisTitle ? configuration.xAxisTitle : "",
+      yAxisTitle: configuration?.yAxisTitle ? configuration.yAxisTitle : "",
       format: this.resolveFormat(configuration),
     };
   }
@@ -51,25 +50,32 @@ class WidgetInfo extends React.Component {
   resolveFormat(configuration) {
     const format = configuration?.value?.format || "s";
     const selectedFormat = VALUE_FORMAT_OPTIONS.find((f) => f.value === format);
-    if (!selectedFormat && format && format !== 's') {
+    if (!selectedFormat && format && format !== "s") {
       return {
         label: format,
-        value: format
-      }
+        value: format,
+      };
     }
     return selectedFormat;
   }
 
   handleUpdate = debounce(() => {
     const { configuration, patchConfiguration } = this.props;
-    const { title, description, caption, yAxis, xAxis, format } = this.state;
+    const {
+      title,
+      description,
+      caption,
+      yAxisTitle,
+      xAxisTitle,
+      format,
+    } = this.state;
     patchConfiguration({
       title,
       description,
       caption,
       format: format?.value || "s",
-      xAxisTitle: xAxis,
-      yAxisTitle: yAxis,
+      yAxisTitle: yAxisTitle,
+      xAxisTitle: xAxisTitle,
       category: { ...configuration.category },
       value: { ...configuration.value, format: format?.value || "s" },
     });
@@ -90,13 +96,13 @@ class WidgetInfo extends React.Component {
     this.handleUpdate();
   }
 
-  setYAxis(yAxis) {
-    this.setState({ yAxis });
+  setYAxis(yAxisTitle) {
+    this.setState({ yAxisTitle });
     this.handleUpdate();
   }
 
-  setXAxis(xAxis) {
-    this.setState({ xAxis });
+  setXAxis(xAxisTitle) {
+    this.setState({ xAxisTitle });
     this.handleUpdate();
   }
 
@@ -106,7 +112,14 @@ class WidgetInfo extends React.Component {
   }
 
   render() {
-    const { title, description, caption, xAxis, yAxis, format } = this.state;
+    const {
+      title,
+      description,
+      caption,
+      yAxisTitle,
+      xAxisTitle,
+      format,
+    } = this.state;
     const { isMap } = this.props;
     return (
       <FlexContainer>
@@ -143,22 +156,22 @@ class WidgetInfo extends React.Component {
         {!isMap && (
           <FlexContainer row={true}>
             <InputGroup>
-              <FormLabel htmlFor="options-x-axis">X axis</FormLabel>
+              <FormLabel htmlFor="options-x-axis">Value</FormLabel>
               <Input
                 type="text"
                 placeholder="Overwrite axis name"
                 name="options-x-axis"
-                value={xAxis}
+                value={xAxisTitle}
                 onChange={(e) => this.setXAxis(e.target.value)}
               />
             </InputGroup>
             <InputGroup>
-              <FormLabel htmlFor="options-y-axis">Y axis</FormLabel>
+              <FormLabel htmlFor="options-y-axis">Category</FormLabel>
               <Input
                 type="text"
                 placeholder="Overwrite axis name"
                 name="options-y-axis"
-                value={yAxis}
+                value={yAxisTitle}
                 onChange={(e) => this.setYAxis(e.target.value)}
               />
             </InputGroup>
@@ -174,7 +187,15 @@ class WidgetInfo extends React.Component {
               options={VALUE_FORMAT_OPTIONS}
               styles={InputStyles}
             />
-            <InputInfo>We are using d3-format for formating values, you can input your own format or select a predefined one from the list. Read more about formats: <a href="https://github.com/d3/d3-format" target="__BLANK">here</a>.</InputInfo>
+            <InputInfo>
+              We are using d3-format for formating values, you can input your
+              own format or select a predefined one from the list. Read more
+              about formats:{" "}
+              <a href="https://github.com/d3/d3-format" target="__BLANK">
+                here
+              </a>
+              .
+            </InputInfo>
           </InputGroup>
         )}
       </FlexContainer>

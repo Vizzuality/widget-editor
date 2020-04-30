@@ -74,6 +74,7 @@ const StyledContainer = styled.div`
 const EditorOptions = ({
   initialized,
   restoring,
+  rasterOnly,
   disabledFeatures,
   datasetId,
   limit,
@@ -161,7 +162,7 @@ const EditorOptions = ({
                 )}
               </AccordionSection>
             )}
-            {!isMap && (
+            {!isMap && !rasterOnly && (
               <AccordionSection title="Chart specific">
                 <Suspense fallback={<div>Loading...</div>}>
                   {donutRadius && (

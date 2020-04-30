@@ -181,7 +181,7 @@ export default class VegaService implements Charts.Service {
       ).getChart();
     }
 
-    if (chartType === "bar") {
+    if (chartType === "bar-vertical") {
       chart = new BarsVertical(
         this.schema,
         this.widgetConfig,
@@ -191,7 +191,7 @@ export default class VegaService implements Charts.Service {
       ).getChart();
     }
 
-    if (chartType === "bar_vertical") {
+    if (chartType === "bar") {
       chart = new Bars(
         this.schema,
         this.widgetConfig,

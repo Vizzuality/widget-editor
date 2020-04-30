@@ -66,7 +66,7 @@ const Renderer = ({
         </Suspense>
       )}
 
-      {initialized && !restoring && !missingWidget && !isMap && (
+      {initialized && !restoring && !isMap && (
         <Suspense
           fallback={
             <RestoringWidget>

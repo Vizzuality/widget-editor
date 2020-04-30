@@ -30,11 +30,20 @@ function* preloadData() {
         : {}),
     };
 
+    const datasetType = editor?.dataset?.attributes?.type;
+    const rasterOnly = datasetType && datasetType.match(/raster/);
+
+    const isMap =
+      editor?.widget?.attributes?.widgetConfig?.paramsConfig
+        ?.visualizationType === "map";
+
     const configuration = {
       ...widgetConfig.paramsConfig,
       title: name,
       description,
       caption,
+      rasterOnly,
+      ...(isMap ? { chartType: "map" } : {}),
       map: mapSpecifics,
     };
 

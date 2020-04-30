@@ -6,7 +6,7 @@ import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
 
-const QueryValues = React.lazy(() => import("../query-values"));
+const ColumnSelections = React.lazy(() => import("../column-selections"));
 
 const StyledContainer = styled.div`
   
@@ -230,7 +230,7 @@ class Chart extends React.Component {
         ></div>
         {!this.standalone && (
           <Suspense fallback={<div>Loading...</div>}>
-            <QueryValues compact={this.props.compact} />
+            <ColumnSelections compact={this.props.compact} />
           </Suspense>
         )}
       </StyledContainer>

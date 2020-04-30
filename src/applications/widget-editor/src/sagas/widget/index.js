@@ -16,21 +16,38 @@ import { setConfiguration } from "@widget-editor/shared/lib/modules/configuratio
 const stateProxy = new StateProxy();
 let adapterConfiguration = null;
 
+const columnsSet = (value, category) => {
+  return (
+    typeof value === "object" &&
+    typeof category === "object" &&
+    "name" in value &&
+    "name" in category
+  );
+};
+
 async function getWidgetData(editorState) {
   const {
     configuration,
     filters,
     editor: { dataset },
   } = editorState;
-  const filtersService = new FiltersService(configuration, filters, dataset);
-  const sqlQuery = filtersService.getQuery();
+  const { value, category } = configuration;
 
-  const { dataEndpoint } = adapterConfiguration;
+  if (columnsSet(value, category)) {
+    const filtersService = new FiltersService(configuration, filters, dataset);
+    const sqlQuery = filtersService.getQuery();
 
-  const response = await fetch(`${dataEndpoint}/${dataset.id}?sql=${sqlQuery}`);
-  const data = await response.json();
+    const { dataEndpoint } = adapterConfiguration;
 
-  return data;
+    const response = await fetch(
+      `${dataEndpoint}/${dataset.id}?sql=${sqlQuery}`
+    );
+    const data = await response.json();
+
+    return data;
+  }
+
+  return [];
 }
 
 function* storeAdapterConfigInState({ payload }) {

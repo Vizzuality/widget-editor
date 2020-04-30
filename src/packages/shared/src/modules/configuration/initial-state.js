@@ -20,18 +20,18 @@ export default {
     { value: "pie", chartType: "pie", label: "Pie" },
     { value: "donut", chartType: "donut", label: "Donut" },
     {
-      value: "bar-horizontal",
+      value: "bar",
       chartType: "bar",
       label: "Bar (Horizontal)",
     },
     {
       value: "stacked-bar",
       chartType: "stacked-bar",
-      label: "Stacked bar"
+      label: "Stacked bar",
     },
     {
       value: "bar-vertical",
-      chartType: "bar_vertical",
+      chartType: "bar-vertical",
       label: "Bar (Vertical)",
     },
     { value: "line", chartType: "line", label: "Line" },

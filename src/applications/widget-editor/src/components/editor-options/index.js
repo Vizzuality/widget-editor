@@ -8,6 +8,7 @@ export default connectState(
     disabledFeatures: state.editor.disabledFeatures,
     initialized: state.editor.initialized,
     restoring: state.editor.restoring,
+    rasterOnly: state.configuration.rasterOnly,
     datasetId:
       state.editor.dataset && state.editor.dataset.id
         ? state.editor.dataset.id

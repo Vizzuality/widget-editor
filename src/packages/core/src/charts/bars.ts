@@ -167,8 +167,7 @@ export default class Bars implements Charts.Bars {
           labels: {
             update: {
               text: {
-                signal:
-                  "truncate(data('table')[datum.value - 1].x, 12)",
+                signal: "truncate(data('table')[datum.value - 1].x, 12)",
               },
               align: {
                 signal:
@@ -206,10 +205,9 @@ export default class Bars implements Charts.Bars {
 
   bindData(): Vega.Data[] {
     const { widgetData, scheme } = this;
-
     return [
       {
-        values: parseData(widgetData),
+        values: parseData(widgetData, false),
         name: "table",
         transform: [
           { type: "identifier", as: "id" },

@@ -1,11 +1,11 @@
 export const SUPPORTED_CHARTS: string[] = [
   "pie",
   "bar",
-  "bar_vertical",
+  "bar-vertical",
   "line",
   "scatter",
   "donut",
-  "stacked-bar"
+  "stacked-bar",
 ];
 
 export default {

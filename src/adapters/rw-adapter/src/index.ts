@@ -200,7 +200,6 @@ export default class RwAdapter implements Adapter.Service {
       aggregateFunction: editorState.configuration.aggregateFunction,
       areaIntersection: editorState.configuration.areaIntersection,
       band: editorState.configuration.band,
-      layer: editorState.configuration.layer,
       ...(editorState.configuration.visualizationType !== "map"
         ? { filters: this.filterSerializer(editorFilters) }
         : { filters: [] }),
@@ -208,10 +207,25 @@ export default class RwAdapter implements Adapter.Service {
     };
 
     if (editorState.configuration.visualizationType === "map") {
-      widgetConfig.zoom = editorState.configuration.map.zoom;
-      widgetConfig.lat = editorState.configuration.map.lat;
-      widgetConfig.lng = editorState.configuration.map.lng;
-      widgetConfig.bbox = editorState.configuration.map.bbox;
+      widgetConfig = {
+        paramsConfig: {
+          caption: editorState.configuration.caption || null,
+          value: null,
+          category: null,
+          color: null,
+          orderBy: null,
+          aggregateFunction: null,
+          areaIntersection: null,
+          band: null,
+          visualizationType: editorState.configuration.visualizationType,
+          chartType: editorState.configuration.chartType,
+          layer: editorState.configuration.layer,
+        },
+        zoom: editorState.configuration.map.zoom,
+        lat: editorState.configuration.map.lat,
+        lng: editorState.configuration.map.lng,
+        bbox: editorState.configuration.map.bbox,
+      };
     }
 
     const out = {

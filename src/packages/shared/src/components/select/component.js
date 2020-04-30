@@ -20,7 +20,6 @@ const CustomSelect = ({
   const handleChange = (option) => {
     onChange(option);
   };
-
   return (
     <Fragment>
       <StyledSelectBox compact={compact} align={align} relative={relative}>

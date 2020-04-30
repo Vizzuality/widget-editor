@@ -1,6 +1,6 @@
 // all column types
 export const TYPE_COLUMN = "column";
-export const TYPE_BAR_VERTICAL = "bar_vertical";
+export const TYPE_BAR_VERTICAL = "bar-vertical";
 export const TYPE_BAR = "bar";
 
 export const TYPE_SCATTERPLOT = "scatter";

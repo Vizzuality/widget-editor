@@ -174,7 +174,9 @@ export default class FiltersService implements Filters.Service {
   prepareFilters() {
     let out = this.sql;
 
-    const filters = Array.isArray(this.filters) ? this.filters : this.filters?.list;
+    const filters = Array.isArray(this.filters)
+      ? this.filters
+      : this.filters?.list;
 
     if (filters && filters.length > 0) {
       out = `${out} WHERE `;
@@ -190,7 +192,11 @@ export default class FiltersService implements Filters.Service {
           out = index > 0 ? `${out} AND ` : out;
           out = this.rangeCondition(out, column, values, dataType);
         }
-        if (indicator === "FILTER_ON_VALUES" && Array.isArray(values) && values.length > 0) {
+        if (
+          indicator === "FILTER_ON_VALUES" &&
+          Array.isArray(values) &&
+          values.length > 0
+        ) {
           out = index > 0 ? `${out} AND ` : out;
           out = this.valueRange(out, column, values, dataType);
         }
@@ -292,12 +298,12 @@ export default class FiltersService implements Filters.Service {
     const out = [];
 
     const assignIndicator = (val, filter) => {
-      if (filter?.operation === 'not-contain') {
-        return 'TEXT_NOT_CONTAINS';
+      if (filter?.operation === "not-contain") {
+        return "TEXT_NOT_CONTAINS";
       }
 
-      if (filter?.operation === 'contains') {
-        return 'TEXT_CONTAINS';
+      if (filter?.operation === "contains") {
+        return "TEXT_CONTAINS";
       }
 
       if (isPlainObject(val)) {
@@ -327,7 +333,7 @@ export default class FiltersService implements Filters.Service {
         fieldInfo: await fieldService.getFieldInfo(filter, column),
       });
     });
-    
+
     return out;
   }
 
