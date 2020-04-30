@@ -207,7 +207,7 @@ export default class Bars implements Charts.Bars {
     const { widgetData, scheme } = this;
     return [
       {
-        values: parseData(widgetData, false),
+        values: parseData(widgetData),
         name: "table",
         transform: [
           { type: "identifier", as: "id" },
