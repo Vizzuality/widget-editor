@@ -1,12 +1,12 @@
 {
   "name": "@widget-editor/playground",
-  "version": "2.0.35-beta.0",
+  "version": "2.0.36-beta.0",
   "licence": "MIT",
   "private": false,
   "homepage": "http://vizzuality.github.io/widget-editor",
   "dependencies": {
-    "@widget-editor/rw-adapter": "^2.0.35-beta.0",
-    "@widget-editor/widget-editor": "^2.0.35-beta.0",
+    "@widget-editor/rw-adapter": "^2.0.36-beta.0",
+    "@widget-editor/widget-editor": "^2.0.36-beta.0",
     "gh-pages": "^2.2.0",
     "react": "^16.12.0",
     "react-app-rewired": "^2.1.5",
