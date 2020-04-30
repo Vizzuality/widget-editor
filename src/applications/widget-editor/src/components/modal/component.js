@@ -14,7 +14,11 @@ export const Modal = ({ isOpen, closeModal, children }) => {
     <StyledModalBox isOpen={isOpen}>
       <StyledModalContainer isOpen={isOpen}>
         <StyledModalContent>
-          <StyledModalCloseBtn onClick={() => closeModal()}>
+          <StyledModalCloseBtn
+            type="button"
+            role="button"
+            onClick={() => closeModal()}
+          >
             <CloseIcon width="20px" height="20px" hoverColor="#C32D7B" />
           </StyledModalCloseBtn>
           {children}

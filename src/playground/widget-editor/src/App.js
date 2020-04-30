@@ -30,7 +30,7 @@ function App() {
         <header className="App-header">
           Widget editor playground
           <ToggleOptions />
-          <button onClick={() => handleSetRenderer()}>
+          <button type="button" onClick={() => handleSetRenderer()}>
             {isRenderer ? "View editor" : "View renderer"}
           </button>
         </header>

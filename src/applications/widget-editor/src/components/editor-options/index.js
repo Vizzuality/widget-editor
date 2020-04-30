@@ -6,6 +6,8 @@ import EditorOptionsComponent from "./component";
 export default connectState(
   (state) => ({
     disabledFeatures: state.editor.disabledFeatures,
+    initialized: state.editor.initialized,
+    restoring: state.editor.restoring,
     datasetId:
       state.editor.dataset && state.editor.dataset.id
         ? state.editor.dataset.id

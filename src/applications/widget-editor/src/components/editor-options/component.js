@@ -22,13 +22,13 @@ const DonutRadius = React.lazy(() => import("../donut-radius"));
 const SlizeCount = React.lazy(() => import("../slize-count"));
 const MapInfo = React.lazy(() => import("../map-info"));
 
-const StyleEditorOptionsErrors = styled.div`
+const StyleEditorOptionsInfo = styled.div`
   position: absolute;
   left: 50%;
   bottom: 50%;
   transform: translate(-50%, -50%);
   h3 {
-    color: #ff6464;
+    color: ${(props) => props.color || "#ff6464"};
     text-align: center;
   }
   p {
@@ -72,6 +72,8 @@ const StyledContainer = styled.div`
 `;
 
 const EditorOptions = ({
+  initialized,
+  restoring,
   disabledFeatures,
   datasetId,
   limit,
@@ -103,16 +105,27 @@ const EditorOptions = ({
     }
   };
 
-  if (!datasetId) {
+  if (!initialized || restoring) {
     return (
       <StyledContainer compact={compact}>
-        <StyleEditorOptionsErrors>
-          <h3>Error loading dataset</h3>
-          <p>Dataset not accessible at this moment.</p>
-        </StyleEditorOptionsErrors>
+        <StyleEditorOptionsInfo color="#8c8c8c">
+          <h3>Loading settings...</h3>
+        </StyleEditorOptionsInfo>
       </StyledContainer>
     );
   }
+
+  if (!datasetId && initialized && !restoring) {
+    return (
+      <StyledContainer compact={compact}>
+        <StyleEditorOptionsInfo>
+          <h3>Error loading dataset</h3>
+          <p>Dataset not accessible at this moment.</p>
+        </StyleEditorOptionsInfo>
+      </StyledContainer>
+    );
+  }
+
   return (
     <StyledContainer compact={compact}>
       <Tabs>

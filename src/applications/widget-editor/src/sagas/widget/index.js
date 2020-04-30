@@ -1,4 +1,4 @@
-import { takeLatest, put, call, select } from "redux-saga/effects";
+import { takeLatest, put, call, select, cancel } from "redux-saga/effects";
 
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
@@ -35,6 +35,7 @@ async function getWidgetData(editorState) {
 
 function* storeAdapterConfigInState({ payload }) {
   adapterConfiguration = payload;
+  yield cancel();
 }
 
 function* preloadData() {
@@ -60,6 +61,8 @@ function* preloadData() {
     const { widgetEditor } = yield select();
 
     stateProxy.cacheChart(widgetEditor);
+  } else {
+    yield cancel();
   }
 }
 
@@ -71,8 +74,8 @@ function* resolveWithProxy() {
   // --- Proxy results returns a list of events we call on certain updates
   // --- This makes sure we only update what is nessesary in the editor
   if (proxyResult && proxyResult.length > 0) {
-    for (event in proxyResult) {
-      yield put({ type: proxyResult[event] });
+    for (const evnt in proxyResult) {
+      yield put({ type: proxyResult[evnt] });
     }
   }
 }
@@ -100,12 +103,13 @@ function* updateWidget() {
       theme
     );
     yield put(setWidget(vega.getChart()));
+  } else {
+    yield cancel();
   }
 }
 
 function* updateWidgetData() {
   const { widgetEditor } = yield select();
-
   if (widgetEditor.configuration.visualizationType !== "map") {
     const widgetData = yield call(getWidgetData, widgetEditor);
     yield put(setEditor({ widgetData: widgetData.data }));

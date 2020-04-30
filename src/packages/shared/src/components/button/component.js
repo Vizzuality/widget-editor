@@ -63,9 +63,9 @@ const Button = ({ type, btnType = "default", theme, children, ...props }) => {
     <StyledButton
       {...props}
       color={theme.color}
+      type="button"
       role="button"
       btnType={btnType}
-      type={type}
     >
       {children}
     </StyledButton>

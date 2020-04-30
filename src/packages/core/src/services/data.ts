@@ -65,8 +65,6 @@ export default class DataService {
   async handleFilters() {
     if (!this.widget) return null;
 
-    debugger;
-
     const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
     const filters = paramsConfig?.filters;
     let orderBy = null;
@@ -163,12 +161,8 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
-    if (
-      this.widget?.attributes?.widgetConfig?.paramsConfig?.visualizationType !==
-      "map"
-    ) {
-      this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
-    }
+
+    this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
     this.setEditor({ initialized: true });
   }
 }
