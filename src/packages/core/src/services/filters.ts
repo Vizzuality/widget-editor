@@ -75,7 +75,7 @@ export default class FiltersService implements Filters.Service {
       } FROM ${this.resolveTableName()}`;
     } else {
       const aggregation = aggregateFunction.toUpperCase();
-      if (aggregation === "SUM" || aggregation === "COUNT") {
+      if (aggregation === "SUM" || aggregation === "COUNT" || aggregation === "AVG") {
         this.sql = `${this.sql}, ${aggregation}(${name}) as ${
           sqlFields.category
         } FROM ${this.resolveTableName()}`;
@@ -138,6 +138,13 @@ export default class FiltersService implements Filters.Service {
     dataType: string
   ): string {
     let out = sql;
+
+    if (Array.isArray(values)) {
+      return `${out} ${column} IN (${values
+      .map((v) => this.escapeValue(v, dataType))
+      .join(",")})`
+    }
+
     return `${out} ${column} = ${this.escapeValue(values, dataType)}`;
   }
 
@@ -171,6 +178,13 @@ export default class FiltersService implements Filters.Service {
     return `${out} (lower(${column}) LIKE '%${values}')`;
   }
 
+  notNullCheck(out, column, notNull = false) {
+    if (notNull) {
+      out = `${out} AND ${column} IS NOT NULL`;
+    }
+    return out;
+  }
+
   prepareFilters() {
     let out = this.sql;
 
@@ -185,12 +199,13 @@ export default class FiltersService implements Filters.Service {
           indicator,
           column,
           dataType,
-          filter: { values },
+          filter: { values, notNull },
         } = weFilter;
 
         if (indicator === "range") {
           out = index > 0 ? `${out} AND ` : out;
           out = this.rangeCondition(out, column, values, dataType);
+          out = this.notNullCheck(out, column, notNull);
         }
         if (
           indicator === "FILTER_ON_VALUES" &&
@@ -199,30 +214,36 @@ export default class FiltersService implements Filters.Service {
         ) {
           out = index > 0 ? `${out} AND ` : out;
           out = this.valueRange(out, column, values, dataType);
+          out = this.notNullCheck(out, column, notNull);
         }
         if (indicator === "TEXT_CONTAINS") {
           out = index > 0 ? `${out} AND ` : out;
           out = this.textContains(out, column, values, dataType);
+          out = this.notNullCheck(out, column, notNull);
         }
 
         if (indicator === "TEXT_NOT_CONTAINS") {
           out = index > 0 ? `${out} AND ` : out;
           out = this.textNotContains(out, column, values, dataType);
+          out = this.notNullCheck(out, column, notNull);
         }
 
         if (indicator === "TEXT_STARTS_WITH") {
           out = index > 0 ? `${out} AND ` : out;
           out = this.textStartsWith(out, column, values, dataType);
+          out = this.notNullCheck(out, column, notNull);
         }
 
         if (indicator === "TEXT_ENDS_WITH") {
           out = index > 0 ? `${out} AND ` : out;
           out = this.textEndsWith(out, column, values, dataType);
+          out = this.notNullCheck(out, column, notNull);
         }
 
         if (indicator === "value") {
           out = index > 0 ? `${out} AND ` : out;
           out = this.valueEquals(out, column, values, dataType);
+          out = this.notNullCheck(out, column, notNull);
         }
       });
     }
@@ -235,7 +256,7 @@ export default class FiltersService implements Filters.Service {
     if (groupBy) {
       const { name } = groupBy;
       this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
-    } else if (chartType === 'pie' || chartType === 'donut') {
+    } else if (chartType === 'pie' || chartType === 'donut' || chartType === 'line') {
       this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }
   }
@@ -245,6 +266,8 @@ export default class FiltersService implements Filters.Service {
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
+    } else if (chartType === 'line' && this.configuration?.category?.name) {
+      this.sql = `${this.sql} ORDER BY ${this.configuration.category.name}`;
     } else if (chartType === 'pie' || chartType === 'donut') {
       this.sql = `${this.sql} ORDER BY x`;
     }
@@ -255,7 +278,7 @@ export default class FiltersService implements Filters.Service {
     if (orderBy) {
       const { orderType } = orderBy;
       this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
-    } else if (chartType === 'pie' || chartType === 'donut') {
+    } else if (chartType === 'pie' || chartType === 'donut' || chartType === 'line') {
       this.sql = `${this.sql} desc`;
     }
   }
@@ -311,6 +334,7 @@ export default class FiltersService implements Filters.Service {
     };
 
     await asyncForEach(filters, async (filter, index) => {
+      console.log('filters', filters);
       const values = filter[configuredValues] || 0;
       const column = filter[configuredColumn];
       const type = filter[configuredType];
@@ -322,11 +346,11 @@ export default class FiltersService implements Filters.Service {
         column,
         indicator: assignIndicator(values, filter),
         id: `we-filter-${column}-${index}`,
-        exlude: !filter.operation,
+        exlude: !filter.operation ,
         dataType: type,
         filter: {
           values: values,
-          notNull: true,
+          notNull: filter?.notNull || false,
         },
         fieldInfo: await fieldService.getFieldInfo(filter, column),
       });
