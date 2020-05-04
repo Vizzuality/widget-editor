@@ -12,7 +12,7 @@ import "./App.css";
 
 function App() {
   const { store } = configureStore();
-  const [isRenderer, setIsRenderer] = useState(true);
+  const [isRenderer, setIsRenderer] = useState(false);
   const [activeWidget, setActiveWidget] = useState(null);
 
   const handleSetRenderer = () => {

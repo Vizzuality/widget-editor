@@ -186,12 +186,10 @@ export default class Line implements Charts.Line {
           },
         ],
         encode: {
-          enter: {
-             tooltip: {
-              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
-            },
-          },
           update: {
+            tooltip: {
+              signal: signalsHelper(this.widgetConfig, "datum.datum.y", "datum.datum.x"),
+            },
             path: { field: "path" },
             fill: { value: "red" },
             opacity: { value: 0 },

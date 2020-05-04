@@ -10,3 +10,4 @@ export interface Service {
   prepareLimit(): void;
   requestWidgetData(): Promise<Generic.ObjectPayload>;
 }
+

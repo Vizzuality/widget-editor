@@ -231,33 +231,31 @@ export default class FiltersService implements Filters.Service {
   }
 
   prepareGroupBy() {
-    const { groupBy, aggregateFunction } = this.configuration;
+    const { groupBy, aggregateFunction, chartType } = this.configuration;
     if (groupBy) {
       const { name } = groupBy;
       this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
-    } else if (aggregateFunction && aggregateFunction !== "none") {
-      // If there's an aggregate function, we group the results
-      // with the first column (dimension x)
+    } else if (chartType === 'pie' || chartType === 'donut') {
       this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }
   }
 
   prepareOrderBy() {
-    const { orderBy } = this.configuration;
+    const { orderBy, chartType } = this.configuration;
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
-    } else {
+    } else if (chartType === 'pie' || chartType === 'donut') {
       this.sql = `${this.sql} ORDER BY x`;
     }
   }
 
   prepareOrder() {
-    const { orderBy } = this.configuration;
+    const { orderBy, chartType } = this.configuration;
     if (orderBy) {
       const { orderType } = orderBy;
       this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
-    } else {
+    } else if (chartType === 'pie' || chartType === 'donut') {
       this.sql = `${this.sql} desc`;
     }
   }

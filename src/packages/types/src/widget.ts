@@ -24,3 +24,4 @@ export interface Service {
   fetchWidgetData(url: string): Promise<[object]>;
   fetchWidget(widgetId: Id): Promise<Payload>;
 }
+

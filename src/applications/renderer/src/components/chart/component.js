@@ -2,59 +2,12 @@ import React, { Suspense } from "react";
 import * as vega from "vega";
 import vegaTooltip from "vega-tooltip";
 
-import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
 
+import { StyledContainer } from './styles';
+
 const ColumnSelections = React.lazy(() => import("../column-selections"));
-
-const StyledContainer = styled.div`
-  
-  ${(props) =>
-    !props.standalone &&
-    `
-      position: relative;
-      flex-grow: 1;
-      flex: 1;
-      padding: 20px;
-      width: 100%;
-      box-sizing: border-box;
-    
-    `}
-
-
-  ${(props) =>
-    (props.standalone || props.thumbnail) &&
-    `
-      width: 100%;
-      height: auto;
-    `}
-
-  ${(props) =>
-    props.compact &&
-    `
-        padding-bottom: 50px;
-    `}
-
-  .c-chart {
-    width: 100%;
-    height: 100%;
-    background-position: 50%;
-    background-size: cover;
-
-    ${(props) =>
-      !props.standalone &&
-      `
-      max-height: 400px;
-    `}
-
-    ${(props) =>
-      props.compact &&
-      `
-    height: 400px;
-    `}
-  }
-`;
 
 const getTooltipConfigFields = (widget) => {
   const vegaConfig = widget;
@@ -87,7 +40,6 @@ const getTooltipConfigFields = (widget) => {
 
 const instantiateTooltip = (view, widget) => {
   const fields = getTooltipConfigFields(widget);
-
   vegaTooltip(view, {
     showAllFields: false,
     fields: fields.map(({ column, property, type, format }) => ({

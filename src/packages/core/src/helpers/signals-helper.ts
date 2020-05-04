@@ -4,10 +4,10 @@ export default (widgetConfig: any, x: string, y: string) => {
     [widgetConfig?.paramsConfig?.value?.alias || 'x']: x,
     [widgetConfig?.paramsConfig?.category?.alias || 'y']: y,
   });
-  res = res.replace(/"datum\.x"/g, "datum.x");
+  res = res.replace(/"((datum)(\.datum)?)\.x"/g, "$1.x");
   res = res.replace(
-    /"datum\.y"/g,
-    `format(datum.y, '${format === "s" ? ".1f" : format}')`
+    /"((datum)(\.datum)?)\.y"/g,
+    `format($1.y, '${format === "s" ? ".1f" : format}')`
   );
   return res;
 };

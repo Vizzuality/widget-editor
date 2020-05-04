@@ -90,3 +90,5 @@ export interface WidgetHelper {
   configuration: Configuration;
   getVegaConfig(): object;
 }
+
+
