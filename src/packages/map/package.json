@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/map",
-  "version": "2.0.39-beta.0",
+  "version": "2.0.40-beta.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -13,12 +13,12 @@
   "private": false,
   "dependencies": {
     "axios": "^0.18.0",
+    "chroma-js": "^2.1.0",
     "deck.gl": "^7.1.10",
     "layer-manager": "^2.0.9",
     "luma.gl": "^7.1.1",
-    "chroma-js": "^2.1.0",
-    "vizzuality-components": "^3.0.0-beta.16",
-    "viewport-mercator-project": "^6.1.1"
+    "viewport-mercator-project": "^6.1.1",
+    "vizzuality-components": "^3.0.0-beta.16"
   },
   "peerDependencies": {
     "react": "^16.12.0",
