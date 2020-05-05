@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import find from "lodash/find";
 
 import Select from "react-select";
 
+import ToggleOrder from "components/toggle-order";
+
 import FlexContainer from "styles-common/flex";
+import FlexController from "styles-common/flex-controller";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 
@@ -22,8 +24,8 @@ const InputStyles = {
 };
 
 const ORDER_TYPES = [
-  { label: "Ascending", value: "asc" },
-  { label: "Descending", value: "desc" },
+  { label: "Asc", value: "asc" },
+  { label: "Desc", value: "desc" },
 ];
 
 const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
@@ -36,33 +38,24 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
     orderBy ? o.label === orderBy.name : null
   );
 
-  const definedOrder =
-    orderBy && orderBy.orderType
-      ? find(ORDER_TYPES, {
-          value: orderBy.orderType.toLowerCase(),
-        })
-      : ORDER_TYPES[0];
+  let selectedOrder;
+  if (orderBy && orderBy.orderType) {
+    selectedOrder = ORDER_TYPES.find((o) => o.value === orderBy.orderType);
+  } else {
+    selectedOrder = ORDER_TYPES[0];
+  }
 
-  const [orderType, setOrderType] = useState(
-    definedOrder ? definedOrder : ORDER_TYPES[0]
-  );
-
-  const handleChange = (option, type) => {
-    let findSelected;
-    if (type === "orderByType") {
-      findSelected = orderBy;
-      setOrderType(option);
-    } else {
-      findSelected = columns.find((c) => c.name === option.value);
-    }
-
+  const handleChange = (option, changeOrder = null) => {
+    const findSelected = columns.find((c) => c.name === option.value);
     setFilters({
-      orderBy: findSelected,
+      orderBy: {
+        ...findSelected,
+        orderType: changeOrder || selectedOrder.value,
+      },
     });
-
     onChange({
       ...findSelected,
-      orderType: type === "orderByType" ? option.value : orderType.value,
+      orderType: changeOrder || findSelected.orderType,
     });
   };
 
@@ -70,22 +63,26 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
     <FlexContainer>
       <InputGroup>
         <FormLabel htmlFor="options-title">Order by</FormLabel>
-        <Select
-          onChange={(option) => handleChange(option, "column")}
-          value={selectedOption}
-          options={options}
-          styles={InputStyles}
-        />
+        <FlexContainer row={true}>
+          <FlexController contain={90}>
+            <Select
+              onChange={(option) => handleChange(option)}
+              value={selectedOption}
+              options={options}
+              styles={InputStyles}
+            />
+          </FlexController>
+          <FlexController contain={10}>
+            <ToggleOrder
+              options={ORDER_TYPES}
+              order={selectedOrder}
+              onChange={(option) => {
+                handleChange(selectedOption, option.value);
+              }}
+            />
+          </FlexController>
+        </FlexContainer>
       </InputGroup>
-      {/* <InputGroup> */}
-      {/*   <FormLabel htmlFor="options-title">Ascending or Descending</FormLabel> */}
-      {/*   <Select */}
-      {/*     onChange={option => handleChange(option, "orderByType")} */}
-      {/*     value={orderType} */}
-      {/*     options={ORDER_TYPES} */}
-      {/*     styles={InputStyles} */}
-      {/*   /> */}
-      {/* </InputGroup> */}
     </FlexContainer>
   );
 };
