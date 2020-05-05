@@ -15,18 +15,6 @@ export default class StateProxy {
     };
 
     this.configuration = {
-      value: null,
-      format: null,
-      category: null,
-      donutRadius: null,
-      orderBy: null,
-      groupBy: null,
-      color: null,
-      aggregateFunction: null,
-      filters: null,
-      areaIntersection: null,
-      band: null,
-      layer: null,
       limit: null,
     };
   }
@@ -66,56 +54,55 @@ export default class StateProxy {
     return hasUpdate && editor.initialized;
   }
 
+  checkProperties(input, compare, props) {
+    let updates = false;
+    props.forEach((prop) => {
+      if (!updates && input[prop] !== compare[prop]) {
+        updates = true;
+      }
+    });
+    return updates;
+  }
+
   configurationHasUpdate(state) {
-    const { editor } = state;
-    const {
-      value,
-      category,
-      orderBy,
-      groupBy,
-      format,
-      color,
-      aggregateFunction,
-      filters,
-      areaIntersection,
-      band,
-      layer,
-      limit,
-    } = state.configuration;
+    const { editor, configuration } = state;
 
-    const updatedConfiguration = {
-      value,
-      category,
-      orderBy,
-      groupBy,
-      format,
-      color,
-      aggregateFunction,
-      filters,
-      areaIntersection,
-      band,
-      layer,
-      limit,
-    };
+    // Whenever one of these properties change in our configuration
+    // We need to update data
+    const compareProps = [
+      "limit",
+      "orderBy",
+      "groupBy",
+      "format",
+      "value",
+      "category",
+      "color",
+      "aggregateFunction",
+    ];
 
-    const hasUpdate = !isEqual(this.configuration, updatedConfiguration);
-    this.configuration = updatedConfiguration;
+    const hasUpdates = this.checkProperties(
+      configuration,
+      this.configuration,
+      compareProps
+    );
 
-    return hasUpdate && editor.initialized;
+    this.configuration = configuration;
+    return hasUpdates;
   }
 
   // -- This method checks our conditions and returns a saga event
   // -- for any update we want to perform
   async sync(editorState: object) {
     const UPDATES = [];
+    if (this.configurationHasUpdate(editorState)) {
+      UPDATES.push(sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE);
+    }
 
     if (this.chartHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_UPDATE_WIDGET);
     }
 
-    if (this.configurationHasUpdate(editorState)) {
-      UPDATES.push(sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE);
-    }
+    console.log("UPDATES", UPDATES);
 
     return UPDATES;
   }

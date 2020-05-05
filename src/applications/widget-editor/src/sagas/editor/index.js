@@ -3,6 +3,8 @@ import { constants } from "@widget-editor/core";
 
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
+import { setFilters } from "@widget-editor/shared/lib/modules/filters/actions";
+
 function* preloadData() {
   const {
     widgetEditor: { editor, configuration: storeConfiguration },
@@ -48,6 +50,15 @@ function* preloadData() {
     };
 
     const format = widgetConfig?.paramsConfig?.value?.format || "s";
+
+    if (configuration.orderBy || configuration.groupBy) {
+      yield put(
+        setFilters({
+          ...(configuration.orderBy ? { orderBy: configuration.orderBy } : {}),
+          ...(configuration.groupBy ? { groupBy: configuration.groupBy } : {}),
+        })
+      );
+    }
 
     yield put(setConfiguration({ ...configuration, format }));
   }

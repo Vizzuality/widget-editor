@@ -31,13 +31,12 @@ const StyledInputBox = styled.div`
 
 const QueryLimit = ({
   label,
-  dateType=false,
+  dateType = false,
   min = null,
   max = null,
   value,
   minDistance = 1,
   onChange = (data) => {},
-  handleOnChangeValue = (data, key) => {},
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
   const debouncedValue = useDebounce(localValue, 400);
@@ -46,7 +45,7 @@ const QueryLimit = ({
     if (!debouncedValue.key) {
       onChange(debouncedValue.value);
     } else {
-      handleOnChangeValue(debouncedValue.value, debouncedValue.key);
+      onChange(debouncedValue.value, debouncedValue.key);
     }
   }, [debouncedValue]);
 
@@ -74,21 +73,23 @@ const QueryLimit = ({
   return (
     <InputGroup>
       {label && <FormLabel htmlFor="options-limit-max">{label}</FormLabel>}
-      {!dateType && <StyledSliderBox>
-        <Slider
-          {...minMaxProps}
-          step={isFloatingPoint ? 0.1 : 1}
-          value={isDouble ? [minValue, maxValue] : maxValue}
-          defaultValue={isDouble ? min : [min, max]}
-          onChange={(value) => setLocalValue({ value, key: null })}
-        />
-      </StyledSliderBox>}
+      {!dateType && (
+        <StyledSliderBox>
+          <Slider
+            {...minMaxProps}
+            step={isFloatingPoint ? 0.1 : 1}
+            value={isDouble ? [minValue, maxValue] : maxValue}
+            defaultValue={isDouble ? min : [min, max]}
+            onChange={(value) => setLocalValue({ value, key: null })}
+          />
+        </StyledSliderBox>
+      )}
       <StyledInputBox isDouble={isDouble}>
         {isDouble && (
           <Input
             {...minMaxProps}
             value={minValue}
-            type={dateType ? 'date' : 'number'}
+            type={dateType ? "date" : "number"}
             name="options-limit-min"
             onChange={(e) =>
               setLocalValue({ value: e.target.value, key: "minValue" })
@@ -98,7 +99,7 @@ const QueryLimit = ({
         <Input
           {...minMaxProps}
           value={maxValue}
-          type={dateType ? 'date' : 'number'}
+          type={dateType ? "date" : "number"}
           name="options-limit-max"
           onChange={(e) =>
             setLocalValue({ value: e.target.value, key: "maxValue" })

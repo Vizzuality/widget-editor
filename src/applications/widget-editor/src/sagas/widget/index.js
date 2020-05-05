@@ -87,7 +87,6 @@ function* resolveWithProxy() {
   const { widgetEditor } = yield select();
   // Check and patch current state based on user configuration
   const proxyResult = yield call([stateProxy, "sync"], widgetEditor);
-
   // --- Proxy results returns a list of events we call on certain updates
   // --- This makes sure we only update what is nessesary in the editor
   if (proxyResult && proxyResult.length > 0) {

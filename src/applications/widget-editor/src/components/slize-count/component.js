@@ -43,7 +43,6 @@ const SlizeCount = ({
   data = null,
   minDistance = 1,
   onChange = (data) => {},
-  handleOnChangeValue = (data, key) => {},
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
   const debouncedValue = useDebounce(localValue, 400);
@@ -52,9 +51,9 @@ const SlizeCount = ({
     if (!debouncedValue.key) {
       onChange(debouncedValue.value);
     } else {
-      handleOnChangeValue(debouncedValue.value, debouncedValue.key);
+      onChange(debouncedValue.value, debouncedValue.key);
     }
-  }, [onChange, handleOnChangeValue, debouncedValue]);
+  }, [debouncedValue]);
 
   return (
     <InputGroup>

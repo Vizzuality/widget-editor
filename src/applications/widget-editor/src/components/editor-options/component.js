@@ -153,9 +153,6 @@ const EditorOptions = ({
                     min={0}
                     max={500}
                     onChange={(value) => handleChange(value, "limit")}
-                    handleOnChangeValue={(value) =>
-                      handleChange(value, "limit")
-                    }
                     label="Limit"
                     value={limit}
                   />
@@ -169,9 +166,6 @@ const EditorOptions = ({
                     <DonutRadius
                       value={donutRadius}
                       onChange={(value) => handleChange(value, "donut-radius")}
-                      handleOnChangeValue={(value) =>
-                        handleChange(value, "donut-radius")
-                      }
                     />
                   )}
                 </Suspense>
@@ -181,9 +175,6 @@ const EditorOptions = ({
                       value={slizeCount}
                       data={data}
                       onChange={(value) => handleChange(value, "slize-count")}
-                      handleOnChangeValue={(value) =>
-                        handleChange(value, "slize-count")
-                      }
                     />
                   )}
                 </Suspense>

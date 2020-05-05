@@ -29,7 +29,6 @@ const DonutRadius = ({
   value = 40,
   minDistance = 1,
   onChange = (data) => {},
-  handleOnChangeValue = (data, key) => {},
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
   const debouncedValue = useDebounce(localValue, 400);
@@ -38,9 +37,9 @@ const DonutRadius = ({
     if (!debouncedValue.key) {
       onChange(debouncedValue.value);
     } else {
-      handleOnChangeValue(debouncedValue.value, debouncedValue.key);
+      onChange(debouncedValue.value, debouncedValue.key);
     }
-  }, [onChange, handleOnChangeValue, debouncedValue]);
+  }, [debouncedValue]);
 
   return (
     <InputGroup>
