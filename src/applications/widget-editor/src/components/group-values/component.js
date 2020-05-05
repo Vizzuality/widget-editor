@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import find from "lodash/find";
+import React from "react";
 
 import Select from "react-select";
 
@@ -47,7 +46,9 @@ const GroupValues = ({ groupBy, columns, setFilters, onChange }) => {
   }
 
   const handleChange = (option, changeOrder = null) => {
-    const findSelected = columns.find((c) => c.name === option.value);
+    const findSelected = option
+      ? columns.find((c) => c.name === option.value)
+      : {};
     setFilters({
       groupBy: {
         ...findSelected,

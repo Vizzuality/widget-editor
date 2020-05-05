@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import Select from "react-select";
 
@@ -46,7 +46,9 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
   }
 
   const handleChange = (option, changeOrder = null) => {
-    const findSelected = columns.find((c) => c.name === option.value);
+    const findSelected = option
+      ? columns.find((c) => c.name === option.value)
+      : {};
     setFilters({
       orderBy: {
         ...findSelected,
