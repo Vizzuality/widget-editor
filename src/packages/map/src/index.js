@@ -1,5 +1,6 @@
-import { redux } from "@widget-editor/shared";
 import React from "react";
+
+import { redux } from "@widget-editor/shared";
 
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
@@ -7,7 +8,24 @@ import LayerManager from "helpers/layer-manager";
 
 import { BASEMAPS, LABELS, BOUNDARIES } from "constants";
 
-import { StyledMapContainer, StyledCaption } from "./styles";
+import chroma from "chroma-js";
+
+import {
+  StyledMapContainer,
+  StyledCaption,
+  StyledLegend,
+  StyledLegendTitle,
+  StyledLegendConfig,
+  StyledLegendLayerWrapper,
+  StyledConfigItemColor,
+  StyledLegendConfigItem,
+  StyledGradientUnits,
+  StyledLegendToggle,
+  StyledClosedLegend,
+  StyledGradient,
+} from "./styles";
+
+import CloseIcon from "./close-icon";
 
 const DEFAULT_MAP_PROPERTIES = {
   zoom: 2,
@@ -27,7 +45,10 @@ class Map extends React.Component {
 
     this.state = {
       loading: false,
+      legendOpen: true,
     };
+
+    this.renderLegend = this.renderLegend.bind(this);
 
     this.labels = props.labels || LABELS["none"];
     this.widget = props.widget;
@@ -92,7 +113,8 @@ class Map extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const loadingChanged = this.state.loading !== nextState.loading;
     const captionChanged = this.props.caption !== nextProps.caption;
-    return loadingChanged || captionChanged;
+    const legendToggleChanged = this.state.legendOpen !== nextState.legendOpen;
+    return loadingChanged || captionChanged || legendToggleChanged;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -153,6 +175,7 @@ class Map extends React.Component {
       .map((l) => l.layers.find((la) => la.active))
       .filter(Boolean);
 
+    this.activeLayers = layers;
     this.addLayers(layers);
   }
 
@@ -248,11 +271,89 @@ class Map extends React.Component {
       .setZIndex(0);
   }
 
+  getLegendLayerTitle(legendConfig, lc) {
+    if (legendConfig.type === "gradient") {
+      return lc.unit;
+    }
+    if (legendConfig.type === "choropleth") {
+      return lc.name;
+    }
+  }
+
+  generateGradient(items) {
+    const scale = items.map((i) => i.color);
+    const domain = items.map((i) => i.value);
+    return chroma
+      .scale(scale)
+      .domain(domain)
+      .colors(items.length);
+  }
+
+  renderLegend() {
+    const { legendOpen } = this.state;
+    if (!this.activeLayers) {
+      return null;
+    }
+
+    return (
+      <StyledLegend>
+        <StyledLegendToggle
+          role="button"
+          type="button"
+          legendOpen={legendOpen}
+          onClick={() => this.setState({ legendOpen: !legendOpen })}
+        >
+          <CloseIcon />
+        </StyledLegendToggle>
+        <StyledLegendLayerWrapper>
+          {legendOpen &&
+            this.activeLayers.map((lg, i) => (
+              <StyledLegendConfig key={lg.name}>
+                <StyledLegendTitle>{lg.name}</StyledLegendTitle>
+
+                {lg.legendConfig.type === "gradient" && (
+                  <React.Fragment>
+                    <StyledGradient
+                      items={this.generateGradient(lg.legendConfig.items)}
+                    />
+                    <StyledGradientUnits>
+                      {lg.legendConfig.items.map((lc) => {
+                        return (
+                          <StyledLegendConfigItem key={lc.name}>
+                            {lc.value}
+                          </StyledLegendConfigItem>
+                        );
+                      })}
+                    </StyledGradientUnits>
+                    <StyledLegendConfigItem>
+                      {lg.legendConfig.unit}
+                    </StyledLegendConfigItem>
+                  </React.Fragment>
+                )}
+
+                {lg.legendConfig.type === "choropleth" &&
+                  lg.legendConfig.items.map((lc) => {
+                    return (
+                      <StyledLegendConfigItem key={lc.name}>
+                        <StyledConfigItemColor hexCode={lc.color} />
+                        {lc.name}
+                      </StyledLegendConfigItem>
+                    );
+                  })}
+              </StyledLegendConfig>
+            ))}
+          {!legendOpen && <StyledClosedLegend>Legend</StyledClosedLegend>}
+        </StyledLegendLayerWrapper>
+      </StyledLegend>
+    );
+  }
+
   render() {
-    const { caption = null } = this.props;
+    const { caption = null, thumbnail = false } = this.props;
     return (
       <StyledMapContainer>
         {caption && <StyledCaption>{caption}</StyledCaption>}
+        {!thumbnail && this.renderLegend()}
         <div
           ref={(node) => {
             this.mapNode = node;

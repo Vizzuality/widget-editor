@@ -53,6 +53,7 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
       {isMap && (
         <Suspense>
           <Map
+            thumbnail={thumbnail}
             widget={{
               attributes: {
                 widgetConfig,

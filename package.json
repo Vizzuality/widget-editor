@@ -56,5 +56,8 @@
   },
   "dependencies": {
     "rimraf": "^3.0.2"
+  },
+   "resolutions": {
+    "moment": "2.24.0"
   }
 }
