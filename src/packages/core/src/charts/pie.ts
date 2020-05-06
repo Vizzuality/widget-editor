@@ -128,6 +128,9 @@ export default class Pie implements Charts.Pie {
               signal: this.resolveInnerRadius(),
             },
             outerRadius: { signal: "width > height ? height / 2 : width / 2" },
+            opacity: {
+              value: 1,
+            },
           },
           hover: { opacity: { value: 0.8 } },
         },
