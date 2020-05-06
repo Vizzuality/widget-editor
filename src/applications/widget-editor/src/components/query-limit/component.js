@@ -1,37 +1,29 @@
-// TODO: Rename this filter!
-import React, { useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+import styled from "styled-components";
 
 import useDebounce from "hooks/use-debounce";
 
+import FlexContainer from "styles-common/flex";
+import FlexController from "styles-common/flex-controller";
 import Slider from "components/slider";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
-import styled from "styled-components";
 
 import isFloat from "@widget-editor/shared/lib/helpers/isFloat";
 
-const StyledSliderBox = styled.div`
-  width: calc(100% - 15px);
-  display: flex;
-  padding: 20px 0;
-  margin: 0 5px;
-`;
-
-const StyledInputBox = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: ${(props) =>
-    props.isDouble ? "space-between" : "flex-end"};
-  input {
-    max-width: 100px;
+const RangeWrapper = styled.div`
+  padding: 10px 10px;
+  box-sizing: border-box;
+  .rc-slider-handle {
+    margin-top: -7px;
   }
 `;
 
 const QueryLimit = ({
   label,
   dateType = false,
+  isFilter = false,
   min = null,
   max = null,
   value,
@@ -73,39 +65,77 @@ const QueryLimit = ({
   return (
     <InputGroup>
       {label && <FormLabel htmlFor="options-limit-max">{label}</FormLabel>}
-      {!dateType && (
-        <StyledSliderBox>
-          <Slider
-            {...minMaxProps}
-            step={isFloatingPoint ? 0.1 : 1}
-            value={isDouble ? [minValue, maxValue] : maxValue}
-            defaultValue={isDouble ? min : [min, max]}
-            onChange={(value) => setLocalValue({ value, key: null })}
-          />
-        </StyledSliderBox>
+
+      {!isFilter && (
+        <FlexContainer row={true}>
+          <FlexController contain={20}>
+            <Input
+              {...minMaxProps}
+              value={maxValue}
+              type={dateType ? "date" : "number"}
+              name="options-limit-max"
+              onChange={(e) =>
+                setLocalValue({ value: e.target.value, key: "maxValue" })
+              }
+            />
+          </FlexController>
+          <FlexController contain={80}>
+            <Slider
+              {...minMaxProps}
+              step={isFloatingPoint ? 0.1 : 1}
+              value={isDouble ? [minValue, maxValue] : maxValue}
+              defaultValue={isDouble ? min : [min, max]}
+              onChange={(value) => setLocalValue({ value, key: null })}
+            />
+          </FlexController>
+        </FlexContainer>
       )}
-      <StyledInputBox isDouble={isDouble}>
-        {isDouble && (
-          <Input
-            {...minMaxProps}
-            value={minValue}
-            type={dateType ? "date" : "number"}
-            name="options-limit-min"
-            onChange={(e) =>
-              setLocalValue({ value: e.target.value, key: "minValue" })
-            }
-          />
-        )}
-        <Input
-          {...minMaxProps}
-          value={maxValue}
-          type={dateType ? "date" : "number"}
-          name="options-limit-max"
-          onChange={(e) =>
-            setLocalValue({ value: e.target.value, key: "maxValue" })
-          }
-        />
-      </StyledInputBox>
+
+      {isFilter && (
+        <Fragment>
+          <FlexContainer row={true}>
+            <FlexController contain={100}>
+              <RangeWrapper>
+                <Slider
+                  {...minMaxProps}
+                  step={isFloatingPoint ? 0.1 : 1}
+                  value={isDouble ? [minValue, maxValue] : maxValue}
+                  defaultValue={isDouble ? min : [min, max]}
+                  onChange={(value) => setLocalValue({ value, key: null })}
+                />
+              </RangeWrapper>
+            </FlexController>
+          </FlexContainer>
+          <FlexContainer row={true}>
+            <FlexController contain={50} constrainElement={40}>
+              <Input
+                {...minMaxProps}
+                value={minValue}
+                type={dateType ? "date" : "number"}
+                name="options-limit-min"
+                onChange={(e) =>
+                  setLocalValue({ value: e.target.value, key: "minValue" })
+                }
+              />
+            </FlexController>
+            <FlexController
+              contain={50}
+              constrainElement={40}
+              alignment="right"
+            >
+              <Input
+                {...minMaxProps}
+                value={maxValue}
+                type={dateType ? "date" : "number"}
+                name="options-limit-max"
+                onChange={(e) =>
+                  setLocalValue({ value: e.target.value, key: "maxValue" })
+                }
+              />
+            </FlexController>
+          </FlexContainer>
+        </Fragment>
+      )}
     </InputGroup>
   );
 };

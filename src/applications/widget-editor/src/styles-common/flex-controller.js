@@ -10,7 +10,15 @@ const FlexController = styled.div`
   display: flex;
   box-sizing: border-box;
   > * {
-    width: 100%;
+    width: ${(props) =>
+      props.constrainElement ? `${props.constrainElement}%` : "100%"};
+
+    ${(props) =>
+      props.alignment &&
+      props.alignment === "right" &&
+      css`
+        margin-left: auto;
+      `}
   }
 `;
 

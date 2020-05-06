@@ -3,24 +3,11 @@ import React, { useState, useEffect } from "react";
 import useDebounce from "hooks/use-debounce";
 
 import FlexContainer from "styles-common/flex";
+import FlexController from "styles-common/flex-controller";
 import Slider from "components/slider";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
-
-import styled from "styled-components";
-
-const StyledSliderBox = styled.div`
-  width: calc(100% - 15px);
-  display: flex;
-  padding: 20px 0;
-  margin: 0 5px;
-`;
-
-const StyledInputBox = styled.div`
-  flex: 120px;
-  margin: 0 0 0 30px;
-`;
 
 // TODO: Move me
 const getGroupedCount = (data) => {
@@ -61,15 +48,7 @@ const SlizeCount = ({
         Slize count (donut and pie charts)
       </FormLabel>
       <FlexContainer row={true}>
-        <StyledSliderBox>
-          <Slider
-            min={min}
-            max={data ? getGroupedCount(data) : 10}
-            value={localValue.value}
-            onChange={(v) => setLocalValue({ value: v, key: null })}
-          />
-        </StyledSliderBox>
-        <StyledInputBox>
+        <FlexController contain={20}>
           <Input
             value={localValue.value}
             type="number"
@@ -78,7 +57,15 @@ const SlizeCount = ({
               setLocalValue({ value: e.target.value, key: "slize-count" })
             }
           />
-        </StyledInputBox>
+        </FlexController>
+        <FlexController contain={80}>
+          <Slider
+            min={min}
+            max={data ? getGroupedCount(data) : 10}
+            value={localValue.value}
+            onChange={(v) => setLocalValue({ value: v, key: null })}
+          />
+        </FlexController>
       </FlexContainer>
     </InputGroup>
   );

@@ -13,7 +13,7 @@ const Input = styled.input`
   font-size: 14px;
 
   &[type="number"] {
-    padding: 8px 10px;
+    padding: 11px 10px;
   }
 
   &[type="date"] {
@@ -21,7 +21,6 @@ const Input = styled.input`
     margin-top: 10px;
     max-width: 160px;
   }
-
 
   &.read-only {
     color: #c5c5c5;

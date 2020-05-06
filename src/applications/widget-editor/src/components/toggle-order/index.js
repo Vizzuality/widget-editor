@@ -4,21 +4,23 @@ import styled, { css } from "styled-components";
 import { ArrowIcon } from "@widget-editor/shared";
 
 const StyledButton = styled.button`
-  border: none;
-  color: #393f44;
-  background: transparent;
-  font-size: 16px;
+  border: 1px solid rgba(202, 204, 208, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 11px 0;
+  padding: 13px 0;
+  cursor: pointer;
   border-radius: 5px;
   outline: none;
-  cursor: pointer;
+
+  &:focus {
+    border: 1px solid #c32d7b;
+  }
 
   &:hover {
     color: #c32d7b;
     svg {
+      transition: all 0.4s;
       fill: #c32d7b;
     }
   }
@@ -28,15 +30,15 @@ const StyledButton = styled.button`
     props.order === "asc" &&
     css`
       svg {
+        transition: all 0.4s;
         transform: rotate(180deg);
       }
     `}
 
   svg {
-    margin-left: 10px;
-    width: 16px;
-    height: 16px;
-    fill: #393f44;
+    width: 14px;
+    height: 14px;
+    fill: #c32d7b;
   }
 `;
 
@@ -47,16 +49,7 @@ const ToggleOrder = ({ order, options, onChange }) => {
   };
   return (
     <StyledButton order={order.value} type="button" onClick={handleChange}>
-      {order.value === "asc" && (
-        <Fragment>
-          Asc <ArrowIcon />
-        </Fragment>
-      )}
-      {order.value === "desc" && (
-        <Fragment>
-          Desc <ArrowIcon />
-        </Fragment>
-      )}
+      <ArrowIcon />
     </StyledButton>
   );
 };

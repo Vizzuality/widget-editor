@@ -1,18 +1,13 @@
 import React from "react";
+
 import QueryLimit from "components/query-limit";
 
 import { TYPE_RANGE } from "components/filter/const";
 
 // TODO: Move to utils
-const UTCString = (utcString) => new Date(utcString).toISOString().split('T')[0];
+const UTCString = (utcString) =>
+  new Date(utcString).toISOString().split("T")[0];
 const ToUTCString = (date) => new Date(date).toISOString();
-
-const convertToRange = (value, min, max) => {
-  if (value > min) {
-    return [min, value];
-  }
-  return [value, max];
-};
 
 const FilterRange = ({ filter, disabled = false, setData }) => {
   const { values } = filter.filter;
@@ -22,7 +17,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
 
   const [minValue, maxValue] = Array.isArray(values)
     ? values
-    :   (values, min, max);
+    : (values, min, max);
 
   const onSetData = (values) => {
     let serializeValues;
@@ -55,6 +50,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
   if (filter.dataType === "date") {
     return (
       <QueryLimit
+        isFilter
         dateType
         min={min}
         max={max}
@@ -68,6 +64,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
 
   return (
     <QueryLimit
+      isFilter
       min={min}
       max={max}
       disabled={disabled}
