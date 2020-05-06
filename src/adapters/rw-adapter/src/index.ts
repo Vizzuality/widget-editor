@@ -221,6 +221,21 @@ export default class RwAdapter implements Adapter.Service {
           chartType: editorState.configuration.chartType,
           layer: editorState.configuration.layer,
         },
+        ...(editorState.configuration.map.basemap
+          ? {
+              basemap: {
+                basemap: editorState.configuration.map.basemap.basemap,
+                labels: editorState.configuration.map.basemap.labels,
+                boundaries: false,
+              },
+            }
+          : {
+              basemap: {
+                basemap: "dark",
+                labels: "Dark",
+                boundaries: false,
+              },
+            }),
         zoom: editorState.configuration.map.zoom,
         lat: editorState.configuration.map.lat,
         lng: editorState.configuration.map.lng,

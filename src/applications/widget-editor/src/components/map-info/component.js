@@ -2,10 +2,14 @@ import React from "react";
 
 import Select from "react-select";
 
+import BASEMAPS from "@widget-editor/shared/lib/constants/basemaps";
+
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
+
+import BasemapSelection from "./basemaps";
 
 const InputStyles = {
   control: () => ({
@@ -42,6 +46,19 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
     });
   };
 
+  const setBasemap = (basemap) => {
+    patchConfiguration({
+      map: {
+        ...configuration.map,
+        basemap: {
+          basemap: BASEMAPS[basemap].id,
+          labels: BASEMAPS[basemap].label,
+          boundaries: false,
+        },
+      },
+    });
+  };
+
   return (
     <FlexContainer>
       <InputGroup>
@@ -51,6 +68,14 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
           value={selectedOption || options[0]}
           options={options}
           styles={InputStyles}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-zoom">Basemap</FormLabel>
+        <BasemapSelection
+          configuration={configuration}
+          basemaps={BASEMAPS}
+          onSetBasemap={(basemap) => setBasemap(basemap.value)}
         />
       </InputGroup>
       <InputGroup>

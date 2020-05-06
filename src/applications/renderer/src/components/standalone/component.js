@@ -64,6 +64,7 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
               lng: widgetConfig.lng || 0,
               bbox: widgetConfig.bbox || 0,
               zoom: widgetConfig.zoom || 2,
+              basemap: widgetConfig.basemapLayers || null,
             }}
             caption={widgetConfig?.paramsConfig?.caption || null}
             layers={[layerData]}

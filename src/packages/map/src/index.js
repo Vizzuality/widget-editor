@@ -1,12 +1,14 @@
 import React from "react";
 
 import { redux } from "@widget-editor/shared";
+import isEqual from "lodash/isEqual";
 
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import BASEMAPS from "@widget-editor/shared/lib/constants/basemaps";
 
 import LayerManager from "helpers/layer-manager";
 
-import { BASEMAPS, LABELS, BOUNDARIES } from "constants";
+import { LABELS, BOUNDARIES } from "constants";
 
 import chroma from "chroma-js";
 
@@ -32,6 +34,9 @@ const DEFAULT_MAP_PROPERTIES = {
   lat: 0,
   lng: 0,
   bbox: [0, 0, 0, 0],
+  basemap: {
+    basemap: "dark",
+  },
 };
 
 const MAP_CONFIG = {
@@ -114,7 +119,14 @@ class Map extends React.Component {
     const loadingChanged = this.state.loading !== nextState.loading;
     const captionChanged = this.props.caption !== nextProps.caption;
     const legendToggleChanged = this.state.legendOpen !== nextState.legendOpen;
-    return loadingChanged || captionChanged || legendToggleChanged;
+    const basemapChanged = !isEqual(
+      nextProps.mapConfiguration.basemap,
+      this.props.mapConfiguration.basemap
+    );
+
+    return (
+      loadingChanged || captionChanged || legendToggleChanged || basemapChanged
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -131,6 +143,14 @@ class Map extends React.Component {
 
       this.layerManager.removeLayers();
       this.addLayers(layers);
+    }
+  }
+
+  componentDidUpdate() {
+    const { mapConfiguration } = this.props;
+    if (!isEqual(this.basemap.basemap, mapConfiguration?.basemap?.basemap)) {
+      this.basemap = BASEMAPS[mapConfiguration.basemap.basemap];
+      this.setBasemap(this.basemap);
     }
   }
 
@@ -283,10 +303,7 @@ class Map extends React.Component {
   generateGradient(items) {
     const scale = items.map((i) => i.color);
     const domain = items.map((i) => i.value);
-    return chroma
-      .scale(scale)
-      .domain(domain)
-      .colors(items.length);
+    return chroma.scale(scale).domain(domain).colors(items.length);
   }
 
   renderLegend() {

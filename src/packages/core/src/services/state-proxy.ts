@@ -102,8 +102,6 @@ export default class StateProxy {
       UPDATES.push(sagaEvents.DATA_FLOW_UPDATE_WIDGET);
     }
 
-    console.log("UPDATES", UPDATES);
-
     return UPDATES;
   }
 }
