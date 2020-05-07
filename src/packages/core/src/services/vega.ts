@@ -4,7 +4,7 @@ import { Charts, Vega } from "@widget-editor/types";
 
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
-import BarsVertical from "../charts/bars-vertical";
+import BarsHorizontal from "../charts/bars-horizontal";
 import BarsStacked from "../charts/bars-stacked";
 import Line from "../charts/line";
 import Scatter from "../charts/scatter";
@@ -181,8 +181,8 @@ export default class VegaService implements Charts.Service {
       ).getChart();
     }
 
-    if (chartType === "bar-vertical") {
-      chart = new BarsVertical(
+    if (chartType === "bar-horizontal") {
+      chart = new BarsHorizontal(
         this.schema,
         this.widgetConfig,
         data,

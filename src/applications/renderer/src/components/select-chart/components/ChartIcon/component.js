@@ -6,7 +6,7 @@ import {
   TYPE_SCATTERPLOT,
   TYPE_DONUT,
   TYPE_BAR,
-  TYPE_BAR_VERTICAL,
+  TYPE_BAR_HORIZONTAL,
   TYPE_PIE,
   TYPE_MAP,
 } from "../../const";
@@ -42,7 +42,7 @@ const ChartIcon = ({
         {type === TYPE_MAP && <MapIcon />}
 
         {type === TYPE_BAR && <BarHorizontal />}
-        {type === TYPE_BAR_VERTICAL && <BarVertical />}
+        {type === TYPE_BAR_HORIZONTAL && <BarVertical />}
         {type === TYPE_STACKED_BAR && <ColumnHorizontal />}
         {type === TYPE_COLUMN && <ColumnHorizontal />}
       </StyledIcon>

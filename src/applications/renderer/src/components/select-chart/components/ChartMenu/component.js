@@ -4,7 +4,7 @@ import {
   TYPE_COLUMN,
   TYPE_STACKED_BAR,
   TYPE_BAR,
-  TYPE_BAR_VERTICAL,
+  TYPE_BAR_HORIZONTAL,
 } from "../../const";
 import { StyledContainer, StyledMenu, StyledTitle, StyledIcons } from "./style";
 import ChartIcon from "../ChartIcon";
@@ -37,15 +37,18 @@ const ChartMenu = ({ options, getValue, setValue, innerRef, innerProps }) => {
     return m;
   });
 
-  const columns = menu.filter((m) => m.type === TYPE_COLUMN || m.type === TYPE_STACKED_BAR);
+  const columns = menu.filter(
+    (m) => m.type === TYPE_COLUMN || m.type === TYPE_STACKED_BAR
+  );
   const bars = menu.filter(
-    (m) => m.type === TYPE_BAR || m.type === TYPE_BAR_VERTICAL
+    (m) => m.type === TYPE_BAR || m.type === TYPE_BAR_HORIZONTAL
   );
   const more = menu.filter(
     (m) =>
       m.type !== TYPE_BAR &&
-      m.type !== TYPE_BAR_VERTICAL &&
-      m.type !== TYPE_COLUMN && m.type !== TYPE_STACKED_BAR
+      m.type !== TYPE_BAR_HORIZONTAL &&
+      m.type !== TYPE_COLUMN &&
+      m.type !== TYPE_STACKED_BAR
   );
 
   const setData = (selected) => {

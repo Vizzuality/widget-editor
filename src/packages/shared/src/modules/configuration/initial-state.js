@@ -22,7 +22,7 @@ export default {
     {
       value: "bar",
       chartType: "bar",
-      label: "Bar (Horizontal)",
+      label: "Bar (Vertical)",
     },
     {
       value: "stacked-bar",
@@ -30,9 +30,9 @@ export default {
       label: "Stacked bar",
     },
     {
-      value: "bar-vertical",
-      chartType: "bar-vertical",
-      label: "Bar (Vertical)",
+      value: "bar-horizontal",
+      chartType: "bar-horizontal",
+      label: "Bar (horizontal)",
     },
     { value: "line", chartType: "line", label: "Line" },
     {

@@ -1,6 +1,6 @@
 // all column types
 export const TYPE_COLUMN = "column";
-export const TYPE_BAR_VERTICAL = "bar-vertical";
+export const TYPE_BAR_HORIZONTAL = "bar-horizontal";
 export const TYPE_BAR = "bar";
 
 export const TYPE_SCATTERPLOT = "scatter";
@@ -23,7 +23,7 @@ export const MENU_DATA = [
     type: TYPE_BAR,
   },
   {
-    type: TYPE_BAR_VERTICAL,
+    type: TYPE_BAR_HORIZONTAL,
   },
   {
     type: TYPE_LINE,

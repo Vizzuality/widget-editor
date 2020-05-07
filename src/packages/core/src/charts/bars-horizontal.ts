@@ -5,7 +5,7 @@ import { parseData } from "./helpers";
 
 import signalsHelper from "../helpers/signals-helper";
 
-export default class BarsVertical implements Charts.Bars {
+export default class BarsHorizontal implements Charts.Bars {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
@@ -118,13 +118,12 @@ export default class BarsVertical implements Charts.Bars {
         grid: false,
         labelOverlap: "parity",
         labelAlign: "right",
-          encode: {
+        encode: {
           labels: {
             update: {
               text: {
-                signal:
-                  "truncate(datum.value, 12)",
-              },  
+                signal: "truncate(datum.value, 12)",
+              },
               align: {
                 signal:
                   "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
@@ -136,7 +135,7 @@ export default class BarsVertical implements Charts.Bars {
             },
           },
         },
-      },  
+      },
     ];
   }
 

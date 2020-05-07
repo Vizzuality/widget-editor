@@ -1,7 +1,7 @@
 export const SUPPORTED_CHARTS: string[] = [
   "pie",
   "bar",
-  "bar-vertical",
+  "bar-horizontal",
   "line",
   "scatter",
   "donut",
