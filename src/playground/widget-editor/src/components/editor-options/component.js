@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import "./styles.css";
 
@@ -10,7 +10,7 @@ class EditorOptions extends React.Component {
     };
 
     const widgetEndpoint = `https://api.resourcewatch.org/v1/widget?includes=metadata,user,vocabulary`;
-    const widgets = fetch(widgetEndpoint)
+    fetch(widgetEndpoint)
       .then((response) => response.json())
       .then((widgetPayload) => {
         this.setState({ widgets: widgetPayload.data });

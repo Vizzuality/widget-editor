@@ -25,10 +25,6 @@ export interface Service {
   ): Promise<Widget.Payload>;
   getFields(): Promise<[object]>;
   getLayers(): Promise<[object]>;
-  getWidgetData(
-    dataset: Dataset.Payload,
-    widget: Widget.Payload
-  ): Promise<[object]>;
   setDatasetId(datasetId: datasetId): void;
   filterUpdate(
     filters: any,

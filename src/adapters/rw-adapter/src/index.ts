@@ -1,3 +1,5 @@
+import { oneLineTrim } from "common-tags";
+
 import { Adapter, Dataset, Widget, Config } from "@widget-editor/types";
 
 import {
@@ -7,12 +9,6 @@ import {
 } from "@widget-editor/core";
 
 import ConfigHelper from "./helpers/config";
-
-async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-}
 
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
@@ -51,29 +47,6 @@ export default class RwAdapter implements Adapter.Service {
     };
   }
 
-  private async saveWidgetRW() {
-    const url = `${this.endpoint}/dataset/${this.datasetId}/widget`;
-    if (this.AUTH_TOKEN) {
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${this.AUTH_TOKEN}`,
-          },
-        });
-        return await response.json();
-      } catch (error) {
-        console.error("Cant save widget", error);
-      }
-    } else {
-      console.error("Missing auth token for saveWidget (RW)");
-    }
-  }
-
-  private hasAuthToken() {
-    return !!this.AUTH_TOKEN;
-  }
-
   setDatasetId(datasetId: Adapter.datasetId) {
     if (!datasetId) {
       console.error("Error: datasetId is required");
@@ -92,9 +65,16 @@ export default class RwAdapter implements Adapter.Service {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata,vocabulary,widget,layer";
 
-    const url = `${this.endpoint}/dataset/${this.datasetId}?${applications.join(
-      ","
-    )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
+    const url = oneLineTrim`
+      ${this.endpoint}
+      /dataset/
+      ${this.datasetId}?
+      ${applications.join(",")}
+      &env=${env}
+      &language=${locale}
+      &includes=${includes}
+      &page[size]=999
+    `;
 
     const { data: dataset } = await this.datasetService.fetchData(url);
 
@@ -118,7 +98,10 @@ export default class RwAdapter implements Adapter.Service {
   }
 
   async getFields() {
-    const url = `${this.endpoint}/fields/${this.datasetId}`;
+    const url = oneLineTrim`
+      ${this.endpoint}/fields/
+      ${this.datasetId}
+    `;
 
     const { fields } = await this.datasetService.fetchData(url);
     return fields;
@@ -134,29 +117,33 @@ export default class RwAdapter implements Adapter.Service {
 
     if (!resolveWidgetId) return null;
 
-    const url = `${this.endpoint}/widget/${resolveWidgetId}?${applications.join(
-      ","
-    )}&env=${env}&language=${locale}&includes=${includes}&page[size]=999`;
+    const url = oneLineTrim`
+      ${this.endpoint}
+      /widget/
+      ${resolveWidgetId}?
+      ${applications.join(",")}
+      &env=${env}
+      &language=${locale}
+      &includes=${includes}
+      &page[size]=999
+    `;
 
     const { data: widget } = await this.widgetService.fetchWidget(url);
 
     return widget;
   }
 
-  async getWidgetData(dataset: Dataset.Payload, widget: Widget.Payload) {
-    const sql = this.widgetService.getDataSqlQuery(dataset, widget);
-    const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;
-
-    const { data } = await this.widgetService.fetchWidgetData(url);
-    return data;
-  }
-
   async getLayers() {
-    const { applications, env, locale } = this.config.getConfig();
+    const { applications, env } = this.config.getConfig();
 
-    const url = `${this.endpoint}/dataset/${
-      this.datasetId
-    }/layer?app=${applications.join(",")}&env=${env}&page[size]=9999`;
+    const url = oneLineTrim`
+      ${this.endpoint}
+      /dataset/
+      ${this.datasetId}/layer?
+      app=${applications.join(",")}
+      &env=${env}
+      &page[size]=9999
+    `;
 
     const { data } = await this.datasetService.fetchData(url);
 
@@ -290,15 +277,24 @@ export default class RwAdapter implements Adapter.Service {
     );
   }
 
-  async requestData(sql, dataset) {
+  async requestData(sql: string, dataset: Dataset.Payload) {
     const response = await fetch(
-      `https://api.resourcewatch.org/v1/query/${dataset.id}?sql=${sql}`
+      oneLineTrim`
+        https://api.resourcewatch.org/v1/query/
+        ${dataset.id}?
+        sql=${sql}
+      `
     );
     const data = await response.json();
     return data;
   }
 
-  async filterUpdate(filters, fields, widget, dataset) {
+  async filterUpdate(
+    filters: any,
+    fields: any,
+    widget: Widget.Payload,
+    dataset: Dataset.Payload
+  ) {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];
     }

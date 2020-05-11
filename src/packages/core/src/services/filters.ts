@@ -6,20 +6,13 @@ import isArray from "lodash/isArray";
 
 import { Filters, Config } from "@widget-editor/types";
 
-import { getAdapter } from "../helpers/adapter";
-
 import FieldsService from "./fields";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 import filtersHelper from "../helpers/filters";
 
-// TODO: Move async function to util
-async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-}
+import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
 export default class FiltersService implements Filters.Service {
   sql: string;
@@ -75,7 +68,11 @@ export default class FiltersService implements Filters.Service {
       } FROM ${this.resolveTableName()}`;
     } else {
       const aggregation = aggregateFunction.toUpperCase();
-      if (aggregation === "SUM" || aggregation === "COUNT" || aggregation === "AVG") {
+      if (
+        aggregation === "SUM" ||
+        aggregation === "COUNT" ||
+        aggregation === "AVG"
+      ) {
         this.sql = `${this.sql}, ${aggregation}(${name}) as ${
           sqlFields.category
         } FROM ${this.resolveTableName()}`;
@@ -141,8 +138,8 @@ export default class FiltersService implements Filters.Service {
 
     if (Array.isArray(values)) {
       return `${out} ${column} IN (${values
-      .map((v) => this.escapeValue(v, dataType))
-      .join(",")})`
+        .map((v) => this.escapeValue(v, dataType))
+        .join(",")})`;
     }
 
     return `${out} ${column} = ${this.escapeValue(values, dataType)}`;
@@ -256,7 +253,11 @@ export default class FiltersService implements Filters.Service {
     if (groupBy) {
       const { name } = groupBy;
       this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
-    } else if (chartType === 'pie' || chartType === 'donut' || chartType === 'line') {
+    } else if (
+      chartType === "pie" ||
+      chartType === "donut" ||
+      chartType === "line"
+    ) {
       this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }
   }
@@ -266,9 +267,9 @@ export default class FiltersService implements Filters.Service {
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
-    } else if (chartType === 'line' && this.configuration?.category?.name) {
+    } else if (chartType === "line" && this.configuration?.category?.name) {
       this.sql = `${this.sql} ORDER BY ${this.configuration.category.name}`;
-    } else if (chartType === 'pie' || chartType === 'donut') {
+    } else if (chartType === "pie" || chartType === "donut") {
       this.sql = `${this.sql} ORDER BY x`;
     }
   }
@@ -278,7 +279,11 @@ export default class FiltersService implements Filters.Service {
     if (orderBy) {
       const { orderType } = orderBy;
       this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
-    } else if (chartType === 'pie' || chartType === 'donut' || chartType === 'line') {
+    } else if (
+      chartType === "pie" ||
+      chartType === "donut" ||
+      chartType === "line"
+    ) {
       this.sql = `${this.sql} desc`;
     }
   }
@@ -334,7 +339,7 @@ export default class FiltersService implements Filters.Service {
     };
 
     await asyncForEach(filters, async (filter, index) => {
-      console.log('filters', filters);
+      console.log("filters", filters);
       const values = filter[configuredValues] || 0;
       const column = filter[configuredColumn];
       const type = filter[configuredType];
@@ -346,7 +351,7 @@ export default class FiltersService implements Filters.Service {
         column,
         indicator: assignIndicator(values, filter),
         id: `we-filter-${column}-${index}`,
-        exlude: !filter.operation ,
+        exlude: !filter.operation,
         dataType: type,
         filter: {
           values: values,

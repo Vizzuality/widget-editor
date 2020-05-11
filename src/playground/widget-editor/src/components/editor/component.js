@@ -49,9 +49,6 @@ const THEMES = [
 ];
 
 class Editor extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   handleOnSave(diff) {
     const formatSavedJson = JSON.stringify(diff, null, 2);
     const x = window.open();
@@ -64,10 +61,8 @@ class Editor extends React.Component {
 
   render() {
     const {
-      editorOptions: { compactMode, authToken, dataset, widget, theme },
+      editorOptions: { compactMode, dataset, widget, theme },
     } = this.props;
-
-    // const authenticated = !!authToken && authToken.length > 0;
 
     return (
       <div className="widget-editor-wrapper">
