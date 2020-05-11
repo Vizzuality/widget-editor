@@ -142,6 +142,7 @@ class Chart extends React.Component {
 
   generateVegaChart() {
     const {
+      advanced,
       thumbnail,
       widget: vegaConfiguration,
       standaloneConfiguration,
@@ -159,6 +160,12 @@ class Chart extends React.Component {
         this.generateRuntime(standaloneConfiguration);
       }
     } else {
+      // XXX: Remove any nessesary information if not advanced mode
+      // This is for example if:
+      // 1. User deletes the entire custom configuration
+      if (!advanced) {
+        delete vegaConfiguration.legends;
+      }
       this.generateRuntime(vegaConfiguration);
     }
   }

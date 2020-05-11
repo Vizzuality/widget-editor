@@ -66,7 +66,9 @@ function* preloadData() {
     }
 
     if (!paramsConfig) {
-      yield put(setEditor({ advanced: true }));
+      yield put(
+        setEditor({ advanced: true, customConfiguration: widgetConfig })
+      );
     }
 
     yield put(setConfiguration({ ...configuration, format }));

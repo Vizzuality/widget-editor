@@ -8,7 +8,7 @@ import "prismjs/components/prism-sql";
 
 import { StyledField, EditorStyles } from "./style";
 
-const CodeEditor = ({ data, onChange = () => {}, type = "json" }) => {
+const CodeEditor = ({ data, onChange = () => {}, type = "json", ...props }) => {
   return (
     <StyledField>
       <EditorStyles>
@@ -21,6 +21,7 @@ const CodeEditor = ({ data, onChange = () => {}, type = "json" }) => {
             fontFamily: '"Fira code", "Fira Mono", monospace',
             fontSize: 12,
           }}
+          {...props}
         />
       </EditorStyles>
     </StyledField>

@@ -5,6 +5,7 @@ export default {
   initialized: false,
   dataset: null,
   advanced: false,
+  customConfiguration: null,
   widget: null,
   widgetData: null,
   errors: null,

@@ -7,17 +7,18 @@ import CodeEditor from "components/code-editor";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 
+const CODE_BLOCK_PLACEHOLDER = "// Enter custom vega configuration";
+
 class AdvancedEditor extends React.Component {
   constructor(props) {
     super(props);
     this.handleUpdateConfig = this.handleUpdateConfig.bind(this);
     this.state = {
       invalidConfig: false,
-      vegaConfig: JSON.stringify(
-        props.editor.widget.attributes.widgetConfig,
-        null,
-        2
-      ),
+      advanced: props.editor.advanced,
+      vegaConfig: props.editor.customConfiguration
+        ? JSON.stringify(props.editor.customConfiguration, null, 2)
+        : CODE_BLOCK_PLACEHOLDER,
     };
   }
 
@@ -32,20 +33,23 @@ class AdvancedEditor extends React.Component {
   }
 
   handleUpdateConfig = debounce(() => {
-    const { setEditor, setWidget, editor } = this.props;
+    const { setEditor, setWidget } = this.props;
     const { vegaConfig } = this.state;
+
+    if (!vegaConfig || vegaConfig === CODE_BLOCK_PLACEHOLDER) {
+      setEditor({
+        advanced: false,
+        customConfiguration: null,
+      });
+      return;
+    }
 
     try {
       const parseConfig = JSON.parse(vegaConfig);
       const widgetConfig = parseConfig;
       setEditor({
-        widget: {
-          ...editor.widget,
-          attributes: {
-            ...editor.widget.attributes,
-            widgetConfig,
-          },
-        },
+        advanced: true,
+        customConfiguration: widgetConfig,
       });
       setWidget(widgetConfig);
       this.setState({ invalidConfig: false });
@@ -53,13 +57,6 @@ class AdvancedEditor extends React.Component {
       this.setState({ invalidConfig: true });
     }
   }, 1000);
-
-  resolveSql(editor) {
-    const url = new URL(
-      editor?.widget?.attributes?.widgetConfig?.data[0]?.url || ""
-    );
-    return url.searchParams.get("sql");
-  }
 
   render() {
     const { vegaConfig = "", invalidConfig } = this.state;
@@ -75,6 +72,18 @@ class AdvancedEditor extends React.Component {
           <CodeEditor
             data={vegaConfig}
             type="json"
+            onFocus={() => {
+              if (vegaConfig === CODE_BLOCK_PLACEHOLDER) {
+                this.setState({ vegaConfig: "" });
+              }
+            }}
+            onBlur={() => {
+              if (vegaConfig === "") {
+                this.setState({
+                  vegaConfig: CODE_BLOCK_PLACEHOLDER,
+                });
+              }
+            }}
             onChange={(code) => this.setState({ vegaConfig: code })}
           />
         </InputGroup>

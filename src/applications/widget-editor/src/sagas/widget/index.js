@@ -111,6 +111,13 @@ function* updateWidget() {
   const {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
+  if (editor.initialized && !editor.widgetData) {
+    const fullState = yield select();
+    const widgetData = yield call(getWidgetData, fullState.widgetEditor);
+    if (widgetData) {
+      yield put(setEditor({ widgetData: widgetData.data }));
+    }
+  }
 
   if (
     editor.initialized &&
