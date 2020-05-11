@@ -1,6 +1,6 @@
 import { oneLineTrim } from "common-tags";
-
 import { Adapter, Dataset, Widget, Config } from "@widget-editor/types";
+import { getEditorMeta } from "@widget-editor/shared";
 
 import {
   DatasetService,
@@ -20,7 +20,6 @@ export default class RwAdapter implements Adapter.Service {
   datasetId = null;
   tableName = null;
   AUTH_TOKEN = null;
-
   // Some generic setup for
   applications = ["rw"];
   env = "production";
@@ -236,7 +235,12 @@ export default class RwAdapter implements Adapter.Service {
       name: configuration.title || null,
       description: configuration.description || null,
       application: [application],
-      widgetConfig,
+      widgetConfig: {
+        we_meta: {
+          ...getEditorMeta("rw-adapter", false),
+        },
+        ...widgetConfig,
+      },
     };
 
     consumerOnSave(out);

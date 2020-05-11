@@ -5,7 +5,7 @@
       "module-resolver",
       {
         "root": ["./src"],
-         "alias": {
+        "alias": {
           "modules": "./src/modules"
         }
       }

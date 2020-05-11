@@ -20,8 +20,5 @@ export interface Payload {
 
 export interface Service {
   fromDataset(dataset: object): object;
-  getDataSqlQuery(dataset: any, widget: any): string;
-  fetchWidgetData(url: string): Promise<[object]>;
   fetchWidget(widgetId: Id): Promise<Payload>;
 }
-
