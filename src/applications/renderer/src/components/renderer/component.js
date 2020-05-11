@@ -62,7 +62,10 @@ const Renderer = ({
     <StyledContainer compact={compact}>
       {!widgetConfig && initialized && (
         <Suspense fallback={<div>Loading...</div>}>
-          <SelectChart rasterOnly={configuration.rasterOnly} />
+          <SelectChart
+            advanced={editor.advanced}
+            rasterOnly={configuration.rasterOnly}
+          />
         </Suspense>
       )}
 
@@ -74,7 +77,11 @@ const Renderer = ({
             </RestoringWidget>
           }
         >
-          <Chart compact={compact} widgetConfig={widgetConfig} />
+          <Chart
+            advanced={editor.advanced}
+            compact={compact}
+            widgetConfig={widgetConfig}
+          />
         </Suspense>
       )}
 
@@ -105,7 +112,7 @@ const Renderer = ({
         </RestoringWidget>
       )}
 
-      {!widgetConfig && !isMap && (
+      {!widgetConfig && !isMap && !editor.advanced && (
         <Suspense fallback={<div>Loading...</div>}>
           <Legend compact={compact} />
         </Suspense>

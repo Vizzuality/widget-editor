@@ -14,7 +14,6 @@ const useLayerData = (layerId, isMap) => {
       setIsLoading(true);
       try {
         const request = await fetch(dataURL);
-        console.log("request data", request);
         const { data } = await request.json();
         setData(data);
       } catch (error) {

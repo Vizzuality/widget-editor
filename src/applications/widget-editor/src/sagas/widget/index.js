@@ -64,16 +64,27 @@ function* preloadData() {
   const { widgetConfig } = editor.widget.attributes;
 
   if (configuration.visualizationType !== "map") {
-    const vega = new VegaService(
-      {
-        ...widgetConfig,
-        paramsConfig: { ...widgetConfig.paramsConfig, ...configuration },
-      },
-      widgetData,
-      configuration,
-      theme
-    );
-    yield put(setWidget(vega.getChart()));
+    if (!editor.advanced) {
+      const vega = new VegaService(
+        {
+          ...widgetConfig,
+          paramsConfig: { ...widgetConfig.paramsConfig, ...configuration },
+        },
+        widgetData,
+        configuration,
+        theme
+      );
+      yield put(setWidget(vega.getChart()));
+    } else {
+      // XXX: Some properties need to be present for vega
+      const ensureVegaProperties = {
+        autosize: {
+          type: "fit",
+        },
+        ...editor.widget.attributes.widgetConfig,
+      };
+      yield put(setWidget(ensureVegaProperties));
+    }
 
     const { widgetEditor } = yield select();
 
@@ -106,19 +117,30 @@ function* updateWidget() {
     editor.widgetData &&
     configuration.visualizationType !== "map"
   ) {
-    const { widgetData } = editor;
+    const { widgetData, advanced } = editor;
     const { widgetConfig } = editor.widget.attributes;
 
-    const vega = new VegaService(
-      {
-        ...widgetConfig,
-        paramsConfig: { ...widgetConfig.paramsConfig, ...configuration },
-      },
-      widgetData,
-      configuration,
-      theme
-    );
-    yield put(setWidget(vega.getChart()));
+    if (!advanced) {
+      const vega = new VegaService(
+        {
+          ...widgetConfig,
+          paramsConfig: { ...widgetConfig.paramsConfig, ...configuration },
+        },
+        widgetData,
+        configuration,
+        theme
+      );
+      yield put(setWidget(vega.getChart()));
+    } else {
+      // XXX: Some properties need to be present for vega
+      const ensureVegaProperties = {
+        autosize: {
+          type: "fit",
+        },
+        ...editor.widget.attributes.widgetConfig,
+      };
+      yield put(setWidget(ensureVegaProperties));
+    }
   } else {
     yield cancel();
   }
@@ -126,9 +148,18 @@ function* updateWidget() {
 
 function* updateWidgetData() {
   const { widgetEditor } = yield select();
+  const { advanced } = widgetEditor.editor;
+
   if (widgetEditor.configuration.visualizationType !== "map") {
-    const widgetData = yield call(getWidgetData, widgetEditor);
-    yield put(setEditor({ widgetData: widgetData.data }));
+    let widgetData;
+
+    if (!advanced) {
+      widgetData = yield call(getWidgetData, widgetEditor);
+    }
+
+    if (widgetData) {
+      yield put(setEditor({ widgetData: widgetData.data }));
+    }
     yield call(updateWidget);
     if (!widgetEditor.editor.initialized) {
       yield put({ type: constants.sagaEvents.DATA_FLOW_VISUALISATION_READY });

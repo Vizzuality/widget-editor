@@ -5,7 +5,7 @@ import vegaTooltip from "vega-tooltip";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
 
-import { StyledContainer } from './styles';
+import { StyledContainer } from "./styles";
 
 const ColumnSelections = React.lazy(() => import("../column-selections"));
 
@@ -164,7 +164,7 @@ class Chart extends React.Component {
   }
 
   render() {
-    const { thumbnail, standalone } = this.props;
+    const { thumbnail, standalone, advanced = false } = this.props;
     return (
       <StyledContainer
         standalone={standalone}
@@ -180,7 +180,7 @@ class Chart extends React.Component {
             this.chart = c;
           }}
         ></div>
-        {!this.standalone && (
+        {!this.standalone && !advanced && (
           <Suspense fallback={<div>Loading...</div>}>
             <ColumnSelections compact={this.props.compact} />
           </Suspense>
