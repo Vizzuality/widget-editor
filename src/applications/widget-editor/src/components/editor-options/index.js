@@ -6,6 +6,7 @@ import EditorOptionsComponent from "./component";
 export default connectState(
   (state) => ({
     disabledFeatures: state.editor.disabledFeatures,
+    advanced: state.editor.advanced,
     initialized: state.editor.initialized,
     restoring: state.editor.restoring,
     rasterOnly: state.configuration.rasterOnly,

@@ -19,6 +19,7 @@ const SelectChart = ({
   options,
   chartType,
   theme,
+  advanced,
   setTheme,
   rasterOnly,
   disabledFeatures,
@@ -63,7 +64,23 @@ const SelectChart = ({
       rasterOnly={rasterOnly}
       isCompact={isCompact || forceCompact}
     >
-      {!rasterOnly && (
+      {advanced && (
+        <StyledSelectBox isCompact={isCompact || forceCompact}>
+          <Select
+            isDisabled={true}
+            onChange={handleChange}
+            onMenuOpen={() => setIsOpenMenu(true)}
+            onMenuClose={() => setIsOpenMenu(false)}
+            value={{ value: "custom", label: "Custom chart" }}
+            options={[{ value: "custom", label: "Custom chart" }]}
+            styles={InputStyles}
+            components={{ Menu: ChartMenu }}
+            menuIsOpen={isOpenMenu}
+          />
+        </StyledSelectBox>
+      )}
+
+      {!advanced && !rasterOnly && (
         <StyledSelectBox isCompact={isCompact || forceCompact}>
           <Select
             onChange={handleChange}

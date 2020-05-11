@@ -339,7 +339,6 @@ export default class FiltersService implements Filters.Service {
     };
 
     await asyncForEach(filters, async (filter, index) => {
-      console.log("filters", filters);
       const values = filter[configuredValues] || 0;
       const column = filter[configuredColumn];
       const type = filter[configuredType];

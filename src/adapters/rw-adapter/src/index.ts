@@ -229,6 +229,10 @@ export default class RwAdapter implements Adapter.Service {
       };
     }
 
+    if (editorState.editor.advanced) {
+      delete widgetConfig.paramsConfig;
+    }
+
     const out = {
       id: editorState.editor.widget.id,
       type: "widget",
@@ -237,7 +241,7 @@ export default class RwAdapter implements Adapter.Service {
       application: [application],
       widgetConfig: {
         we_meta: {
-          ...getEditorMeta("rw-adapter", false),
+          ...getEditorMeta("rw-adapter", editorState.editor.advanced || false),
         },
         ...widgetConfig,
       },

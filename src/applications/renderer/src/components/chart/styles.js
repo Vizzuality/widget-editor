@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 export const StyledContainer = styled.div`
   ${(props) =>
-    !props.standalone && 
+    !props.standalone &&
     css`
       position: relative;
       flex-grow: 1;
@@ -10,21 +10,21 @@ export const StyledContainer = styled.div`
       padding: 20px;
       width: 100%;
       box-sizing: border-box;
-  `}
+    `}
 
   ${(props) =>
     (props.standalone || props.thumbnail) &&
     css`
       width: 100%;
       height: auto;
-  `}
+    `}
 
 
   ${(props) =>
     props.compact &&
     css`
       padding-bottom: 50px;
-  `}
+    `}
 
   .c-chart {
     width: 100%;
@@ -36,12 +36,12 @@ export const StyledContainer = styled.div`
       !props.standalone &&
       css`
         max-height: 400px;
-    `}
+      `}
 
     ${(props) =>
       props.compact &&
       css`
         height: 400px;
-    `}
+      `}
   }
 `;

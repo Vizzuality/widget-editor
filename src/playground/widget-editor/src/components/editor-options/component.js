@@ -83,6 +83,9 @@ class EditorOptions extends React.Component {
           <option value="47da0793-f248-4882-b913-40d84be96e05">
             Stacked bar example
           </option>
+          <option value="b8a6a6ea-7d2f-4d59-bb5e-7143a2ddc1fe">
+            Advanced editor widget
+          </option>
         </select>
 
         <label htmlFor="widget">Select widget</label>

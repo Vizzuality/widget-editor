@@ -2,6 +2,7 @@ import { takeLatest, put, select } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
 
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import { setEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 
 import { setFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
@@ -39,8 +40,12 @@ function* preloadData() {
       editor?.widget?.attributes?.widgetConfig?.paramsConfig
         ?.visualizationType === "map";
 
+    const paramsConfig = widgetConfig.hasOwnProperty("paramsConfig")
+      ? widgetConfig.paramsConfig
+      : null;
+
     const configuration = {
-      ...widgetConfig.paramsConfig,
+      ...(paramsConfig ? { ...paramsConfig } : {}),
       title: name,
       description,
       caption,
@@ -57,6 +62,12 @@ function* preloadData() {
           ...(configuration.orderBy ? { orderBy: configuration.orderBy } : {}),
           ...(configuration.groupBy ? { groupBy: configuration.groupBy } : {}),
         })
+      );
+    }
+
+    if (!paramsConfig) {
+      yield put(
+        setEditor({ advanced: true, customConfiguration: widgetConfig })
       );
     }
 

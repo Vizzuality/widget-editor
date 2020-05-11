@@ -14,7 +14,7 @@ import {
   DEFAULT_BORDER,
 } from "@widget-editor/shared/lib/styles/style-constants";
 
-const JsonEditor = React.lazy(() => import("../json-editor"));
+const AdvancedEditor = React.lazy(() => import("../advanced-editor"));
 const TableView = React.lazy(() => import("../table-view"));
 const Typography = React.lazy(() => import("../typography"));
 const ColorShemes = React.lazy(() => import("../color-shemes"));
@@ -74,6 +74,7 @@ const StyledContainer = styled.div`
 const EditorOptions = ({
   initialized,
   restoring,
+  advanced,
   rasterOnly,
   disabledFeatures,
   datasetId,
@@ -135,12 +136,12 @@ const EditorOptions = ({
             <AccordionSection title="Description and labels" openDefault>
               <WidgetInfo isMap={isMap} />
             </AccordionSection>
-            {!isMap && (
+            {!isMap && !advanced && (
               <AccordionSection title="Filters">
                 <Filter dataService={dataService} />
               </AccordionSection>
             )}
-            {!isMap && (
+            {!isMap && !advanced && (
               <AccordionSection title="Order">
                 <OrderValues
                   onChange={(value) => handleChange(value, "orderBy")}
@@ -159,7 +160,7 @@ const EditorOptions = ({
                 )}
               </AccordionSection>
             )}
-            {!isMap && !rasterOnly && (
+            {!isMap && !rasterOnly && !advanced && (
               <AccordionSection title="Chart specific">
                 <Suspense fallback={<div>Loading...</div>}>
                   {donutRadius && (
@@ -213,7 +214,7 @@ const EditorOptions = ({
         {disabledFeatures.indexOf("advanced-editor") === -1 && (
           <Tab label="Advanced">
             <Suspense fallback={<div>Loading...</div>}>
-              <JsonEditor />
+              <AdvancedEditor />
             </Suspense>
           </Tab>
         )}
