@@ -1,6 +1,5 @@
-import { oneLineTrim } from "common-tags";
 import { Adapter, Dataset, Widget, Config } from "@widget-editor/types";
-import { getEditorMeta } from "@widget-editor/shared";
+import { getEditorMeta, tags } from "@widget-editor/shared";
 
 import {
   DatasetService,
@@ -64,7 +63,7 @@ export default class RwAdapter implements Adapter.Service {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata,vocabulary,widget,layer";
 
-    const url = oneLineTrim`
+    const url = tags.oneLineTrim`
       ${this.endpoint}
       /dataset/
       ${this.datasetId}?
@@ -97,7 +96,7 @@ export default class RwAdapter implements Adapter.Service {
   }
 
   async getFields() {
-    const url = oneLineTrim`
+    const url = tags.oneLineTrim`
       ${this.endpoint}/fields/
       ${this.datasetId}
     `;
@@ -116,7 +115,7 @@ export default class RwAdapter implements Adapter.Service {
 
     if (!resolveWidgetId) return null;
 
-    const url = oneLineTrim`
+    const url = tags.oneLineTrim`
       ${this.endpoint}
       /widget/
       ${resolveWidgetId}?
@@ -135,7 +134,7 @@ export default class RwAdapter implements Adapter.Service {
   async getLayers() {
     const { applications, env } = this.config.getConfig();
 
-    const url = oneLineTrim`
+    const url = tags.oneLineTrim`
       ${this.endpoint}
       /dataset/
       ${this.datasetId}/layer?
@@ -287,7 +286,7 @@ export default class RwAdapter implements Adapter.Service {
 
   async requestData(sql: string, dataset: Dataset.Payload) {
     const response = await fetch(
-      oneLineTrim`
+      tags.oneLineTrim`
         https://api.resourcewatch.org/v1/query/
         ${dataset.id}?
         sql=${sql}

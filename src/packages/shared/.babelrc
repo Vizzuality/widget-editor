@@ -6,7 +6,8 @@
       {
         "root": ["./src"],
         "alias": {
-          "modules": "./src/modules"
+          "modules": "./src/modules",
+          "template-tags": "./src/template-tags"
         }
       }
     ],

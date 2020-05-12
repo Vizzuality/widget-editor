@@ -51,7 +51,6 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "common-tags": "1.8.0",
     "rimraf": "^3.0.2"
   },
   "resolutions": {
