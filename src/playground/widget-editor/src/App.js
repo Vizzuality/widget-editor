@@ -3,6 +3,8 @@ import { Provider } from "react-redux";
 
 import configureStore from "store";
 
+import { getEditorState } from "@widget-editor/widget-editor";
+
 import Editor from "./components/editor";
 import EditorOptions from "components/editor-options";
 import ToggleOptions from "components/toggle-options";
@@ -32,6 +34,9 @@ function App() {
           <ToggleOptions />
           <button type="button" onClick={() => handleSetRenderer()}>
             {isRenderer ? "View editor" : "View renderer"}
+          </button>
+          <button type="button" onClick={() => console.log(getEditorState())}>
+            Get Editor state
           </button>
         </header>
         {!isRenderer && (

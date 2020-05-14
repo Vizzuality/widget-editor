@@ -4,7 +4,6 @@ import Editor from "components/editor";
 class WidgetEditor extends React.Component {
   render() {
     const {
-      authenticated,
       application,
       onSave,
       datasetId,
@@ -12,8 +11,10 @@ class WidgetEditor extends React.Component {
       adapter,
       theme,
       disable,
+      enableSave,
+      enableInfo,
       schemes,
-      compact = true,
+      compact = false,
     } = this.props;
 
     if (typeof adapter !== "function") {
@@ -28,10 +29,11 @@ class WidgetEditor extends React.Component {
 
     return (
       <Editor
-        authenticated={authenticated}
         disable={disable}
         application={application}
         onSave={onSave}
+        enableSave={enableSave}
+        enableInfo={enableInfo}
         datasetId={datasetId}
         widgetId={widgetId}
         adapter={new adapter()}

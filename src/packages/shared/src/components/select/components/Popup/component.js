@@ -21,7 +21,15 @@ const Popup = ({
   const { align = ALIGN_HORIZONTAL } = selectProps;
 
   const resolveTitle = (op) => {
-    return op.alias || op.identifer;
+    if (op.alias && op.alias.length > 0) {
+      return op.alias;
+    }
+
+    if (op.name && op.name.length > 0) {
+      return op.name;
+    }
+
+    return op.identifier;
   };
 
   return (
