@@ -2,6 +2,8 @@ import { takeLatest, put, call, select, cancel } from "redux-saga/effects";
 
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
+import { localOnChangeState } from "exposed-hooks";
+
 import {
   FiltersService,
   constants,
@@ -104,6 +106,8 @@ function* resolveWithProxy() {
     for (const evnt in proxyResult) {
       yield put({ type: proxyResult[evnt] });
     }
+    const state = yield select();
+    localOnChangeState(state.widgetEditor);
   }
 }
 

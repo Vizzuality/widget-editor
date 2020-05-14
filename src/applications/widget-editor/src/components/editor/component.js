@@ -8,6 +8,8 @@ import { DataService } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
 import { StyledContainer, StyleEditorContainer } from "./style";
 
+import { localGetEditorState } from "exposed-hooks";
+
 class Editor extends React.Component {
   constructor(props) {
     super(props);
@@ -20,6 +22,9 @@ class Editor extends React.Component {
       userPassedTheme,
       schemes,
     } = this.props;
+
+    // XXX: Bind editor properties to exported callbacks
+    // These functions can get called indipendent of the editor
 
     this.onSave = this.onSave.bind(this);
 
@@ -40,6 +45,8 @@ class Editor extends React.Component {
       type: constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
       payload: adapter,
     });
+
+    localGetEditorState({ adapter, dataService: this.dataService });
   }
 
   componentWillMount() {
