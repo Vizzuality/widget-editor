@@ -76,19 +76,31 @@ export const getWidgetColumns = createSelector(
   (configuration, dataset, fields, props) => {
     if (
       !dataset ||
-      !dataset.id ||
-      !dataset.attributes ||
-      !dataset.attributes.widgetRelevantProps
+      !dataset.hasOwnProperty("id") ||
+      !dataset.hasOwnProperty("attributes") ||
+      !dataset.attributes.hasOwnProperty("widgetRelevantProps")
     ) {
       return [];
     }
 
-    const columns = dataset.attributes.widgetRelevantProps.map((prop) => ({
-      ...dataset.attributes.metadata[0].attributes.columns[prop],
-      identifier: prop,
-      name: prop,
-      type: getColumnDataType(prop, fields),
-    }));
+    let columns;
+    const relevantProps = dataset.attributes.widgetRelevantProps;
+    const datasetMeta = dataset.attributes.metadata[0];
+    if (!relevantProps || relevantProps.length === 0) {
+      columns = Object.keys(datasetMeta.attributes.columns).map((prop) => ({
+        ...datasetMeta.attributes.columns[prop],
+        identifier: prop,
+        name: prop,
+        type: getColumnDataType(prop, fields),
+      }));
+    } else {
+      columns = relevantProps.map((prop) => ({
+        ...datasetMeta.attributes.columns[prop],
+        identifier: prop,
+        name: prop,
+        type: getColumnDataType(prop, fields),
+      }));
+    }
 
     if (configuration.chartType === "pie") {
       return columns;

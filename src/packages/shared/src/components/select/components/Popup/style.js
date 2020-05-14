@@ -40,11 +40,11 @@ export const StyledPopupInsideContainer = styled.div`
   cursor: initial;
 
   ${(props) =>
-      props.align === ALIGN_VERTICAL &&
-      css`
-        box-shadow: -10px -10px 30px 0 rgba(0, 0, 0, 0.15);
-      `}
-    ::-webkit-scrollbar {
+    props.align === ALIGN_VERTICAL &&
+    css`
+      box-shadow: -10px -10px 30px 0 rgba(0, 0, 0, 0.15);
+    `}
+  ::-webkit-scrollbar {
     width: 7px;
   }
 
