@@ -23,9 +23,6 @@ class Editor extends React.Component {
       schemes,
     } = this.props;
 
-    // XXX: Bind editor properties to exported callbacks
-    // These functions can get called indipendent of the editor
-
     this.onSave = this.onSave.bind(this);
 
     this.dataService = new DataService(
@@ -46,6 +43,7 @@ class Editor extends React.Component {
       payload: adapter,
     });
 
+    // XXX: Initialize editor hooks apis
     localGetEditorState({ adapter, dataService: this.dataService });
   }
 
