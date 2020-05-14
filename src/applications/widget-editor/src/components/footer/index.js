@@ -4,5 +4,6 @@ import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 import FooterComponent from "./component";
 
 export default connectState((state) => ({
-  authenticated: state.editor.authenticated,
+  enableSave: state.editor.enableSave,
+  enableInfo: state.editor.enableInfo,
 }))(FooterComponent);
