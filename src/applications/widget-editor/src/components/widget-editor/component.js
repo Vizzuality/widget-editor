@@ -14,7 +14,7 @@ class WidgetEditor extends React.Component {
       enableSave,
       enableInfo,
       schemes,
-      compact = true,
+      compact = false,
     } = this.props;
 
     if (typeof adapter !== "function") {
