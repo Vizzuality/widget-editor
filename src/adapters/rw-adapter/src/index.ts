@@ -7,6 +7,8 @@ import {
   FiltersService,
 } from "@widget-editor/core";
 
+import defaultWidget from "./default-widget";
+
 import ConfigHelper from "./helpers/config";
 
 export default class RwAdapter implements Adapter.Service {
@@ -105,6 +107,30 @@ export default class RwAdapter implements Adapter.Service {
     return fields;
   }
 
+  handleDefaultWidgetConf(dataset: Dataset.Payload) {
+    return {
+      paramsConfig: {
+        visualizationType: "chart",
+        limit: 50,
+        orderBy: null,
+        aggregateFunction: null,
+        chartType: "bar",
+        filters: [],
+        areaIntersection: null,
+        band: null,
+        layer: null,
+        value: {
+          tableName: this.tableName,
+          datasetID: dataset.id,
+        },
+        category: {
+          tableName: this.tableName,
+          datasetID: dataset.id,
+        },
+      },
+    };
+  }
+
   async getWidget(dataset: Dataset.Payload, widgetId: Widget.Id) {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata";
@@ -113,7 +139,16 @@ export default class RwAdapter implements Adapter.Service {
       ? this.widgetService.fromDataset(dataset)?.id
       : widgetId;
 
-    if (!resolveWidgetId) return null;
+    if (!resolveWidgetId) {
+      return {
+        ...defaultWidget,
+        attributes: {
+          ...defaultWidget.attributes,
+          dataset: dataset.id,
+          widgetConfig: this.handleDefaultWidgetConf(dataset),
+        },
+      };
+    }
 
     const url = tags.oneLineTrim`
       ${this.endpoint}

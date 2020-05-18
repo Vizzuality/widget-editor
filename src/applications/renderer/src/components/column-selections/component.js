@@ -83,6 +83,7 @@ const ColumnSelections = ({
         <Select
           align="horizontal"
           menuPlacement="top"
+          placeholder="Value"
           compact={compact}
           value={chartOptions.chartValue}
           onChange={handleChangeValue}
@@ -103,6 +104,7 @@ const ColumnSelections = ({
             <Select
               align="vertical"
               menuPlacement="top"
+              placeholder="Category"
               value={chartOptions.chartCategory}
               onChange={handleChangeCategory}
               getOptionLabel={(option) => resolveLabel(yTitle, option)}
@@ -118,6 +120,7 @@ const ColumnSelections = ({
             <Select
               align="vertical"
               menuPlacement="top"
+              placeholder="Value"
               value={chartOptions.chartValue}
               onChange={handleChangeValue}
               getOptionLabel={(option) => resolveLabel(xTitle, option)}
@@ -138,6 +141,7 @@ const ColumnSelections = ({
               align="horizontal"
               compact={compact}
               menuPlacement="top"
+              placeholder="Value"
               value={chartOptions.chartValue}
               onChange={handleChangeValue}
               getOptionLabel={(option) => resolveLabel(xTitle, option)}
@@ -154,6 +158,7 @@ const ColumnSelections = ({
               align="horizontal"
               compact={compact}
               menuPlacement="top"
+              placeholder="Category"
               value={chartOptions.chartCategory}
               onChange={handleChangeCategory}
               getOptionLabel={(option) => resolveLabel(yTitle, option)}

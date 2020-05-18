@@ -11,10 +11,13 @@ export default {
 
     if (!selectedScheme) {
       selectedScheme = payload[0].name;
+    } else {
+      selectedScheme = selectedScheme.name;
     }
+
     return {
       ...state,
-      selectedScheme: selectedScheme.name,
+      selectedScheme,
       schemes: payload,
     };
   },

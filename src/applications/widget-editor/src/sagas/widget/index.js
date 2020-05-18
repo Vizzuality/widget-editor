@@ -62,6 +62,10 @@ function* preloadData() {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
 
+  if (!editor.widget) {
+    yield cancel();
+  }
+
   const { widgetData } = editor;
   const { widgetConfig } = editor.widget.attributes;
 

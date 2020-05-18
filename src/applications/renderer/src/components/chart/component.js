@@ -1,11 +1,11 @@
-import React, { Suspense } from "react";
+import React, { Fragment, Suspense } from "react";
 import * as vega from "vega";
 import vegaTooltip from "vega-tooltip";
 
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
 
-import { StyledContainer } from "./styles";
+import { StyledContainer, ChartNeedsOptions } from "./styles";
 
 const ColumnSelections = React.lazy(() => import("../column-selections"));
 
@@ -140,6 +140,10 @@ class Chart extends React.Component {
     }
   }
 
+  noDataAvailable() {
+    return !this.props.editor.widgetData;
+  }
+
   generateVegaChart() {
     const {
       advanced,
@@ -147,6 +151,10 @@ class Chart extends React.Component {
       widget: vegaConfiguration,
       standaloneConfiguration,
     } = this.props;
+
+    if (this.noDataAvailable()) {
+      return;
+    }
 
     if (this.standalone && standaloneConfiguration) {
       if (thumbnail) {
@@ -170,6 +178,14 @@ class Chart extends React.Component {
     }
   }
 
+  columnSelection() {
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <ColumnSelections compact={this.props.compact} />
+      </Suspense>
+    );
+  }
+
   render() {
     const { thumbnail, standalone, advanced = false } = this.props;
     return (
@@ -187,11 +203,17 @@ class Chart extends React.Component {
             this.chart = c;
           }}
         ></div>
-        {!this.standalone && !advanced && (
-          <Suspense fallback={<div>Loading...</div>}>
-            <ColumnSelections compact={this.props.compact} />
-          </Suspense>
+
+        {this.noDataAvailable() && (
+          <Fragment>
+            <ChartNeedsOptions>
+              Select value & category to visualize data
+            </ChartNeedsOptions>
+            {this.columnSelection()}
+          </Fragment>
         )}
+
+        {!this.standalone && !advanced && this.columnSelection()}
       </StyledContainer>
     );
   }

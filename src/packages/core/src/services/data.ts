@@ -70,7 +70,7 @@ export default class DataService {
     let orderBy = null;
     let color = null;
 
-    if (filters && Array.isArray(filters) && filters.length > 0) {    
+    if (filters && Array.isArray(filters) && filters.length > 0) {
       // --- If orderby exsists, assign it to stores
       if (isObjectLike(paramsConfig.orderBy)) {
         orderBy = paramsConfig.orderBy;

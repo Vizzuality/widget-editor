@@ -1,5 +1,13 @@
 import styled, { css } from "styled-components";
 
+export const ChartNeedsOptions = styled.h4`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-57%, -50%);
+  color: #bdbdbd;
+`;
+
 export const StyledContainer = styled.div`
   ${(props) =>
     !props.standalone &&
