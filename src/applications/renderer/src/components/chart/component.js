@@ -141,7 +141,7 @@ class Chart extends React.Component {
   }
 
   noDataAvailable() {
-    return !this.props.editor.widgetData;
+    return !this.standalone && !this.props.editor.widgetData;
   }
 
   generateVegaChart() {
