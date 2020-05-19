@@ -7,19 +7,25 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import debounce from "lodash/debounce";
-import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
 import { InputStyles } from "./style";
 
 import VALUE_FORMAT_OPTIONS from "@widget-editor/shared/lib/constants/value-formats";
+import aggregations from "@widget-editor/shared/lib/constants/aggregations";
 
 class WidgetInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.stateFromProps(props.configuration);
 
+    this.aggregationOptions = aggregations.map((agg) => ({
+      value: agg.toUpperCase(),
+      label: agg.charAt(0).toUpperCase() + agg.slice(1),
+    }));
+
     this.setValueFormat = this.setValueFormat.bind(this);
+    this.setAggregation = this.setAggregation.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -43,6 +49,9 @@ class WidgetInfo extends React.Component {
       caption: configuration?.caption ? configuration.caption : "",
       xAxisTitle: configuration?.xAxisTitle ? configuration.xAxisTitle : "",
       yAxisTitle: configuration?.yAxisTitle ? configuration.yAxisTitle : "",
+      aggregateFunction: configuration?.aggregateFunction
+        ? configuration.aggregateFunction
+        : null,
       format: this.resolveFormat(configuration),
     };
   }
@@ -67,6 +76,7 @@ class WidgetInfo extends React.Component {
       caption,
       yAxisTitle,
       xAxisTitle,
+      aggregateFunction,
       format,
     } = this.state;
     patchConfiguration({
@@ -76,6 +86,7 @@ class WidgetInfo extends React.Component {
       format: format?.value || "s",
       yAxisTitle: yAxisTitle,
       xAxisTitle: xAxisTitle,
+      aggregateFunction: aggregateFunction,
       category: { ...configuration.category },
       value: { ...configuration.value, format: format?.value || "s" },
     });
@@ -111,6 +122,13 @@ class WidgetInfo extends React.Component {
     this.handleUpdate();
   }
 
+  setAggregation(agg) {
+    this.setState({
+      aggregateFunction: agg.value === "NONE" ? null : agg.value,
+    });
+    this.handleUpdate();
+  }
+
   render() {
     const {
       title,
@@ -118,6 +136,7 @@ class WidgetInfo extends React.Component {
       caption,
       yAxisTitle,
       xAxisTitle,
+      aggregateFunction,
       format,
     } = this.state;
     const { isMap } = this.props;
@@ -176,6 +195,19 @@ class WidgetInfo extends React.Component {
               />
             </InputGroup>
           </FlexContainer>
+        )}
+        {!isMap && (
+          <InputGroup>
+            <FormLabel htmlFor="options-title">Value aggregation</FormLabel>
+            <CreatableSelect
+              value={this.aggregationOptions.find(
+                (agg) => agg.value === aggregateFunction
+              )}
+              onChange={this.setAggregation}
+              options={this.aggregationOptions}
+              styles={InputStyles}
+            />
+          </InputGroup>
         )}
         {!isMap && (
           <InputGroup>

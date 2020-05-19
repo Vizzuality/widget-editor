@@ -1,8 +1,8 @@
-import * as Generic from './generic';
+import * as Generic from "./generic";
 
 export interface Service {
   prepareSelectStatement(): void;
-  prepareAggregate(): void;
+  resolveAggregate(column: string): void;
   prepareFilters(): void;
   prepareGroupBy(): void;
   prepareOrderBy(): void;
@@ -10,4 +10,3 @@ export interface Service {
   prepareLimit(): void;
   requestWidgetData(): Promise<Generic.ObjectPayload>;
 }
-

@@ -14,6 +14,8 @@ import filtersHelper from "../helpers/filters";
 
 import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
+import aggregations from "@widget-editor/shared/lib/constants/aggregations";
+
 export default class FiltersService implements Filters.Service {
   sql: string;
   dataset: any;
@@ -28,7 +30,6 @@ export default class FiltersService implements Filters.Service {
     this.dataset = dataset;
 
     this.prepareSelectStatement();
-    this.prepareAggregate();
     this.prepareFilters();
     this.prepareGroupBy();
     this.prepareOrderBy();
@@ -51,37 +52,26 @@ export default class FiltersService implements Filters.Service {
     return "";
   }
 
+  resolveAggregate(column: string) {
+    const { aggregateFunction } = this.configuration;
+
+    if (aggregateFunction) {
+      return `${aggregateFunction}(${column})`;
+    }
+
+    return column;
+  }
+
   prepareSelectStatement() {
-    const { category } = this.configuration;
+    const { category, value } = this.configuration;
+
     this.sql = `SELECT ${category.name} as ${
       sqlFields.value
     } ${this.prepareColor()}`;
-  }
 
-  prepareAggregate() {
-    const { aggregateFunction, value } = this.configuration;
-    const { name } = value;
-
-    if (!aggregateFunction) {
-      this.sql = `${this.sql}, ${name} as ${
-        sqlFields.category
-      } FROM ${this.resolveTableName()}`;
-    } else {
-      const aggregation = aggregateFunction.toUpperCase();
-      if (
-        aggregation === "SUM" ||
-        aggregation === "COUNT" ||
-        aggregation === "AVG"
-      ) {
-        this.sql = `${this.sql}, ${aggregation}(${name}) as ${
-          sqlFields.category
-        } FROM ${this.resolveTableName()}`;
-      } else {
-        throw new Error(
-          `Aggragate function (${aggregateFunction}) not implemented in filter service.`
-        );
-      }
-    }
+    this.sql = `${this.sql}, ${this.resolveAggregate(value.name)} as ${
+      sqlFields.category
+    } FROM ${this.resolveTableName()}`;
   }
 
   private escapeValue(value, dataType) {
@@ -256,14 +246,21 @@ export default class FiltersService implements Filters.Service {
     } else if (
       chartType === "pie" ||
       chartType === "donut" ||
-      chartType === "line"
+      chartType === "line" ||
+      !!aggregateFunction
     ) {
       this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }
   }
 
   prepareOrderBy() {
-    const { orderBy, chartType } = this.configuration;
+    const { orderBy, chartType, aggregateFunction } = this.configuration;
+
+    if (!!aggregateFunction) {
+      this.sql = `${this.sql} ORDER BY y`;
+      return;
+    }
+
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
@@ -297,8 +294,6 @@ export default class FiltersService implements Filters.Service {
     if (!this.dataset.id) {
       throw new Error("Error, datasetId not present in Filters service.");
     }
-
-    return [];
 
     const response = await fetch(
       `https://api.resourcewatch.org/v1/query/${this.dataset.id}?sql=${this.sql}`
