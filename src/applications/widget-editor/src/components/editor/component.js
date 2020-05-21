@@ -128,7 +128,10 @@ class Editor extends React.Component {
 
   onSave() {
     const { onSave, dispatch, editorState, adapter, application } = this.props;
-    if (typeof onSave === "function") {
+    if (
+      typeof onSave === "function" &&
+      typeof adapter.handleSave === "function"
+    ) {
       adapter.handleSave(onSave, this.dataService, application, editorState);
     }
     dispatch({ type: constants.sagaEvents.EDITOR_SAVE });

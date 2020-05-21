@@ -8,18 +8,23 @@ export const localGetEditorState = (payload) => {
 };
 
 export const localOnChangeState = (editorState) => {
-  localCache.adapter.handleSave(
-    (result) => {
-      localCache = {
-        ...localCache,
-        adapterPayload: result,
-        editorState,
-      };
-    },
-    localCache.dataService,
-    localCache.adapter.applications.join(","),
-    editorState
-  );
+  if (
+    localCache.adapter &&
+    typeof localCache.adapter.handleSave === "function"
+  ) {
+    localCache.adapter.handleSave(
+      (result) => {
+        localCache = {
+          ...localCache,
+          adapterPayload: result,
+          editorState,
+        };
+      },
+      localCache.dataService,
+      localCache.adapter.applications.join(","),
+      editorState
+    );
+  }
 };
 
 export const publicOnSave = () => {

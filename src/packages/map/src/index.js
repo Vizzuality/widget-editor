@@ -94,6 +94,7 @@ class Map extends React.Component {
       lng: this.mapConfiguration.lng || 0,
       bbox: this.mapConfiguration.bbox || [0, 0, 0, 0],
     };
+
     const mapOptions = { ...FROM_PROPS, ...MAP_CONFIG };
 
     mapOptions.center = [
@@ -155,12 +156,20 @@ class Map extends React.Component {
 
   instantiateMap() {
     if (!this.mapNode) return;
-    this.map = L.map(this.mapNode, this.getMapOptions());
+    const mapOptions = this.getMapOptions();
+
+    console.log("map options", mapOptions);
+    this.map = L.map(this.mapNode, mapOptions);
     this.map.scrollWheelZoom.disable();
 
     // If the layer has bounds, we just pan in the
     // area
-    if (this.props?.mapConfig?.bounds) {
+    if (mapOptions.hasOwnProperty("bbox") && mapOptions.bbox.length === 4) {
+      this.map.fitBounds([
+        [mapOptions.bbox[0], mapOptions.bbox[1]],
+        [mapOptions.bbox[2], mapOptions.bbox[3]],
+      ]);
+    } else if (this.props?.mapConfig?.bounds) {
       this.map.fitBounds(this.props.mapConfig.bounds);
     }
 
@@ -284,7 +293,6 @@ class Map extends React.Component {
 
   setBasemap(basemap) {
     if (this.tileLayer) this.tileLayer.remove();
-    console.log("set basemap", basemap);
     this.tileLayer = L.tileLayer(basemap.value, basemap.options)
       .addTo(this.map)
       .setZIndex(0);
