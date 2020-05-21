@@ -50,7 +50,7 @@ class WidgetInfo extends React.Component {
       xAxisTitle: configuration?.xAxisTitle ? configuration.xAxisTitle : "",
       yAxisTitle: configuration?.yAxisTitle ? configuration.yAxisTitle : "",
       aggregateFunction: configuration?.aggregateFunction
-        ? configuration.aggregateFunction
+        ? configuration.aggregateFunction.toUpperCase()
         : null,
       format: this.resolveFormat(configuration),
     };

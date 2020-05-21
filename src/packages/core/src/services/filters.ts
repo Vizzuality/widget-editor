@@ -257,7 +257,9 @@ export default class FiltersService implements Filters.Service {
     const { orderBy, chartType, aggregateFunction } = this.configuration;
 
     if (!!aggregateFunction) {
-      this.sql = `${this.sql} ORDER BY y`;
+      this.sql = `${this.sql} ORDER BY ${
+        this.configuration?.category?.name || "y"
+      }`;
       return;
     }
 
