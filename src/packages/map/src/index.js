@@ -154,6 +154,10 @@ class Map extends React.Component {
     }
   }
 
+  isNullSetBBox(bbox) {
+    return Array.isArray(bbox) && bbox.reduce((a, b) => a + b) === 0;
+  }
+
   instantiateMap() {
     if (!this.mapNode) return;
     const mapOptions = this.getMapOptions();
@@ -164,7 +168,11 @@ class Map extends React.Component {
 
     // If the layer has bounds, we just pan in the
     // area
-    if (mapOptions.hasOwnProperty("bbox") && mapOptions.bbox.length === 4) {
+    if (
+      mapOptions.hasOwnProperty("bbox") &&
+      mapOptions.bbox.length === 4 &&
+      !this.isNullSetBBox(mapOptions.bbox)
+    ) {
       this.map.fitBounds([
         [mapOptions.bbox[0], mapOptions.bbox[1]],
         [mapOptions.bbox[2], mapOptions.bbox[3]],
