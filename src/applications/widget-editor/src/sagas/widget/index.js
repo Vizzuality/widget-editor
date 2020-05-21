@@ -20,6 +20,8 @@ let adapterConfiguration = null;
 
 const columnsSet = (value, category) => {
   return (
+    value &&
+    category &&
     typeof value === "object" &&
     typeof category === "object" &&
     "name" in value &&

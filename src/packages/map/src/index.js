@@ -47,7 +47,6 @@ const MAP_CONFIG = {
 class Map extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       loading: false,
       legendOpen: true,
@@ -285,7 +284,7 @@ class Map extends React.Component {
 
   setBasemap(basemap) {
     if (this.tileLayer) this.tileLayer.remove();
-
+    console.log("set basemap", basemap);
     this.tileLayer = L.tileLayer(basemap.value, basemap.options)
       .addTo(this.map)
       .setZIndex(0);
