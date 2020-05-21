@@ -259,6 +259,7 @@ export default class RwAdapter implements Adapter.Service {
         zoom: editorState.configuration.map.zoom,
         lat: editorState.configuration.map.lat,
         lng: editorState.configuration.map.lng,
+        bounds: editorState.configuration.map.bounds,
         bbox: editorState.configuration.map.bbox,
       };
     }
@@ -268,7 +269,7 @@ export default class RwAdapter implements Adapter.Service {
     }
 
     const out = {
-      id: editorState.editor.widget.id,
+      id: editorState?.editor?.widget?.id || null,
       type: "widget",
       name: configuration.title || null,
       description: configuration.description || null,

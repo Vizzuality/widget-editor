@@ -8,7 +8,7 @@ const Chart = React.lazy(() => import("../chart"));
 const Map = React.lazy(() => import("@widget-editor/map"));
 
 const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
-  const isMap = widgetConfig.paramsConfig.visualizationType === "map";
+  const isMap = widgetConfig?.paramsConfig?.visualizationType === "map";
   const [{ layerData, isLoadingLayers, isErrorLayers }] = useLayerData(
     widgetConfig?.paramsConfig?.layer,
     isMap

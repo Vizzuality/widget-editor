@@ -74,6 +74,9 @@ class Map extends React.Component {
   }
 
   createLayerGroups(layers, layerId) {
+    if (!layers || !layers.reduce(Boolean)) {
+      return [];
+    }
     return layers.map(({ id, attributes }) => ({
       dataset: attributes.dataset,
       visible: true,
@@ -108,9 +111,10 @@ class Map extends React.Component {
   componentDidMount() {
     this.hasBeenMounted = true;
     this.instantiateMap();
+    const mapOptions = this.getMapOptions();
 
     // If the bounds are not defined, we set them in the store
-    if (!this.props?.mapConfig?.bounds) {
+    if (!this.props?.mapConfig?.bounds || !mapOptions.hasOwnProperty("bbox")) {
       this.onMapChange();
     }
   }
@@ -154,30 +158,20 @@ class Map extends React.Component {
     }
   }
 
-  isNullSetBBox(bbox) {
-    return Array.isArray(bbox) && bbox.reduce((a, b) => a + b) === 0;
+  isNullSetBBox(mapOptions) {
+    return mapOptions.lat === 0 && mapOptions.lng === 0;
   }
 
   instantiateMap() {
     if (!this.mapNode) return;
     const mapOptions = this.getMapOptions();
 
-    console.log("map options", mapOptions);
     this.map = L.map(this.mapNode, mapOptions);
     this.map.scrollWheelZoom.disable();
 
     // If the layer has bounds, we just pan in the
     // area
-    if (
-      mapOptions.hasOwnProperty("bbox") &&
-      mapOptions.bbox.length === 4 &&
-      !this.isNullSetBBox(mapOptions.bbox)
-    ) {
-      this.map.fitBounds([
-        [mapOptions.bbox[0], mapOptions.bbox[1]],
-        [mapOptions.bbox[2], mapOptions.bbox[3]],
-      ]);
-    } else if (this.props?.mapConfig?.bounds) {
+    if (this.props?.mapConfig?.bounds) {
       this.map.fitBounds(this.props.mapConfig.bounds);
     }
 
@@ -203,7 +197,6 @@ class Map extends React.Component {
     this.setBoundaries(!!this.props?.mapConfiguration?.bbox || false);
 
     this.setEventListeners();
-
     this.instantiateLayerManager();
 
     const layers = this.layerGroups
@@ -276,6 +269,7 @@ class Map extends React.Component {
           lat,
           lng,
           zoom,
+          bounds: mapParams.bounds,
           bbox: [...bbox1, ...bbox2],
         },
       });
@@ -340,7 +334,7 @@ class Map extends React.Component {
         <StyledLegendLayerWrapper>
           {legendOpen &&
             this.activeLayers.map((lg, i) => (
-              <StyledLegendConfig key={lg.name}>
+              <StyledLegendConfig key={`${lg.name}-${i}`}>
                 <StyledLegendTitle>{lg.name}</StyledLegendTitle>
 
                 {lg.legendConfig.type === "gradient" && (
@@ -349,9 +343,11 @@ class Map extends React.Component {
                       items={this.generateGradient(lg.legendConfig.items)}
                     />
                     <StyledGradientUnits>
-                      {lg.legendConfig.items.map((lc) => {
+                      {lg.legendConfig.items.map((lc, i) => {
                         return (
-                          <StyledLegendConfigItem key={lc.name}>
+                          <StyledLegendConfigItem
+                            key={`${lc.name}-gratient-unit-${i}`}
+                          >
                             {lc.value}
                           </StyledLegendConfigItem>
                         );
@@ -364,9 +360,11 @@ class Map extends React.Component {
                 )}
 
                 {lg.legendConfig.type === "choropleth" &&
-                  lg.legendConfig.items.map((lc) => {
+                  lg.legendConfig.items.map((lc, i) => {
                     return (
-                      <StyledLegendConfigItem key={lc.name}>
+                      <StyledLegendConfigItem
+                        key={`${lc.name}-config-item-${i}`}
+                      >
                         <StyledConfigItemColor hexCode={lc.color} />
                         {lc.name}
                       </StyledLegendConfigItem>
