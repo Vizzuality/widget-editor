@@ -196,6 +196,24 @@ class Chart extends React.Component {
     return !this.standalone && !this.props.editor.widgetData;
   }
 
+  // XXX: makes sure custom charts has nessesary info to render
+  verifyCustomChart(conf) {
+    const axisY = conf?.config?.axisY || {};
+    delete axisY.labelAlign;
+    delete axisY.labelBaseline;
+    const config = conf.hasOwnProperty('config') ? {
+      ...conf.config,
+        axisY: {
+          ...axisY,
+          minExtent: 40
+        }
+    } : {}
+    return {
+      ...conf,
+      config
+    }
+  }
+
   generateVegaChart() {
     const {
       advanced,
@@ -217,7 +235,7 @@ class Chart extends React.Component {
         delete clearAxis.axis;
         this.generateRuntime(clearAxis);
       } else {
-        this.generateRuntime(standaloneConfiguration);
+        this.generateRuntime(this.verifyCustomChart(standaloneConfiguration));
       }
     } else {
       // XXX: Remove any nessesary information if not advanced mode
