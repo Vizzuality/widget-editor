@@ -55,6 +55,9 @@ class Chart extends React.Component {
   constructor(props) {
     super(props);
     this.vega = null;
+    this.state = {
+      chartReady: false
+    }
     this.standalone = props.standalone || false;
     this.handleResize = debounce(this.handleResize.bind(this), 250);
   }
@@ -73,8 +76,12 @@ class Chart extends React.Component {
   componentWillUnmount() {
     if (this.vega) {
       window.removeEventListener("resize", this.handleResize);
+      this.vega = null;
+      this.setState({ chartReady: false });
+      this.chart.innerHTML = '';
     }
   }
+
 
   setSize() {
     const { standalone } = this.props;
@@ -130,6 +137,7 @@ class Chart extends React.Component {
         ) {
           instantiateTooltip(this.vega, configuration);
         }
+        this.setState({ chartReady: true });
       } catch (err) {
         console.error(
           "Widget editor error: Could not parse vega",
@@ -188,6 +196,7 @@ class Chart extends React.Component {
 
   render() {
     const { thumbnail, standalone, advanced = false } = this.props;
+    const { chartReady } = this.state;
     return (
       <StyledContainer
         standalone={standalone}
@@ -206,9 +215,9 @@ class Chart extends React.Component {
 
         {this.noDataAvailable() && (
           <Fragment>
-            <ChartNeedsOptions>
+            {chartReady && <ChartNeedsOptions>
               Select value & category to visualize data
-            </ChartNeedsOptions>
+            </ChartNeedsOptions>}
             {this.columnSelection()}
           </Fragment>
         )}

@@ -201,69 +201,71 @@ export default class RwAdapter implements Adapter.Service {
     this.setTableName(tableName);
 
     let widgetConfig = widget;
-    delete widgetConfig.$schema;
-    delete widgetConfig.signals;
-    delete widgetConfig.autosize;
-
-    widgetConfig.paramsConfig = {
-      visualizationType: editorState.configuration.visualizationType,
-      caption: editorState.configuration.caption || null,
-      chartType: editorState.configuration.chartType,
-      value: editorState.configuration.value || null,
-      category: editorState.configuration.category || null,
-      limit: editorState.configuration.limit || 50,
-      slizeCount: editorState.configuration.slizeCount,
-      donutRadius: editorState.configuration.donutRadius,
-      color: editorState.configuration.color,
-      size: editorState.configuration.size,
-      orderBy: editorState.configuration.orderBy,
-      aggregateFunction: editorState.configuration.aggregateFunction,
-      areaIntersection: editorState.configuration.areaIntersection,
-      band: editorState.configuration.band,
-      ...(editorState.configuration.visualizationType !== "map"
-        ? { filters: this.filterSerializer(editorFilters) }
-        : { filters: [] }),
-      ...widgetConfig,
-    };
-
-    if (editorState.configuration.visualizationType === "map") {
-      widgetConfig = {
-        paramsConfig: {
-          caption: editorState.configuration.caption || null,
-          value: null,
-          category: null,
-          color: null,
-          orderBy: null,
-          aggregateFunction: null,
-          areaIntersection: null,
-          band: null,
-          visualizationType: editorState.configuration.visualizationType,
-          chartType: editorState.configuration.chartType,
-          layer: editorState.configuration.layer,
-        },
-        ...(editorState.configuration.map.basemap
-          ? {
-              basemap: {
-                basemap: editorState.configuration.map.basemap.basemap,
-                labels: editorState.configuration.map.basemap.labels,
-                boundaries: false,
-              },
-            }
-          : {
-              basemap: {
-                basemap: "dark",
-                labels: "Dark",
-                boundaries: false,
-              },
-            }),
-        zoom: editorState.configuration.map.zoom,
-        lat: editorState.configuration.map.lat,
-        lng: editorState.configuration.map.lng,
-        bounds: editorState.configuration.map.bounds,
-        bbox: editorState.configuration.map.bbox,
+    if (widgetConfig) {
+      delete widgetConfig.$schema;
+      delete widgetConfig.signals;
+      delete widgetConfig.autosize;
+    
+      widgetConfig.paramsConfig = {
+        visualizationType: editorState.configuration.visualizationType,
+        caption: editorState.configuration.caption || null,
+        chartType: editorState.configuration.chartType,
+        value: editorState.configuration.value || null,
+        category: editorState.configuration.category || null,
+        limit: editorState.configuration.limit || 50,
+        slizeCount: editorState.configuration.slizeCount,
+        donutRadius: editorState.configuration.donutRadius,
+        color: editorState.configuration.color,
+        size: editorState.configuration.size,
+        orderBy: editorState.configuration.orderBy,
+        aggregateFunction: editorState.configuration.aggregateFunction,
+        areaIntersection: editorState.configuration.areaIntersection,
+        band: editorState.configuration.band,
+        ...(editorState.configuration.visualizationType !== "map"
+          ? { filters: this.filterSerializer(editorFilters) }
+          : { filters: [] }),
+        ...widgetConfig,
       };
-    }
 
+      if (editorState.configuration.visualizationType === "map") {
+        widgetConfig = {
+          paramsConfig: {
+            caption: editorState.configuration.caption || null,
+            value: null,
+            category: null,
+            color: null,
+            orderBy: null,
+            aggregateFunction: null,
+            areaIntersection: null,
+            band: null,
+            visualizationType: editorState.configuration.visualizationType,
+            chartType: editorState.configuration.chartType,
+            layer: editorState.configuration.layer,
+          },
+          ...(editorState.configuration.map.basemap
+            ? {
+                basemap: {
+                  basemap: editorState.configuration.map.basemap.basemap,
+                  labels: editorState.configuration.map.basemap.labels,
+                  boundaries: false,
+                },
+              }
+            : {
+                basemap: {
+                  basemap: "dark",
+                  labels: "Dark",
+                  boundaries: false,
+                },
+              }),
+          zoom: editorState.configuration.map.zoom,
+          lat: editorState.configuration.map.lat,
+          lng: editorState.configuration.map.lng,
+          bounds: editorState.configuration.map.bounds,
+          bbox: editorState.configuration.map.bbox,
+        };
+      }
+      
+    }
     if (editorState.editor.advanced) {
       delete widgetConfig.paramsConfig;
     }

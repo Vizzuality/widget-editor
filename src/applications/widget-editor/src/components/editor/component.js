@@ -47,7 +47,7 @@ class Editor extends React.Component {
     localGetEditorState({ adapter, dataService: this.dataService });
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { authenticated } = this.props;
     if (authenticated) {
       this.resolveAuthentication(authenticated);

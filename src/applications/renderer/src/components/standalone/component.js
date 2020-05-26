@@ -1,13 +1,15 @@
 import React, { Fragment, Suspense } from "react";
 
 import useLayerData from "./fetch-layers-hook";
-
 import defaultConfig from "./constants";
+
+import Legend from './legend';
 
 const Chart = React.lazy(() => import("../chart"));
 const Map = React.lazy(() => import("@widget-editor/map"));
 
-const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
+const Standalone = ({ thumbnail, widgetConfig }) => {
+  console.log('standalone', widgetConfig)
   const isMap = widgetConfig?.paramsConfig?.visualizationType === "map";
   const [{ layerData, isLoadingLayers, isErrorLayers }] = useLayerData(
     widgetConfig?.paramsConfig?.layer,
@@ -42,6 +44,7 @@ const Standalone = ({ thumbnail, widgetConfig, adapter, theme }) => {
     <Fragment>
       {!isMap && (
         <Suspense>
+          {widgetConfig.hasOwnProperty('legend') && <Legend widgetConfig={widgetConfig}/>}
           <Chart
             thumbnail={thumbnail}
             standalone
