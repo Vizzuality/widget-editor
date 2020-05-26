@@ -6,11 +6,13 @@ import {
   RestoringWidgetTitle,
 } from "./style";
 
+import ChartTitle from '../chart-title';
+
+// Lazy components 
 const Chart = React.lazy(() => import("../chart"));
 const SelectChart = React.lazy(() => import("../select-chart"));
 const Legend = React.lazy(() => import("../legend"));
 const Standalone = React.lazy(() => import("../standalone"));
-
 const Map = React.lazy(() => import("@widget-editor/map"));
 
 // -- If a widget config is suplied, we are consuming the renderer outside of the editor
@@ -77,6 +79,7 @@ const Renderer = ({
             </RestoringWidget>
           }
         >
+          <ChartTitle configuration={configuration} />
           <Chart
             advanced={editor.advanced}
             compact={compact}

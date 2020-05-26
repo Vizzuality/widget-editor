@@ -57,8 +57,18 @@ class Editor extends React.Component {
   }
 
   componentWillUnmount() {
-    const { setEditor } = this.props;
-    setEditor({ initialized: false });
+    const { 
+      resetEditor, 
+      resetConfiguration, 
+      resetWidget, 
+      resetFilters, 
+      resetTheme 
+    } = this.props;
+    resetEditor();
+    resetConfiguration();
+    resetWidget();
+    resetFilters();
+    resetTheme();
   }
 
   componentDidUpdate(prevProps) {
