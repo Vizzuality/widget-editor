@@ -14,9 +14,7 @@ export default class StateProxy {
       visualizationType: null,
     };
 
-    this.configuration = {
-      limit: null,
-    };
+    this.configuration = null;
   }
 
   cacheChart(state) {
@@ -65,27 +63,8 @@ export default class StateProxy {
   }
 
   configurationHasUpdate(state) {
-    const { editor, configuration } = state;
-
-    // Whenever one of these properties change in our configuration
-    // We need to update data
-    const compareProps = [
-      "limit",
-      "orderBy",
-      "groupBy",
-      "format",
-      "value",
-      "category",
-      "color",
-      "aggregateFunction",
-    ];
-
-    const hasUpdates = this.checkProperties(
-      configuration,
-      this.configuration,
-      compareProps
-    );
-
+    const { configuration } = state;
+    const hasUpdates = !isEqual(this.configuration, configuration) && this.configuration !== null;
     this.configuration = configuration;
     return hasUpdates;
   }

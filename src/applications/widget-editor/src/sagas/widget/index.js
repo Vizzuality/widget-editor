@@ -64,7 +64,7 @@ function* preloadData() {
     widgetEditor: { editor, configuration, theme, widget },
   } = yield select();
 
-  if (!editor.widget) {
+  if (!editor.widget || editor.initialized) {
     yield cancel();
   }
 
@@ -171,7 +171,9 @@ function* updateWidget() {
 function* updateWidgetData() {
   const { widgetEditor } = yield select();
   const { advanced } = widgetEditor.editor;
-
+  if (!widgetEditor.editor.initialized) {
+    yield cancel();
+  }
   if (widgetEditor.configuration.visualizationType !== "map") {
     let widgetData;
 
@@ -182,16 +184,9 @@ function* updateWidgetData() {
     if (widgetData) {
       yield put(setEditor({ widgetData: widgetData.data }));
     }
+
     yield call(updateWidget);
-    if (!widgetEditor.editor.initialized) {
-      yield put({ type: constants.sagaEvents.DATA_FLOW_VISUALISATION_READY });
-    }
-  } else {
-    yield call(updateWidget);
-    if (!widgetEditor.editor.initialized) {
-      yield put({ type: constants.sagaEvents.DATA_FLOW_VISUALISATION_READY });
-    }
-  }
+  } 
 
   yield put(
     setConfiguration({
@@ -211,6 +206,12 @@ export default function* baseSaga() {
     updateWidgetData
   );
 
+  // --- Triggered multiple: When configuration updates, we update widget data
+  yield takeLatest(
+    constants.sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE,
+    updateWidgetData
+  );
+    
   // --- Triggered once: When we have all nessesary information to render visualization
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
@@ -225,12 +226,6 @@ export default function* baseSaga() {
 
   // --- Triggered multiple: When Configuration or data updates we update the widget
   yield takeLatest(constants.sagaEvents.DATA_FLOW_UPDATE_WIDGET, updateWidget);
-
-  // --- Triggered multiple: When configuration updates, we update widget data
-  yield takeLatest(
-    constants.sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE,
-    updateWidgetData
-  );
 
   // --- Triggered multiple: When configuration gets modified, we check with our state
   // --- proxy if we have updates, if thats the case we update the editors state based on response

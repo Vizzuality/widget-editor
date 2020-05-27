@@ -4,6 +4,7 @@ export interface Payload {
   id: Id;
   type: string;
   paramsConfig: any;
+  interaction_config: any;
   attributes: {
     name: string;
     dataset: string;

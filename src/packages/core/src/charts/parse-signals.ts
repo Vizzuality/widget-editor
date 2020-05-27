@@ -40,16 +40,16 @@ export default class ParseSignals {
 
   resolveValueAlias() {
     if (this.isCustom) {
-      return this.widgetConfig.value.alias;
+      return this.widgetConfig.value.alias || this.widgetConfig.value.name || 'x';
     }
-    return this.widgetConfig.paramsConfig.value.alias;
+    return this.widgetConfig.paramsConfig.value.alias || this.widgetConfig.paramsConfig.value.name || 'x';
   }
 
   resolveCategoryAlias() {
     if (this.isCustom) {
-      return this.widgetConfig.category.alias;
+      return this.widgetConfig.category.alias || this.widgetConfig.category.name || 'y';
     }
-    return this.widgetConfig.paramsConfig.category.alias;
+    return this.widgetConfig.paramsConfig.category.alias || this.widgetConfig.paramsConfig.category.name || 'y';
   }
 
   tooltipSet(chartType, marks) {

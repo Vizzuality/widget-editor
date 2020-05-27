@@ -66,6 +66,9 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   interactionConfig() {
+    if (this.widgetConfig.hasOwnProperty('interaction_config')) {
+      return this.widgetConfig.interaction_config;
+    }
     return [
       {
         name: "tooltip",
