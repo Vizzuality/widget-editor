@@ -7,6 +7,9 @@ import Fields from "./services/fields";
 import StateProxy from "./services/state-proxy";
 import constants from "./constants";
 
+import * as utils from './utils';
+
+export { utils };
 export { constants };
 export { Vega as VegaService };
 export { Data as DataService };

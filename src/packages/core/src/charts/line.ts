@@ -1,12 +1,11 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import ChartsCommon from './chart-common';
+import ParseSignals from './parse-signals';
+
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-import { parseData } from "./helpers";
-
-import signalsHelper from "../helpers/signals-helper";
-
-export default class Line implements Charts.Line {
+export default class Line extends ChartsCommon implements Charts.Line {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
@@ -18,6 +17,7 @@ export default class Line implements Charts.Line {
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
+    super(widgetConfig);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -128,7 +128,11 @@ export default class Line implements Charts.Line {
         name: "x",
         type: "point",
         range: "width",
-        domain: { data: "table", field: "x" },
+        domain: { 
+          data: "table", 
+          field: "x",  
+          ...(this.isDate() ? { sort: true } : {})
+        },
       },
       {
         name: "y",
@@ -187,9 +191,6 @@ export default class Line implements Charts.Line {
         ],
         encode: {
           update: {
-            tooltip: {
-              signal: signalsHelper(this.widgetConfig, "datum.datum.y", "datum.datum.x"),
-            },
             path: { field: "path" },
             fill: { value: "red" },
             opacity: { value: 0 },
@@ -199,11 +200,6 @@ export default class Line implements Charts.Line {
     ];
   }
 
-  resolveFormat() {
-    const format = this.widgetConfig?.paramsConfig?.format || "s";
-    return format;
-  }
-
   setAxes() {
     return [
       {
@@ -211,6 +207,17 @@ export default class Line implements Charts.Line {
         ...this.schema.axisX,
         orient: "bottom",
         scale: "x",
+        ...(this.isDate() ? {
+          encode: {
+            labels: {
+              update: {
+                text: {
+                  signal: "utcFormat(datum.value, '%d %b')",
+                } 
+              }
+            }
+          }
+        } : {}),
         labelOverlap: "parity",
         ticks: false,
       },
@@ -235,11 +242,17 @@ export default class Line implements Charts.Line {
 
   bindData(): Vega.Data[] {
     const { widgetData } = this;
-
     return [
       {
-        values: parseData(widgetData),
+        values: widgetData,
         name: "table",
+        ...(this.isDate() ? {
+          format: {
+            parse: {
+              x: 'date'
+            }
+          }
+        } : {}),
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
@@ -259,6 +272,7 @@ export default class Line implements Charts.Line {
   }
 
   getChart() {
-    return this.schema;
+    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
+    return parseSignals;
   }
 }

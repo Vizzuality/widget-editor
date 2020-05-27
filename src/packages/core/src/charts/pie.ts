@@ -1,10 +1,11 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import ChartsCommon from './chart-common';
+import ParseSignals from './parse-signals';
+
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-import signalsHelper from "../helpers/signals-helper";
-
-export default class Pie implements Charts.Pie {
+export default class Pie extends ChartsCommon implements Charts.Pie {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
@@ -16,6 +17,7 @@ export default class Pie implements Charts.Pie {
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
+    super(widgetConfig);
     this.schema = schema;
     this.scheme = scheme;
     this.widgetConfig = widgetConfig;
@@ -92,7 +94,11 @@ export default class Pie implements Charts.Pie {
       {
         name: "c",
         type: "ordinal",
-        domain: { data: "table", field: sqlFields.value },
+        domain: { 
+          data: "table", 
+          field: sqlFields.value,
+          ...(this.isDate() ? { sort: true } : {})
+        },
         range: this.scheme ? this.scheme.category : "category20",
       },
     ];
@@ -114,9 +120,6 @@ export default class Pie implements Charts.Pie {
         from: { data: "table" },
         encode: {
           enter: {
-            tooltip: {
-              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
-            },
             fill: { scale: "c", field: sqlFields.value },
             x: { signal: "width / 2" },
             y: { signal: "height / 2" },
@@ -145,6 +148,13 @@ export default class Pie implements Charts.Pie {
       {
         values: widgetData,
         name: "table",
+        ...(this.isDate() ? {
+          format: {
+            parse: {
+              x: 'date'
+            }
+          }
+        } : {}),
         transform: [
           {
             type: "pie",
@@ -158,6 +168,7 @@ export default class Pie implements Charts.Pie {
   }
 
   getChart() {
-    return this.schema;
+    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
+    return parseSignals;
   }
 }

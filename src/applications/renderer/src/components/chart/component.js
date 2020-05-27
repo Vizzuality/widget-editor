@@ -75,6 +75,10 @@ class Chart extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(nextProps.widget, this.props.widget);
+  }
+
   componentWillUnmount() {
     if (this.vega) {
       window.removeEventListener("resize", this.handleResize);
