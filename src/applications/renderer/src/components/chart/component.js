@@ -126,12 +126,14 @@ class Chart extends React.Component {
       try {
         const runtime = vega.parse({
           ...configuration,
-          marks: new ParseSignals(
-            configuration, 
-            configuration.paramsConfig, 
-            configuration?.paramsConfig?.category?.type === 'date', 
-            this.props.standalone
-          ).parseLegacy(),
+          ...(configuration.paramsConfig ? {
+            marks: new ParseSignals(
+              configuration, 
+              configuration.paramsConfig, 
+              configuration?.paramsConfig?.category?.type === 'date', 
+              this.props.standalone
+            ).parseLegacy(),
+          } : {})
         }, configuration.config);
         
         this.vega = new vega.View(runtime)
