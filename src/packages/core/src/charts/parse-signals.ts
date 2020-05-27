@@ -15,11 +15,27 @@ export default class ParseSignals {
     this.schema = schema;
     this.isCustom = !this.widgetConfig?.paramsConfig;
     this.chartType = this.isCustom ? this.widgetConfig.chartType : this.widgetConfig?.paramsConfig?.chartType;
+    
     this.valueAlias = this.resolveValueAlias();
     this.categoryAlias = this.resolveCategoryAlias();
     // TODO: Check why we are parsing this different for pie charts
-    this.datumXIndicator = this.isCustom && this.chartType === 'pie' ? 'value' : 'x';
-    this.datumYIndicator = this.isCustom && this.chartType === 'pie' ? 'category' : 'y';
+
+    this.getColumnIndicators();
+  }
+
+  // TODO: Clean this up, and verify edge cases
+  getColumnIndicators() {
+    if (this.widgetConfig.interaction_config) {
+      this.widgetConfig.interaction_config.forEach(conf => {
+        if (conf.name === 'tooltip' && conf.config.fields.length === 2) {
+          this.datumXIndicator = conf.config.fields[0].column;
+          this.datumYIndicator = conf.config.fields[1].column;
+        }
+      })
+    } else {
+      this.datumXIndicator = this.isCustom && this.chartType === 'pie' ? 'value' : 'x';
+      this.datumYIndicator = this.isCustom && this.chartType === 'pie' ? 'category' : 'y';
+    }
   }
 
   resolveValueAlias() {
