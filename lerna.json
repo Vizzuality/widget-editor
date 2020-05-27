@@ -6,7 +6,7 @@
     "src/adapters/*",
     "src/playground/*"
   ],
-  "version": "2.1.17",
+  "version": "2.1.18",
   "npmClient": "npm",
   "useWorkspaces": true
 }

@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/widget-editor",
-  "version": "2.1.17",
+  "version": "2.1.18",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -13,10 +13,10 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@widget-editor/core": "^2.1.17",
-    "@widget-editor/renderer": "^2.1.17",
-    "@widget-editor/shared": "^2.1.17",
-    "@widget-editor/types": "^2.1.17",
+    "@widget-editor/core": "^2.1.18",
+    "@widget-editor/renderer": "^2.1.18",
+    "@widget-editor/shared": "^2.1.18",
+    "@widget-editor/types": "^2.1.18",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "prismjs": "^1.20.0",
