@@ -6,9 +6,10 @@ import Vega from "./services/vega";
 import Fields from "./services/fields";
 import StateProxy from "./services/state-proxy";
 import constants from "./constants";
-
+import ParseSignals from './charts/parse-signals';
 import * as utils from './utils';
 
+export { ParseSignals };
 export { utils };
 export { constants };
 export { Vega as VegaService };

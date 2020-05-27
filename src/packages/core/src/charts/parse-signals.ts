@@ -5,18 +5,77 @@ export default class ParseSignals {
   categoryAlias: string;
   chartType: string;
   isDate: boolean;
+  isCustom: boolean;
+  datumXIndicator: string;
+  datumYIndicator: string;
 
   constructor(schema: any, widgetConfig: any, isDate: boolean = false) {
     this.isDate = isDate;
     this.widgetConfig = widgetConfig;
     this.schema = schema;
-    this.chartType = this.widgetConfig?.paramsConfig?.chartType;
-    this.valueAlias = this.widgetConfig.paramsConfig.value.alias || 'x'
-    this.categoryAlias = this.widgetConfig.paramsConfig.category.alias || 'y'
+    this.isCustom = !this.widgetConfig?.paramsConfig;
+    this.chartType = this.isCustom ? this.widgetConfig.chartType : this.widgetConfig?.paramsConfig?.chartType;
+    this.valueAlias = this.resolveValueAlias();
+    this.categoryAlias = this.resolveCategoryAlias();
+    // TODO: Check why we are parsing this different for pie charts
+    this.datumXIndicator = this.isCustom && this.chartType === 'pie' ? 'value' : 'x';
+    this.datumYIndicator = this.isCustom && this.chartType === 'pie' ? 'category' : 'y';
+  }
+
+  resolveValueAlias() {
+    if (this.isCustom) {
+      return this.widgetConfig.value.alias;
+    }
+    return this.widgetConfig.paramsConfig.value.alias;
+  }
+
+  resolveCategoryAlias() {
+    if (this.isCustom) {
+      return this.widgetConfig.category.alias;
+    }
+    return this.widgetConfig.paramsConfig.category.alias;
+  }
+
+  tooltipSet(chartType, marks) {
+    let match = false;
+    marks.forEach(mark => {
+      if (chartType === 'pie' && mark.type === 'arc') {
+        match = !!mark?.encode?.enter?.tooltip
+      }
+    })
+    return match;
+  }
+
+  // This makes sure we have our tooltip on previous widgets
+  // And also on any custom widget sent to the renderer
+  parseLegacy() {
+    const chartType = this.widgetConfig?.paramsConfig?.chartType;
+    let serializedMarks = this.schema.marks;
+    
+    const hasTooltip = this.tooltipSet(chartType, this.schema.marks);
+    if (!hasTooltip) {
+      if (this.chartType === 'pie' || this.chartType === 'donut') {
+        serializedMarks = this.pieMarks(this.schema.marks);
+      }
+      if (this.chartType === 'line') {
+        serializedMarks = this.lineMarks(this.schema.marks)
+      }
+
+      if (this.chartType === 'bar' || this.chartType === 'bar-horizontal') {
+        serializedMarks = this.barMarks(this.schema.marks);
+      }
+
+      if (this.chartType === 'scatter') {
+        serializedMarks = this.scatterMarks(this.schema.marks);
+      }
+      return serializedMarks;
+    } 
+
+    return this.schema.marks;
   }
 
   barMarks(marks: any) {
-    const barFormatX = this.isDate ? 'utcFormat(datum.x, \'%d %b\')' : 'datum.x';
+    const barFormatX = this.isDate ? `utcFormat(datum.${this.datumXIndicator}, \'%d %b\')` : `datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'rect') {
         return {
@@ -26,7 +85,7 @@ export default class ParseSignals {
             enter: {
               ...mark.encode.enter,
               tooltip: {
-                signal: `{ "${this.valueAlias}": datum.y, "${this.categoryAlias}": ${barFormatX} }`,
+                signal: `{ "${this.valueAlias}": datum.${this.datumYIndicator}, "${this.categoryAlias}": ${barFormatX} }`,
               }
             }
           }
@@ -37,7 +96,7 @@ export default class ParseSignals {
   }
 
   lineMarks(marks: any) {
-    const lineFormatX = this.isDate ? 'utcFormat(datum.datum.x, \'%d %b\')' : 'datum.datum.x';
+    const lineFormatX = this.isDate ? `utcFormat(datum.datum.${this.datumXIndicator}, \'%d %b\')` : `datum.datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'path') {
         return {
@@ -47,7 +106,7 @@ export default class ParseSignals {
             update: {
               ...mark.encode.update,
               tooltip: {
-                signal: `{ "${this.valueAlias}": datum.datum.y, "${this.categoryAlias}": ${lineFormatX} }`,
+                signal: `{ "${this.valueAlias}": datum.datum.${this.datumYIndicator}, "${this.categoryAlias}": ${lineFormatX} }`,
               }
             }
           }
@@ -58,7 +117,7 @@ export default class ParseSignals {
   }
 
   pieMarks(marks: any) {
-    const pieFormatX = this.isDate ? 'utcFormat(datum.x, \'%d %b\')' : 'datum.x';
+    const pieFormatX = this.isDate ? `utcFormat(datum.${this.datumXIndicator}, \'%d %b\')` : `datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'arc') {
         return {
@@ -68,7 +127,7 @@ export default class ParseSignals {
             enter: {
               ...mark.encode.enter,
               tooltip: {
-                signal: `{ "${this.valueAlias}": datum.y, "${this.categoryAlias}": ${pieFormatX} }`,
+                signal: `{ "${this.valueAlias}": datum.${this.datumYIndicator}, "${this.categoryAlias}": ${pieFormatX} }`,
               }
             }
           }
@@ -79,7 +138,7 @@ export default class ParseSignals {
   }
 
   scatterMarks(marks: any) {
-    const scatterFormatX = this.isDate ? 'utcFormat(datum.x, \'%d %b\')' : 'datum.x';
+    const scatterFormatX = this.isDate ? `utcFormat(datum.${this.datumXIndicator}, \'%d %b\')` : `datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'symbol') {
         return {
@@ -89,7 +148,7 @@ export default class ParseSignals {
             enter: {
               ...mark.encode.enter,
               tooltip: {
-                signal: `{ "${this.valueAlias}": datum.y, "${this.categoryAlias}": ${scatterFormatX} }`,
+                signal: `{ "${this.valueAlias}": datum.${this.datumYIndicator}, "${this.categoryAlias}": ${scatterFormatX} }`,
               }
             }
           }
