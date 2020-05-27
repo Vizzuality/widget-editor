@@ -1,4 +1,4 @@
-import { MONTHS } from "../constants";
+import { MONTHS } from "./constants";
 
 export const parseDate = (date: any) => {
   const isYear = date.toString().length === 4;
@@ -11,7 +11,9 @@ export const parseDate = (date: any) => {
   return date;
 }
 
-export const isDate = (date: any) => !isNaN(Date.parse(date));
+export const isDate = (date: any) => {
+  return typeof date === 'number' || !isNaN(Date.parse(date))
+}
 
 export const parseData = (data: any) => {
   return data

@@ -163,7 +163,6 @@ export default class VegaService implements Charts.Service {
     let chart;
 
     const data = this.resolveDataFormat();
-
     if (SUPPORTED_CHARTS.indexOf(chartType) === -1) {
       throw new Error(
         `Chart of type: ${chartType} is not supported. we support: (${SUPPORTED_CHARTS.join(

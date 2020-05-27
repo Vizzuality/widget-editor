@@ -1,10 +1,19 @@
 import { takeLatest, put, select } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
 
-import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
-import { setEditor } from "@widget-editor/shared/lib/modules/editor/actions";
+import { setConfiguration, resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 
-import { setFilters } from "@widget-editor/shared/lib/modules/filters/actions";
+import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions"; 
+
+import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
+
+function* restoreEditor() {
+  yield put(resetEditor());
+  yield put(resetConfiguration());
+  yield put(resetWidget());
+  yield put(resetFilters());
+}
 
 function* preloadData() {
   const {
@@ -80,4 +89,6 @@ export default function* baseSaga() {
     constants.sagaEvents.DATA_FLOW_DATASET_WIDGET_READY,
     preloadData
   );
+
+  yield takeLatest('WIDGET/EDITOR/RESTORE', restoreEditor);
 }

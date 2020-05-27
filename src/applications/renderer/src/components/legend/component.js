@@ -1,6 +1,8 @@
 import React from "react";
+import { utils } from '@widget-editor/core';
 import { Select } from "@widget-editor/shared";
 import isObjectLike from "lodash/isObjectLike";
+
 
 import {
   StyledContainer,
@@ -19,6 +21,14 @@ const resolveSchemeColor = (scheme, index) => {
   c++;
   return color;
 };
+
+// XXX: Move me
+function resolveValue(val) {
+  if (typeof val === 'string') {
+    return val;
+  }
+  return utils.isDate(val) ? utils.parseDate(val) : val;
+}
 
 const Legend = ({
   color,
@@ -70,7 +80,7 @@ const Legend = ({
                   <StyledColorDot
                     color={resolveSchemeColor(activeScheme.category, index)}
                   />
-                  {node.x}
+                  {resolveValue(node.x)}
                 </StyledColorsBox>
               );
             })}

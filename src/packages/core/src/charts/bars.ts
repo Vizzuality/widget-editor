@@ -1,11 +1,11 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import ChartsCommon from './chart-common';
+import ParseSignals from './parse-signals';
+
 import { sqlFields } from "../helpers/wiget-helper/constants";
-import { parseData } from "./helpers";
 
-import signalsHelper from "../helpers/signals-helper";
-
-export default class Bars implements Charts.Bars {
+export default class Bars extends ChartsCommon implements Charts.Bars {
   schema: any;
   widgetConfig: any;
   widgetData: Generic.ObjectPayload;
@@ -19,11 +19,11 @@ export default class Bars implements Charts.Bars {
     scheme: any,
     colorApplied: boolean
   ) {
+    super(widgetConfig);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.colorApplied = colorApplied;
-
     this.scheme = scheme;
 
     this.generateSchema();
@@ -67,6 +67,7 @@ export default class Bars implements Charts.Bars {
         domain: {
           data: "table",
           field: "id",
+          ...(this.isDate() ? { sort: true } : {})
         },
         range: "width",
         padding: 0.05,
@@ -103,9 +104,6 @@ export default class Bars implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
-            tooltip: {
-              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
-            },
             ...(this.colorApplied
               ? { fill: { scale: "color", field: sqlFields.category } }
               : {}),
@@ -149,11 +147,6 @@ export default class Bars implements Charts.Bars {
     ];
   }
 
-  resolveFormat() {
-    const format = this.widgetConfig?.paramsConfig?.format || "s";
-    return format;
-  }
-
   setAxes() {
     return [
       {
@@ -164,24 +157,34 @@ export default class Bars implements Charts.Bars {
         labelOverlap: "parity",
         ticks: false,
         encode: {
-          labels: {
-            update: {
-              text: {
-                signal: "truncate(data('table')[datum.value - 1].x, 12)",
+          ...(this.isDate() ? {
+            labels: {
+              update: {
+                text: {
+                  signal: "utcFormat(data('table')[datum.value - 1].x, '%d %b')",
+                } 
+              }
+            }
+          } : {
+            labels: {
+              update: {
+                text: {
+                  signal: "truncate(data('table')[datum.value - 1].x, 12)",
+                },
+                align: {
+                  signal:
+                    "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+                },
+                baseline: {
+                  signal:
+                    "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+                },
+                angle: {
+                  signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0",
+                },
               },
-              align: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
-              },
-              baseline: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
-              },
-              angle: {
-                signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0",
-              },
-            },
-          },
+            }
+          }),
         },
       },
       {
@@ -204,11 +207,18 @@ export default class Bars implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData, scheme } = this;
+    const { widgetData } = this;
     return [
       {
-        values: parseData(widgetData),
+        values: widgetData,
         name: "table",
+        ...(this.isDate() ? {
+          format: {
+            parse: {
+              x: 'date'
+            }
+          }
+        } : {}),
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
@@ -218,6 +228,7 @@ export default class Bars implements Charts.Bars {
   }
 
   getChart() {
-    return this.schema;
+    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
+    return parseSignals;
   }
 }

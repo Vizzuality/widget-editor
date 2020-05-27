@@ -86,6 +86,9 @@ class EditorOptions extends React.Component {
           <option value="b8a6a6ea-7d2f-4d59-bb5e-7143a2ddc1fe">
             Advanced editor widget
           </option>
+          <option value="ae7227d1-8779-4ca4-a2ce-3c87d53c63f6">
+            cit.003.a.nrt Air Quality - Station Measurements (PM 2.5)
+          </option>
         </select>
 
         <label htmlFor="widget">Select widget</label>

@@ -1,5 +1,5 @@
 import { takeLatest, put, call, select, cancel } from "redux-saga/effects";
-
+import isEqual from 'lodash/isEqual';
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
 import { localOnChangeState } from "exposed-hooks";
@@ -61,7 +61,7 @@ function* storeAdapterConfigInState({ payload }) {
 
 function* preloadData() {
   const {
-    widgetEditor: { editor, configuration, theme },
+    widgetEditor: { editor, configuration, theme, widget },
   } = yield select();
 
   if (!editor.widget) {
@@ -82,7 +82,12 @@ function* preloadData() {
         configuration,
         theme
       );
-      yield put(setWidget(vega.getChart()));
+
+      const generatedWidget = vega.getChart();
+      if (!isEqual(generatedWidget, widget)) {
+        yield put(setWidget(generatedWidget));
+      }
+
     } else {
       // XXX: Some properties need to be present for vega
       const ensureVegaProperties = {

@@ -226,6 +226,10 @@ export default class RwAdapter implements Adapter.Service {
           : { filters: [] }),
         ...widgetConfig,
       };
+      
+      if (widgetConfig.paramsConfig.hasOwnProperty('paramsConfig')) {
+        delete widgetConfig.paramsConfig.paramsConfig;
+      }
 
       if (editorState.configuration.visualizationType === "map") {
         widgetConfig = {

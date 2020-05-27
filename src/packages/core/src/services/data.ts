@@ -50,21 +50,28 @@ export default class DataService {
   }
 
   async restoreEditor(datasetId, widgetId) {
-    this.setEditor({ restoring: true });
-
+    this.setEditor({ 
+      restoring: true
+    });
+    
     this.widgetId = widgetId;
     this.adapter.setDatasetId(datasetId);
 
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
-    await this.handleFilters();
-
+    const filters = await this.handleFilters(true);
+    
+    if (this.widget.attributes?.widgetConfig?.paramsConfig) {
+      await this.requestWithFilters(filters, this.widget.attributes?.widgetConfig?.paramsConfig);
+    } else {
+      this.setEditor({ widgetData: null });
+    }
     this.setEditor({ restoring: false });
   }
 
-  async handleFilters() {
+  async handleFilters(restore: boolean = false) {
     if (!this.widget) return null;
-
+    
     const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
     const filters = paramsConfig?.filters;
     let orderBy = null;
@@ -87,10 +94,14 @@ export default class DataService {
         this.dataset
       );
 
-      this.dispatch({
-        type: reduxActions.EDITOR_SET_FILTERS,
-        payload: { color, orderBy, list: normalizeFilters },
-      });
+      if (restore) {
+        return normalizeFilters;
+      } else {
+        this.dispatch({
+          type: reduxActions.EDITOR_SET_FILTERS,
+          payload: { color, orderBy, list: normalizeFilters },
+        });
+      }
     }
   }
 
@@ -132,7 +143,6 @@ export default class DataService {
   }
 
   async requestWithFilters(filters: any, configuration: any) {
-    const serialized = this.adapter.filterSerializer(filters);
     const filtersService = new FiltersService(
       { ...configuration },
       filters,

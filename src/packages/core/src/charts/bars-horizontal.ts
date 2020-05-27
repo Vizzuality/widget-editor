@@ -1,11 +1,11 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import ChartsCommon from './chart-common';
+import ParseSignals from './parse-signals';
+
 import { sqlFields } from "../helpers/wiget-helper/constants";
-import { parseData } from "./helpers";
 
-import signalsHelper from "../helpers/signals-helper";
-
-export default class BarsHorizontal implements Charts.Bars {
+export default class BarsHorizontal extends ChartsCommon implements Charts.Bars {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
@@ -19,6 +19,7 @@ export default class BarsHorizontal implements Charts.Bars {
     scheme: any,
     colorApplied: boolean
   ) {
+    super(widgetConfig);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -93,11 +94,6 @@ export default class BarsHorizontal implements Charts.Bars {
     return scale;
   }
 
-  resolveFormat() {
-    const format = this.widgetConfig?.paramsConfig?.value?.format || "s";
-    return format;
-  }
-
   setAxes() {
     return [
       {
@@ -122,16 +118,18 @@ export default class BarsHorizontal implements Charts.Bars {
           labels: {
             update: {
               text: {
-                signal: "truncate(datum.value, 12)",
+                signal: this.isDate() ? "utcFormat(datum.value, '%d %b')" : "truncate(datum.value, 12)",
               },
-              align: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
-              },
-              baseline: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
-              },
+              ...(!this.isDate() ? {
+                align: {
+                  signal:
+                    "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+                },
+                baseline: {
+                  signal:
+                    "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+                }
+              } : {})
             },
           },
         },
@@ -146,9 +144,6 @@ export default class BarsHorizontal implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
-            tooltip: {
-              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
-            },
             ...(this.colorApplied
               ? { fill: { scale: "color", field: sqlFields.category } }
               : {}),
@@ -193,12 +188,19 @@ export default class BarsHorizontal implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData, widgetConfig, scheme } = this;
+    const { widgetData, widgetConfig } = this;
 
     return [
       {
-        values: parseData(widgetData),
+        values: widgetData,
         name: "table",
+        ...(this.isDate() ? {
+          format: {
+            parse: {
+              x: 'date'
+            }
+          }
+        } : {}),
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
@@ -215,6 +217,7 @@ export default class BarsHorizontal implements Charts.Bars {
   }
 
   getChart() {
-    return this.schema;
+    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
+    return parseSignals;
   }
 }

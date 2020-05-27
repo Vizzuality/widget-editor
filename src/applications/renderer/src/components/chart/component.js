@@ -2,6 +2,7 @@ import React, { Fragment, Suspense } from "react";
 import * as vega from "vega";
 import vegaTooltip from "vega-tooltip";
 
+import { ParseSignals } from "@widget-editor/core";
 import signalsHelper from "@widget-editor/core/build/helpers/signals-helper";
 
 import isEqual from "lodash/isEqual";
@@ -117,45 +118,7 @@ class Chart extends React.Component {
         // .height(this.height) // This is a test, currently the renderer resizes its height
         .run();
     }
-  }
-
-  // This function makes sure we have a tooltip present
-  // The new configurations does this automaticly
-  // But the old one does not
-  legacyRuntimeMarks(configuration, marks) {
-    const shouldParseSignals = (type) => {
-      return type === 'rect' || type == 'symbol';
-    }
-    return marks.map(mark => {
-      if (mark.type === 'rect' || mark.type === 'arc' || mark.type === 'symbol') {
-        return {
-          ...mark, 
-          encode: {
-            ...mark.encode,
-            enter: {
-              ...(mark.encode.hasOwnProperty('enter') ? { 
-                ...mark.encode.enter,
-                ...(!mark.encode.enter.hasOwnProperty('tooltip') ? {
-                  tooltip: {
-                    signal: shouldParseSignals(mark.type) ? 
-                    signalsHelper(configuration, "datum.y", "datum.x") : 
-                    signalsHelper(configuration, "datum['category']", "datum['value']", false)
-                  }
-                } : {})
-              } : {
-                tooltip: {
-                  signal: shouldParseSignals(mark.type) ? 
-                    signalsHelper(configuration, "datum.y", "datum.x") : 
-                    signalsHelper(configuration, "datum['category']", "datum['value']", false)
-                }
-              })
-            }
-          }
-        }
-      }
-      return mark;
-    })
-  }
+  }  
 
   generateRuntime(configuration) {
     const { chart } = this;
@@ -164,7 +127,7 @@ class Chart extends React.Component {
       try {
         const runtime = vega.parse({
           ...configuration,
-          marks: this.legacyRuntimeMarks(configuration, configuration.marks)
+          marks: new ParseSignals(configuration, configuration.paramsConfig).parseLegacy(),
         }, configuration.config);
         
         this.vega = new vega.View(runtime)
