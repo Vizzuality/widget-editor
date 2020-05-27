@@ -115,6 +115,7 @@ function* resolveWithProxy() {
   // --- This makes sure we only update what is nessesary in the editor
   if (proxyResult && proxyResult.length > 0) {
     for (const evnt in proxyResult) {
+      console.log('events', proxyResult[evnt])
       yield put({ type: proxyResult[evnt] });
     }
     const state = yield select();
@@ -126,9 +127,12 @@ function* updateWidget() {
   const {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
-  if (editor.initialized && !editor.widgetData) {
+
+
+  if (editor.initialized && !editor.widgetData || typeof editor.widgetData === 'undefined') {
     const fullState = yield select();
     const widgetData = yield call(getWidgetData, fullState.widgetEditor);
+
     if (widgetData) {
       yield put(setEditor({ widgetData: widgetData.data }));
     }
@@ -171,6 +175,7 @@ function* updateWidget() {
 function* updateWidgetData() {
   const { widgetEditor } = yield select();
   const { advanced } = widgetEditor.editor;
+
   if (!widgetEditor.editor.initialized) {
     yield cancel();
   }

@@ -12,6 +12,8 @@ export interface Payload {
     description: string;
     application: [string];
     widgetConfig: {
+      value: any;
+      category: any;
       paramsConfig: any;
     };
     defaultEditableWidget: boolean;

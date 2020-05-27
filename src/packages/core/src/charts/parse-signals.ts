@@ -6,14 +6,16 @@ export default class ParseSignals {
   chartType: string;
   isDate: boolean;
   isCustom: boolean;
+  standalone: boolean;
   datumXIndicator: string;
   datumYIndicator: string;
 
-  constructor(schema: any, widgetConfig: any, isDate: boolean = false) {
+  constructor(schema: any, widgetConfig: any, isDate: boolean = false, standalone: boolean = false) {
     this.isDate = isDate;
     this.widgetConfig = widgetConfig;
     this.schema = schema;
     this.isCustom = !this.widgetConfig?.paramsConfig;
+    this.standalone = standalone;
     this.chartType = this.isCustom ? this.widgetConfig.chartType : this.widgetConfig?.paramsConfig?.chartType;
     
     this.valueAlias = this.resolveValueAlias();
@@ -25,16 +27,12 @@ export default class ParseSignals {
 
   // TODO: Clean this up, and verify edge cases
   getColumnIndicators() {
-    if (this.widgetConfig.interaction_config) {
-      this.widgetConfig.interaction_config.forEach(conf => {
-        if (conf.name === 'tooltip' && conf.config.fields.length === 2) {
-          this.datumXIndicator = conf.config.fields[0].column;
-          this.datumYIndicator = conf.config.fields[1].column;
-        }
-      })
+    if (this.standalone && this.chartType === 'pie') {
+      this.datumXIndicator = 'value';
+      this.datumYIndicator = 'category';
     } else {
-      this.datumXIndicator = this.isCustom && this.chartType === 'pie' ? 'value' : 'x';
-      this.datumYIndicator = this.isCustom && this.chartType === 'pie' ? 'category' : 'y';
+      this.datumXIndicator = 'x';
+      this.datumYIndicator = 'y';
     }
   }
 

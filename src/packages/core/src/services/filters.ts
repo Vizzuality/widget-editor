@@ -244,10 +244,9 @@ export default class FiltersService implements Filters.Service {
       const { name } = groupBy;
       this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
     } else if (
-      chartType === "pie" ||
+      (chartType === "pie" ||
       chartType === "donut" ||
-      chartType === "line" ||
-      !!aggregateFunction
+      chartType === "line") && aggregateFunction !== null
     ) {
       this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }

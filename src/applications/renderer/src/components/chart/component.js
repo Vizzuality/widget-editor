@@ -3,7 +3,6 @@ import * as vega from "vega";
 import vegaTooltip from "vega-tooltip";
 
 import { ParseSignals } from "@widget-editor/core";
-import signalsHelper from "@widget-editor/core/build/helpers/signals-helper";
 
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
@@ -127,7 +126,12 @@ class Chart extends React.Component {
       try {
         const runtime = vega.parse({
           ...configuration,
-          marks: new ParseSignals(configuration, configuration.paramsConfig).parseLegacy(),
+          marks: new ParseSignals(
+            configuration, 
+            configuration.paramsConfig, 
+            configuration?.paramsConfig?.category?.type === 'date', 
+            this.props.standalone
+          ).parseLegacy(),
         }, configuration.config);
         
         this.vega = new vega.View(runtime)

@@ -61,7 +61,11 @@ export default class DataService {
     await this.getFieldsAndLayers();
     const filters = await this.handleFilters(true);
     
-    if (this.widget.attributes?.widgetConfig?.paramsConfig) {
+    if (
+      this.widget.attributes?.widgetConfig?.paramsConfig &&
+      this.widget.attributes?.widgetConfig?.value &&
+      this.widget.attributes?.widgetConfig?.category
+    ) {
       await this.requestWithFilters(filters, this.widget.attributes?.widgetConfig?.paramsConfig);
     } else {
       this.setEditor({ widgetData: null });
@@ -122,7 +126,6 @@ export default class DataService {
     const columns = this.dataset?.attributes?.metadata[0]?.attributes?.columns;
     // Filter on allowed field types
     this.allowedFields = [];
-
     if (fields && Object.keys(fields).length > 0) {
       Object.keys(fields).forEach((field) => {
         if (columns && field in columns) {

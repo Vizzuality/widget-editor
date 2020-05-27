@@ -51,6 +51,7 @@ export default class FieldsService {
     const { columnName } = field;
     const tableName = this.getTableName();
 
+    
     const uniqQueryPart = uniq ? `GROUP BY ${columnName}` : "";
     const query = `SELECT ${columnName} FROM ${tableName} ${uniqQueryPart} ORDER BY ${columnName}`;
 
@@ -60,7 +61,11 @@ export default class FieldsService {
   }
 
   async getFieldInfo(field: any, column: string) {
-    const selectedField = this.fields.find((f) => f.columnName === column);
+    let selectedField = this.fields.find((f) => f.columnName === column);
+
+    if (!selectedField) {
+      selectedField = field;
+    }
 
     if (
       selectedField.type === this.NUMERIC_TYPE ||

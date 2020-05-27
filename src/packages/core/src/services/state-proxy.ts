@@ -6,6 +6,7 @@ export default class StateProxy {
   configuration: object;
   donutRadius?: number;
   slizeCount?: number;
+  visualizationType: string;
 
   constructor() {
     // These are the properties that we will check for updates
@@ -48,8 +49,18 @@ export default class StateProxy {
       return true;
     }
 
-    this.chartCache = { chartType, format, donutRadius, slizeCount };
+    this.chartCache = { visualizationType, chartType, format, donutRadius, slizeCount };
     return hasUpdate && editor.initialized;
+  }
+
+  visualizationTypeChanged(visualizationType): boolean {
+    const hasChanged =  this.visualizationType !== visualizationType;
+
+    if (hasChanged) {
+      this.visualizationType = visualizationType;
+    }
+
+    return hasChanged;
   }
 
   checkProperties(input, compare, props) {
@@ -71,16 +82,16 @@ export default class StateProxy {
 
   // -- This method checks our conditions and returns a saga event
   // -- for any update we want to perform
-  async sync(editorState: object) {
+  async sync(editorState: any) {
     const UPDATES = [];
     if (this.configurationHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE);
     }
-
-    if (this.chartHasUpdate(editorState)) {
+    if (
+      this.visualizationTypeChanged(editorState.configuration.visualizationType) || 
+      this.chartHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_UPDATE_WIDGET);
     }
-
     return UPDATES;
   }
 }
