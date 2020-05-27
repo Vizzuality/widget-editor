@@ -76,10 +76,6 @@ class Chart extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !isEqual(nextProps.widget, this.props.widget);
-  }
-
   componentWillUnmount() {
     if (this.vega) {
       window.removeEventListener("resize", this.handleResize);
@@ -134,11 +130,6 @@ class Chart extends React.Component {
           marks: new ParseSignals(configuration, configuration.paramsConfig).parseLegacy(),
         }, configuration.config);
         
-        console.log({
-          ...configuration,
-          marks: new ParseSignals(configuration, configuration.paramsConfig).parseLegacy()
-        })
-
         this.vega = new vega.View(runtime)
           .initialize(chart)
           .renderer("canvas")

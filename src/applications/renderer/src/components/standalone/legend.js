@@ -86,7 +86,6 @@ const StyledCloseButton = styled.button`
 
 const Legend = ({ widgetConfig }) => {
   const [open, setOpen] = useState(true);
-
   return (<StyledLegend open={open}>
     {open && <StyledCloseButton type="button" role="button" onClick={() => setOpen(!open)}>
       <SvgClose />
