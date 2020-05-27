@@ -78,6 +78,27 @@ export default class ParseSignals {
     })
   }
 
+  scatterMarks(marks: any) {
+    const scatterFormatX = this.isDate ? 'utcFormat(datum.x, \'%d %b\')' : 'datum.x';
+    return marks.map(mark => {
+      if (mark.type === 'symbol') {
+        return {
+          ...mark, 
+          encode: {
+            ...mark.encode,
+            enter: {
+              ...mark.encode.enter,
+              tooltip: {
+                signal: `{ "${this.valueAlias}": datum.y, "${this.categoryAlias}": ${scatterFormatX} }`,
+              }
+            }
+          }
+        }
+      }
+      return mark;
+    })
+  }
+
   serializeSignals() {
     if (this.chartType === 'bar' || this.chartType === 'bar-horizontal') {
       return {
@@ -97,6 +118,13 @@ export default class ParseSignals {
       return {
         ...this.schema,
         marks: this.pieMarks(this.schema.marks)
+      }
+    }
+
+    if (this.chartType === 'scatter') {
+      return {
+        ...this.schema,
+        marks: this.scatterMarks(this.schema.marks)
       }
     }
 
