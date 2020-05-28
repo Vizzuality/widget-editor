@@ -57,20 +57,9 @@ class Editor extends React.Component {
   }
 
   componentWillUnmount() {
-    const { 
-      resetEditor, 
-      resetConfiguration, 
-      resetWidget, 
-      resetFilters, 
-      resetTheme 
-    } = this.props;
-    resetEditor();
-    resetConfiguration();
-    resetWidget();
-    resetFilters();
-    resetTheme();
+    this.resetEditor();
   }
-
+  
   componentDidUpdate(prevProps) {
     const {
       datasetId: prevDatasetId,
@@ -97,6 +86,21 @@ class Editor extends React.Component {
     }
   }
 
+  resetEditor() {
+    const { 
+      resetEditor, 
+      resetConfiguration, 
+      resetWidget, 
+      resetFilters, 
+      resetTheme 
+    } = this.props;
+    resetEditor();
+    resetConfiguration();
+    resetWidget();
+    resetFilters();
+    resetTheme();
+  }
+
   resolveEditorFunctionality() {
     const {
       setEditor,
@@ -113,6 +117,8 @@ class Editor extends React.Component {
   }
 
   initializeRestoration = debounce((datasetId, widgetId) => {
+    const { resetFilters } = this.props;
+    resetFilters();
     this.dataService.restoreEditor(datasetId, widgetId);
   }, 1000);
 

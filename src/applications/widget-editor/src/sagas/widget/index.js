@@ -115,7 +115,6 @@ function* resolveWithProxy() {
   // --- This makes sure we only update what is nessesary in the editor
   if (proxyResult && proxyResult.length > 0) {
     for (const evnt in proxyResult) {
-      console.log('events', proxyResult[evnt])
       yield put({ type: proxyResult[evnt] });
     }
     const state = yield select();

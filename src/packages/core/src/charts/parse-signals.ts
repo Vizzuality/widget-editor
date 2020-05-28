@@ -1,6 +1,7 @@
 export default class ParseSignals {
   schema: any;
   widgetConfig: any;
+  tooltipConfig: any;
   valueAlias: string;
   categoryAlias: string;
   chartType: string;
@@ -9,45 +10,111 @@ export default class ParseSignals {
   standalone: boolean;
   datumXIndicator: string;
   datumYIndicator: string;
-
+  
   constructor(schema: any, widgetConfig: any, isDate: boolean = false, standalone: boolean = false) {
     this.isDate = isDate;
-    this.widgetConfig = widgetConfig;
+    this.widgetConfig = widgetConfig || schema;
     this.schema = schema;
     this.isCustom = !this.widgetConfig?.paramsConfig;
     this.standalone = standalone;
-    this.chartType = this.isCustom ? this.widgetConfig.chartType : this.widgetConfig?.paramsConfig?.chartType;
+    this.chartType = this.isCustom ? this.getCustomChartType(schema) : this.widgetConfig?.paramsConfig?.chartType;
+
+    const fields = this.getTooltipFields();
+    this.tooltipConfig = fields.map(({ column, property, type, format }) => ({
+      field: column,
+      title: property,
+      formatType: type === "date" ? "time" : type,
+      format,
+    }))
+  } 
+
+  resolveMarkGroup(marks: any) {
+    let chartType;
+    marks.map(mark => {
+      if (mark.type === 'rect' && !chartType) {
+        chartType = 'bar';
+      }
+      if (mark.type === 'path' && !chartType) {
+        chartType = 'line';
+      }
+    })
+    return chartType;
+  }
+
+  // XXX: for custom charts
+  // We try to determen where to put the tooltip
+  getCustomChartType(schema: any) {
+    let chartType;
+    schema.marks.map(mark => {
+      if (mark.type === 'rect' && !chartType) {
+        chartType = 'bar';
+      }
+      if (mark.type === 'path' && !chartType) {
+        chartType = 'line';
+      }
+      if (mark.type === 'group' && !chartType) {
+        chartType = this.resolveMarkGroup(mark.marks)
+      }
+    })
+    return chartType;
+  }
+
+  // XXX: Custom configurations they can define this
+  // but to keep the logic similar, we strip it out and apply it ourselfs
+  stripDatum(str: string) {
+    return str.replace(/datum./, '');
+  }
+
+  assignSignal() {
+    const signals = [];
+    let signal = "";
+
+    const datumFormat = this.chartType === 'line' ? 'datum.datum' : 'datum';
+
+    this.tooltipConfig.forEach(field => {
+      if (field.format && field.formatType === 'number' && field.format) {
+        signals.push(`"${field.title}": format(${datumFormat}.${this.stripDatum(field.field)}, "${field.format}")`)
+      } else if (field.format && field.formatType === 'time' && field.format) {
+        signals.push(`"${field.title}": utcFormat(${datumFormat}.${this.stripDatum(field.field)}, "${field.format}")`)
+      } else {
+        signals.push(`"${field.title}": ${datumFormat}.${this.stripDatum(field.field)}`)
+      }
+    })
     
-    this.valueAlias = this.resolveValueAlias();
-    this.categoryAlias = this.resolveCategoryAlias();
-    // TODO: Check why we are parsing this different for pie charts
-
-    this.getColumnIndicators();
-  }
-
-  // TODO: Clean this up, and verify edge cases
-  getColumnIndicators() {
-    if (this.standalone && this.chartType === 'pie') {
-      this.datumXIndicator = 'value';
-      this.datumYIndicator = 'category';
-    } else {
-      this.datumXIndicator = 'x';
-      this.datumYIndicator = 'y';
+    signal = `{ ${signals.join()} }`
+    return {
+      signal
     }
   }
 
-  resolveValueAlias() {
-    if (this.isCustom) {
-      return this.widgetConfig.value.alias || this.widgetConfig.value.name || 'x';
-    }
-    return this.widgetConfig.paramsConfig.value.alias || this.widgetConfig.paramsConfig.value.name || 'x';
-  }
+  getTooltipFields() {
+    const interactionConfig = this.widgetConfig.hasOwnProperty('interaction_config') ? 
+      this.widgetConfig.interaction_config : 
+      this.schema.hasOwnProperty('interaction_config') ? this.schema.interaction_config : [];
 
-  resolveCategoryAlias() {
-    if (this.isCustom) {
-      return this.widgetConfig.category.alias || this.widgetConfig.category.name || 'y';
+    // We don't have the interaction config object defined
+    if (
+      !interactionConfig ||
+      !interactionConfig.length
+    ) {
+      return [];
     }
-    return this.widgetConfig.paramsConfig.category.alias || this.widgetConfig.paramsConfig.category.name || 'y';
+  
+    const tooltipConfig = interactionConfig.find(
+      (c) => c.name === "tooltip"
+    );
+  
+    // We don't have the tooltip config defined
+    if (
+      !tooltipConfig ||
+      !tooltipConfig.config ||
+      !tooltipConfig.config.fields ||
+      !tooltipConfig.config.fields.length
+    ) {
+      return [];
+    }
+  
+    return tooltipConfig.config.fields;
   }
 
   tooltipSet(chartType, marks) {
@@ -89,7 +156,6 @@ export default class ParseSignals {
   }
 
   barMarks(marks: any) {
-    const barFormatX = this.isDate ? `utcFormat(datum.${this.datumXIndicator}, \'%d %b\')` : `datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'rect') {
         return {
@@ -98,11 +164,15 @@ export default class ParseSignals {
             ...mark.encode,
             enter: {
               ...mark.encode.enter,
-              tooltip: {
-                signal: `{ "${this.valueAlias}": datum.${this.datumYIndicator}, "${this.categoryAlias}": ${barFormatX} }`,
-              }
+              tooltip: this.assignSignal()
             }
           }
+        }
+      }
+      if (mark.type === 'group') {
+        return {
+          ...mark,
+          marks: this.barMarks(mark.marks)
         }
       }
       return mark;
@@ -110,7 +180,6 @@ export default class ParseSignals {
   }
 
   lineMarks(marks: any) {
-    const lineFormatX = this.isDate ? `utcFormat(datum.datum.${this.datumXIndicator}, \'%d %b\')` : `datum.datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'path') {
         return {
@@ -119,9 +188,7 @@ export default class ParseSignals {
             ...mark.encode,
             update: {
               ...mark.encode.update,
-              tooltip: {
-                signal: `{ "${this.valueAlias}": datum.datum.${this.datumYIndicator}, "${this.categoryAlias}": ${lineFormatX} }`,
-              }
+              tooltip: this.assignSignal()
             }
           }
         }
@@ -131,7 +198,6 @@ export default class ParseSignals {
   }
 
   pieMarks(marks: any) {
-    const pieFormatX = this.isDate ? `utcFormat(datum.${this.datumXIndicator}, \'%d %b\')` : `datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'arc') {
         return {
@@ -140,9 +206,7 @@ export default class ParseSignals {
             ...mark.encode,
             enter: {
               ...mark.encode.enter,
-              tooltip: {
-                signal: `{ "${this.valueAlias}": datum.${this.datumYIndicator}, "${this.categoryAlias}": ${pieFormatX} }`,
-              }
+              tooltip: this.assignSignal()
             }
           }
         }
@@ -152,7 +216,6 @@ export default class ParseSignals {
   }
 
   scatterMarks(marks: any) {
-    const scatterFormatX = this.isDate ? `utcFormat(datum.${this.datumXIndicator}, \'%d %b\')` : `datum.${this.datumXIndicator}`;
     return marks.map(mark => {
       if (mark.type === 'symbol') {
         return {
@@ -161,9 +224,7 @@ export default class ParseSignals {
             ...mark.encode,
             enter: {
               ...mark.encode.enter,
-              tooltip: {
-                signal: `{ "${this.valueAlias}": datum.${this.datumYIndicator}, "${this.categoryAlias}": ${scatterFormatX} }`,
-              }
+              tooltip: this.assignSignal()
             }
           }
         }

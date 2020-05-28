@@ -147,3 +147,4 @@ class EditorOptions extends React.Component {
 }
 
 export default EditorOptions;
+

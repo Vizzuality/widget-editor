@@ -3,8 +3,6 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 import ChartsCommon from './chart-common';
 import ParseSignals from './parse-signals';
 
-import { sqlFields } from "../helpers/wiget-helper/constants";
-
 export default class Pie extends ChartsCommon implements Charts.Pie {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
@@ -99,7 +97,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
         type: "ordinal",
         domain: { 
           data: "table", 
-          field: sqlFields.value,
+          field: 'value',
           ...(this.isDate() ? { sort: true } : {})
         },
         range: this.scheme ? this.scheme.category : "category20",
@@ -123,7 +121,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
         from: { data: "table" },
         encode: {
           enter: {
-            fill: { scale: "c", field: sqlFields.value },
+            fill: { scale: "c", field: 'value' },
             x: { signal: "width / 2" },
             y: { signal: "height / 2" },
           },
@@ -146,7 +144,6 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
 
   bindData(): Vega.Data[] {
     const { widgetData } = this;
-
     return [
       {
         values: widgetData,
@@ -160,11 +157,27 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
         } : {}),
         transform: [
           {
-            type: "pie",
-            field: sqlFields.category,
-            startAngle: 0,
-            endAngle: 6.29,
+            "type": "window",
+            "ops": ["row_number"], "as": ["rank"]
           },
+          {
+            "type": "formula",
+            "as": "category",
+            "expr": "datum.rank < 6 ? datum.x : 'Others'"
+          },
+          {
+            "type": "aggregate",
+            "groupby": ["category"],
+            "ops": ["sum"],
+            "fields": ["y"],
+            "as": ["value"]
+          },
+          {
+            "type": "pie",
+            "field": "value",
+            "startAngle": 0,
+            "endAngle": 6.29
+          }
         ],
       },
     ];

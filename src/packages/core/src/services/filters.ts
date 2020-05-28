@@ -240,6 +240,12 @@ export default class FiltersService implements Filters.Service {
 
   prepareGroupBy() {
     const { groupBy, aggregateFunction, chartType } = this.configuration;
+
+    if (!!aggregateFunction) {
+      this.sql = `${this.sql} GROUP BY x`;
+      return;
+    }
+
     if (groupBy) {
       const { name } = groupBy;
       this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
@@ -256,12 +262,10 @@ export default class FiltersService implements Filters.Service {
     const { orderBy, chartType, aggregateFunction } = this.configuration;
 
     if (!!aggregateFunction) {
-      this.sql = `${this.sql} ORDER BY ${
-        this.configuration?.category?.name || "y"
-      }`;
+      this.sql = `${this.sql} ORDER BY ${this.configuration?.category?.name || 'y'}`;
       return;
     }
-
+    
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
@@ -273,7 +277,8 @@ export default class FiltersService implements Filters.Service {
   }
 
   prepareOrder() {
-    const { orderBy, chartType } = this.configuration;
+    const { orderBy, chartType, aggregateFunction } = this.configuration;
+    
     if (orderBy) {
       const { orderType } = orderBy;
       this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
@@ -282,6 +287,8 @@ export default class FiltersService implements Filters.Service {
       chartType === "donut" ||
       chartType === "line"
     ) {
+      this.sql = `${this.sql} desc`;
+    } else if (aggregateFunction) {
       this.sql = `${this.sql} desc`;
     }
   }
@@ -367,3 +374,7 @@ export default class FiltersService implements Filters.Service {
     return patch;
   }
 }
+
+
+// SELECT acq_date as x , count(frp) as y FROM vnp14imgtdl_nrt_global_7d WHERE frp >= 100 AND frp <= 857 GROUP BY x ORDER BY y desc LIMIT 7
+// SELECT acq_date as x, COUNT(frp) as y FROM vnp14imgtdl_nrt_global_7d WHERE frp >= 100 AND frp <= 857 GROUP BY  x ORDER BY acq_date desc LIMIT 7

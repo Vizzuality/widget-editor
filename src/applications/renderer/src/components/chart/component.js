@@ -40,18 +40,6 @@ const getTooltipConfigFields = (widget) => {
   return tooltipConfig.config.fields;
 };
 
-const instantiateTooltip = (view, widget) => {
-  const fields = getTooltipConfigFields(widget);
-  vegaTooltip(view, {
-    showAllFields: false,
-    fields: fields.map(({ column, property, type, format }) => ({
-      field: column,
-      title: property,
-      formatType: type === "date" ? "time" : type,
-      format,
-    })),
-  });
-};
 
 class Chart extends React.Component {
   constructor(props) {
@@ -112,29 +100,50 @@ class Chart extends React.Component {
     const { view } = this;
     if (view) {
       this.setSize();
+      if (this.vega) {
       this.vega
         .width(this.width)
         // .height(this.height) // This is a test, currently the renderer resizes its height
         .run();
+      }
     }
   }  
-
+  
+  instantiateTooltip(widget) {
+    const fields = getTooltipConfigFields(widget);
+    vegaTooltip(this.vega, {
+      showAllFields: false,
+      fields: fields.map(({ column, property, type, format }) => ({
+        field: column,
+        title: property,
+        formatType: type === "date" ? "time" : type,
+        format,
+      })),
+    });
+  };
+  
   generateRuntime(configuration) {
     const { chart } = this;
     this.setSize();
     if (chart) {
       try {
-        const runtime = vega.parse({
-          ...configuration,
-          ...(configuration.paramsConfig ? {
-            marks: new ParseSignals(
-              configuration, 
-              configuration.paramsConfig, 
-              configuration?.paramsConfig?.category?.type === 'date', 
-              this.props.standalone
-            ).parseLegacy(),
-          } : {})
-        }, configuration.config);
+        let conf;
+        if (this.standalone) {
+          const parseSignals = new ParseSignals(
+            configuration, 
+            configuration.paramsConfig, 
+            configuration?.paramsConfig?.category?.type === 'date', 
+            this.props.standalone
+          );
+          conf = {
+            ...configuration,
+            marks: parseSignals.parseLegacy()
+          }
+        } else {
+          conf = configuration;
+        }
+
+        const runtime = vega.parse(conf, configuration.config);
         
         this.vega = new vega.View(runtime)
           .initialize(chart)
@@ -148,7 +157,7 @@ class Chart extends React.Component {
           configuration.interaction_config &&
           configuration.interaction_config.length
         ) {
-          instantiateTooltip(this.vega, configuration);
+          this.instantiateTooltip(configuration);
         } 
         this.setState({ chartReady: true });
       } catch (err) {
