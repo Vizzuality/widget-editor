@@ -28,7 +28,7 @@ const Renderer = ({
 }) => {
   const { restoring, initialized } = editor;
   const missingWidget =
-    initialized && !restoring && Object.keys(widget).length === 0;
+    initialized && !restoring && widget && Object.keys(widget).length === 0;
 
   const isMap = configuration.visualizationType === "map";
 
