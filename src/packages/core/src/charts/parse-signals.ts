@@ -52,6 +52,9 @@ export default class ParseSignals {
       if (mark.type === 'path' && !chartType) {
         chartType = 'line';
       }
+      if (mark.type === 'arc' && !chartType) {
+        chartType = 'pie';
+      }
       if (mark.type === 'group' && !chartType) {
         chartType = this.resolveMarkGroup(mark.marks)
       }

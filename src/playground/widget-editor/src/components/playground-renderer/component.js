@@ -9,7 +9,6 @@ const PlaygroundRenderer = ({ activeWidget }) => {
   if (!activeWidget) {
     return "Loading renderer...";
   }
-
   return (
     <div className="column">
       <div className="c-widget-block">
