@@ -262,10 +262,9 @@ export default class FiltersService implements Filters.Service {
     const { orderBy, chartType, aggregateFunction } = this.configuration;
 
     if (!!aggregateFunction) {
-      this.sql = `${this.sql} ORDER BY ${this.configuration?.category?.name || 'y'}`;
+      this.sql = `${this.sql} ORDER BY y`;
       return;
     }
-    
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
