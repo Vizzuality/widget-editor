@@ -59,11 +59,11 @@ class Editor extends React.Component {
     x.document.close();
   }
 
+
   render() {
     const {
       editorOptions: { compactMode, dataset, widget, theme },
     } = this.props;
-
     return (
       <div className="widget-editor-wrapper">
         <WidgetEditor

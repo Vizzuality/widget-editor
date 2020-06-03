@@ -8,7 +8,7 @@ import { DataService } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
 import { StyledContainer, StyleEditorContainer } from "./style";
 
-import { localGetEditorState } from "exposed-hooks";
+import { localGetEditorState, setReduxCache } from "exposed-hooks";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -44,6 +44,7 @@ class Editor extends React.Component {
     });
 
     // XXX: Initialize editor hooks apis
+    setReduxCache(dispatch)
     localGetEditorState({ adapter, dataService: this.dataService });
   }
 

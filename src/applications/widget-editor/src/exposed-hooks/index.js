@@ -1,4 +1,11 @@
+import { constants } from "@widget-editor/core";
+
 let localCache = {};
+let REDUX_CACHE_DISPATCH = null;
+
+export const setReduxCache = (dispatch) => {
+  REDUX_CACHE_DISPATCH = dispatch;
+}
 
 export const localGetEditorState = (payload) => {
   localCache = {
@@ -45,6 +52,20 @@ export const AdapterModifier = (Adapter, props) => {
   }
   return ClonedAdapter;
 };
+
+export const ModifyEditorState = (props) => {
+  if (!REDUX_CACHE_DISPATCH) {
+    throw new Error('Widget editor: ModifyEditorState hook error, We dont have access to redux dispatch.')
+  }
+  if (typeof props === 'object') {
+    REDUX_CACHE_DISPATCH({
+      type: constants.reduxActions.EDITOR_SET_CONFIGURATION,
+      payload: props,
+    });
+  } else {
+    throw new Error('Widget editor: ModifyEditorState hook error, props needs to be typeof object.')
+  }
+}
 
 export const GetAdapterAvailableProps = (Adapter) => {
   const instance = new Adapter();

@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 
 import configureStore from "store";
 
-import { getEditorState } from "@widget-editor/widget-editor";
+import { getEditorState, ModifyEditorState } from "@widget-editor/widget-editor";
 
 import Editor from "./components/editor";
 import EditorOptions from "components/editor-options";
@@ -25,7 +25,7 @@ function App() {
     }
     setIsRenderer(!isRenderer);
   };
-
+  
   return (
     <Provider store={store}>
       <div className="App">
@@ -36,7 +36,10 @@ function App() {
             {isRenderer ? "View editor" : "View renderer"}
           </button>
           <button type="button" onClick={() => console.log(getEditorState())}>
-            Get Editor state
+            Get Editor state hook
+          </button>
+          <button type="button" onClick={() => console.log(ModifyEditorState({ description: 'Hello'}))}>
+            Modify Editor state hook
           </button>
         </header>
         {!isRenderer && (
