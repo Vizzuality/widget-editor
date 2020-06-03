@@ -38,18 +38,11 @@ export const AdapterModifier = (Adapter, props) => {
   class ClonedAdapter extends Adapter {
     constructor() {
       super();
-      Object.keys(props).forEach((prop) => {
-        if (this.hasOwnProperty(prop)) {
-          this[prop] = props[prop];
-        } else {
-          throw new Error(
-            `Adapter modifier, error ${prop} does not exsist on adapter`
-          );
-        }
-      });
+      // XXX: Re-bind properties
+      // this will re-initialize all services bound to the adapter
+      this.extendProperties(props);
     }
   }
-
   return ClonedAdapter;
 };
 

@@ -21,6 +21,7 @@ export default class RwAdapter implements Adapter.Service {
   datasetId = null;
   tableName = null;
   AUTH_TOKEN = null;
+  SQL_STRING = null;
   // Some generic setup for
   applications = ["rw"];
   env = "production";
@@ -36,6 +37,26 @@ export default class RwAdapter implements Adapter.Service {
     this.config = ConfigHelper(asConfig);
     this.datasetService = new DatasetService(this.config);
     this.widgetService = new WidgetService(this.config);
+  }
+
+  // XXX: If we are using the AdapterModifier hook
+  // We need to re-initialize our services with any passed properties
+  extendProperties(props: any) {
+    Object.keys(props).forEach((prop) => {
+      if (this.hasOwnProperty(prop)) {
+        this[prop] = props[prop];
+      } else {
+        throw new Error(
+          `Adapter modifier, error ${prop} does not exsist on adapter`
+        );
+      }
+    });
+    const asConfig: Config.Payload = {
+      applications: this.applications,
+      env: this.env,
+      locale: this.locale,
+    };
+    this.config = ConfigHelper(asConfig);
   }
 
   // Used when saving data
@@ -188,6 +209,7 @@ export default class RwAdapter implements Adapter.Service {
     const {
       configuration,
       widget,
+      editor,
       filters: { list: editorFilters },
     } = editorState;
     const {
@@ -200,92 +222,97 @@ export default class RwAdapter implements Adapter.Service {
     this.setDatasetId(id);
     this.setTableName(tableName);
 
-    let widgetConfig = widget;
-    if (widgetConfig) {
-      delete widgetConfig.$schema;
-      delete widgetConfig.signals;
-      delete widgetConfig.autosize;
-    
-      widgetConfig.paramsConfig = {
-        visualizationType: editorState.configuration.visualizationType,
-        caption: editorState.configuration.caption || null,
-        chartType: editorState.configuration.chartType,
-        value: editorState.configuration.value || null,
-        category: editorState.configuration.category || null,
-        limit: editorState.configuration.limit || 50,
-        slizeCount: editorState.configuration.slizeCount,
-        donutRadius: editorState.configuration.donutRadius,
-        color: editorState.configuration.color,
-        size: editorState.configuration.size,
-        orderBy: editorState.configuration.orderBy,
-        aggregateFunction: editorState.configuration.aggregateFunction,
-        areaIntersection: editorState.configuration.areaIntersection,
-        band: editorState.configuration.band,
-        ...(editorState.configuration.visualizationType !== "map"
-          ? { filters: this.filterSerializer(editorFilters) }
-          : { filters: [] }),
-        ...widgetConfig,
-      };
-      
-      if (widgetConfig.paramsConfig.hasOwnProperty('paramsConfig')) {
-        delete widgetConfig.paramsConfig.paramsConfig;
-      }
+    let vegaConfiguration = widget;
+    let output = {};
 
-      if (editorState.configuration.visualizationType === "map") {
-        widgetConfig = {
-          paramsConfig: {
-            caption: editorState.configuration.caption || null,
-            value: null,
-            category: null,
-            color: null,
-            orderBy: null,
-            aggregateFunction: null,
-            areaIntersection: null,
-            band: null,
-            visualizationType: editorState.configuration.visualizationType,
-            chartType: editorState.configuration.chartType,
-            layer: editorState.configuration.layer,
-          },
-          ...(editorState.configuration.map.basemap
-            ? {
-                basemap: {
-                  basemap: editorState.configuration.map.basemap.basemap,
-                  labels: editorState.configuration.map.basemap.labels,
-                  boundaries: false,
-                },
-              }
-            : {
-                basemap: {
-                  basemap: "dark",
-                  labels: "Dark",
-                  boundaries: false,
-                },
-              }),
-          zoom: editorState.configuration.map.zoom,
-          lat: editorState.configuration.map.lat,
-          lng: editorState.configuration.map.lng,
-          bounds: editorState.configuration.map.bounds,
-          bbox: editorState.configuration.map.bbox,
-        };
-      }
-      
+    if (editorState.configuration.visualizationType !== "map") {
+      output = {
+        paramsConfig: {
+          visualizationType: editorState.configuration.visualizationType,
+          limit: editorState.configuration.limit || 50,
+          value: editorState.configuration.value || null,
+          category: editorState.configuration.category || null,
+          color: editorState.configuration.color,
+          size: editorState.configuration.size,
+          orderBy: editorState.configuration.orderBy,
+          aggregateFunction: editorState.configuration.aggregateFunction,
+          chartType: editorState.configuration.chartType,
+          filters: this.filterSerializer(editorFilters),
+          areaIntersection: editorState.configuration.areaIntersection,
+          band: editorState.configuration.band,
+          donutRadius: editorState.configuration.donutRadius,
+          slizeCount: editorState.configuration.slizeCount,
+          layer: null
+        },
+        data: vegaConfiguration.data.map(d => {
+          if (d.name === 'table') {
+            return {
+              name: 'table',
+              transform: d.transform,
+              format: d.format,
+              url: this.getDataUrl()
+            }
+          }
+          return d;
+        }),
+        scales: vegaConfiguration.scales,
+        axes: vegaConfiguration.axes,
+        marks: vegaConfiguration.marks,
+        interaction_config: vegaConfiguration.interaction_config,
+        config: vegaConfiguration.config
+      };
+
     }
-    if (editorState.editor.advanced) {
-      delete widgetConfig.paramsConfig;
+      
+    if (editorState.configuration.visualizationType === "map") {
+      output = {
+        type: 'map',
+        layer_id: editorState.configuration.layer,
+        zoom: editorState.configuration.map.zoom,
+        lat: editorState.configuration.map.lat,
+        lng: editorState.configuration.map.lng,
+        bounds: editorState.configuration.map.bounds,
+        bbox: editorState.configuration.map.bbox,
+        ...(editorState.configuration.map.basemap
+          ? {
+            basemapLayers: {
+                basemap: editorState.configuration.map.basemap.basemap,
+                labels: editorState.configuration.map.basemap.labels,
+                boundaries: false,
+              },
+            }
+          : {
+            basemapLayers: {
+                basemap: "dark",
+                labels: "Dark",
+                boundaries: false,
+              },
+        }),
+        paramsConfig: {
+          caption: editorState.configuration.caption || null,
+          visualizationType: editorState.configuration.visualizationType,
+          layer: editorState.configuration.layer,
+        },
+        config: vegaConfiguration.config
+      };
     }
 
     const out = {
       id: editorState?.editor?.widget?.id || null,
       type: "widget",
-      name: configuration.title || null,
-      description: configuration.description || null,
-      application: [application],
-      widgetConfig: {
-        we_meta: {
-          ...getEditorMeta("rw-adapter", editorState.editor.advanced || false),
+      attributes: {
+        name: configuration.title || null,
+        dataset: editor.dataset.id || null,
+        description: configuration.description || null,
+        caption: editorState.configuration.caption || null,
+        application: [application],
+        widgetConfig: {
+          we_meta: {
+            ...getEditorMeta("rw-adapter", editorState.editor.advanced || false),
+          },
+          ...output,
         },
-        ...widgetConfig,
-      },
+      }
     };
 
     consumerOnSave(out);
@@ -326,7 +353,16 @@ export default class RwAdapter implements Adapter.Service {
     );
   }
 
+  getDataUrl() {
+    return tags.oneLineTrim`
+      https://api.resourcewatch.org/v1/query/
+      ${this.datasetId}?
+      sql=${this.SQL_STRING}
+    `
+  }
+
   async requestData(sql: string, dataset: Dataset.Payload) {
+    this.SQL_STRING = sql;
     const response = await fetch(
       tags.oneLineTrim`
         https://api.resourcewatch.org/v1/query/

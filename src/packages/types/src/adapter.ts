@@ -19,11 +19,13 @@ export interface Service {
   filterSerializer(filters: any): any;
   requestData(query: string, dataset: Dataset.Payload): any;
   getDataset(): Promise<Dataset.Payload>;
+  extendProperties(prop: any): void;
   getWidget(
     dataset: Dataset.Payload,
     widget: Widget.Id
   ): Promise<Widget.Payload>;
   getFields(): Promise<[object]>;
+  getDataUrl(): string;
   getLayers(): Promise<[object]>;
   setDatasetId(datasetId: datasetId): void;
   filterUpdate(
