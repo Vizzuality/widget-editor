@@ -30,13 +30,13 @@ const ORDER_TYPES = [
 
 const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
   const options = columns.map((c) => ({
-    value: c.name || c.alias || c.identifier,
-    label: c.name || c.alias || c.identifier,
+    value: c.name,
+    label: c.alias || c.name || c.identifier,
   }));
 
-  const selectedOption = options.find((o) =>
-    orderBy ? o.label === orderBy.name : null
-  );
+  const selectedOption = orderBy
+    ? options.find(option => option.value === orderBy.name)
+    : null;
 
   let selectedOrder;
   if (orderBy && orderBy.orderType) {
@@ -45,7 +45,7 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
     selectedOrder = ORDER_TYPES[0];
   }
 
-  const handleChange = (option, changeOrder = null) => {
+  const handleChange = (option, changeOrder = 'asc') => {
     const findSelected = option
       ? columns.find((c) => c.name === option.value)
       : {};

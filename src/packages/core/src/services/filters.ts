@@ -33,7 +33,6 @@ export default class FiltersService implements Filters.Service {
     this.prepareFilters();
     this.prepareGroupBy();
     this.prepareOrderBy();
-    this.prepareOrder();
     this.prepareLimit();
   }
 
@@ -261,38 +260,31 @@ export default class FiltersService implements Filters.Service {
   prepareOrderBy() {
     const { orderBy, chartType, aggregateFunction } = this.configuration;
 
-    if (!!aggregateFunction) {
-      if (chartType === 'line') {
-        this.sql = `${this.sql} ORDER BY ${this.configuration?.category?.name || 'y'}`;
-      } else {
-        this.sql = `${this.sql} ORDER BY y`;
-      }
-      return;
-    }
+    // If the user hasn't explicitely ordered the data, we still apply some default sorting
+    // (which isn't shown in the UI) so the chart looks nice
+    // The sorting depends on the type of the chart and the user can still override it manually
+    let orderByField;
     if (orderBy) {
       const { name } = orderBy;
-      this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
+      orderByField= name || sqlFields.category;
     } else if (chartType === "line" && this.configuration?.category?.name) {
-      this.sql = `${this.sql} ORDER BY ${this.configuration.category.name}`;
-    } else if (chartType === "pie" || chartType === "donut") {
-      this.sql = `${this.sql} ORDER BY x`;
+      orderByField = this.configuration.category.name;
+    } else if (["pie", "donut", "bar", "stacked-bar", "bar-horizontal", "stacked-bar-horizontal"].indexOf(chartType) !== -1 && this.configuration?.value?.name) {
+      orderByField = this.configuration.value.name;
     }
-  }
 
-  prepareOrder() {
-    const { orderBy, chartType, aggregateFunction } = this.configuration;
-    
-    if (orderBy) {
-      const { orderType } = orderBy;
-      this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
-    } else if (
-      chartType === "pie" ||
-      chartType === "donut" ||
-      chartType === "line"
-    ) {
-      this.sql = `${this.sql} desc`;
-    } else if (aggregateFunction) {
-      this.sql = `${this.sql} desc`;
+    // If the user sorts by a field that is aggregated, then, instead of ordering by the name of the
+    // field, we order by its alias
+    // Since only the value column (which has the alias “y”) can be aggregated, the sort field is
+    // “y”
+    // The reason for doing this is that the API doesn't support functions in the ORDER BY
+    // (ex: ORDER BY count(number))
+    if (aggregateFunction && orderByField === this.configuration?.value?.name) {
+      orderByField = 'y';
+    }
+
+    if (orderByField) {
+      this.sql = `${this.sql} ORDER BY ${orderByField} ${orderBy?.orderType || 'desc'}`;
     }
   }
 
