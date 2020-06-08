@@ -269,13 +269,17 @@ export default class FiltersService implements Filters.Service {
       }
       return;
     }
+  
+    // If the user hasn't explicitely ordered the data, we still apply some default sorting
+    // (which isn't shown in the UI) so the chart looks nice
+    // The sorting depends on the type of the chart and the user can still override it manually
     if (orderBy) {
       const { name } = orderBy;
       this.sql = `${this.sql} ORDER BY ${name || sqlFields.category}`;
     } else if (chartType === "line" && this.configuration?.category?.name) {
       this.sql = `${this.sql} ORDER BY ${this.configuration.category.name}`;
-    } else if (chartType === "pie" || chartType === "donut") {
-      this.sql = `${this.sql} ORDER BY x`;
+    } else if (["pie", "donut", "bar", "stacked-bar", "bar-horizontal", "stacked-bar-horizontal"].indexOf(chartType) !== -1 && this.configuration?.value?.name) {
+      this.sql = `${this.sql} ORDER BY ${this.configuration.value.name}`;
     }
   }
 
