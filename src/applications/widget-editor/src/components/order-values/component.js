@@ -45,7 +45,7 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
     selectedOrder = ORDER_TYPES[0];
   }
 
-  const handleChange = (option, changeOrder = null) => {
+  const handleChange = (option, changeOrder = 'asc') => {
     const findSelected = option
       ? columns.find((c) => c.name === option.value)
       : {};
