@@ -1,11 +1,11 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import ChartsCommon from './chart-common';
+import ParseSignals from './parse-signals';
+
 import { sqlFields } from "../helpers/wiget-helper/constants";
-import { parseData } from "./helpers";
 
-import signalsHelper from "../helpers/signals-helper";
-
-export default class BarsStacked implements Charts.Bars {
+export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   schema: any;
   widgetConfig: any;
   widgetData: Generic.ObjectPayload;
@@ -19,6 +19,7 @@ export default class BarsStacked implements Charts.Bars {
     scheme: any,
     colorApplied: boolean
   ) {
+    super(widgetConfig, widgetData);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -42,10 +43,10 @@ export default class BarsStacked implements Charts.Bars {
         ...this.scheme.config,
         ...(!this.colorApplied
           ? {
-              rect: {
-                fill: this.scheme.mainColor,
-              },
-            }
+            rect: {
+              fill: this.scheme.mainColor,
+            },
+          }
           : {}),
       },
     };
@@ -103,12 +104,10 @@ export default class BarsStacked implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
-            tooltip: {
-              signal: signalsHelper(this.widgetConfig, "datum.y", "datum.x"),
-            },
             ...(this.colorApplied
               ? { fill: { scale: "color", field: sqlFields.category } }
-              : {}),          },
+              : {}),
+          },
           update: {
             opacity: { value: 1 },
             x: { scale: "x", field: "id" },
@@ -132,25 +131,22 @@ export default class BarsStacked implements Charts.Bars {
           fields: [
             {
               column: "y",
-              property: "y",
+              property: this.widgetConfig?.paramsConfig?.value.alias
+                || this.widgetConfig?.paramsConfig?.value.name,
               type: "number",
-              format: ".2s",
+              format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: "x",
-              type: "string",
-              format: ".2f",
+              property: this.widgetConfig?.paramsConfig?.category.alias
+                || this.widgetConfig?.paramsConfig?.category.name,
+              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              format: this.resolveFormat('x'),
             },
           ],
         },
       },
     ];
-  }
-
-  resolveFormat() {
-    const format = this.widgetConfig?.paramsConfig?.format || "s";
-    return format;
   }
 
   setAxes() {
@@ -166,8 +162,9 @@ export default class BarsStacked implements Charts.Bars {
           labels: {
             update: {
               text: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? truncate(data('table')[datum.value - 1].x, 12) : data('table')[datum.value - 1].x",
+                signal: this.isDate()
+                  ? `utcFormat(data('table')[datum.value - 1].x, '${this.resolveFormat('x')}')`
+                  : "truncate(data('table')[datum.value - 1].x, 12)",
               },
               align: {
                 signal:
@@ -190,7 +187,7 @@ export default class BarsStacked implements Charts.Bars {
         orient: "left",
         scale: "y",
         labelOverlap: "parity",
-        format: this.resolveFormat(),
+        format: this.resolveFormat('y'),
         encode: {
           labels: {
             update: {
@@ -207,15 +204,22 @@ export default class BarsStacked implements Charts.Bars {
     const { widgetData, scheme } = this;
     return [
       {
-        values: parseData(widgetData),
+        values: widgetData,
         name: "table",
+        ...(this.isDate() ? {
+          format: {
+            parse: {
+              x: 'date'
+            }
+          }
+        } : {}),
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
           {
             type: "stack",
             groupby: ["x"],
-            sort: { field: "x"},
+            sort: { field: "x" },
             field: "y"
           }
         ],
@@ -224,6 +228,7 @@ export default class BarsStacked implements Charts.Bars {
   }
 
   getChart() {
-    return this.schema;
+    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
+    return parseSignals;
   }
 }

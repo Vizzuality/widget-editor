@@ -15,7 +15,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
-    super(widgetConfig);
+    super(widgetConfig, widgetData);
     this.schema = schema;
     this.scheme = scheme;
     this.widgetConfig = widgetConfig;
@@ -64,25 +64,23 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   interactionConfig() {
-    if (this.widgetConfig.hasOwnProperty('interaction_config')) {
-      return this.widgetConfig.interaction_config;
-    }
     return [
       {
         name: "tooltip",
         config: {
           fields: [
             {
-              column: "y",
-              property: "y",
+              column: "value",
+              property: this.widgetConfig?.paramsConfig?.value.alias
+                || this.widgetConfig?.paramsConfig?.value.name,
               type: "number",
-              format: ".2s",
+              format: this.resolveFormat('y'),
             },
             {
-              column: "x",
-              property: "x",
-              type: "string",
-              format: ".2f",
+              column: "category",
+              property: this.widgetConfig?.paramsConfig?.category.alias
+                || this.widgetConfig?.paramsConfig?.category.name,
+              type: 'string',
             },
           ],
         },
@@ -95,10 +93,9 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
       {
         name: "c",
         type: "ordinal",
-        domain: { 
-          data: "table", 
+        domain: {
+          data: "table",
           field: 'value',
-          ...(this.isDate() ? { sort: true } : {})
         },
         range: this.scheme ? this.scheme.category : "category20",
       },
@@ -148,13 +145,6 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
       {
         values: widgetData,
         name: "table",
-        ...(this.isDate() ? {
-          format: {
-            parse: {
-              x: 'date'
-            }
-          }
-        } : {}),
         transform: [
           {
             "type": "window",

@@ -10,7 +10,7 @@ export default class ParseSignals {
   standalone: boolean;
   datumXIndicator: string;
   datumYIndicator: string;
-  
+
   constructor(schema: any, widgetConfig: any, isDate: boolean = false, standalone: boolean = false) {
     this.isDate = isDate;
     this.widgetConfig = widgetConfig || schema;
@@ -18,15 +18,7 @@ export default class ParseSignals {
     this.isCustom = !this.widgetConfig?.paramsConfig;
     this.standalone = standalone;
     this.chartType = this.isCustom ? this.getCustomChartType(schema) : this.widgetConfig?.paramsConfig?.chartType;
-
-    const fields = this.getTooltipFields();
-    this.tooltipConfig = fields.map(({ column, property, type, format }) => ({
-      field: column,
-      title: property,
-      formatType: type === "date" ? "time" : type,
-      format,
-    }))
-  } 
+  }
 
   resolveMarkGroup(marks: any) {
     let chartType;
@@ -70,53 +62,37 @@ export default class ParseSignals {
 
   assignSignal() {
     const signals = [];
-    let signal = "";
-
     const datumFormat = this.chartType === 'line' ? 'datum.datum' : 'datum';
 
-    this.tooltipConfig.forEach(field => {
-      if (field.format && field.formatType === 'number' && field.format) {
-        signals.push(`"${field.title}": format(${datumFormat}.${this.stripDatum(field.field)}, "${field.format}")`)
-      } else if (field.format && field.formatType === 'time' && field.format) {
-        signals.push(`"${field.title}": utcFormat(${datumFormat}.${this.stripDatum(field.field)}, "${field.format}")`)
+    this.getTooltipFields().forEach(field => {
+      if (field.format && field.type === 'number') {
+        signals.push(`"${field.property}": format(${datumFormat}.${this.stripDatum(field.column)}, "${field.format}")`);
+      } else if (field.format && field.type === 'date') {
+        signals.push(`"${field.property}": utcFormat(${datumFormat}.${this.stripDatum(field.column)}, "${field.format}")`);
       } else {
-        signals.push(`"${field.title}": ${datumFormat}.${this.stripDatum(field.field)}`)
+        signals.push(`"${field.property}": ${datumFormat}.${this.stripDatum(field.column)}`);
       }
     })
-    
-    signal = `{ ${signals.join()} }`
-    return {
-      signal
-    }
+
+    const signal = `{ ${signals.join()} }`;
+
+    return { signal };
   }
 
   getTooltipFields() {
-    const interactionConfig = this.widgetConfig.hasOwnProperty('interaction_config') ? 
-      this.widgetConfig.interaction_config : 
-      this.schema.hasOwnProperty('interaction_config') ? this.schema.interaction_config : [];
+    let interactionConfig = [];
+    if (this.schema.hasOwnProperty('interaction_config')) {
+      interactionConfig = this.schema.interaction_config;
+    } else if (this.widgetConfig.hasOwnProperty('interaction_config')) {
+      interactionConfig = this.widgetConfig.interaction_config;
+    }
 
-    // We don't have the interaction config object defined
-    if (
-      !interactionConfig ||
-      !interactionConfig.length
-    ) {
+    const tooltipConfig = interactionConfig.find(c => c.name === "tooltip");
+
+    if (!tooltipConfig?.config?.fields?.length) {
       return [];
     }
-  
-    const tooltipConfig = interactionConfig.find(
-      (c) => c.name === "tooltip"
-    );
-  
-    // We don't have the tooltip config defined
-    if (
-      !tooltipConfig ||
-      !tooltipConfig.config ||
-      !tooltipConfig.config.fields ||
-      !tooltipConfig.config.fields.length
-    ) {
-      return [];
-    }
-  
+
     return tooltipConfig.config.fields;
   }
 
@@ -135,7 +111,7 @@ export default class ParseSignals {
   parseLegacy() {
     const chartType = this.widgetConfig?.paramsConfig?.chartType;
     let serializedMarks = this.schema.marks;
-    
+
     const hasTooltip = this.tooltipSet(chartType, this.schema.marks);
     if (!hasTooltip) {
       if (this.chartType === 'pie' || this.chartType === 'donut') {
@@ -153,7 +129,7 @@ export default class ParseSignals {
         serializedMarks = this.scatterMarks(this.schema.marks);
       }
       return serializedMarks;
-    } 
+    }
 
     return this.schema.marks;
   }
@@ -162,7 +138,7 @@ export default class ParseSignals {
     return marks.map(mark => {
       if (mark.type === 'rect') {
         return {
-          ...mark, 
+          ...mark,
           encode: {
             ...mark.encode,
             enter: {
@@ -186,7 +162,7 @@ export default class ParseSignals {
     return marks.map(mark => {
       if (mark.type === 'path') {
         return {
-          ...mark, 
+          ...mark,
           encode: {
             ...mark.encode,
             update: {
@@ -204,7 +180,7 @@ export default class ParseSignals {
     return marks.map(mark => {
       if (mark.type === 'arc') {
         return {
-          ...mark, 
+          ...mark,
           encode: {
             ...mark.encode,
             enter: {
@@ -222,7 +198,7 @@ export default class ParseSignals {
     return marks.map(mark => {
       if (mark.type === 'symbol') {
         return {
-          ...mark, 
+          ...mark,
           encode: {
             ...mark.encode,
             enter: {
@@ -237,7 +213,8 @@ export default class ParseSignals {
   }
 
   serializeSignals() {
-    if (this.chartType === 'bar' || this.chartType === 'bar-horizontal') {
+    if (this.chartType === 'bar' || this.chartType === 'bar-horizontal'
+      || this.chartType === 'stacked-bar' || this.chartType === 'stacked-bar-horizontal') {
       return {
         ...this.schema,
         marks: this.barMarks(this.schema.marks)

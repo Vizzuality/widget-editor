@@ -17,7 +17,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
-    super(widgetConfig);
+    super(widgetConfig, widgetData);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -107,14 +107,17 @@ export default class Line extends ChartsCommon implements Charts.Line {
           fields: [
             {
               column: "y",
-              property: "y",
+              property: this.widgetConfig?.paramsConfig?.value.alias
+                || this.widgetConfig?.paramsConfig?.value.name,
               type: "number",
-              format: ".2s",
+              format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: "x",
-              type: "string",
+              property: this.widgetConfig?.paramsConfig?.category.alias
+                || this.widgetConfig?.paramsConfig?.category.name,
+              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              format: this.resolveFormat('x'),
             },
           ],
         },
@@ -126,11 +129,11 @@ export default class Line extends ChartsCommon implements Charts.Line {
     return [
       {
         name: "x",
-        type: "point",
+        type: this.isDate() ? 'utc' : 'point',
         range: "width",
-        domain: { 
-          data: "table", 
-          field: "x",  
+        domain: {
+          data: "table",
+          field: "x",
           ...(this.isDate() ? { sort: true } : {})
         },
       },
@@ -212,8 +215,8 @@ export default class Line extends ChartsCommon implements Charts.Line {
             labels: {
               update: {
                 text: {
-                  signal: "utcFormat(datum.value, '%d %b')",
-                } 
+                  signal: `utcFormat(datum.value, '${this.resolveFormat('x')}')`,
+                }
               }
             }
           }
@@ -227,7 +230,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
         orient: "left",
         scale: "y",
         labelOverlap: "parity",
-        format: this.resolveFormat(),
+        format: this.resolveFormat('y'),
         encode: {
           labels: {
             update: {
@@ -256,7 +259,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
-        ]    
+        ]
       },
       {
         name: "dots",

@@ -19,7 +19,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
     scheme: any,
     colorApplied: boolean
   ) {
-    super(widgetConfig);
+    super(widgetConfig, widgetData);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -43,10 +43,10 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         ...this.scheme.config,
         ...(!this.colorApplied
           ? {
-              symbol: {
-                fill: this.scheme.mainColor,
-              },
-            }
+            symbol: {
+              fill: this.scheme.mainColor,
+            },
+          }
           : {}),
       },
     };
@@ -60,15 +60,17 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
           fields: [
             {
               column: "y",
-              property: "y",
+              property: this.widgetConfig?.paramsConfig?.value.alias
+                || this.widgetConfig?.paramsConfig?.value.name,
               type: "number",
-              format: ".2s",
+              format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: "x",
-              type: "string",
-              format: ".2f",
+              property: this.widgetConfig?.paramsConfig?.category.alias
+                || this.widgetConfig?.paramsConfig?.category.name,
+              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              format: this.resolveFormat('x'),
             },
           ],
         },
@@ -109,7 +111,11 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
       {
         name: "x",
         type: "linear",
-        domain: { "data": "table", "field": "x" },
+        domain: {
+          data: "table",
+          field: "x",
+          ...(this.isDate() ? { sort: true } : {})
+        },
         round: true,
         nice: true,
         zero: false,
@@ -177,6 +183,13 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         "encode": {
           "labels": {
             "update": {
+              ...(this.isDate()
+                ? {
+                  text: {
+                    signal: `utcFormat(datum.value, '${this.resolveFormat('x')}')`,
+                  },
+                }
+                : {}),
               "align": { "value": "center" },
               "baseline": { "value": "top" }
             }
@@ -191,7 +204,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         "scale": "y",
         "labelOverlap": "parity",
         "orient": "left",
-        "format": "s"
+        format: this.resolveFormat('y'),
       }
     ]
   }
@@ -202,6 +215,13 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
       {
         values: widgetData,
         name: "table",
+        ...(this.isDate() ? {
+          format: {
+            parse: {
+              x: 'date'
+            }
+          }
+        } : {}),
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
