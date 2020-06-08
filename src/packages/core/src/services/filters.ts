@@ -33,7 +33,6 @@ export default class FiltersService implements Filters.Service {
     this.prepareFilters();
     this.prepareGroupBy();
     this.prepareOrderBy();
-    this.prepareOrder();
     this.prepareLimit();
   }
 
@@ -285,24 +284,7 @@ export default class FiltersService implements Filters.Service {
     }
 
     if (orderByField) {
-      this.sql = `${this.sql} ORDER BY ${orderByField}`;
-    }
-  }
-
-  prepareOrder() {
-    const { orderBy, chartType, aggregateFunction } = this.configuration;
-    
-    if (orderBy) {
-      const { orderType } = orderBy;
-      this.sql = `${this.sql} ${orderType ? orderType : "asc"}`;
-    } else if (
-      chartType === "pie" ||
-      chartType === "donut" ||
-      chartType === "line"
-    ) {
-      this.sql = `${this.sql} desc`;
-    } else if (aggregateFunction) {
-      this.sql = `${this.sql} desc`;
+      this.sql = `${this.sql} ORDER BY ${orderByField} ${orderBy?.orderType || 'desc'}`;
     }
   }
 

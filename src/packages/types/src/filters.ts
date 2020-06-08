@@ -6,7 +6,6 @@ export interface Service {
   prepareFilters(): void;
   prepareGroupBy(): void;
   prepareOrderBy(): void;
-  prepareOrder(): void;
   prepareLimit(): void;
   requestWidgetData(): Promise<Generic.ObjectPayload>;
 }
