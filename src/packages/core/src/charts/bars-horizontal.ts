@@ -19,7 +19,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     scheme: any,
     colorApplied: boolean
   ) {
-    super(widgetConfig);
+    super(widgetConfig, widgetData);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -42,10 +42,10 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         ...this.scheme.config,
         ...(!this.colorApplied
           ? {
-              rect: {
-                fill: this.scheme.mainColor,
-              },
-            }
+            rect: {
+              fill: this.scheme.mainColor,
+            },
+          }
           : {}),
       },
     };
@@ -101,7 +101,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         ...this.schema.axisX,
         orient: "bottom",
         scale: "x",
-        format: this.resolveFormat(),
+        format: this.resolveFormat('y'),
         grid: true,
         labelOverlap: "parity",
       },
@@ -118,18 +118,18 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
           labels: {
             update: {
               text: {
-                signal: this.isDate() ? "utcFormat(datum.value, '%d %b')" : "truncate(datum.value, 12)",
+                signal: this.isDate()
+                  ? `utcFormat(datum.value, '${this.resolveFormat('x')}')`
+                  : "truncate(datum.value, 12)",
               },
-              ...(!this.isDate() ? {
-                align: {
-                  signal:
-                    "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
-                },
-                baseline: {
-                  signal:
-                    "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
-                }
-              } : {})
+              align: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+              },
+              baseline: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+              }
             },
           },
         },
@@ -171,15 +171,17 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
           fields: [
             {
               column: "y",
-              property: "y",
+              property: this.widgetConfig?.paramsConfig?.value.alias
+                || this.widgetConfig?.paramsConfig?.value.name,
               type: "number",
-              format: ".2s",
+              format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: "x",
-              type: "string",
-              format: ".2f",
+              property: this.widgetConfig?.paramsConfig?.category.alias
+                || this.widgetConfig?.paramsConfig?.category.name,
+              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              format: this.resolveFormat('x'),
             },
           ],
         },

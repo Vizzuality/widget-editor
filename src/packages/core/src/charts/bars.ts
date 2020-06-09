@@ -19,7 +19,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     scheme: any,
     colorApplied: boolean
   ) {
-    super(widgetConfig);
+    super(widgetConfig, widgetData);
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -42,10 +42,10 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         ...this.scheme.config,
         ...(!this.colorApplied
           ? {
-              rect: {
-                fill: this.scheme.mainColor,
-              },
-            }
+            rect: {
+              fill: this.scheme.mainColor,
+            },
+          }
           : {}),
       },
     };
@@ -131,15 +131,17 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
           fields: [
             {
               column: "y",
-              property: "y",
+              property: this.widgetConfig?.paramsConfig?.value.alias
+                || this.widgetConfig?.paramsConfig?.value.name,
               type: "number",
-              format: ".2s",
+              format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: "x",
-              type: "string",
-              format: ".2f",
+              property: this.widgetConfig?.paramsConfig?.category.alias
+                || this.widgetConfig?.paramsConfig?.category.name,
+              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              format: this.resolveFormat('x'),
             },
           ],
         },
@@ -157,34 +159,26 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         labelOverlap: "parity",
         ticks: false,
         encode: {
-          ...(this.isDate() ? {
-            labels: {
-              update: {
-                text: {
-                  signal: "utcFormat(data('table')[datum.value - 1].x, '%d %b')",
-                } 
-              }
-            }
-          } : {
-            labels: {
-              update: {
-                text: {
-                  signal: "truncate(data('table')[datum.value - 1].x, 12)",
-                },
-                align: {
-                  signal:
-                    "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
-                },
-                baseline: {
-                  signal:
-                    "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
-                },
-                angle: {
-                  signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0",
-                },
+          labels: {
+            update: {
+              text: {
+                signal: this.isDate()
+                  ? `utcFormat(data('table')[datum.value - 1].x, '${this.resolveFormat('x')}')`
+                  : "truncate(data('table')[datum.value - 1].x, 12)",
               },
-            }
-          }),
+              align: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+              },
+              baseline: {
+                signal:
+                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+              },
+              angle: {
+                signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0",
+              },
+            },
+          }
         },
       },
       {
@@ -193,7 +187,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         orient: "left",
         scale: "y",
         labelOverlap: "parity",
-        format: this.resolveFormat(),
+        format: this.resolveFormat('y'),
         encode: {
           labels: {
             update: {
