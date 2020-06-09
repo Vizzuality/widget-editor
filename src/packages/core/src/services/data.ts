@@ -1,13 +1,15 @@
 import isObjectLike from "lodash/isObjectLike";
+import { put, select } from "redux-saga/effects";
 
 import { Dataset, Widget, Adapter, Generic } from "@widget-editor/types";
 
 import FiltersService from "./filters";
-import VegaService from "./vega";
 
 import { setAdapter } from "../helpers/adapter";
 
-import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
+import { ERROR_CODES, sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
+
+import { emptyDataset } from "../utils";
 
 export default class DataService {
   adapter: Adapter.Service;
@@ -145,6 +147,34 @@ export default class DataService {
     this.setEditor({ layers, fields: this.allowedFields });
   }
 
+  // Generator used with our sagas
+  static *sagasHandleSetWidgetData(data: Generic.ObjectPayload, setEditor: Generic.Action) {
+    const store = yield select();
+    const errors = store?.widgetEditor?.editor?.errors || [];
+    if (emptyDataset(data)) {
+      yield put(setEditor({ 
+        widgetData: null,
+        errors: [...errors, ERROR_CODES.DATA_UNAVAILABLE]
+      }));
+    } else {
+      yield put(setEditor({ 
+        widgetData: data, 
+        errors: errors.filter((e: string) => e !== ERROR_CODES.DATA_UNAVAILABLE)
+      }));
+    }
+  }
+ 
+  // Internal set widget data
+  setWidgetData(request: any) {
+    const data = request?.data;
+    // TODO: ERROR_CODES.COLUMNS_NOT_SET
+    if (emptyDataset(data) || "errors" in request) {
+      this.setEditor({ errors: [ERROR_CODES.DATA_UNAVAILABLE] });
+    } else {
+      this.setEditor({ widgetData: request.data });
+    }
+  }
+  
   async requestWithFilters(filters: any, configuration: any) {
     const filtersService = new FiltersService(
       { ...configuration },
@@ -157,11 +187,7 @@ export default class DataService {
       this.dataset
     );
 
-    if (!request.data || "errors" in request) {
-      this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
-    } else {
-      this.setEditor({ widgetData: request.data });
-    }
+    this.setWidgetData(request);
   }
 
   async resolveInitialState() {

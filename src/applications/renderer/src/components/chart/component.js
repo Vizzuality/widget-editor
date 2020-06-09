@@ -2,7 +2,7 @@ import React, { Fragment, Suspense } from "react";
 import * as vega from "vega";
 import vegaTooltip from "vega-tooltip";
 
-import { ParseSignals } from "@widget-editor/core";
+import { ParseSignals, constants } from "@widget-editor/core";
 
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
@@ -10,6 +10,8 @@ import debounce from "lodash/debounce";
 import { StyledContainer, ChartNeedsOptions } from "./styles";
 
 const ColumnSelections = React.lazy(() => import("../column-selections"));
+
+const { ERROR_CODES } = constants;
 
 const getTooltipConfigFields = (widget) => {
   const vegaConfig = widget;
@@ -45,14 +47,17 @@ class Chart extends React.Component {
   constructor(props) {
     super(props);
     this.vega = null;
+
     this.state = {
-      chartReady: false
+      chartReady: false,
     }
+
     this.standalone = props.standalone || false;
     this.handleResize = debounce(this.handleResize.bind(this), 250);
   }
 
   componentDidMount() {
+    this.resolveErrors();
     this.generateVegaChart();
     window.addEventListener("resize", this.handleResize);
   }
@@ -60,6 +65,11 @@ class Chart extends React.Component {
   componentDidUpdate(prevProps) {
     if (!isEqual(prevProps.widget, this.props.widget)) {
       this.generateVegaChart();
+      console.log('new chart rendered')
+    }
+
+    if (!this.standalone && !isEqual(prevProps.editor.widgetData, this.props.editor.widgetData)) {
+      this.resolveErrors();
     }
   }
 
@@ -72,6 +82,21 @@ class Chart extends React.Component {
     }
   }
 
+  resolveErrors() {
+    const { chartReady } = this.state;
+    if (this.noDataAvailable() && chartReady) {
+      this.vega = null;
+      this.setState({ 
+        chartReady: false, 
+        error: ERROR_CODES.DATA_UNAVAILABLE 
+      });
+      this.chart.innerHTML = '';
+    } else {
+      this.setState({
+        error: null
+      })
+    }
+  }
 
   setSize() {
     const { standalone } = this.props;
@@ -171,7 +196,21 @@ class Chart extends React.Component {
   }
 
   noDataAvailable() {
-    return !this.standalone && !this.props.editor.widgetData;
+    const errors = this?.props?.editor?.errors || [];
+    if (!this.standalone && 
+      (errors.indexOf(ERROR_CODES.DATA_UNAVAILABLE) !== -1 ||
+      errors.indexOf(ERROR_CODES.COLUMNS_NOT_SET) !== -1 )) {
+      return true;
+    }
+
+    if (!this.standalone && !this.props.editor.widgetData) {
+      return true;
+    }
+
+    // For standalone widgets,
+    // We will not make the check for empty data
+    // Only if user is using the editor itself
+    return false;
   }
 
   // XXX: makes sure custom charts has nessesary info to render
@@ -199,10 +238,6 @@ class Chart extends React.Component {
       widget: vegaConfiguration,
       standaloneConfiguration,
     } = this.props;
-
-    if (this.noDataAvailable()) {
-      return;
-    }
 
     if (this.standalone && standaloneConfiguration) {
       if (thumbnail) {
@@ -236,7 +271,8 @@ class Chart extends React.Component {
 
   render() {
     const { thumbnail, standalone, advanced = false } = this.props;
-    const { chartReady } = this.state;
+    const { chartReady, error } = this.state;
+
     return (
       <StyledContainer
         standalone={standalone}
@@ -246,14 +282,17 @@ class Chart extends React.Component {
           this.view = c;
         }}
       >
-        <div
-          className="c-chart"
-          ref={(c) => {
-            this.chart = c;
-          }}
-        ></div>
 
-        {this.noDataAvailable() && (
+        {error === ERROR_CODES.DATA_UNAVAILABLE && (
+          <Fragment>
+            <ChartNeedsOptions>
+              No data available
+            </ChartNeedsOptions>
+            {this.columnSelection()}
+          </Fragment>
+        )}
+
+        {error === ERROR_CODES.COLUMNS_NOT_SET && (
           <Fragment>
             {chartReady && <ChartNeedsOptions>
               Select value & category to visualize data
@@ -261,6 +300,21 @@ class Chart extends React.Component {
             {this.columnSelection()}
           </Fragment>
         )}
+
+        {error === ERROR_CODES.STANDALONE_DATA_UNAVAILABLE && (
+          <Fragment>
+            <ChartNeedsOptions>
+              No data available
+            </ChartNeedsOptions>
+          </Fragment>
+        )}
+
+        {!error && <div
+          className="c-chart"
+          ref={(c) => {
+            this.chart = c;
+          }}
+        ></div>}
 
         {!this.standalone && !advanced && this.columnSelection()}
       </StyledContainer>

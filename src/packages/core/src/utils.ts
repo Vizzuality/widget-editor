@@ -1,3 +1,5 @@
+import { Generic } from "@widget-editor/types";
+
 import { MONTHS } from "./constants";
 
 export const parseDate = (date: any) => {
@@ -15,7 +17,7 @@ export const isDate = (date: any) => {
   return typeof date === 'number' || !isNaN(Date.parse(date))
 }
 
-export const parseData = (data: any) => {
+export const parseData = (data: Generic.ObjectPayload) => {
   return data
     ? data.map((d: any) => {
         if (isDate(d.x)) {
@@ -25,3 +27,7 @@ export const parseData = (data: any) => {
       })
     : [];
 };
+
+export const emptyDataset = (data: Generic.ObjectPayload) => {
+  return (!data || !Array.isArray(data)) || Array.isArray(data) && data.length === 0;
+}

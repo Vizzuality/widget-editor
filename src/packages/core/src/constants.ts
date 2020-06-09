@@ -1,5 +1,11 @@
 export const APP_NAMESPACE: string = "widgetEditor";
 
+export const ERROR_CODES = {
+  DATA_UNAVAILABLE: 'WIDGET_DATA_UNAVAILABLE',
+  COLUMNS_NOT_SET: 'WIDGET_COLUMNS_NOT_SET',
+  STANDALONE_DATA_UNAVAILABLE: 'STANDALONE_DATA_UNAVAILABLE'
+}
+
 export const ALLOWED_FIELD_TYPES = [
   // --- NUMBER ----
   { name: "esriFieldTypeSmallInteger", type: "number", provider: "esri" },
@@ -69,6 +75,7 @@ export const MONTHS = [
 export default {
   MONTHS,
   APP_NAMESPACE,
+  ERROR_CODES,
   sagaEvents,
   reduxActions,
 };

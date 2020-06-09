@@ -6,6 +6,7 @@ import { localOnChangeState } from "exposed-hooks";
 
 import {
   FiltersService,
+  DataService,
   constants,
   VegaService,
   StateProxy,
@@ -132,9 +133,7 @@ function* updateWidget() {
     const fullState = yield select();
     const widgetData = yield call(getWidgetData, fullState.widgetEditor);
 
-    if (widgetData) {
-      yield put(setEditor({ widgetData: widgetData.data }));
-    }
+    yield DataService.sagasHandleSetWidgetData(widgetData.data, setEditor);
   }
 
   if (
@@ -185,9 +184,7 @@ function* updateWidgetData() {
       widgetData = yield call(getWidgetData, widgetEditor);
     }
 
-    if (widgetData) {
-      yield put(setEditor({ widgetData: widgetData.data }));
-    }
+    yield DataService.sagasHandleSetWidgetData(widgetData.data, setEditor);
 
     yield call(updateWidget);
   } 
