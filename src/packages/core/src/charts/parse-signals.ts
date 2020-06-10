@@ -64,7 +64,18 @@ export default class ParseSignals {
     const signals = [];
     const datumFormat = this.chartType === 'line' ? 'datum.datum' : 'datum';
 
-    this.getTooltipFields().forEach(field => {
+    // When the user chooses the same field for category and value, and doesn't apply an aggregation
+    // to the value field, then the two tooltip fields (category and value) will have the same
+    // property
+    // To avoid setting twice the same signal (which would crash the editor), we remove any
+    // duplicated field
+    // Note: If the user uses twice the same field but with an aggregation on the value field, the
+    // name of the aggregation is added to its property i.e. the two fields have a unique property
+    const tooltipFields = this.getTooltipFields();
+    const uniqueTooltipFields = tooltipFields
+      .filter((field, index) => tooltipFields.findIndex(f => f.property === field.property) === index);
+
+    uniqueTooltipFields.forEach(field => {
       if (field.format && field.type === 'number') {
         signals.push(`"${field.property}": format(${datumFormat}.${this.stripDatum(field.column)}, "${field.format}")`);
       } else if (field.format && field.type === 'date') {
