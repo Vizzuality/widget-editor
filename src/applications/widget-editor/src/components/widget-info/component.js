@@ -175,23 +175,23 @@ class WidgetInfo extends React.Component {
         {!isMap && (
           <FlexContainer row={true}>
             <InputGroup>
-              <FormLabel htmlFor="options-x-axis">Value</FormLabel>
+              <FormLabel htmlFor="options-y-axis">Value</FormLabel>
               <Input
                 type="text"
-                placeholder="Overwrite axis name"
-                name="options-x-axis"
-                value={xAxisTitle}
-                onChange={(e) => this.setXAxis(e.target.value)}
-              />
-            </InputGroup>
-            <InputGroup>
-              <FormLabel htmlFor="options-y-axis">Category</FormLabel>
-              <Input
-                type="text"
-                placeholder="Overwrite axis name"
+                placeholder="Overwrite value axis name"
                 name="options-y-axis"
                 value={yAxisTitle}
                 onChange={(e) => this.setYAxis(e.target.value)}
+              />
+            </InputGroup>
+            <InputGroup>
+              <FormLabel htmlFor="options-x-axis">Category</FormLabel>
+              <Input
+                type="text"
+                placeholder="Overwrite category axis name"
+                name="options-x-axis"
+                value={xAxisTitle}
+                onChange={(e) => this.setXAxis(e.target.value)}
               />
             </InputGroup>
           </FlexContainer>
