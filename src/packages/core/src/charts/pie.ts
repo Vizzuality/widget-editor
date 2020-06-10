@@ -4,18 +4,24 @@ import ChartsCommon from './chart-common';
 import ParseSignals from './parse-signals';
 
 export default class Pie extends ChartsCommon implements Charts.Pie {
+  configuration: any;
+  editor: any;
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
   scheme: any;
 
   constructor(
+    configuration: any,
+    editor: any,
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
-    super(widgetConfig, widgetData);
+    super(configuration, editor, widgetData);
+    this.configuration = configuration;
+    this.editor = editor;
     this.schema = schema;
     this.scheme = scheme;
     this.widgetConfig = widgetConfig;
@@ -64,6 +70,13 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   interactionConfig() {
+    const categoryProperty = this.getFieldPrettyName(this.configuration.category?.name);
+
+    let valueProperty = this.getFieldPrettyName(this.configuration.value?.name);
+    if (this.configuration.aggregateFunction) {
+      valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
+    }
+
     return [
       {
         name: "tooltip",
@@ -71,15 +84,13 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           fields: [
             {
               column: "value",
-              property: this.widgetConfig?.paramsConfig?.value.alias
-                || this.widgetConfig?.paramsConfig?.value.name,
+              property: valueProperty,
               type: "number",
               format: this.resolveFormat('y'),
             },
             {
               column: "category",
-              property: this.widgetConfig?.paramsConfig?.category.alias
-                || this.widgetConfig?.paramsConfig?.category.name,
+              property: categoryProperty,
               type: 'string',
             },
           ],
@@ -103,12 +114,11 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   resolveInnerRadius() {
-    const chartType = this.widgetConfig?.paramsConfig?.chartType || "pie";
-    const radius = this.widgetConfig?.paramsConfig?.donutRadius || 100;
-    if (chartType === "pie") {
+    if (this.configuration.chartType === "pie") {
       return "0";
     }
-    return radius;
+
+    return this.configuration.donutRadius;
   }
 
   setMarks() {

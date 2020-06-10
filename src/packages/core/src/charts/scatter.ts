@@ -6,6 +6,8 @@ import ParseSignals from './parse-signals';
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class Scatter extends ChartsCommon implements Charts.Scatter {
+  configuration: any;
+  editor: any;
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
@@ -13,13 +15,17 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   scheme: any;
 
   constructor(
+    configuration: any,
+    editor: any,
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
     scheme: any,
     colorApplied: boolean
   ) {
-    super(widgetConfig, widgetData);
+    super(configuration, editor, widgetData);
+    this.configuration = configuration;
+    this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -53,6 +59,13 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   }
 
   interactionConfig() {
+    const categoryProperty = this.getFieldPrettyName(this.configuration.category?.name);
+
+    let valueProperty = this.getFieldPrettyName(this.configuration.value?.name);
+    if (this.configuration.aggregateFunction) {
+      valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
+    }
+
     return [
       {
         name: "tooltip",
@@ -60,16 +73,14 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
           fields: [
             {
               column: "y",
-              property: this.widgetConfig?.paramsConfig?.value.alias
-                || this.widgetConfig?.paramsConfig?.value.name,
+              property: valueProperty,
               type: "number",
               format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: this.widgetConfig?.paramsConfig?.category.alias
-                || this.widgetConfig?.paramsConfig?.category.name,
-              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              property: categoryProperty,
+              type: this.configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],

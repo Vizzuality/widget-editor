@@ -1,27 +1,36 @@
 import { Vega, Generic } from "@widget-editor/types";
 
 export default class ChartCommon {
-  wConfig: any;
+  configuration: any;
+  editor: any;
   wData: Generic.ObjectPayload = [];
   schema: Vega.Schema;
 
-  constructor(widgetConfig: any, widgetData: Generic.ObjectPayload) {
-    this.wConfig = widgetConfig;
+  constructor(configuration: any, editor: any, widgetData: Generic.ObjectPayload) {
+    this.configuration = configuration;
+    this.editor = editor;
     this.wData = widgetData || [];
   }
 
   isDate() {
-    return this.wConfig?.paramsConfig?.category?.type === 'date';
+    return this.configuration.category?.type === 'date';
+  }
+
+  getFieldPrettyName(fieldName) {
+    const field = this.editor.fields?.find(f => f.columnName === fieldName);
+    return field?.metadata?.alias
+      ? field.metadata.alias
+      : fieldName;
   }
 
   resolveFormat(axis: 'x' | 'y') {
     // The Y axis is 100% determined by the format the user choose in the UI
     if (axis === 'y') {
-      return this.wConfig?.paramsConfig?.format || 's';
+      return this.configuration.format || 's';
     }
 
     // The X axis' format depends on the type of the column
-    if (this.wConfig?.paramsConfig?.category?.type === 'date') {
+    if (this.configuration.category?.type === 'date') {
       const timestamps = this.wData.map((d: any) => +(new Date(d.x)));
 
       const min = Math.min(...timestamps);
@@ -46,7 +55,7 @@ export default class ChartCommon {
       }
 
       return '%Y'; // ex: 2017
-    } else if (this.wConfig?.paramsConfig?.category?.type === 'number') {
+    } else if (this.configuration.category?.type === 'number') {
       const allIntegers = this.wData.length && this.wData.every((d: any) => parseInt(d.x, 10) === d.x);
       if (allIntegers) {
         return 'd';

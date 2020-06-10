@@ -80,6 +80,7 @@ function* preloadData() {
         },
         widgetData,
         configuration,
+        editor,
         theme
       );
 
@@ -153,6 +154,7 @@ function* updateWidget() {
         },
         widgetData,
         configuration,
+        editor,
         theme
       );
       yield put(setWidget(vega.getChart()));

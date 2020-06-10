@@ -42,6 +42,7 @@ export default class VegaService implements Charts.Service {
   widgetConfig: any;
   widgetData: any;
   configuration: any;
+  editor: any;
   slizeCount: number;
   scheme: any;
   schema: Vega.Schema;
@@ -51,6 +52,7 @@ export default class VegaService implements Charts.Service {
     widgetConfig: any,
     widgetData: any,
     configuration: any,
+    editor: any,
     theme: any
   ) {
     if (theme) {
@@ -67,6 +69,7 @@ export default class VegaService implements Charts.Service {
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.configuration = configuration;
+    this.editor = editor;
 
     this.slizeCount = configuration?.slizeCount || 5;
 
@@ -173,6 +176,8 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "pie" || chartType === "donut") {
       chart = new Pie(
+        this.configuration,
+        this.editor,
         this.schema,
         this.widgetConfig,
         data,
@@ -182,6 +187,8 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "bar-horizontal") {
       chart = new BarsHorizontal(
+        this.configuration,
+        this.editor,
         this.schema,
         this.widgetConfig,
         data,
@@ -192,6 +199,8 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "bar") {
       chart = new Bars(
+        this.configuration,
+        this.editor,
         this.schema,
         this.widgetConfig,
         data,
@@ -202,6 +211,8 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "stacked-bar") {
       chart = new BarsStacked(
+        this.configuration,
+        this.editor,
         this.schema,
         this.widgetConfig,
         data,
@@ -212,6 +223,8 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "line") {
       chart = new Line(
+        this.configuration,
+        this.editor,
         this.schema,
         this.widgetConfig,
         data,
@@ -221,6 +234,8 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "scatter") {
       chart = new Scatter(
+        this.configuration,
+        this.editor,
         this.schema,
         this.widgetConfig,
         data,

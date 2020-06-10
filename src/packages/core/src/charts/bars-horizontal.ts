@@ -6,6 +6,8 @@ import ParseSignals from './parse-signals';
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class BarsHorizontal extends ChartsCommon implements Charts.Bars {
+  configuration: any;
+  editor: any;
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
@@ -13,13 +15,17 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   colorApplied: boolean;
 
   constructor(
+    configuration: any,
+    editor: any,
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
     scheme: any,
     colorApplied: boolean
   ) {
-    super(widgetConfig, widgetData);
+    super(configuration, editor, widgetData);
+    this.configuration = configuration;
+    this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -164,6 +170,13 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   interactionConfig() {
+    const categoryProperty = this.getFieldPrettyName(this.configuration.category?.name);
+
+    let valueProperty = this.getFieldPrettyName(this.configuration.value?.name);
+    if (this.configuration.aggregateFunction) {
+      valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
+    }
+
     return [
       {
         name: "tooltip",
@@ -171,16 +184,14 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
           fields: [
             {
               column: "y",
-              property: this.widgetConfig?.paramsConfig?.value.alias
-                || this.widgetConfig?.paramsConfig?.value.name,
+              property: valueProperty,
               type: "number",
               format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: this.widgetConfig?.paramsConfig?.category.alias
-                || this.widgetConfig?.paramsConfig?.category.name,
-              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              property: categoryProperty,
+              type: this.configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -190,11 +201,9 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData, widgetConfig } = this;
-
     return [
       {
-        values: widgetData,
+        values: this.widgetData,
         name: "table",
         ...(this.isDate() ? {
           format: {
@@ -210,8 +219,8 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
       },
       {
         values: {
-          xCol: widgetConfig?.paramsConfig?.value?.alias,
-          yCol: widgetConfig?.paramsConfig?.category?.alias,
+          xCol: this.getFieldPrettyName(this.configuration.value?.name),
+          yCol: this.getFieldPrettyName(this.configuration.category?.name),
         },
         name: "properties",
       },
