@@ -130,9 +130,9 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   }
 
   interactionConfig() {
-    const categoryProperty = this.getFieldPrettyName(this.configuration.category?.name);
+    const categoryProperty = this.resolveName('x');
 
-    let valueProperty = this.getFieldPrettyName(this.configuration.value?.name);
+    let valueProperty = this.resolveName('y');
     if (this.configuration.aggregateFunction) {
       valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
     }

@@ -170,9 +170,9 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   interactionConfig() {
-    const categoryProperty = this.getFieldPrettyName(this.configuration.category?.name);
+    const categoryProperty = this.resolveName('x');
 
-    let valueProperty = this.getFieldPrettyName(this.configuration.value?.name);
+    let valueProperty = this.resolveName('y');
     if (this.configuration.aggregateFunction) {
       valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
     }
@@ -219,8 +219,8 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
       },
       {
         values: {
-          xCol: this.getFieldPrettyName(this.configuration.value?.name),
-          yCol: this.getFieldPrettyName(this.configuration.category?.name),
+          xCol: this.resolveName('x'),
+          yCol: this.resolveName('y'),
         },
         name: "properties",
       },

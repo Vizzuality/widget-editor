@@ -59,9 +59,9 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   }
 
   interactionConfig() {
-    const categoryProperty = this.getFieldPrettyName(this.configuration.category?.name);
+    const categoryProperty = this.resolveName('x');
 
-    let valueProperty = this.getFieldPrettyName(this.configuration.value?.name);
+    let valueProperty = this.resolveName('y');
     if (this.configuration.aggregateFunction) {
       valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
     }

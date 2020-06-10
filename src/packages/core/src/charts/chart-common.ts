@@ -16,8 +16,20 @@ export default class ChartCommon {
     return this.configuration.category?.type === 'date';
   }
 
-  getFieldPrettyName(fieldName) {
+  resolveName(axis: 'x' | 'y') {
+    const { xAxisTitle, yAxisTitle } = this.configuration;
+
+    if (axis === 'x' && xAxisTitle) {
+      return xAxisTitle;
+    }
+
+    if (axis === 'y' && yAxisTitle) {
+      return yAxisTitle;
+    }
+
+    const fieldName = this.configuration[axis === 'x' ? 'category' : 'value']?.name;
     const field = this.editor.fields?.find(f => f.columnName === fieldName);
+
     return field?.metadata?.alias
       ? field.metadata.alias
       : fieldName;
