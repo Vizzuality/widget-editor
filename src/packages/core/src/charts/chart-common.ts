@@ -30,9 +30,15 @@ export default class ChartCommon {
     const fieldName = this.configuration[axis === 'x' ? 'category' : 'value']?.name;
     const field = this.editor.fields?.find(f => f.columnName === fieldName);
 
-    return field?.metadata?.alias
+    const name = field?.metadata?.alias
       ? field.metadata.alias
       : fieldName;
+
+    if (axis === 'y' && this.configuration.aggregateFunction) {
+      return `${name} (${this.configuration.aggregateFunction})`;
+    }
+
+    return name;
   }
 
   resolveFormat(axis: 'x' | 'y') {

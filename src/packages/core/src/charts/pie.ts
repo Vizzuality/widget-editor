@@ -70,13 +70,6 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   interactionConfig() {
-    const categoryProperty = this.resolveName('x');
-
-    let valueProperty = this.resolveName('y');
-    if (this.configuration.aggregateFunction) {
-      valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
-    }
-
     return [
       {
         name: "tooltip",
@@ -84,13 +77,13 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           fields: [
             {
               column: "value",
-              property: valueProperty,
+              property: this.resolveName('y'),
               type: "number",
               format: this.resolveFormat('y'),
             },
             {
               column: "category",
-              property: categoryProperty,
+              property: this.resolveName('x'),
               type: 'string',
             },
           ],

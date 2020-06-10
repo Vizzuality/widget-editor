@@ -170,13 +170,6 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   interactionConfig() {
-    const categoryProperty = this.resolveName('x');
-
-    let valueProperty = this.resolveName('y');
-    if (this.configuration.aggregateFunction) {
-      valueProperty = `${valueProperty} (${this.configuration.aggregateFunction})`;
-    }
-
     return [
       {
         name: "tooltip",
@@ -184,13 +177,13 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
           fields: [
             {
               column: "y",
-              property: valueProperty,
+              property: this.resolveName('y'),
               type: "number",
               format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: categoryProperty,
+              property: this.resolveName('x'),
               type: this.configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
