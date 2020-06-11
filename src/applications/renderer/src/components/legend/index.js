@@ -11,7 +11,6 @@ import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selecto
 export default redux.connectState(
   (state) => ({
     widget: state.widget,
-    color: state.filters.color,
     configuration: state.configuration,
     selectedColor: widgetSelectors.getSelectedColor(state),
     columns: widgetSelectors.getWidgetColumns(state, { colorDimention: true }),
