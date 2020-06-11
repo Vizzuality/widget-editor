@@ -107,7 +107,11 @@ export const getSelectedColor = createSelector(
     }
 
     if (configuration.chartType === "pie") {
-      return configuration.category || null;
+      const colorColumn = configuration.category?.name
+        ? widgetColumns.find(column => column.identifier === configuration.category.name)
+        : null;
+
+      return colorColumn || null;
     }
 
     const colorColumn = configuration.color?.name
