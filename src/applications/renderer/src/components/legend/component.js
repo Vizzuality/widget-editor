@@ -38,7 +38,6 @@ const Legend = ({
   activeScheme,
   columns,
   widgetData,
-  setFilters,
   patchConfiguration,
   compact,
 }) => {
@@ -51,9 +50,6 @@ const Legend = ({
     if (isPie) {
       patchConfiguration({ category: color });
     } else {
-      setFilters({
-        color,
-      });
       patchConfiguration({ color });
     }
   };

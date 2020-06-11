@@ -51,26 +51,6 @@ export const getWidgetSelectedColumn = createSelector(
   }
 );
 
-export const getSelectedColor = createSelector(
-  [getConfiguration, getDataset, getFilters],
-  (configuration, dataset, filters) => {
-    if (
-      !dataset ||
-      !dataset.id ||
-      !dataset.attributes ||
-      !dataset.attributes.metadata
-    ) {
-      return null;
-    }
-
-    if (configuration.chartType === "pie") {
-      return configuration.category || null;
-    }
-
-    return filters.color || SINGLE_COLOR_OPTION;
-  }
-);
-
 export const getWidgetColumns = createSelector(
   [getConfiguration, getDataset, getFields, getProps],
   (configuration, dataset, fields, props) => {
@@ -111,5 +91,29 @@ export const getWidgetColumns = createSelector(
     }
 
     return columns;
+  }
+);
+
+export const getSelectedColor = createSelector(
+  [getConfiguration, getDataset, getWidgetColumns],
+  (configuration, dataset, widgetColumns) => {
+    if (
+      !dataset ||
+      !dataset.id ||
+      !dataset.attributes ||
+      !dataset.attributes.metadata
+    ) {
+      return null;
+    }
+
+    if (configuration.chartType === "pie") {
+      return configuration.category || null;
+    }
+
+    const colorColumn = configuration.color?.name
+      ? widgetColumns.find(column => column.identifier === configuration.color.name)
+      : null;
+
+    return  colorColumn || SINGLE_COLOR_OPTION;
   }
 );

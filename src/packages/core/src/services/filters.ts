@@ -46,7 +46,7 @@ export default class FiltersService implements Filters.Service {
   prepareColor() {
     const { color } = this.configuration;
     if (isPlainObject(color)) {
-      return `, ${color.identifier} as color`;
+      return `, ${color.name} as color`;
     }
     return "";
   }
