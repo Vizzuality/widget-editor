@@ -124,7 +124,7 @@ class WidgetInfo extends React.Component {
 
   setAggregation(agg) {
     this.setState({
-      aggregateFunction: agg.value === "NONE" ? null : agg.value,
+      aggregateFunction: agg.value,
     });
     this.handleUpdate();
   }
