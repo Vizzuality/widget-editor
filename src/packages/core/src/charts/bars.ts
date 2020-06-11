@@ -6,6 +6,8 @@ import ParseSignals from './parse-signals';
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class Bars extends ChartsCommon implements Charts.Bars {
+  configuration: any;
+  editor: any;
   schema: any;
   widgetConfig: any;
   widgetData: Generic.ObjectPayload;
@@ -13,13 +15,17 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
   scheme: any;
 
   constructor(
+    configuration: any,
+    editor: any,
     schema: any,
     widgetConfig: any,
     widgetData: Generic.ObjectPayload,
     scheme: any,
     colorApplied: boolean
   ) {
-    super(widgetConfig, widgetData);
+    super(configuration, editor, widgetData);
+    this.configuration = configuration;
+    this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -131,16 +137,14 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
           fields: [
             {
               column: "y",
-              property: this.widgetConfig?.paramsConfig?.value.alias
-                || this.widgetConfig?.paramsConfig?.value.name,
+              property: this.resolveName('y'),
               type: "number",
               format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: this.widgetConfig?.paramsConfig?.category.alias
-                || this.widgetConfig?.paramsConfig?.category.name,
-              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              property: this.resolveName('x'),
+              type: this.configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],

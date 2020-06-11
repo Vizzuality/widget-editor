@@ -6,18 +6,24 @@ import ParseSignals from './parse-signals';
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class Line extends ChartsCommon implements Charts.Line {
+  configuration: any;
+  editor: any;
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
   scheme: any;
 
   constructor(
+    configuration: any,
+    editor: any,
     schema: Vega.Schema,
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
-    super(widgetConfig, widgetData);
+    super(configuration, editor, widgetData);
+    this.configuration = configuration;
+    this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
@@ -107,16 +113,14 @@ export default class Line extends ChartsCommon implements Charts.Line {
           fields: [
             {
               column: "y",
-              property: this.widgetConfig?.paramsConfig?.value.alias
-                || this.widgetConfig?.paramsConfig?.value.name,
+              property: this.resolveName('y'),
               type: "number",
               format: this.resolveFormat('y'),
             },
             {
               column: "x",
-              property: this.widgetConfig?.paramsConfig?.category.alias
-                || this.widgetConfig?.paramsConfig?.category.name,
-              type: this.widgetConfig?.paramsConfig?.category?.type || 'string',
+              property: this.resolveName('x'),
+              type: this.configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],

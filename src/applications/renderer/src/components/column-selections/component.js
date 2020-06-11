@@ -87,7 +87,7 @@ const ColumnSelections = ({
           compact={compact}
           value={chartOptions.chartValue}
           onChange={handleChangeValue}
-          getOptionLabel={(option) => resolveLabel(xTitle, option)}
+          getOptionLabel={(option) => resolveLabel(yTitle, option)}
           getOptionValue={(option) => option.identifier}
           options={columns}
           configuration={configuration}
@@ -107,7 +107,7 @@ const ColumnSelections = ({
               placeholder="Category"
               value={chartOptions.chartCategory}
               onChange={handleChangeCategory}
-              getOptionLabel={(option) => resolveLabel(yTitle, option)}
+              getOptionLabel={(option) => resolveLabel(xTitle, option)}
               getOptionValue={(option) => option.identifier}
               options={columns}
               configuration={configuration}
@@ -123,7 +123,7 @@ const ColumnSelections = ({
               placeholder="Value"
               value={chartOptions.chartValue}
               onChange={handleChangeValue}
-              getOptionLabel={(option) => resolveLabel(xTitle, option)}
+              getOptionLabel={(option) => resolveLabel(yTitle, option)}
               getOptionValue={(option) => option.identifier}
               options={columns}
               configuration={configuration}
@@ -136,7 +136,7 @@ const ColumnSelections = ({
 
           {/* -- Horizontal select column */}
 
-          {chartType !== "pie" && !reverse && (
+          {!reverse && (
             <Select
               align="horizontal"
               compact={compact}
@@ -144,7 +144,7 @@ const ColumnSelections = ({
               placeholder="Value"
               value={chartOptions.chartValue}
               onChange={handleChangeValue}
-              getOptionLabel={(option) => resolveLabel(xTitle, option)}
+              getOptionLabel={(option) => resolveLabel(yTitle, option)}
               getOptionValue={(option) => option.identifier}
               options={columns}
               configuration={configuration}
@@ -153,7 +153,7 @@ const ColumnSelections = ({
             />
           )}
 
-          {chartType !== "pie" && reverse && (
+          {reverse && (
             <Select
               align="horizontal"
               compact={compact}
@@ -161,7 +161,7 @@ const ColumnSelections = ({
               placeholder="Category"
               value={chartOptions.chartCategory}
               onChange={handleChangeCategory}
-              getOptionLabel={(option) => resolveLabel(yTitle, option)}
+              getOptionLabel={(option) => resolveLabel(xTitle, option)}
               getOptionValue={(option) => option.identifier}
               options={columns}
               configuration={configuration}
