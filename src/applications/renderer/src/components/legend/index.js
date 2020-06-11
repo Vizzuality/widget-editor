@@ -1,6 +1,5 @@
 import { redux } from "@widget-editor/shared";
 
-import { setFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 // Components
@@ -12,7 +11,6 @@ import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selecto
 export default redux.connectState(
   (state) => ({
     widget: state.widget,
-    color: state.filters.color,
     configuration: state.configuration,
     selectedColor: widgetSelectors.getSelectedColor(state),
     columns: widgetSelectors.getWidgetColumns(state, { colorDimention: true }),
@@ -21,5 +19,5 @@ export default redux.connectState(
     widgetData:
       state.widget && state.widget.data ? state.widget.data[0].values : null,
   }),
-  { setFilters, patchConfiguration }
+  { patchConfiguration }
 )(ChartColorFilter);

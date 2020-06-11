@@ -31,19 +31,17 @@ function resolveValue(val) {
 }
 
 const Legend = ({
-  color,
   configuration,
   schemeColor,
   selectedColor,
   activeScheme,
   columns,
   widgetData,
-  setFilters,
   patchConfiguration,
   compact,
 }) => {
   const isPie = configuration.chartType === "pie";
-  const isSingleColorSelection = !isPie && !isObjectLike(color);
+  const isSingleColorSelection = !isPie && !isObjectLike(configuration.color);
 
   const handleChange = (option) => {
     const color = option.identifier === "___single_color" ? null : option;
@@ -51,9 +49,6 @@ const Legend = ({
     if (isPie) {
       patchConfiguration({ category: color });
     } else {
-      setFilters({
-        color,
-      });
       patchConfiguration({ color });
     }
   };
@@ -63,7 +58,7 @@ const Legend = ({
       {isSingleColorSelection && (
         <StyledColorsBoxContainer
           overflowIsHidden={false}
-          alignCenter={!isObjectLike(color)}
+          alignCenter
         >
           <StyledColorsBox alignCenter={false}>
             <StyledColorDot color={schemeColor} />
@@ -76,11 +71,11 @@ const Legend = ({
           {widgetData &&
             widgetData.map((node, index) => {
               return (
-                <StyledColorsBox alignCenter={true} key={`${node.x}-${index}`}>
+                <StyledColorsBox alignCenter={true} key={`${isPie ? node.x : node.color}-${index}`}>
                   <StyledColorDot
                     color={resolveSchemeColor(activeScheme.category, index)}
                   />
-                  {resolveValue(node.x)}
+                  {resolveValue(isPie ? node.x : node.color) || '−'}
                 </StyledColorsBox>
               );
             })}
