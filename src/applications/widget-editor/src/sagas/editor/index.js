@@ -53,6 +53,13 @@ function* preloadData() {
       ? widgetConfig.paramsConfig
       : null;
 
+    // The “none” option is equal to having no aggregation at all but might cause issues when
+    // generating the SQL query, that's why it is removed
+    // This is an old value from v1
+    if (paramsConfig?.aggregateFunction === 'none') {
+      paramsConfig.aggregateFunction = null;
+    }
+
     const configuration = {
       ...(paramsConfig ? { ...paramsConfig } : {}),
       title: name,
