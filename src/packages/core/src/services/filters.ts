@@ -244,22 +244,23 @@ export default class FiltersService implements Filters.Service {
   }
 
   prepareGroupBy() {
-    const { groupBy, aggregateFunction, chartType } = this.configuration;
+    const { groupBy, aggregateFunction, chartType, color } = this.configuration;
 
     if (!!aggregateFunction) {
       this.sql = `${this.sql} GROUP BY x`;
+
+      // If the user has filled the color field, we also need to group by it only and only if
+      // there's also an aggregation (source: v1)
+      if (color?.name) {
+        this.sql = `${this.sql}, color`;
+      }
+
       return;
     }
 
     if (groupBy) {
       const { name } = groupBy;
       this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
-    } else if (
-      (chartType === "pie" ||
-        chartType === "donut" ||
-        chartType === "line") && aggregateFunction !== null
-    ) {
-      this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }
   }
 
