@@ -64,13 +64,11 @@ export default class FiltersService implements Filters.Service {
   prepareSelectStatement() {
     const { category, value } = this.configuration;
 
-    this.sql = `SELECT ${category.name} as ${
-      sqlFields.value
-    } ${this.prepareColor()}`;
+    this.sql = `SELECT ${category.name} as ${sqlFields.value
+      } ${this.prepareColor()}`;
 
-    this.sql = `${this.sql}, ${this.resolveAggregate(value.name)} as ${
-      sqlFields.category
-    } FROM ${this.resolveTableName()}`;
+    this.sql = `${this.sql}, ${this.resolveAggregate(value.name)} as ${sqlFields.category
+      } FROM ${this.resolveTableName()}`;
   }
 
   private escapeValue(value, dataType) {
@@ -124,6 +122,14 @@ export default class FiltersService implements Filters.Service {
     dataType: string
   ): string {
     let out = sql;
+
+    // If the user hasn't selected a value yet, we don't want the filter but we can't return an
+    // empty string either because if the filter is not the first we would get something like:
+    // SELECT * FROM XXX WHERE otherFilter = YYY AND LIMIT 50
+    // Instead, we can use the condition 1 = 1 which is always true
+    if (values === undefined || values === null) {
+      return `${out} 1 = 1`;
+    }
 
     if (Array.isArray(values)) {
       return `${out} ${column} IN (${values
@@ -250,8 +256,8 @@ export default class FiltersService implements Filters.Service {
       this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
     } else if (
       (chartType === "pie" ||
-      chartType === "donut" ||
-      chartType === "line") && aggregateFunction !== null
+        chartType === "donut" ||
+        chartType === "line") && aggregateFunction !== null
     ) {
       this.sql = `${this.sql} GROUP BY ${sqlFields.value}`;
     }
@@ -266,7 +272,7 @@ export default class FiltersService implements Filters.Service {
     let orderByField;
     if (orderBy) {
       const { name } = orderBy;
-      orderByField= name || sqlFields.category;
+      orderByField = name || sqlFields.category;
     } else if (chartType === "line" && this.configuration?.category?.name) {
       orderByField = this.configuration.category.name;
     } else if (["pie", "donut", "bar", "stacked-bar", "bar-horizontal", "stacked-bar-horizontal"].indexOf(chartType) !== -1 && this.configuration?.value?.name) {
@@ -337,7 +343,7 @@ export default class FiltersService implements Filters.Service {
     };
 
     await asyncForEach(filters, async (filter, index) => {
-      const values = filter[configuredValues] || 0;
+      const values = filter[configuredValues] || undefined;
       const column = filter[configuredColumn];
       const type = filter[configuredType];
 
