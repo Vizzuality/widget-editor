@@ -4,7 +4,7 @@ export const StyledMapContainer = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
-  min-height: 380px;
+  min-height: inherit;
   .map-leaflet {
     z-index: 1;
     display: flex;
