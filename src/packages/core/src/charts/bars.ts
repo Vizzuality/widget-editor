@@ -192,6 +192,10 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         scale: "y",
         labelOverlap: "parity",
         format: this.resolveFormat('y'),
+        // titleLimit is necessary so the title of the axis fits the viewport
+        // If it doesn't the chart might not be displayed at all due to this bug:
+        // https://github.com/vega/vega/issues/1350
+        titleLimit: { "signal": "height" },
         encode: {
           labels: {
             update: {
