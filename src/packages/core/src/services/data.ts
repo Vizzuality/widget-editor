@@ -50,17 +50,17 @@ export default class DataService {
   }
 
   async restoreEditor(datasetId, widgetId) {
-    this.setEditor({ 
+    this.setEditor({
       restoring: true
     });
-    
+
     this.widgetId = widgetId;
     this.adapter.setDatasetId(datasetId);
 
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     const filters = await this.handleFilters(true);
-    
+
     if (
       this.widget.attributes?.widgetConfig?.paramsConfig &&
       this.widget.attributes?.widgetConfig?.value &&
@@ -75,7 +75,7 @@ export default class DataService {
 
   async handleFilters(restore: boolean = false) {
     if (!this.widget) return null;
-    
+
     const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
     const filters = paramsConfig?.filters;
     let orderBy = null;
@@ -128,15 +128,13 @@ export default class DataService {
     this.allowedFields = [];
     if (fields && Object.keys(fields).length > 0) {
       Object.keys(fields).forEach((field) => {
-        if (columns && field in columns) {
-          const f = {
-            ...fields[field],
-            columnName: field,
-            metadata: columns[field],
-          };
-          if (this.isFieldAllowed(f)) {
-            this.allowedFields.push(f);
-          }
+        const f = {
+          ...fields[field],
+          columnName: field,
+          metadata: columns?.[field] ?? {},
+        };
+        if (this.isFieldAllowed(f)) {
+          this.allowedFields.push(f);
         }
       });
     }
