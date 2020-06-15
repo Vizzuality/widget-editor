@@ -169,12 +169,6 @@ class Map extends React.Component {
     this.map = L.map(this.mapNode, mapOptions);
     this.map.scrollWheelZoom.disable();
 
-    // If the layer has bounds, we just pan in the
-    // area
-    if (this.props?.mapConfig?.bounds) {
-      this.map.fitBounds(this.props.mapConfig.bounds);
-    }
-
     // Disable interaction if necessary
     if (!this.props.interactionEnabled) {
       this.map.dragging.disable();
@@ -206,6 +200,23 @@ class Map extends React.Component {
 
     this.activeLayers = layers;
     this.addLayers(layers);
+    
+    // In version2 of the editor we are storing the bbox
+    // This is so in the future we can migrate to for example mapbox
+    // If we have a bbox, this is automaticly saved in the new editor
+    // We pan to it if present
+    if (mapOptions.bbox && Array.isArray(mapOptions.bbox)) {
+      const [b0,b1,b2,b3] = mapOptions.bbox;
+      this.map.fitBounds([
+        [b0, b1],
+        [b2, b3]
+      ], { animate: false })
+    } else if (this.props?.mapConfig?.bounds) {
+      // Legacy editor stores "bounds"
+      // Apply them instead if present
+      this.map.fitBounds(this.props.mapConfig.bounds, { animate: false });
+    }
+
   }
 
   instantiateLayerManager() {
@@ -235,7 +246,6 @@ class Map extends React.Component {
     if (!layers) return;
 
     this.setState({ loading: true });
-
     layers.forEach((layer) => {
       this.layerManager.addLayer(layer, {
         zIndex: layer.order,
