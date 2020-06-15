@@ -67,12 +67,20 @@ export const getWidgetColumns = createSelector(
     const relevantProps = dataset.attributes.widgetRelevantProps;
     const datasetMeta = dataset.attributes.metadata[0];
     if (!relevantProps || relevantProps.length === 0) {
-      columns = Object.keys(datasetMeta.attributes.columns).map((prop) => ({
-        ...datasetMeta.attributes.columns[prop],
-        identifier: prop,
-        name: prop,
-        type: getColumnDataType(prop, fields),
-      }));
+      if (datasetMeta.attributes.columns) {
+        columns = Object.keys(datasetMeta.attributes.columns).map((prop) => ({
+          ...datasetMeta.attributes.columns[prop],
+          identifier: prop,
+          name: prop,
+          type: getColumnDataType(prop, fields),
+        }));
+      } else {
+        columns = (fields || []).map(field => ({
+          identifier: field.columnName,
+          name: field.columnName,
+          type: getColumnDataType(field.columnName, fields),
+        }));
+      }
     } else {
       columns = relevantProps.map((prop) => ({
         ...datasetMeta.attributes.columns[prop],
