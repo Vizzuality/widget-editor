@@ -63,31 +63,21 @@ export const getWidgetColumns = createSelector(
       return [];
     }
 
-    let columns;
     const relevantProps = dataset.attributes.widgetRelevantProps;
     const datasetMeta = dataset.attributes.metadata[0];
-    if (!relevantProps || relevantProps.length === 0) {
-      if (datasetMeta.attributes.columns) {
-        columns = Object.keys(datasetMeta.attributes.columns).map((prop) => ({
-          ...datasetMeta.attributes.columns[prop],
-          identifier: prop,
-          name: prop,
-          type: getColumnDataType(prop, fields),
-        }));
-      } else {
-        columns = (fields || []).map(field => ({
-          identifier: field.columnName,
-          name: field.columnName,
-          type: getColumnDataType(field.columnName, fields),
-        }));
-      }
-    } else {
-      columns = relevantProps.map((prop) => ({
-        ...datasetMeta.attributes.columns[prop],
-        identifier: prop,
-        name: prop,
-        type: getColumnDataType(prop, fields),
+
+    let columns = [];
+    if (fields) {
+      columns = fields.map(field => ({
+        ...(datasetMeta.attributes.columns?.[field.columnName] ?? {}),
+        identifier: field.columnName,
+        name: field.columnName,
+        type: getColumnDataType(field.columnName, fields),
       }));
+
+      if (relevantProps?.length > 0) {
+        columns = columns.filter(column => relevantProps.indexOf(column.name) !== -1);
+      }
     }
 
     if (configuration.chartType === "pie") {
