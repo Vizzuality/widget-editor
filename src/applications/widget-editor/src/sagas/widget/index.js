@@ -2,10 +2,9 @@ import { takeLatest, put, call, select, cancel } from "redux-saga/effects";
 import isEqual from 'lodash/isEqual';
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
-import { localOnChangeState } from "exposed-hooks";
+import { getLocalCache, localOnChangeState } from "exposed-hooks";
 
 import {
-  FiltersService,
   constants,
   VegaService,
   StateProxy,
@@ -16,7 +15,6 @@ import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 const stateProxy = new StateProxy();
-let adapterConfiguration = null;
 
 const columnsSet = (value, category) => {
   return (
@@ -29,33 +27,22 @@ const columnsSet = (value, category) => {
   );
 };
 
-async function getWidgetData(editorState) {
-  const {
-    configuration,
-    filters,
-    editor: { dataset },
-  } = editorState;
+function* getWidgetData(editorState) {
+  const { adapter } = getLocalCache();
+
+  const { configuration } = editorState;
   const { value, category } = configuration;
 
   if (columnsSet(value, category)) {
-    const filtersService = new FiltersService(configuration, filters, dataset);
-    const sqlQuery = filtersService.getQuery();
-
-    const { dataEndpoint } = adapterConfiguration;
-
-    const response = await fetch(
-      `${dataEndpoint}/${dataset.id}?sql=${sqlQuery}`
-    );
-    const data = await response.json();
-
-    return data;
+    const { widgetEditor } = yield select();
+    const { configuration, filters, editor: { dataset } } = widgetEditor;
+    return yield adapter.requestData({ configuration, filters, dataset });
   }
 
-  return [];
+  return yield [];
 }
 
 function* storeAdapterConfigInState({ payload }) {
-  adapterConfiguration = payload;
   yield cancel();
 }
 

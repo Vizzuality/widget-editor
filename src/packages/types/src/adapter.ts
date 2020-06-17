@@ -17,7 +17,7 @@ export interface Service {
   // This will be grabbed and put into onSave on any request
   payload(): object;
   filterSerializer(filters: any): any;
-  requestData(query: string, dataset: Dataset.Payload): any;
+  requestData({ configuration, filters, dataset }: { configuration: any, filters: any, dataset: Dataset.Payload }): Promise<any>;
   getDataset(): Promise<Dataset.Payload>;
   extendProperties(prop: any): void;
   getWidget(

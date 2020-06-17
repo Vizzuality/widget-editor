@@ -249,7 +249,10 @@ export default class RwAdapter implements Adapter.Service {
             return {
               name: 'table',
               transform: d.transform,
-              format: d.format,
+              format: {
+                type: 'json',
+                property: 'data',
+              },
               url: this.getDataUrl()
             }
           }
@@ -359,17 +362,13 @@ export default class RwAdapter implements Adapter.Service {
     `
   }
 
-  async requestData(sql: string, dataset: Dataset.Payload) {
-    this.SQL_STRING = sql;
-    const response = await fetch(
-      tags.oneLineTrim`
-        https://api.resourcewatch.org/v1/query/
-        ${dataset.id}?
-        sql=${sql}
-      `
-    );
-    const data = await response.json();
-    return data;
+  async requestData({ configuration, filters, dataset }) {
+    const filtersService = new FiltersService(configuration, filters, dataset);
+    this.SQL_STRING = filtersService.getQuery();
+
+    const response = await fetch(this.getDataUrl());
+
+    return await response.json();
   }
 
   async filterUpdate(

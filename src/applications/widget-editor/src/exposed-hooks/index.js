@@ -7,6 +7,8 @@ export const setReduxCache = (dispatch) => {
   REDUX_CACHE_DISPATCH = dispatch;
 }
 
+export const getLocalCache = () => localCache;
+
 export const localGetEditorState = (payload) => {
   localCache = {
     ...localCache,

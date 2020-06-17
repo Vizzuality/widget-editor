@@ -150,10 +150,10 @@ export default class DataService {
       this.dataset
     );
 
-    const request = await this.adapter.requestData(
-      filtersService.getQuery(),
-      this.dataset
-    );
+    const request = await this.adapter.requestData({
+      configuration, filters,
+      dataset: this.dataset
+    });
 
     if (!request.data || "errors" in request) {
       this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
