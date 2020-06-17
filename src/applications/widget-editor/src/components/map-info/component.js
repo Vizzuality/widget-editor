@@ -40,6 +40,12 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
   const options = generateOptions(layers);
   const selectedOption = options.find((o) => o.value === configuration.layer);
 
+  if (!selectedOption) {
+    patchConfiguration({
+      layer: options[0].value
+    });
+  }
+
   const handleChange = (option) => {
     patchConfiguration({
       layer: option.value,
@@ -65,7 +71,7 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
         <FormLabel htmlFor="options-title">Layers</FormLabel>
         <Select
           onChange={(option) => handleChange(option)}
-          value={selectedOption || options[0]}
+          value={selectedOption}
           options={options}
           styles={InputStyles}
         />
