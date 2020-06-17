@@ -241,7 +241,7 @@ export default class RwAdapter implements Adapter.Service {
           areaIntersection: editorState.configuration.areaIntersection,
           band: editorState.configuration.band,
           donutRadius: editorState.configuration.donutRadius,
-          slizeCount: editorState.configuration.slizeCount,
+          sliceCount: editorState.configuration.sliceCount,
           layer: null
         },
         data: vegaConfiguration.data.map(d => {
@@ -263,7 +263,7 @@ export default class RwAdapter implements Adapter.Service {
       };
 
     }
-      
+
     if (editorState.configuration.visualizationType === "map") {
       output = {
         type: 'map',
@@ -276,18 +276,18 @@ export default class RwAdapter implements Adapter.Service {
         ...(editorState.configuration.map.basemap
           ? {
             basemapLayers: {
-                basemap: editorState.configuration.map.basemap.basemap,
-                labels: editorState.configuration.map.basemap.labels,
-                boundaries: false,
-              },
-            }
+              basemap: editorState.configuration.map.basemap.basemap,
+              labels: editorState.configuration.map.basemap.labels,
+              boundaries: false,
+            },
+          }
           : {
             basemapLayers: {
-                basemap: "dark",
-                labels: "Dark",
-                boundaries: false,
-              },
-        }),
+              basemap: "dark",
+              labels: "Dark",
+              boundaries: false,
+            },
+          }),
         paramsConfig: {
           caption: editorState.configuration.caption || null,
           visualizationType: editorState.configuration.visualizationType,

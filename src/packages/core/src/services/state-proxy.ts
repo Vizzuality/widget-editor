@@ -5,7 +5,7 @@ export default class StateProxy {
   chartCache: any;
   configuration: object;
   donutRadius?: number;
-  slizeCount?: number;
+  sliceCount?: number;
   visualizationType: string;
 
   constructor() {
@@ -30,14 +30,14 @@ export default class StateProxy {
       visualizationType,
       format,
       donutRadius,
-      slizeCount,
+      sliceCount,
     } = state.configuration;
 
     const hasUpdate = !isEqual(this.chartCache, {
       chartType,
       visualizationType,
       donutRadius,
-      slizeCount,
+      sliceCount,
       format,
     });
 
@@ -45,16 +45,16 @@ export default class StateProxy {
       return true;
     }
 
-    if (this.chartCache.slizeCount !== slizeCount && editor.initialized) {
+    if (this.chartCache.sliceCount !== sliceCount && editor.initialized) {
       return true;
     }
 
-    this.chartCache = { visualizationType, chartType, format, donutRadius, slizeCount };
+    this.chartCache = { visualizationType, chartType, format, donutRadius, sliceCount };
     return hasUpdate && editor.initialized;
   }
 
   visualizationTypeChanged(visualizationType): boolean {
-    const hasChanged =  this.visualizationType !== visualizationType;
+    const hasChanged = this.visualizationType !== visualizationType;
 
     if (hasChanged) {
       this.visualizationType = visualizationType;
@@ -88,7 +88,7 @@ export default class StateProxy {
       UPDATES.push(sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE);
     }
     if (
-      this.visualizationTypeChanged(editorState.configuration.visualizationType) || 
+      this.visualizationTypeChanged(editorState.configuration.visualizationType) ||
       this.chartHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_UPDATE_WIDGET);
     }

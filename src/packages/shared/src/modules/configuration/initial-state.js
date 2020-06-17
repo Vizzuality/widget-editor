@@ -5,7 +5,7 @@ export default {
   visualizationType: "chart",
   rasterOnly: false,
   chartType: "bar",
-  slizeCount: 5,
+  sliceCount: 5,
   donutRadius: 100,
   map: {
     zoom: 2,

@@ -43,7 +43,7 @@ export default class VegaService implements Charts.Service {
   widgetData: any;
   configuration: any;
   editor: any;
-  slizeCount: number;
+  sliceCount: number;
   scheme: any;
   schema: Vega.Schema;
   colorApplied: boolean;
@@ -71,7 +71,7 @@ export default class VegaService implements Charts.Service {
     this.configuration = configuration;
     this.editor = editor;
 
-    this.slizeCount = configuration?.slizeCount || 5;
+    this.sliceCount = configuration?.sliceCount || 5;
 
     this.setConfig();
     this.resolveChart();
@@ -110,8 +110,8 @@ export default class VegaService implements Charts.Service {
     const combine = this.groupSimilar(data);
 
     const sortValues = combine.sort(sortHighToLow);
-    const top5 = sortValues.slice(0, this.slizeCount);
-    const others = sortValues.slice(this.slizeCount, sortValues.length + 1);
+    const top5 = sortValues.slice(0, this.sliceCount);
+    const others = sortValues.slice(this.sliceCount, sortValues.length + 1);
 
     const out = [];
     let othersNode = { x: "Others", y: 0 };

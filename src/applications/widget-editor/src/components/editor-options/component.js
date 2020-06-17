@@ -80,7 +80,7 @@ const EditorOptions = ({
   datasetId,
   limit,
   donutRadius,
-  slizeCount,
+  sliceCount,
   data,
   orderBy,
   groupBy,
@@ -103,7 +103,7 @@ const EditorOptions = ({
       patchConfiguration({ donutRadius: parseInt(value) });
     }
     if (type === "slize-count") {
-      patchConfiguration({ slizeCount: parseInt(value) });
+      patchConfiguration({ sliceCount: parseInt(value) });
     }
   };
 
@@ -171,9 +171,9 @@ const EditorOptions = ({
                   )}
                 </Suspense>
                 <Suspense fallback={<div>Loading...</div>}>
-                  {slizeCount && data && (
+                  {sliceCount && data && (
                     <SlizeCount
-                      value={slizeCount}
+                      value={sliceCount}
                       data={data}
                       onChange={(value) => handleChange(value, "slize-count")}
                     />
