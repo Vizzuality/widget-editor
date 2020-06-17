@@ -40,7 +40,7 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
   const options = generateOptions(layers);
   const selectedOption = options.find((o) => o.value === configuration.layer);
 
-  if (!selectedOption) {
+  if (!selectedOption && options.length > 0) {
     patchConfiguration({
       layer: options[0].value
     });
