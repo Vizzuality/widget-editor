@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/shared",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
