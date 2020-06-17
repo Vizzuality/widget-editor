@@ -289,7 +289,6 @@ export default class RwAdapter implements Adapter.Service {
             },
           }),
         paramsConfig: {
-          caption: editorState.configuration.caption || null,
           visualizationType: editorState.configuration.visualizationType,
           layer: editorState.configuration.layer,
         },
@@ -304,7 +303,6 @@ export default class RwAdapter implements Adapter.Service {
         name: configuration.title || null,
         dataset: editor.dataset.id || null,
         description: configuration.description || null,
-        caption: editorState.configuration.caption || null,
         application: [application],
         widgetConfig: {
           we_meta: {
