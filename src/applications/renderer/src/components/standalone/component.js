@@ -1,6 +1,6 @@
 import React, { Fragment, Suspense } from "react";
 
-import { getDefaultTheme } from "@widget-editor/shared";
+import { getDefaultTheme } from "@widget-editor/core";
 import useLayerData from "./fetch-layers-hook";
 
 import Legend from './legend';
