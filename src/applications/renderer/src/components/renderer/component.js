@@ -30,7 +30,7 @@ const Renderer = ({
   const missingWidget =
     initialized && !restoring && widget && Object.keys(widget).length === 0;
 
-  const isMap = configuration.visualizationType === "map";
+  const isMap = configuration.visualizationType === "map";  
 
   if (restoring) {
     return (
