@@ -58,7 +58,10 @@ class Chart extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.widget, this.props.widget)) {
+    const widgetChanged = !isEqual(prevProps.widget, this.props.widget);
+    const standaloneConfigChanged = 
+      !isEqual(prevProps.standaloneConfiguration, this.props.standaloneConfiguration);
+    if (widgetChanged || standaloneConfigChanged) {
       this.generateVegaChart();
     }
   }

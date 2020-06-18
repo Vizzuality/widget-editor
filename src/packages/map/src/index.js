@@ -127,9 +127,13 @@ class Map extends React.Component {
       nextProps.mapConfiguration.basemap,
       this.props.mapConfiguration.basemap
     );
+    const bboxChanged = !isEqual(
+      nextProps.mapConfiguration.bbox,
+      this.props.mapConfiguration.bbox
+    );
 
     return (
-      loadingChanged || captionChanged || legendToggleChanged || basemapChanged
+      loadingChanged || captionChanged || legendToggleChanged || basemapChanged || bboxChanged
     );
   }
 
@@ -147,6 +151,14 @@ class Map extends React.Component {
 
       this.layerManager.removeLayers();
       this.addLayers(layers);
+    }
+    // Map bbox changed
+    if (!isEqual(nextProps.mapConfiguration.bbox, this.props.mapConfiguration.bbox)) {
+      const [b0,b1,b2,b3] = nextProps.mapConfiguration.bbox;      
+      this.map.fitBounds([
+        [b1, b0],
+        [b3, b2]
+      ], { animate: false });
     }
   }
 
@@ -206,11 +218,11 @@ class Map extends React.Component {
     // If we have a bbox, this is automaticly saved in the new editor
     // We pan to it if present
     if (mapOptions.bbox && Array.isArray(mapOptions.bbox)) {
-      const [b0,b1,b2,b3] = mapOptions.bbox;
+      const [b0,b1,b2,b3] = mapOptions.bbox;      
       this.map.fitBounds([
         [b1, b0],
         [b3, b2]
-      ], { animate: false })
+      ], { animate: false });
     } else if (this.props?.mapConfig?.bounds) {
       // Legacy editor stores "bounds"
       // Apply them instead if present
