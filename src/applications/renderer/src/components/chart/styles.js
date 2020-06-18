@@ -15,7 +15,7 @@ export const StyledContainer = styled.div`
       position: relative;
       flex-grow: 1;
       flex: 1;
-      padding: 20px;
+      padding: 20px 20px 55px 50px;
       width: 100%;
       box-sizing: border-box;
     `}

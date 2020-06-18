@@ -90,12 +90,6 @@ class Chart extends React.Component {
 
       this.width = boundingRect.width - (padding.left + padding.right);
       this.height = boundingRect.height - (padding.top + padding.bottom);
-
-      // TODO: figure out why we need to do this to fit container height in editor
-      if (!standalone) {
-        this.width = this.width - 40;
-        this.height = this.height - 60;
-      }
     }
   }
 
