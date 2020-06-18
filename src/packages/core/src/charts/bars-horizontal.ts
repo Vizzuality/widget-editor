@@ -11,7 +11,6 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
-  scheme: any;
   colorApplied: boolean;
 
   constructor(
@@ -23,13 +22,12 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     scheme: any,
     colorApplied: boolean
   ) {
-    super(configuration, editor, widgetData);
+    super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
     this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
-    this.scheme = scheme;
     this.colorApplied = colorApplied;
 
     this.generateSchema();
@@ -44,24 +42,13 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
       marks: this.setMarks(),
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
-      config: {
-        ...this.scheme.config,
-        ...(!this.colorApplied
-          ? {
-            rect: {
-              fill: this.scheme.mainColor,
-            },
-          }
-          : {}),
-      },
+      config: this.resolveScheme(),
     };
   }
 
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 400,
-      padding: 20,
     };
   }
 
@@ -103,8 +90,6 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   setAxes() {
     return [
       {
-        ...this.schema.axis,
-        ...this.schema.axisX,
         orient: "bottom",
         scale: "x",
         format: this.resolveFormat('y'),
@@ -112,8 +97,6 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         labelOverlap: "parity",
       },
       {
-        ...this.schema.axis,
-        ...this.schema.axisY,
         orient: "left",
         scale: "y",
         ticks: false,

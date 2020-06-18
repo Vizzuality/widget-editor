@@ -12,7 +12,6 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
   colorApplied: boolean;
-  scheme: any;
 
   constructor(
     configuration: any,
@@ -23,15 +22,13 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
     scheme: any,
     colorApplied: boolean
   ) {
-    super(configuration, editor, widgetData);
+    super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
     this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.colorApplied = colorApplied;
-
-    this.scheme = scheme;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -45,16 +42,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
       marks: this.setMarks(),
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
-      config: {
-        ...this.scheme.config,
-        ...(!this.colorApplied
-          ? {
-            symbol: {
-              fill: this.scheme.mainColor,
-            },
-          }
-          : {}),
-      },
+      config: this.resolveScheme(),
     };
   }
 
@@ -85,12 +73,9 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 400,
-      padding: 20,
       autosize: {
         type: "fit",
         contains: "padding",
-        resize: true,
       },
       signals: [
         {
@@ -179,8 +164,6 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   setAxes() {
     return [
       {
-        ...this.schema.axis,
-        ...this.schema.axisX,
         "scale": "x",
         "labelOverlap": "parity",
         "orient": "bottom",
@@ -201,8 +184,6 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         }
       },
       {
-        ...this.schema.axis,
-        ...this.schema.axisY,
         labelBaseline: undefined,
         labelAlign: undefined,
         "scale": "y",

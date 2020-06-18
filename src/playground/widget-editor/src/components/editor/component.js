@@ -3,7 +3,28 @@ import React from "react";
 import RwAdapter from "@widget-editor/rw-adapter";
 import WidgetEditor from "@widget-editor/widget-editor";
 
-const THEMES = [
+const SCHEMES = [
+  {
+    name: "default",
+    mainColor: "#3BB2D0",
+    category: [
+      '#3BB2D0',
+      '#2C75B0',
+      '#FAB72E',
+      '#EF4848',
+      '#65B60D',
+      '#C32D7B',
+      '#F577B9',
+      '#5FD2B8',
+      '#F1800F',
+      '#9F1C00',
+      '#A5E9E3',
+      '#B9D765',
+      '#393F44',
+      '#CACCD0',
+      '#717171',
+    ],
+  },
   {
     name: "pine",
     mainColor: "#907A59",
@@ -67,7 +88,7 @@ class Editor extends React.Component {
     return (
       <div className="widget-editor-wrapper">
         <WidgetEditor
-          schemes={THEMES}
+          schemes={SCHEMES}
           compact={compactMode}
           disable={[]}
           datasetId={dataset}

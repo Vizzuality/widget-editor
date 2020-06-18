@@ -12,7 +12,6 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   widgetConfig: any;
   widgetData: Generic.ObjectPayload;
   colorApplied: boolean;
-  scheme: any;
 
   constructor(
     configuration: any,
@@ -23,15 +22,13 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
     scheme: any,
     colorApplied: boolean
   ) {
-    super(configuration, editor, widgetData);
+    super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
     this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.colorApplied = colorApplied;
-
-    this.scheme = scheme;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -45,24 +42,13 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
       marks: this.setMarks(),
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
-      config: {
-        ...this.scheme.config,
-        ...(!this.colorApplied
-          ? {
-            rect: {
-              fill: this.scheme.mainColor,
-            },
-          }
-          : {}),
-      },
+      config: this.resolveScheme(),
     };
   }
 
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 400,
-      padding: 20,
     };
   }
 
@@ -156,8 +142,6 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   setAxes() {
     return [
       {
-        ...this.schema.axis,
-        ...this.schema.axisX,
         orient: "bottom",
         scale: "x",
         labelOverlap: "parity",
@@ -186,8 +170,6 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         },
       },
       {
-        ...this.schema.axis,
-        ...this.schema.axisY,
         orient: "left",
         scale: "y",
         labelOverlap: "parity",

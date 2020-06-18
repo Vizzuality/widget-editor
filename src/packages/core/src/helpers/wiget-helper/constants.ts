@@ -1,8 +1,6 @@
 export const defaultVegaSchema = () => {
   return {
     $schema: "https://vega.github.io/schema/vega/v3.json",
-    width: 100,
-    height: 100,
     data: [],
     legend: [],
     config: {},
@@ -36,47 +34,11 @@ export const defaultVegaSchema = () => {
     ],
     autosize: {
       type: "fit",
-      resize: true,
+      contains: "padding",
     },
     scales: [],
     axes: [],
     marks: [],
-    axis: {
-      labelFontSize: 13,
-      labelFont: "Lato",
-      labelColor: "#717171",
-      labelPadding: 10,
-      ticks: true,
-      tickSize: 8,
-      tickColor: "#A9ABAD",
-      tickOpacity: 0.5,
-      tickExtra: false,
-    },
-    axisX: {
-      bandPosition: 0.5,
-      domainWidth: 1.2,
-      domainColor: "#A9ABAD",
-      labelAlign: "center",
-      labelBaseline: "top",
-    },
-    axisY: {
-      domain: false,
-      labelAlign: "left",
-      labelBaseline: "bottom",
-      tickOpacity: 0.5,
-      grid: true,
-      ticks: false,
-      gridColor: "#A9ABAD",
-      gridOpacity: 0.5,
-    },
-    symbol: {
-      fill: "#3BB2D0",
-    },
-    line: {
-      interpolate: "linear",
-      stroke: "#3BB2D0",
-      fillOpacity: 0,
-    },
   };
 };
 
