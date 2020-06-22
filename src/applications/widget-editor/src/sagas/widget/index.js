@@ -97,6 +97,12 @@ function* preloadData() {
 
 function* resolveWithProxy() {
   const { widgetEditor } = yield select();
+
+  // We only want to resolve proxy if the editor itself is initialized
+  if (!widgetEditor.editor.initialized) {
+    yield cancel();
+  }
+  
   // Check and patch current state based on user configuration
   const proxyResult = yield call([stateProxy, "sync"], widgetEditor);
   // --- Proxy results returns a list of events we call on certain updates
@@ -222,8 +228,12 @@ export default function* baseSaga() {
 
   // --- Triggered multiple: When configuration gets modified, we check with our state
   // --- proxy if we have updates, if thats the case we update the editors state based on response
+  
   yield takeLatest(
-    getAction("CONFIGURATION/patchConfiguration"),
+    [
+      getAction("CONFIGURATION/patchConfiguration"),
+      getAction("EDITOR/THEME/setTheme")
+    ],
     resolveWithProxy
   );
 
