@@ -10,7 +10,7 @@ import EditorOptions from "components/editor-options";
 import ToggleOptions from "components/toggle-options";
 import PlaygroundRenderer from "components/playground-renderer";
 
-import "./App.css";
+import "./App.scss";
 
 function App() {
   const { store } = configureStore();

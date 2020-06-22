@@ -2,6 +2,7 @@ import React from "react";
 
 import { redux } from "@widget-editor/shared";
 import isEqual from "lodash/isEqual";
+import styled, { css } from "styled-components";
 
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import BASEMAPS from "@widget-editor/shared/lib/constants/basemaps";
@@ -13,18 +14,18 @@ import { LABELS, BOUNDARIES } from "constants";
 import chroma from "chroma-js";
 
 import {
+  COLOR_WHITE
+} from "@widget-editor/shared/lib/styles/style-constants";
+
+import {
+  Legend,
+  LegendListItem,
+  LegendItemTypes
+} from 'vizzuality-components';
+
+import {
   StyledMapContainer,
-  StyledCaption,
-  StyledLegend,
-  StyledLegendTitle,
-  StyledLegendConfig,
-  StyledLegendLayerWrapper,
-  StyledConfigItemColor,
-  StyledLegendConfigItem,
-  StyledGradientUnits,
-  StyledLegendToggle,
-  StyledClosedLegend,
-  StyledGradient,
+  StyledCaption
 } from "./styles";
 
 import CloseIcon from "./close-icon";
@@ -44,6 +45,16 @@ const MAP_CONFIG = {
   zoomControl: true,
 };
 
+const StyledLegend = styled.div`
+  position: absolute;
+  bottom: 35px;
+  right: 30px;
+  width: 80%;
+  max-width: 400px;
+  background: ${COLOR_WHITE};
+  border-radius: 4px;
+`;
+
 class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -51,8 +62,6 @@ class Map extends React.Component {
       loading: false,
       legendOpen: true,
     };
-
-    this.renderLegend = this.renderLegend.bind(this);
 
     this.labels = props.labels || LABELS["none"];
     this.widget = props.widget;
@@ -154,7 +163,7 @@ class Map extends React.Component {
     }
     // Map bbox changed
     if (!isEqual(nextProps.mapConfiguration.bbox, this.props.mapConfiguration.bbox)) {
-      const [b0,b1,b2,b3] = nextProps.mapConfiguration.bbox;      
+      const [b0, b1, b2, b3] = nextProps.mapConfiguration.bbox;
       this.map.fitBounds([
         [b1, b0],
         [b3, b2]
@@ -212,13 +221,13 @@ class Map extends React.Component {
 
     this.activeLayers = layers;
     this.addLayers(layers);
-    
+
     // In version2 of the editor we are storing the bbox
     // This is so in the future we can migrate to for example mapbox
     // If we have a bbox, this is automaticly saved in the new editor
     // We pan to it if present
     if (mapOptions.bbox && Array.isArray(mapOptions.bbox)) {
-      const [b0,b1,b2,b3] = mapOptions.bbox;      
+      const [b0, b1, b2, b3] = mapOptions.bbox;
       this.map.fitBounds([
         [b1, b0],
         [b3, b2]
@@ -337,75 +346,32 @@ class Map extends React.Component {
     return chroma.scale(scale).domain(domain).colors(items.length);
   }
 
-  renderLegend() {
-    const { legendOpen } = this.state;
-    if (!this.activeLayers) {
-      return null;
-    }
-
-    return (
-      <StyledLegend>
-        <StyledLegendToggle
-          role="button"
-          type="button"
-          legendOpen={legendOpen}
-          onClick={() => this.setState({ legendOpen: !legendOpen })}
-        >
-          <CloseIcon />
-        </StyledLegendToggle>
-        <StyledLegendLayerWrapper>
-          {legendOpen &&
-            this.activeLayers.map((lg, i) => (
-              <StyledLegendConfig key={`${lg.name}-${i}`}>
-                <StyledLegendTitle>{lg.name}</StyledLegendTitle>
-
-                {lg.legendConfig.type === "gradient" && (
-                  <React.Fragment>
-                    <StyledGradient
-                      items={this.generateGradient(lg.legendConfig.items)}
-                    />
-                    <StyledGradientUnits>
-                      {lg.legendConfig.items.map((lc, i) => {
-                        return (
-                          <StyledLegendConfigItem
-                            key={`${lc.name}-gratient-unit-${i}`}
-                          >
-                            {lc.value}
-                          </StyledLegendConfigItem>
-                        );
-                      })}
-                    </StyledGradientUnits>
-                    <StyledLegendConfigItem>
-                      {lg.legendConfig.unit}
-                    </StyledLegendConfigItem>
-                  </React.Fragment>
-                )}
-
-                {lg.legendConfig.type === "choropleth" &&
-                  lg.legendConfig.items.map((lc, i) => {
-                    return (
-                      <StyledLegendConfigItem
-                        key={`${lc.name}-config-item-${i}`}
-                      >
-                        <StyledConfigItemColor hexCode={lc.color} />
-                        {lc.name}
-                      </StyledLegendConfigItem>
-                    );
-                  })}
-              </StyledLegendConfig>
-            ))}
-          {!legendOpen && <StyledClosedLegend>Legend</StyledClosedLegend>}
-        </StyledLegendLayerWrapper>
-      </StyledLegend>
-    );
-  }
-
   render() {
-    const { caption = null, thumbnail = false } = this.props;
+    const { caption = null, thumbnail = false, layerId } = this.props;
+    console.log('this.layerGroups', this.layerGroups);
+    
     return (
       <StyledMapContainer>
         {caption && <StyledCaption>{caption}</StyledCaption>}
-        {!thumbnail && this.renderLegend()}
+        {!thumbnail &&
+          <StyledLegend>
+            <Legend
+              maxHeight={140}
+              sortable={false}
+            >
+              {this.layerGroups.filter(lg => lg.layers.find(l => l.id === layerId))
+                .map((lg, i) => (
+                  <LegendListItem
+                    index={i}
+                    key={lg.dataset}
+                    layerGroup={lg}
+                  >
+                    <LegendItemTypes />
+                  </LegendListItem>
+              ))}
+            </Legend>
+          </StyledLegend>
+        }
         <div
           ref={(node) => {
             this.mapNode = node;
