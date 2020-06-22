@@ -10,6 +10,7 @@ import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selecto
 
 export default redux.connectState(
   (state) => ({
+    advanced: state.editor.advanced,
     widget: state.widget,
     configuration: state.configuration,
     selectedColor: widgetSelectors.getSelectedColor(state),

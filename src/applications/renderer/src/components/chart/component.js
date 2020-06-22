@@ -174,7 +174,7 @@ class Chart extends React.Component {
   }
 
   noDataAvailable() {
-    return !this.standalone && !this.props.editor.widgetData;
+    return !this.standalone && !this.props.advanced && !this.props.editor.widgetData;
   }
 
   // XXX: makes sure custom charts has nessesary info to render
