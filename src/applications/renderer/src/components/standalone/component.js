@@ -53,6 +53,7 @@ const Standalone = ({ thumbnail, widgetConfig }) => {
       {isMap && (
         <Suspense>
           <Map
+            layerId={widgetConfig?.paramsConfig?.layer}
             thumbnail={thumbnail}
             widget={{
               attributes: {

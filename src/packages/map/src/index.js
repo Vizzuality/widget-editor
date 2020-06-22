@@ -351,7 +351,6 @@ class Map extends React.Component {
 
   render() {
     const { caption = null, thumbnail = false, layerId } = this.props;
-    console.log('this.layerGroups', this.layerGroups);
     
     return (
       <StyledMapContainer>
