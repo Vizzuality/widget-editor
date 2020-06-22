@@ -3,11 +3,14 @@ import React from "react";
 import { redux } from "@widget-editor/shared";
 import isEqual from "lodash/isEqual";
 import styled, { css } from "styled-components";
+// vizzuality-components icons
+import { Icons } from 'vizzuality-components';
 
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import BASEMAPS from "@widget-editor/shared/lib/constants/basemaps";
 
 import LayerManager from "helpers/layer-manager";
+
 
 import { LABELS, BOUNDARIES } from "constants";
 
@@ -352,6 +355,7 @@ class Map extends React.Component {
     
     return (
       <StyledMapContainer>
+        <Icons />
         {caption && <StyledCaption>{caption}</StyledCaption>}
         {!thumbnail &&
           <StyledLegend>
