@@ -31,6 +31,8 @@ function resolveValue(val) {
 }
 
 const Legend = ({
+  widget,
+  advanced,
   configuration,
   schemeColor,
   selectedColor,
@@ -41,7 +43,8 @@ const Legend = ({
   compact,
 }) => {
   const isPie = configuration.chartType === "pie";
-  const isSingleColorSelection = !isPie && !isObjectLike(configuration.color);
+  const isSingleColorSelection = (!advanced && !isPie && !isObjectLike(configuration.color))
+    || (advanced && !widget.legend?.length);
 
   const handleChange = (option) => {
     const color = option.identifier === "___single_color" ? null : option;
@@ -66,7 +69,7 @@ const Legend = ({
           </StyledColorsBox>
         </StyledColorsBoxContainer>
       )}
-      {!isSingleColorSelection && (
+      {!isSingleColorSelection && !advanced && (
         <StyledColorsBoxContainer overflowIsHidden={true}>
           {widgetData &&
             widgetData.map((node, index) => {
@@ -81,21 +84,44 @@ const Legend = ({
             })}
         </StyledColorsBoxContainer>
       )}
-      <StyledDropdownBox>
-        <Select
-          align="horizontal"
-          relative={true}
-          menuPlacement="top"
-          value={selectedColor}
-          onChange={handleChange}
-          getOptionLabel={(option) => option.alias}
-          getOptionValue={(option) => option.identifier}
-          options={columns}
-          configuration={configuration}
-          isCustom
-          isPopup
-        />
-      </StyledDropdownBox>
+      {!isSingleColorSelection && !!advanced && (
+        <StyledColorsBoxContainer overflowIsHidden={true}>
+          {widget.legend[0].values.map((item) => (
+            <StyledColorsBox alignCenter={true} key={item.label}>
+              <StyledColorDot color={item.value} />
+              {resolveValue(item.label) || '−'}
+            </StyledColorsBox>
+          ))}
+          {widgetData &&
+            widgetData.map((node, index) => {
+              return (
+                <StyledColorsBox alignCenter={true} key={`${isPie ? node.x : node.color}-${index}`}>
+                  <StyledColorDot
+                    color={resolveSchemeColor(activeScheme.category, index)}
+                  />
+                  {resolveValue(isPie ? node.x : node.color) || '−'}
+                </StyledColorsBox>
+              );
+            })}
+        </StyledColorsBoxContainer>
+      )}
+      {!advanced && (
+        <StyledDropdownBox>
+          <Select
+            align="horizontal"
+            relative={true}
+            menuPlacement="top"
+            value={selectedColor}
+            onChange={handleChange}
+            getOptionLabel={(option) => option.alias}
+            getOptionValue={(option) => option.identifier}
+            options={columns}
+            configuration={configuration}
+            isCustom
+            isPopup
+          />
+        </StyledDropdownBox>
+      )}
     </StyledContainer>
   );
 };
