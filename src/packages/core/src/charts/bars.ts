@@ -11,7 +11,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
   schema: any;
   widgetConfig: any;
   widgetData: Generic.ObjectPayload;
-  colorApplied: boolean;
+  colorField: string;
 
   constructor(
     configuration: any,
@@ -20,7 +20,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     widgetConfig: any,
     widgetData: Generic.ObjectPayload,
     scheme: any,
-    colorApplied: boolean
+    colorField: string,
   ) {
     super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
@@ -28,7 +28,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
-    this.colorApplied = colorApplied;
+    this.colorField = colorField;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -43,6 +43,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
       config: this.resolveScheme(),
+      legend: this.setLegend(),
     };
   }
 
@@ -78,7 +79,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
       },
     ];
 
-    if (this.colorApplied) {
+    if (this.colorField) {
       scale.push({
         name: "color",
         type: "ordinal",
@@ -97,7 +98,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         from: { data: "table" },
         encode: {
           enter: {
-            ...(this.colorApplied
+            ...(this.colorField
               ? { fill: { scale: "color", field: sqlFields.category } }
               : {}),
           },
@@ -209,6 +210,30 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
           { type: "joinaggregate", as: ["count"] },
         ],
       },
+    ];
+  }
+
+  // FIXME: this is temporal, bar charts with a 3rd dimension (color) should be grouped bar charts
+  // This fix just displays the legend correctly while the grouped bar chart visualisation is
+  // brought back
+  setLegend() {
+    const scheme = this.resolveScheme();
+
+    if (!this.colorField) {
+      return null;
+    }
+
+    return [
+      {
+        type: 'color',
+        label: null,
+        shape: 'square',
+        values: this.widgetData.map((d: { x: string, y: number }, index) => ({
+          label: d[this.colorField],
+          value: scheme.range.category20[index % scheme.range.category20.length],
+          type: 'string',
+        }))
+      }
     ];
   }
 

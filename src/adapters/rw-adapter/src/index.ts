@@ -262,7 +262,8 @@ export default class RwAdapter implements Adapter.Service {
         axes: vegaConfiguration.axes,
         marks: vegaConfiguration.marks,
         interaction_config: vegaConfiguration.interaction_config,
-        config: vegaConfiguration.config
+        config: vegaConfiguration.config,
+        legend: vegaConfiguration.legend ?? null,
       };
 
     }

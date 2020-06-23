@@ -193,7 +193,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 
@@ -205,7 +205,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 
@@ -217,7 +217,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 
@@ -240,7 +240,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 

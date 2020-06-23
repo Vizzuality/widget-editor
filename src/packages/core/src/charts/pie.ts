@@ -37,6 +37,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
       data: this.bindData(),
       config: this.resolveScheme(),
       interaction_config: this.interactionConfig(),
+      legend: this.setLegend(),
     };
   }
 
@@ -169,6 +170,23 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           }
         ],
       },
+    ];
+  }
+
+  setLegend() {
+    const scheme = this.resolveScheme();
+
+    return [
+      {
+        type: 'color',
+        label: null,
+        shape: 'square',
+        values: this.widgetData.map((d: { x: string, y: number }, index) => ({
+          label: d.x,
+          value: scheme.range.category20[index % scheme.range.category20.length],
+          type: 'string',
+        }))
+      }
     ];
   }
 
