@@ -17,12 +17,12 @@
     "deck.gl": "^7.1.10",
     "layer-manager": "^2.0.9",
     "luma.gl": "^7.1.1",
-    "viewport-mercator-project": "^6.1.1",
-    "vizzuality-components": "^3.0.0-beta.16"
+    "viewport-mercator-project": "^6.1.1"
   },
   "peerDependencies": {
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "vizzuality-components": "^3.0.0-beta.16"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",

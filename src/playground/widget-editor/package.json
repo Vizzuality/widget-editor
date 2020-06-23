@@ -8,6 +8,7 @@
     "@widget-editor/rw-adapter": "^2.2.7",
     "@widget-editor/widget-editor": "^2.2.7",
     "gh-pages": "^2.2.0",
+    "node-sass": "^4.14.1",
     "react": "^16.12.0",
     "react-app-rewired": "^2.1.5",
     "react-color": "^2.18.0",
@@ -15,7 +16,8 @@
     "react-redux": "^7.1.3",
     "react-scripts": "3.2.0",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "vizzuality-components": "^3.0.0-beta.16"
   },
   "scripts": {
     "start": "react-app-rewired start",

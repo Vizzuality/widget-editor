@@ -9,7 +9,10 @@ export const DEFAULT_BORDER = (top = 1, right = 1, bottom = 1, left = 1) => `
   border-width: ${top}px ${right}px ${bottom}px ${left}px;
 `;
 
+export const COLOR_WHITE = '#ffffff';
+
 export default {
   FOOTER_HEIGHT,
-  DEFAULT_BORDER
+  DEFAULT_BORDER,
+  COLOR_WHITE
 };
