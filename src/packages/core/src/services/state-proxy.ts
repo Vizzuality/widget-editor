@@ -1,4 +1,6 @@
 import { sagaEvents } from "../constants";
+import { getAction } from "@widget-editor/shared/lib/helpers/redux";
+
 import isEqual from "lodash/isEqual";
 
 export default class StateProxy {
@@ -7,6 +9,7 @@ export default class StateProxy {
   donutRadius?: number;
   sliceCount?: number;
   visualizationType: string;
+  widget: any;
 
   constructor() {
     // These are the properties that we will check for updates
@@ -14,6 +17,8 @@ export default class StateProxy {
       chartType: null,
       visualizationType: null,
     };
+
+    this.widget = null;
 
     this.configuration = null;
   }
@@ -82,8 +87,18 @@ export default class StateProxy {
 
   // -- This method checks our conditions and returns a saga event
   // -- for any update we want to perform
-  async sync(editorState: any) {
+  async sync(editorState: any, actionName: string) {
     const UPDATES = [];
+
+    // As WIDGET/setWidget is the end result of the state proxy
+    // if widget is equal simply exit the loop
+    if (actionName === getAction('WIDGET/setWidget') 
+      && isEqual(editorState.widget, this.widget)) {
+      return [];
+    } else {
+      this.widget = editorState.widget;
+    }
+
     if (this.configurationHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE);
     }

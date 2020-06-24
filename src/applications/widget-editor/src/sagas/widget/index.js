@@ -95,16 +95,16 @@ function* preloadData() {
   }
 }
 
-function* resolveWithProxy() {
+function* resolveWithProxy(payload) {
   const { widgetEditor } = yield select();
 
   // We only want to resolve proxy if the editor itself is initialized
   if (!widgetEditor.editor.initialized) {
     yield cancel();
-  }
+  } 
   
   // Check and patch current state based on user configuration
-  const proxyResult = yield call([stateProxy, "sync"], widgetEditor);
+  const proxyResult = yield call([stateProxy, "sync"], widgetEditor, payload.type);
   // --- Proxy results returns a list of events we call on certain updates
   // --- This makes sure we only update what is nessesary in the editor
   if (proxyResult && proxyResult.length > 0) {
@@ -113,6 +113,8 @@ function* resolveWithProxy() {
     }
     const state = yield select();
     localOnChangeState(state.widgetEditor);
+  } else  {
+    yield cancel();
   }
 }
 
@@ -232,7 +234,8 @@ export default function* baseSaga() {
   yield takeLatest(
     [
       getAction("CONFIGURATION/patchConfiguration"),
-      getAction("EDITOR/THEME/setTheme")
+      getAction("EDITOR/THEME/setTheme"),
+      getAction('WIDGET/setWidget')
     ],
     resolveWithProxy
   );
