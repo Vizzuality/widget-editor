@@ -176,6 +176,10 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   setLegend() {
     const scheme = this.resolveScheme();
 
+    if (!this.widgetData) {
+      return null;
+    }
+
     return [
       {
         type: 'color',

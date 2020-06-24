@@ -221,7 +221,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   setLegend() {
     const scheme = this.resolveScheme();
 
-    if (!this.colorField) {
+    if (!this.colorField || !this.widgetData) {
       return null;
     }
 

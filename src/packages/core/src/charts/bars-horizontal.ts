@@ -214,7 +214,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   setLegend() {
     const scheme = this.resolveScheme();
 
-    if (!this.colorField) {
+    if (!this.colorField || !this.widgetData) {
       return null;
     }
 
