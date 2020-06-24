@@ -68,7 +68,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
               column: "y",
               property: this.resolveName('y'),
               type: "number",
-              format: this.resolveFormat('y'),
+              format: '.2s',
             },
             {
               column: "x",
