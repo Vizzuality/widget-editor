@@ -115,7 +115,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
               column: "y",
               property: this.resolveName('y'),
               type: "number",
-              format: this.resolveFormat('y'),
+              format: '.2s',
             },
             {
               column: "x",

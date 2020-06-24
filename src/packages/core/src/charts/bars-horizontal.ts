@@ -183,7 +183,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
               column: "y",
               property: this.resolveName('y'),
               type: "number",
-              format: this.resolveFormat('y'),
+              format: '.2s',
             },
             {
               column: "x",

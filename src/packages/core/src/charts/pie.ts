@@ -79,7 +79,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
               column: "value",
               property: this.resolveName('y'),
               type: "number",
-              format: this.resolveFormat('y'),
+              format: '.2s',
             },
             {
               column: "category",
