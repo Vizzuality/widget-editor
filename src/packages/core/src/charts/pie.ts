@@ -178,7 +178,6 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
 
   getChart() {
     const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
-    console.log(parseSignals);
     return parseSignals;
   }
 }
