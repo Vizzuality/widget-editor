@@ -158,7 +158,8 @@ class Chart extends React.Component {
           
         if (
           configuration.interaction_config &&
-          configuration.interaction_config.length
+          configuration.interaction_config.length &&
+          !this.props.thumbnail
         ) {
           this.instantiateTooltip(configuration);
         } 
