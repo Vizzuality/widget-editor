@@ -42,7 +42,8 @@ const Standalone = ({ thumbnail, widgetConfig }) => {
     <Fragment>
       {!isMap && (
         <Suspense>
-          {widgetConfig.hasOwnProperty('legend') && widgetConfig.legend.length > 0 && <Legend widgetConfig={widgetConfig}/>}
+          {widgetConfig.hasOwnProperty('legend') && widgetConfig.legend.length > 0 && !thumbnail
+            && <Legend widgetConfig={widgetConfig}/>}
           <Chart
             thumbnail={thumbnail}
             standalone
