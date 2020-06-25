@@ -2,10 +2,9 @@ import { takeLatest, put, call, select, cancel } from "redux-saga/effects";
 import isEqual from 'lodash/isEqual';
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
-import { localOnChangeState } from "exposed-hooks";
+import { getLocalCache, localOnChangeState } from "exposed-hooks";
 
 import {
-  FiltersService,
   constants,
   VegaService,
   StateProxy,
@@ -16,7 +15,6 @@ import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 const stateProxy = new StateProxy();
-let adapterConfiguration = null;
 
 const columnsSet = (value, category) => {
   return (
@@ -29,33 +27,22 @@ const columnsSet = (value, category) => {
   );
 };
 
-async function getWidgetData(editorState) {
-  const {
-    configuration,
-    filters,
-    editor: { dataset },
-  } = editorState;
+function* getWidgetData(editorState) {
+  const { adapter } = getLocalCache();
+
+  const { configuration } = editorState;
   const { value, category } = configuration;
 
   if (columnsSet(value, category)) {
-    const filtersService = new FiltersService(configuration, filters, dataset);
-    const sqlQuery = filtersService.getQuery();
-
-    const { dataEndpoint } = adapterConfiguration;
-
-    const response = await fetch(
-      `${dataEndpoint}/${dataset.id}?sql=${sqlQuery}`
-    );
-    const data = await response.json();
-
-    return data;
+    const { widgetEditor } = yield select();
+    const { configuration, filters, editor: { dataset } } = widgetEditor;
+    return yield adapter.requestData({ configuration, filters, dataset });
   }
 
-  return [];
+  return yield [];
 }
 
 function* storeAdapterConfigInState({ payload }) {
-  adapterConfiguration = payload;
   yield cancel();
 }
 
@@ -108,10 +95,16 @@ function* preloadData() {
   }
 }
 
-function* resolveWithProxy() {
+function* resolveWithProxy(payload) {
   const { widgetEditor } = yield select();
+
+  // We only want to resolve proxy if the editor itself is initialized
+  if (!widgetEditor.editor.initialized) {
+    yield cancel();
+  } 
+  
   // Check and patch current state based on user configuration
-  const proxyResult = yield call([stateProxy, "sync"], widgetEditor);
+  const proxyResult = yield call([stateProxy, "sync"], widgetEditor, payload.type);
   // --- Proxy results returns a list of events we call on certain updates
   // --- This makes sure we only update what is nessesary in the editor
   if (proxyResult && proxyResult.length > 0) {
@@ -120,6 +113,8 @@ function* resolveWithProxy() {
     }
     const state = yield select();
     localOnChangeState(state.widgetEditor);
+  } else  {
+    yield cancel();
   }
 }
 
@@ -235,8 +230,13 @@ export default function* baseSaga() {
 
   // --- Triggered multiple: When configuration gets modified, we check with our state
   // --- proxy if we have updates, if thats the case we update the editors state based on response
+  
   yield takeLatest(
-    getAction("CONFIGURATION/patchConfiguration"),
+    [
+      getAction("CONFIGURATION/patchConfiguration"),
+      getAction("EDITOR/THEME/setTheme"),
+      getAction('WIDGET/setWidget')
+    ],
     resolveWithProxy
   );
 

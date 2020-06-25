@@ -9,7 +9,6 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
-  scheme: any;
 
   constructor(
     configuration: any,
@@ -19,11 +18,10 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
-    super(configuration, editor, widgetData);
+    super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
     this.editor = editor;
     this.schema = schema;
-    this.scheme = scheme;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
 
@@ -37,19 +35,18 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData(),
+      config: this.resolveScheme(),
       interaction_config: this.interactionConfig(),
+      legend: this.setLegend(),
     };
   }
 
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      width: 400,
-      height: 400,
       autosize: {
         type: "fit",
         contains: "padding",
-        resize: true,
       },
       signals: [
         {
@@ -101,7 +98,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           data: "table",
           field: 'value',
         },
-        range: this.scheme ? this.scheme.category : "category20",
+        range: 'category20',
       },
     ];
   }
@@ -173,6 +170,27 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           }
         ],
       },
+    ];
+  }
+
+  setLegend() {
+    const scheme = this.resolveScheme();
+
+    if (!this.widgetData) {
+      return null;
+    }
+
+    return [
+      {
+        type: 'color',
+        label: null,
+        shape: 'square',
+        values: this.widgetData.map((d: { x: string, y: number }, index) => ({
+          label: d.x,
+          value: scheme.range.category20[index % scheme.range.category20.length],
+          type: 'string',
+        }))
+      }
     ];
   }
 

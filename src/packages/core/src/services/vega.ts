@@ -17,24 +17,24 @@ import {
 } from "../helpers/wiget-helper/constants";
 
 const DEFAULT_SCHEME = {
-  name: "pine",
-  mainColor: "#907A59",
+  name: "default",
+  mainColor: "#3BB2D0",
   category: [
-    "#907A59",
-    "#6AAC9F",
-    "#D5C0A1",
-    "#5C7D86",
-    "#F9AF38",
-    "#F05B3F",
-    "#89AD24",
-    "#CE4861",
-    "#F5808F",
-    "#86C48F",
-    "#F28627",
-    "#B23912",
-    "#BAD6AF",
-    "#C9C857",
-    "#665436",
+    '#3BB2D0',
+    '#2C75B0',
+    '#FAB72E',
+    '#EF4848',
+    '#65B60D',
+    '#C32D7B',
+    '#F577B9',
+    '#5FD2B8',
+    '#F1800F',
+    '#9F1C00',
+    '#A5E9E3',
+    '#B9D765',
+    '#393F44',
+    '#CACCD0',
+    '#717171',
   ],
 };
 
@@ -43,7 +43,7 @@ export default class VegaService implements Charts.Service {
   widgetData: any;
   configuration: any;
   editor: any;
-  slizeCount: number;
+  sliceCount: number;
   scheme: any;
   schema: Vega.Schema;
   colorApplied: boolean;
@@ -71,7 +71,7 @@ export default class VegaService implements Charts.Service {
     this.configuration = configuration;
     this.editor = editor;
 
-    this.slizeCount = configuration?.slizeCount || 5;
+    this.sliceCount = configuration?.sliceCount || 5;
 
     this.setConfig();
     this.resolveChart();
@@ -110,8 +110,8 @@ export default class VegaService implements Charts.Service {
     const combine = this.groupSimilar(data);
 
     const sortValues = combine.sort(sortHighToLow);
-    const top5 = sortValues.slice(0, this.slizeCount);
-    const others = sortValues.slice(this.slizeCount, sortValues.length + 1);
+    const top5 = sortValues.slice(0, this.sliceCount);
+    const others = sortValues.slice(this.sliceCount, sortValues.length + 1);
 
     const out = [];
     let othersNode = { x: "Others", y: 0 };
@@ -193,7 +193,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 
@@ -205,7 +205,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 
@@ -217,7 +217,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 
@@ -240,7 +240,7 @@ export default class VegaService implements Charts.Service {
         this.widgetConfig,
         data,
         this.scheme,
-        this.colorApplied
+        this.configuration.color?.identifier
       ).getChart();
     }
 

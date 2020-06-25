@@ -16,9 +16,6 @@ export default redux.connectState(
     selectedColor: widgetSelectors.getSelectedColor(state),
     columns: widgetSelectors.getWidgetColumns(state, { colorDimention: true }),
     schemeColor: themeSelectors.getMainThemeColor(state),
-    activeScheme: themeSelectors.getActiveScheme(state),
-    widgetData:
-      state.widget && state.widget.data ? state.widget.data[0].values : null,
   }),
   { patchConfiguration }
 )(ChartColorFilter);

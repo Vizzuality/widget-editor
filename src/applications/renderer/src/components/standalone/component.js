@@ -1,7 +1,7 @@
 import React, { Fragment, Suspense } from "react";
 
+import { getDefaultTheme } from "@widget-editor/core";
 import useLayerData from "./fetch-layers-hook";
-import defaultConfig from "./constants";
 
 import Legend from './legend';
 
@@ -34,7 +34,7 @@ const Standalone = ({ thumbnail, widgetConfig }) => {
   wConfig.height = wConfig.height || 500;
 
   wConfig.config = {
-    ...defaultConfig,
+    ...getDefaultTheme(),
     ...(wConfig.config ? wConfig.config : {}),
   };
 

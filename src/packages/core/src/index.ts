@@ -7,9 +7,11 @@ import Fields from "./services/fields";
 import StateProxy from "./services/state-proxy";
 import constants from "./constants";
 import ParseSignals from './charts/parse-signals';
+import getDefaultTheme from './charts/theme';
 import * as utils from './utils';
 
 export { ParseSignals };
+export { getDefaultTheme };
 export { utils };
 export { constants };
 export { Vega as VegaService };

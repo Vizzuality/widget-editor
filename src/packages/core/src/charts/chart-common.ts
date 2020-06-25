@@ -1,15 +1,18 @@
 import { Vega, Generic } from "@widget-editor/types";
+import getDefaultTheme from './theme';
 
 export default class ChartCommon {
   configuration: any;
   editor: any;
   wData: Generic.ObjectPayload = [];
   schema: Vega.Schema;
+  scheme: any;
 
-  constructor(configuration: any, editor: any, widgetData: Generic.ObjectPayload) {
+  constructor(configuration: any, editor: any, widgetData: Generic.ObjectPayload, scheme: any) {
     this.configuration = configuration;
     this.editor = editor;
     this.wData = widgetData || [];
+    this.scheme = scheme;
   }
 
   isDate() {
@@ -81,6 +84,28 @@ export default class ChartCommon {
     }
 
     return '.2f';
+  }
+
+  resolveScheme() {
+    return {
+      ...getDefaultTheme(),
+      name: this.scheme.name,
+      range: Object.assign({}, getDefaultTheme().range, {
+        category20: this.scheme.category
+      }),
+      mark: Object.assign({}, getDefaultTheme().mark, {
+        fill: this.scheme.mainColor
+      }),
+      symbol: Object.assign({}, getDefaultTheme().symbol, {
+        fill: this.scheme.mainColor
+      }),
+      rect: Object.assign({}, getDefaultTheme().rect, {
+        fill: this.scheme.mainColor
+      }),
+      line: Object.assign({}, getDefaultTheme().line, {
+        stroke: this.scheme.mainColor
+      })
+    };
   }
 }
 

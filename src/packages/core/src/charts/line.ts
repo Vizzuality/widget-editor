@@ -11,7 +11,6 @@ export default class Line extends ChartsCommon implements Charts.Line {
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
-  scheme: any;
 
   constructor(
     configuration: any,
@@ -21,13 +20,12 @@ export default class Line extends ChartsCommon implements Charts.Line {
     widgetData: Generic.ObjectPayload,
     scheme: any
   ) {
-    super(configuration, editor, widgetData);
+    super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
     this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
-    this.scheme = scheme;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -41,25 +39,10 @@ export default class Line extends ChartsCommon implements Charts.Line {
       marks: this.setMarks(),
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
-      config: {
-        ...this.schema.config,
-        line: {
-          ...this.schema.config.line,
-          stroke: this.scheme
-            ? this.scheme.mainColor
-            : this.schema.config.line.stroke,
-        },
-        symbol: {
-          ...this.schema.config.symbol,
-          fill: this.scheme
-            ? this.scheme.mainColor
-            : this.schema.config.symbol.fill,
-        },
-      },
+      config: this.resolveScheme(),
       autosize: {
         type: "fit",
         contains: "padding",
-        resize: true,
       },
       signals: [
         {
@@ -96,12 +79,10 @@ export default class Line extends ChartsCommon implements Charts.Line {
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 400,
       autosize: {
         type: "fit",
         contains: "padding",
       },
-      padding: 20,
     };
   }
 
@@ -210,8 +191,6 @@ export default class Line extends ChartsCommon implements Charts.Line {
   setAxes() {
     return [
       {
-        ...this.schema.axis,
-        ...this.schema.axisX,
         orient: "bottom",
         scale: "x",
         ...(this.isDate() ? {
@@ -229,8 +208,6 @@ export default class Line extends ChartsCommon implements Charts.Line {
         ticks: false,
       },
       {
-        ...this.schema.axis,
-        ...this.schema.axisY,
         orient: "left",
         scale: "y",
         labelOverlap: "parity",

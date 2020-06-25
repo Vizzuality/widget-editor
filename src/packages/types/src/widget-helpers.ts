@@ -46,7 +46,7 @@ interface MarkPayload {
 
 export interface Configuration {
   chartType: string;
-  slizeCount: number;
+  sliceCount: number;
   donutRadius: number;
   value: {
     name: string;

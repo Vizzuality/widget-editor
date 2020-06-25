@@ -1,12 +1,15 @@
 import { sagaEvents } from "../constants";
+import { getAction } from "@widget-editor/shared/lib/helpers/redux";
+
 import isEqual from "lodash/isEqual";
 
 export default class StateProxy {
   chartCache: any;
   configuration: object;
   donutRadius?: number;
-  slizeCount?: number;
+  sliceCount?: number;
   visualizationType: string;
+  widget: any;
 
   constructor() {
     // These are the properties that we will check for updates
@@ -14,6 +17,8 @@ export default class StateProxy {
       chartType: null,
       visualizationType: null,
     };
+
+    this.widget = null;
 
     this.configuration = null;
   }
@@ -30,14 +35,14 @@ export default class StateProxy {
       visualizationType,
       format,
       donutRadius,
-      slizeCount,
+      sliceCount,
     } = state.configuration;
 
     const hasUpdate = !isEqual(this.chartCache, {
       chartType,
       visualizationType,
       donutRadius,
-      slizeCount,
+      sliceCount,
       format,
     });
 
@@ -45,16 +50,16 @@ export default class StateProxy {
       return true;
     }
 
-    if (this.chartCache.slizeCount !== slizeCount && editor.initialized) {
+    if (this.chartCache.sliceCount !== sliceCount && editor.initialized) {
       return true;
     }
 
-    this.chartCache = { visualizationType, chartType, format, donutRadius, slizeCount };
+    this.chartCache = { visualizationType, chartType, format, donutRadius, sliceCount };
     return hasUpdate && editor.initialized;
   }
 
   visualizationTypeChanged(visualizationType): boolean {
-    const hasChanged =  this.visualizationType !== visualizationType;
+    const hasChanged = this.visualizationType !== visualizationType;
 
     if (hasChanged) {
       this.visualizationType = visualizationType;
@@ -82,13 +87,23 @@ export default class StateProxy {
 
   // -- This method checks our conditions and returns a saga event
   // -- for any update we want to perform
-  async sync(editorState: any) {
+  async sync(editorState: any, actionName: string) {
     const UPDATES = [];
+
+    // As WIDGET/setWidget is the end result of the state proxy
+    // if widget is equal simply exit the loop
+    if (actionName === getAction('WIDGET/setWidget') 
+      && isEqual(editorState.widget, this.widget)) {
+      return [];
+    } else {
+      this.widget = editorState.widget;
+    }
+
     if (this.configurationHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE);
     }
     if (
-      this.visualizationTypeChanged(editorState.configuration.visualizationType) || 
+      this.visualizationTypeChanged(editorState.configuration.visualizationType) ||
       this.chartHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_UPDATE_WIDGET);
     }

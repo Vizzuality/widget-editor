@@ -115,7 +115,7 @@ const Renderer = ({
         </RestoringWidget>
       )}
 
-      {!widgetConfig && !isMap && !editor.advanced && (
+      {!widgetConfig && !isMap && (
         <Suspense fallback={<div>Loading...</div>}>
           <Legend compact={compact} />
         </Suspense>

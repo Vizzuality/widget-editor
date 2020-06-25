@@ -16,7 +16,7 @@ export default connectState(
         : null,
     limit: state.configuration.limit,
     donutRadius: state.configuration.donutRadius,
-    slizeCount: state.configuration.slizeCount,
+    sliceCount: state.configuration.sliceCount,
     isMap: state.configuration.chartType === "map",
     data: state.editor.widgetData,
     orderBy: state.configuration.orderBy,

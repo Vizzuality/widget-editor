@@ -3,16 +3,13 @@ import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 import ChartsCommon from './chart-common';
 import ParseSignals from './parse-signals';
 
-import { sqlFields } from "../helpers/wiget-helper/constants";
-
 export default class Scatter extends ChartsCommon implements Charts.Scatter {
   configuration: any;
   editor: any;
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
-  colorApplied: boolean;
-  scheme: any;
+  colorField: string;
 
   constructor(
     configuration: any,
@@ -21,17 +18,15 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
     scheme: any,
-    colorApplied: boolean
+    colorField: string,
   ) {
-    super(configuration, editor, widgetData);
+    super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
     this.editor = editor;
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
-    this.colorApplied = colorApplied;
-
-    this.scheme = scheme;
+    this.colorField = colorField;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -45,16 +40,8 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
       marks: this.setMarks(),
       data: this.bindData(),
       interaction_config: this.interactionConfig(),
-      config: {
-        ...this.scheme.config,
-        ...(!this.colorApplied
-          ? {
-            symbol: {
-              fill: this.scheme.mainColor,
-            },
-          }
-          : {}),
-      },
+      config: this.resolveScheme(),
+      legend: this.setLegend(),
     };
   }
 
@@ -85,12 +72,9 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   setGenericSettings() {
     this.schema = {
       ...this.schema,
-      height: 400,
-      padding: 20,
       autosize: {
         type: "fit",
         contains: "padding",
-        resize: true,
       },
       signals: [
         {
@@ -135,11 +119,11 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         range: "height",
       },
     ];
-    if (this.colorApplied) {
+    if (this.colorField) {
       scale.push({
         name: "color",
         type: "ordinal",
-        domain: { data: "table", field: sqlFields.category },
+        domain: { data: "table", field: this.colorField },
         range: this.scheme.category,
       });
     }
@@ -155,8 +139,8 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         from: { data: "table" },
         encode: {
           enter: {
-            ...(this.colorApplied
-              ? { fill: { scale: "color", field: sqlFields.category } }
+            ...(this.colorField
+              ? { fill: { scale: "color", field: this.colorField } }
               : {}),
           },
           update: {
@@ -179,8 +163,6 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   setAxes() {
     return [
       {
-        ...this.schema.axis,
-        ...this.schema.axisX,
         "scale": "x",
         "labelOverlap": "parity",
         "orient": "bottom",
@@ -201,8 +183,6 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         }
       },
       {
-        ...this.schema.axis,
-        ...this.schema.axisY,
         labelBaseline: undefined,
         labelAlign: undefined,
         "scale": "y",
@@ -235,6 +215,31 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
           { type: "joinaggregate", as: ["count"] },
         ],
       },
+    ];
+  }
+
+  setLegend() {
+    const scheme = this.resolveScheme();
+
+    if (!this.colorField || !this.widgetData) {
+      return null;
+    }
+
+    // When the user adds the 3rd dimension (color), the widget data doesn't have the color field
+    // available until the fetch is complete, so label might be undefined in the map function
+    const values = [...new Set(this.widgetData.map(d => d[this.colorField]))].map((label, index) => ({
+      label: label,
+      value: scheme.range.category20[index % scheme.range.category20.length],
+      type: 'string',
+    }));
+
+    return [
+      {
+        type: 'color',
+        label: null,
+        shape: 'square',
+        values,
+      }
     ];
   }
 

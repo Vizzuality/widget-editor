@@ -241,7 +241,7 @@ export default class RwAdapter implements Adapter.Service {
           areaIntersection: editorState.configuration.areaIntersection,
           band: editorState.configuration.band,
           donutRadius: editorState.configuration.donutRadius,
-          slizeCount: editorState.configuration.slizeCount,
+          sliceCount: editorState.configuration.sliceCount,
           layer: null
         },
         data: vegaConfiguration.data.map(d => {
@@ -249,7 +249,10 @@ export default class RwAdapter implements Adapter.Service {
             return {
               name: 'table',
               transform: d.transform,
-              format: d.format,
+              format: {
+                type: 'json',
+                property: 'data',
+              },
               url: this.getDataUrl()
             }
           }
@@ -259,11 +262,12 @@ export default class RwAdapter implements Adapter.Service {
         axes: vegaConfiguration.axes,
         marks: vegaConfiguration.marks,
         interaction_config: vegaConfiguration.interaction_config,
-        config: vegaConfiguration.config
+        config: vegaConfiguration.config,
+        legend: vegaConfiguration.legend ?? null,
       };
 
     }
-      
+
     if (editorState.configuration.visualizationType === "map") {
       output = {
         type: 'map',
@@ -276,20 +280,19 @@ export default class RwAdapter implements Adapter.Service {
         ...(editorState.configuration.map.basemap
           ? {
             basemapLayers: {
-                basemap: editorState.configuration.map.basemap.basemap,
-                labels: editorState.configuration.map.basemap.labels,
-                boundaries: false,
-              },
-            }
+              basemap: editorState.configuration.map.basemap.basemap,
+              labels: editorState.configuration.map.basemap.labels,
+              boundaries: false,
+            },
+          }
           : {
             basemapLayers: {
-                basemap: "dark",
-                labels: "Dark",
-                boundaries: false,
-              },
-        }),
+              basemap: "dark",
+              labels: "Dark",
+              boundaries: false,
+            },
+          }),
         paramsConfig: {
-          caption: editorState.configuration.caption || null,
           visualizationType: editorState.configuration.visualizationType,
           layer: editorState.configuration.layer,
         },
@@ -304,7 +307,6 @@ export default class RwAdapter implements Adapter.Service {
         name: configuration.title || null,
         dataset: editor.dataset.id || null,
         description: configuration.description || null,
-        caption: editorState.configuration.caption || null,
         application: [application],
         widgetConfig: {
           we_meta: {
@@ -361,17 +363,13 @@ export default class RwAdapter implements Adapter.Service {
     `
   }
 
-  async requestData(sql: string, dataset: Dataset.Payload) {
-    this.SQL_STRING = sql;
-    const response = await fetch(
-      tags.oneLineTrim`
-        https://api.resourcewatch.org/v1/query/
-        ${dataset.id}?
-        sql=${sql}
-      `
-    );
-    const data = await response.json();
-    return data;
+  async requestData({ configuration, filters, dataset }) {
+    const filtersService = new FiltersService(configuration, filters, dataset);
+    this.SQL_STRING = filtersService.getQuery();
+
+    const response = await fetch(this.getDataUrl());
+
+    return await response.json();
   }
 
   async filterUpdate(

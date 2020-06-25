@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { utils } from '@widget-editor/core';
 import { Select } from "@widget-editor/shared";
-import isObjectLike from "lodash/isObjectLike";
-
 
 import {
   StyledContainer,
@@ -12,22 +10,13 @@ import {
   StyledDropdownBox,
 } from "./style";
 
-let c = 0;
-const resolveSchemeColor = (scheme, index) => {
-  if (index % scheme.length === 0) {
-    c = 0;
-  }
-  const color = scheme[c];
-  c++;
-  return color;
-};
-
 // XXX: Move me
-function resolveValue(val) {
-  if (typeof val === 'string') {
-    return val;
+function resolveLabel(label, type) {
+  if (type === 'date') {
+    return utils.parseDate(label);
   }
-  return utils.isDate(val) ? utils.parseDate(val) : val;
+
+  return label;
 }
 
 const Legend = ({
@@ -36,17 +25,14 @@ const Legend = ({
   configuration,
   schemeColor,
   selectedColor,
-  activeScheme,
   columns,
-  widgetData,
   patchConfiguration,
   compact,
 }) => {
   const isPie = configuration.chartType === "pie";
-  const isSingleColorSelection = (!advanced && !isPie && !isObjectLike(configuration.color))
-    || (advanced && !widget.legend?.length);
+  const multipleItems = widget.legend?.[0]?.values.length > 0;
 
-  const handleChange = (option) => {
+  const handleChange = useCallback((option) => {
     const color = option.identifier === "___single_color" ? null : option;
 
     if (isPie) {
@@ -54,57 +40,24 @@ const Legend = ({
     } else {
       patchConfiguration({ color });
     }
-  };
+  }, [isPie, patchConfiguration]);
 
   return (
     <StyledContainer compact={compact}>
-      {isSingleColorSelection && (
-        <StyledColorsBoxContainer
-          overflowIsHidden={false}
-          alignCenter
-        >
-          <StyledColorsBox alignCenter={false}>
-            <StyledColorDot color={schemeColor} />
-            Single color
-          </StyledColorsBox>
-        </StyledColorsBoxContainer>
-      )}
-      {!isSingleColorSelection && !advanced && (
-        <StyledColorsBoxContainer overflowIsHidden={true}>
-          {widgetData &&
-            widgetData.map((node, index) => {
-              return (
-                <StyledColorsBox alignCenter={true} key={`${isPie ? node.x : node.color}-${index}`}>
-                  <StyledColorDot
-                    color={resolveSchemeColor(activeScheme.category, index)}
-                  />
-                  {resolveValue(isPie ? node.x : node.color) || '−'}
-                </StyledColorsBox>
-              );
-            })}
-        </StyledColorsBoxContainer>
-      )}
-      {!isSingleColorSelection && !!advanced && (
-        <StyledColorsBoxContainer overflowIsHidden={true}>
-          {widget.legend[0].values.map((item) => (
-            <StyledColorsBox alignCenter={true} key={item.label}>
+      <StyledColorsBoxContainer overflowIsHidden={multipleItems} alignCenter={!multipleItems}>
+          {!multipleItems && (
+            <StyledColorsBox alignCenter={false}>
+              <StyledColorDot color={schemeColor} />
+              Single color
+            </StyledColorsBox>
+          )}
+          {multipleItems && widget.legend[0].values.map((item, index) => (
+            <StyledColorsBox alignCenter={true} key={`${item.label}-${index}`}>
               <StyledColorDot color={item.value} />
-              {resolveValue(item.label) || '−'}
+              {resolveLabel(item.label, item.type) || '−'}
             </StyledColorsBox>
           ))}
-          {widgetData &&
-            widgetData.map((node, index) => {
-              return (
-                <StyledColorsBox alignCenter={true} key={`${isPie ? node.x : node.color}-${index}`}>
-                  <StyledColorDot
-                    color={resolveSchemeColor(activeScheme.category, index)}
-                  />
-                  {resolveValue(isPie ? node.x : node.color) || '−'}
-                </StyledColorsBox>
-              );
-            })}
-        </StyledColorsBoxContainer>
-      )}
+      </StyledColorsBoxContainer>
       {!advanced && (
         <StyledDropdownBox>
           <Select
