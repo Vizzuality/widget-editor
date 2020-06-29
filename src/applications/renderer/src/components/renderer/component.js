@@ -25,13 +25,14 @@ const Renderer = ({
   thumbnail = false,
   configuration,
   compact,
+  changeBbox
 }) => {
   const { restoring, initialized } = editor;
   const missingWidget =
     initialized && !restoring && widget && Object.keys(widget).length === 0;
 
   const isMap = configuration.visualizationType === "map";  
-
+  
   if (restoring) {
     return (
       <StyledContainer>
@@ -55,6 +56,7 @@ const Renderer = ({
           thumbnail={thumbnail}
           widgetConfig={widgetConfig}
           theme={theme}
+          changeBbox={changeBbox}
         />
       </Suspense>
     );
@@ -98,6 +100,7 @@ const Renderer = ({
               interactionEnabled={!standalone}
               widget={editor.widget}
               layers={editor.layers}
+              changeBbox={changeBbox}
             />
           )}
         </Suspense>
