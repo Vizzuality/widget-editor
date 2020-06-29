@@ -165,8 +165,8 @@ class Map extends React.Component {
       this.addLayers(layers);
     }
     // Map bbox changed
-    if (!isEqual(nextProps.mapConfiguration.bbox, this.props.mapConfiguration.bbox)) {
-      const [b0, b1, b2, b3] = nextProps.mapConfiguration.bbox;
+    if (!isEqual(nextProps.changeBbox, this.props.changeBbox)) {
+      const [b0, b1, b2, b3] = nextProps.changeBbox;
       this.map.fitBounds([
         [b1, b0],
         [b3, b2]
