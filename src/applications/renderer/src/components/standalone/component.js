@@ -8,7 +8,7 @@ import Legend from './legend';
 const Chart = React.lazy(() => import("../chart"));
 const Map = React.lazy(() => import("@widget-editor/map"));
 
-const Standalone = ({ thumbnail, widgetConfig }) => {
+const Standalone = ({ thumbnail, widgetConfig, changeBbox }) => {
   const isMap = widgetConfig?.paramsConfig?.visualizationType === "map";
   const [{ layerData, isLoadingLayers, isErrorLayers }] = useLayerData(
     widgetConfig?.paramsConfig?.layer,
@@ -36,7 +36,7 @@ const Standalone = ({ thumbnail, widgetConfig }) => {
   wConfig.config = {
     ...getDefaultTheme(),
     ...(wConfig.config ? wConfig.config : {}),
-  };
+  };  
 
   return (
     <Fragment>
@@ -70,6 +70,7 @@ const Standalone = ({ thumbnail, widgetConfig }) => {
             }}
             caption={widgetConfig?.paramsConfig?.caption || null}
             layers={[layerData]}
+            changeBbox={changeBbox}
           />
         </Suspense>
       )}
