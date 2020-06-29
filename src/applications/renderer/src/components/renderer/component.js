@@ -25,7 +25,8 @@ const Renderer = ({
   thumbnail = false,
   configuration,
   compact,
-  changeBbox
+  changeBbox,
+  interactionEnabled
 }) => {
   const { restoring, initialized } = editor;
   const missingWidget =
@@ -57,6 +58,7 @@ const Renderer = ({
           widgetConfig={widgetConfig}
           theme={theme}
           changeBbox={changeBbox}
+          interactionEnabled={interactionEnabled}
         />
       </Suspense>
     );
