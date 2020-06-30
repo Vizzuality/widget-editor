@@ -78,11 +78,17 @@ export default class StateProxy {
     return updates;
   }
 
+  
   configurationHasUpdate(state) {
     const { configuration } = state;
     const hasUpdates = !isEqual(this.configuration, configuration) && this.configuration !== null;
     this.configuration = configuration;
     return hasUpdates;
+  }
+
+  widgetUpToDate(editorState: any) {
+    // XXX: for now we only care about the legend
+    return isEqual(editorState.widget?.legend, this.widget?.legend);
   }
 
   // -- This method checks our conditions and returns a saga event
@@ -92,8 +98,7 @@ export default class StateProxy {
 
     // As WIDGET/setWidget is the end result of the state proxy
     // if widget is equal simply exit the loop
-    if (actionName === getAction('WIDGET/setWidget') 
-      && isEqual(editorState.widget, this.widget)) {
+    if (actionName === getAction('WIDGET/setWidget') && this.widgetUpToDate(editorState)) {
       return [];
     } else {
       this.widget = editorState.widget;
