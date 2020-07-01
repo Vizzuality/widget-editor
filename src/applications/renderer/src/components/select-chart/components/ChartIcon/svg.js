@@ -167,20 +167,7 @@ export const Pie = () => (
   </svg>
 );
 
-export const ColumnVertical = () => (
-  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
-    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-      <g id="Group-14" transform="translate(8.000000, 5.000000)">
-        <rect fill="#2C75B0" x="0" y="0" width="38" height="4"></rect>
-        <rect fill="#2C75B0" x="0" y="15" width="55" height="4"></rect>
-        <rect fill="#3BB2D0" x="0" y="5" width="18" height="4"></rect>
-        <rect fill="#3BB2D0" x="0" y="20" width="44" height="4"></rect>
-      </g>
-    </g>
-  </svg>
-);
-
-export const ColumnHorizontal = () => (
+export const Bar = () => (
   <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
     <g
       id="chart-columns-a"
@@ -205,26 +192,7 @@ export const ColumnHorizontal = () => (
   </svg>
 );
 
-export const BarVertical = () => (
-  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
-    <g
-      id="chart-bars-b"
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-    >
-      <g id="Group-14" transform="translate(8.000000, 6.000000)">
-        <rect fill="#2C75B0" x="0" y="0" width="27" height="8"></rect>
-        <rect fill="#2C75B0" x="0" y="15" width="18" height="8"></rect>
-        <rect fill="#3BB2D0" x="28" y="0" width="6" height="8"></rect>
-        <rect fill="#3BB2D0" x="19" y="15" width="35" height="8"></rect>
-      </g>
-    </g>
-  </svg>
-);
-
-export const BarHorizontal = () => (
+export const StackedBar = () => (
   <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
     <g
       id="chart-columns-b"
@@ -242,6 +210,38 @@ export const BarHorizontal = () => (
         <rect fill="#3BB2D0" x="42" y="10" width="8" height="5"></rect>
         <rect fill="#3BB2D0" x="14" y="0" width="8" height="23"></rect>
         <rect fill="#3BB2D0" x="28" y="5" width="8" height="13"></rect>
+      </g>
+    </g>
+  </svg>
+);
+
+export const BarHorizontal = () => (
+  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Group-14" transform="translate(8.000000, 5.000000)">
+        <rect fill="#2C75B0" x="0" y="0" width="38" height="4"></rect>
+        <rect fill="#2C75B0" x="0" y="15" width="55" height="4"></rect>
+        <rect fill="#3BB2D0" x="0" y="5" width="18" height="4"></rect>
+        <rect fill="#3BB2D0" x="0" y="20" width="44" height="4"></rect>
+      </g>
+    </g>
+  </svg>
+);
+
+export const StackedBarHorizontal = () => (
+  <svg width="70px" height="35px" viewBox="0 0 70 35" version="1.1">
+    <g
+      id="chart-bars-b"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g id="Group-14" transform="translate(8.000000, 6.000000)">
+        <rect fill="#2C75B0" x="0" y="0" width="27" height="8"></rect>
+        <rect fill="#2C75B0" x="0" y="15" width="18" height="8"></rect>
+        <rect fill="#3BB2D0" x="28" y="0" width="6" height="8"></rect>
+        <rect fill="#3BB2D0" x="19" y="15" width="35" height="8"></rect>
       </g>
     </g>
   </svg>
