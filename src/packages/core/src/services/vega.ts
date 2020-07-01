@@ -4,6 +4,7 @@ import { Charts, Vega } from "@widget-editor/types";
 
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
+import GroupedBars from "../charts/bars-grouped";
 import BarsHorizontal from "../charts/bars-horizontal";
 import BarsStacked from "../charts/bars-stacked";
 import Line from "../charts/line";
@@ -198,15 +199,26 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "bar") {
-      chart = new Bars(
-        this.configuration,
-        this.editor,
-        this.schema,
-        this.widgetConfig,
-        data,
-        this.scheme,
-        this.configuration.color?.identifier
-      ).getChart();
+      if (this.configuration.color?.identifier) {
+        chart = new GroupedBars(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme,
+          this.configuration.color.identifier
+        ).getChart();
+      } else {
+        chart = new Bars(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme
+        ).getChart();
+      }
     }
 
     if (chartType === "stacked-bar") {

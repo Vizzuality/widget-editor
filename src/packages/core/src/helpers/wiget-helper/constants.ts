@@ -49,6 +49,7 @@ export const defaultVegaSchema = () => {
 export const sqlFields = {
   value: "x",
   category: "y",
+  color: "color",
 };
 
 export default {
