@@ -43,6 +43,7 @@ export const sagaEvents = {
   EDITOR_SAVE: `${APP_NAMESPACE}/CONFIGURATION/saveConfiguration`,
   DATA_FLOW_UPDATE_WIDGET: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/updateWidget`,
   DATA_FLOW_CONFIGURATION_UPDATE: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/configurationUpdate`,
+  DATA_FLOW_UPDATE_HOOK_STATE: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/updateHookState`
 };
 
 export const reduxActions = {

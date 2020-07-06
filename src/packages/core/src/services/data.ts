@@ -49,7 +49,7 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
-  async restoreEditor(datasetId, widgetId) {
+  async restoreEditor(datasetId, widgetId, cb = null) {
     this.setEditor({
       restoring: true
     });
@@ -70,6 +70,11 @@ export default class DataService {
     } else {
       this.setEditor({ widgetData: null });
     }
+
+    if (cb) {
+      cb();
+    }
+
     this.setEditor({ restoring: false });
   }
 

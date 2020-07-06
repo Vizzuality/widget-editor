@@ -27,7 +27,7 @@ const columnsSet = (value, category) => {
   );
 };
 
-function* getWidgetData(editorState) {
+function* getWidgetDataWithAdapter(editorState) {
   const { adapter } = getLocalCache();
 
   const { configuration } = editorState;
@@ -42,11 +42,17 @@ function* getWidgetData(editorState) {
   return yield [];
 }
 
-function* storeAdapterConfigInState({ payload }) {
-  yield cancel();
+// This generator updates local state used for our api hooks
+// When editor changes or restores this gets called
+// Action triggering this is: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE
+function* updateHookState() {
+  const state = yield select();
+  localOnChangeState(state.widgetEditor);
 }
 
-function* preloadData() {
+// Called when our services have initialized data required to render chart
+// Sets up our visualization using @core/VegaService
+function* initializeWidget() {
   const {
     widgetEditor: { editor, configuration, theme, widget },
   } = yield select();
@@ -95,24 +101,26 @@ function* preloadData() {
   }
 }
 
-function* resolveWithProxy(payload) {
+// Called multiple, checks if we need to update data
+// Using @core/stateProxy
+// If no updates required we yield cancel
+function* checkWithProxyIfShouldUpdate(payload) {
   const { widgetEditor } = yield select();
 
   // We only want to resolve proxy if the editor itself is initialized
   if (!widgetEditor.editor.initialized) {
     yield cancel();
-  } 
-  
-  // Check and patch current state based on user configuration
+  }
+
+  // State proxy checks editor state if any data updates are required.
+  // state proxy returns array of actions that we call to update the editor
   const proxyResult = yield call([stateProxy, "sync"], widgetEditor, payload.type);
-  // --- Proxy results returns a list of events we call on certain updates
-  // --- This makes sure we only update what is nessesary in the editor
+
   if (proxyResult && proxyResult.length > 0) {
     for (const evnt in proxyResult) {
       yield put({ type: proxyResult[evnt] });
     }
-    const state = yield select();
-    localOnChangeState(state.widgetEditor);
+    yield call(updateHookState);
   } else  {
     yield cancel();
   }
@@ -123,10 +131,9 @@ function* updateWidget() {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
 
-
-  if (editor.initialized && !editor.widgetData || typeof editor.widgetData === 'undefined') {
+  if (editor.initialized && (!editor.widgetData || typeof editor.widgetData === 'undefined')) {
     const fullState = yield select();
-    const widgetData = yield call(getWidgetData, fullState.widgetEditor);
+    const widgetData = yield call(getWidgetDataWithAdapter, fullState.widgetEditor);
 
     if (widgetData) {
       yield put(setEditor({ widgetData: widgetData.data }));
@@ -179,7 +186,7 @@ function* updateWidgetData() {
     let widgetData;
 
     if (!advanced) {
-      widgetData = yield call(getWidgetData, widgetEditor);
+      widgetData = yield call(getWidgetDataWithAdapter, widgetEditor);
     }
 
     if (widgetData) {
@@ -187,7 +194,7 @@ function* updateWidgetData() {
     }
 
     yield call(updateWidget);
-  } 
+  }
 
   yield put(
     setConfiguration({
@@ -212,17 +219,11 @@ export default function* baseSaga() {
     constants.sagaEvents.DATA_FLOW_CONFIGURATION_UPDATE,
     updateWidgetData
   );
-    
+
   // --- Triggered once: When we have all nessesary information to render visualization
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
-    preloadData
-  );
-
-  // --- Triggered once: When App initializes, we store adapter configuration localy
-  yield takeLatest(
-    constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
-    storeAdapterConfigInState
+    initializeWidget
   );
 
   // --- Triggered multiple: When Configuration or data updates we update the widget
@@ -230,15 +231,18 @@ export default function* baseSaga() {
 
   // --- Triggered multiple: When configuration gets modified, we check with our state
   // --- proxy if we have updates, if thats the case we update the editors state based on response
-  
+
   yield takeLatest(
     [
       getAction("CONFIGURATION/patchConfiguration"),
       getAction("EDITOR/THEME/setTheme"),
       getAction('WIDGET/setWidget')
     ],
-    resolveWithProxy
+    checkWithProxyIfShouldUpdate
   );
+
+  // --- Update local hook state
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE, updateHookState)
 
   // --- Triggered multiple: If theme gets modified we update our widget
   yield takeLatest(getAction("EDITOR/THEME/setTheme"), updateWidget);
