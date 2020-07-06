@@ -49,7 +49,7 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
-  async restoreEditor(datasetId, widgetId) {
+  async restoreEditor(datasetId, widgetId, cb = null) {
     this.setEditor({
       restoring: true
     });
@@ -68,8 +68,16 @@ export default class DataService {
     ) {
       await this.requestWithFilters(filters, this.widget.attributes?.widgetConfig?.paramsConfig);
     } else {
-      this.setEditor({ widgetData: null });
+      this.setEditor({
+        widgetData: null,
+        advanced: !this.widget?.attributes?.widgetConfig?.paramsConfig
+      });
     }
+
+    if (cb) {
+      cb();
+    }
+
     this.setEditor({ restoring: false });
   }
 
@@ -168,6 +176,5 @@ export default class DataService {
     await this.handleFilters();
 
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
-    this.setEditor({ initialized: true });
   }
 }

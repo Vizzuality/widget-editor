@@ -4,7 +4,7 @@ import { constants } from "@widget-editor/core";
 import { setConfiguration, resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 
-import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions"; 
+import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 
 import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
@@ -13,6 +13,10 @@ function* restoreEditor() {
   yield put(resetConfiguration());
   yield put(resetWidget());
   yield put(resetFilters());
+}
+
+function* setEditorInitialized() {
+  yield put(setEditor({ initialized: true }));
 }
 
 function* preloadData() {
@@ -98,4 +102,5 @@ export default function* baseSaga() {
   );
 
   yield takeLatest('WIDGET/EDITOR/RESTORE', restoreEditor);
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALISATION_READY, setEditorInitialized);
 }

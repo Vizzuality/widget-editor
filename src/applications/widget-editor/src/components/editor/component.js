@@ -8,7 +8,7 @@ import { DataService } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
 import { StyledContainer, StyleEditorContainer } from "./style";
 
-import { localGetEditorState, setReduxCache } from "exposed-hooks";
+import { localGetEditorState, setReduxCache, localOnChangeState } from "exposed-hooks";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -60,7 +60,7 @@ class Editor extends React.Component {
   componentWillUnmount() {
     this.resetEditor();
   }
-  
+
   componentDidUpdate(prevProps) {
     const {
       datasetId: prevDatasetId,
@@ -88,12 +88,12 @@ class Editor extends React.Component {
   }
 
   resetEditor() {
-    const { 
-      resetEditor, 
-      resetConfiguration, 
-      resetWidget, 
-      resetFilters, 
-      resetTheme 
+    const {
+      resetEditor,
+      resetConfiguration,
+      resetWidget,
+      resetFilters,
+      resetTheme
     } = this.props;
     resetEditor();
     resetConfiguration();
@@ -118,9 +118,11 @@ class Editor extends React.Component {
   }
 
   initializeRestoration = debounce((datasetId, widgetId) => {
-    const { resetFilters } = this.props;
+    const { resetFilters, dispatch } = this.props;
     resetFilters();
-    this.dataService.restoreEditor(datasetId, widgetId);
+    this.dataService.restoreEditor(datasetId, widgetId, () => {
+      dispatch({ type: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE });
+    });
   }, 1000);
 
   // We debounce all properties here
