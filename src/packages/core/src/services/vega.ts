@@ -211,6 +211,29 @@ export default class VegaService implements Charts.Service {
       }
     }
 
+    if (chartType === "stacked-bar-horizontal") {
+      if (this.configuration.color?.identifier) {
+        chart = new BarsStackedHorizontal(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme,
+          this.configuration.color.identifier
+        ).getChart();
+      } else {
+        chart = new BarsHorizontal(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme
+        ).getChart();
+      }
+    }
+
     if (chartType === "bar") {
       if (this.configuration.color?.identifier) {
         chart = new GroupedBars(

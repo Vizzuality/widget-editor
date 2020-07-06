@@ -2,6 +2,7 @@ export const SUPPORTED_CHARTS: string[] = [
   "pie",
   "bar",
   "bar-horizontal",
+  "stacked-bar-horizontal",
   "line",
   "scatter",
   "donut",

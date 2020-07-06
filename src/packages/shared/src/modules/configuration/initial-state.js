@@ -34,11 +34,11 @@ export default {
       chartType: "bar-horizontal",
       label: "Bars",
     },
-    // {
-    //   value: "stacked-bar-horizontal",
-    //   chartType: "stacked-bar-horizontal",
-    //   label: "Stacked bars",
-    // },
+    {
+      value: "stacked-bar-horizontal",
+      chartType: "stacked-bar-horizontal",
+      label: "Stacked bars",
+    },
     { value: "line", chartType: "line", label: "Line" },
     {
       value: "scatter",
