@@ -222,15 +222,26 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "stacked-bar") {
-      chart = new BarsStacked(
-        this.configuration,
-        this.editor,
-        this.schema,
-        this.widgetConfig,
-        data,
-        this.scheme,
-        this.configuration.color?.identifier
-      ).getChart();
+      if (this.configuration.color?.identifier) {
+        chart = new BarsStacked(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme,
+          this.configuration.color.identifier
+        ).getChart();
+      } else {
+        chart = new Bars(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme
+        ).getChart();
+      }
     }
 
     if (chartType === "line") {

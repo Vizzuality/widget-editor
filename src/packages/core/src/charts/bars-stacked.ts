@@ -60,7 +60,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         type: "band",
         domain: {
           data: "table",
-          field: "id",
+          field: "x",
         },
         range: "width",
         padding: 0.05,
@@ -70,22 +70,19 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         type: "linear",
         domain: {
           data: "table",
-          field: sqlFields.category,
+          field: "y1",
         },
         nice: true,
         zero: true,
         range: "height",
       },
-    ];
-
-    if (this.colorField) {
-      scale.push({
+      {
         name: "color",
         type: "ordinal",
-        domain: { data: "table", field: sqlFields.category },
+        domain: { data: "table", field: "color" },
         range: this.scheme.category,
-      });
-    }
+      },
+    ];
 
     return scale;
   }
@@ -96,17 +93,13 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         type: "rect",
         from: { data: "table" },
         encode: {
-          enter: {
-            ...(this.colorField
-              ? { fill: { scale: "color", field: sqlFields.category } }
-              : {}),
-          },
           update: {
             opacity: { value: 1 },
-            x: { scale: "x", field: "id" },
+            fill: { scale: "color", field: "color" },
+            x: { scale: "x", field: "x" },
             width: { scale: "x", band: 1 },
-            y: { scale: "y", field: "y" },
-            y2: { scale: "y", value: 0 },
+            y: { scale: "y", field: "y0" },
+            y2: { scale: "y", field: "y1" },
           },
           hover: {
             opacity: { value: 0.8 },
@@ -127,6 +120,12 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
               property: this.resolveName('y'),
               type: "number",
               format: '.2s',
+            },
+            {
+              column: "color",
+              property: this.resolveName('color'),
+              type: "string",
+              format: ".2f"
             },
             {
               column: "x",
@@ -152,8 +151,8 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
             update: {
               text: {
                 signal: this.isDate()
-                  ? `utcFormat(data('table')[datum.value - 1].x, '${this.resolveFormat('x')}')`
-                  : "truncate(data('table')[datum.value - 1].x, 12)",
+                  ? `utcFormat(datum.value, '${this.resolveFormat('x')}')`
+                  : "truncate(datum.value, 12)",
               },
               align: {
                 signal:
@@ -192,7 +191,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData, scheme } = this;
+    const { widgetData } = this;
     return [
       {
         values: widgetData,
@@ -205,14 +204,8 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
           }
         } : {}),
         transform: [
-          { type: "identifier", as: "id" },
-          { type: "joinaggregate", as: ["count"] },
-          {
-            type: "stack",
-            groupby: ["x"],
-            sort: { field: "x" },
-            field: "y"
-          }
+          { "type": "stack", "field": "y", "groupby": ["x"], "sort": { "field": "color" } },
+          { "type": "joinaggregate", "ops": ["distinct"], "fields": ["x"], "as": ["count"] }
         ],
       },
     ];
