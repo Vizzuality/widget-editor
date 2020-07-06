@@ -11,6 +11,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   schema: Vega.Schema;
   widgetConfig: Widget.Payload;
   widgetData: Generic.ObjectPayload;
+  colorField: string;
 
   constructor(
     configuration: any,
@@ -19,6 +20,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     widgetConfig: Widget.Payload,
     widgetData: Generic.ObjectPayload,
     scheme: any,
+    colorField: string,
   ) {
     super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
@@ -26,6 +28,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
+    this.colorField = colorField;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -57,9 +60,11 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         type: "linear",
         domain: {
           data: "table",
-          field: sqlFields.category,
+          field: "y",
         },
         range: "width",
+        nice: true,
+        zero: true,
       },
       {
         name: "y",
@@ -69,8 +74,14 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
           field: "x",
         },
         range: "height",
-        padding: 0.05,
+        padding: 0.1,
       },
+      {
+        name: "color",
+        type: "ordinal",
+        domain: { data: "table", field: "color" },
+        range: this.scheme.category,
+      }
     ];
 
     return scale;
@@ -84,6 +95,14 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         format: this.resolveFormat('y'),
         grid: true,
         labelOverlap: "parity",
+        encode: {
+          labels: {
+            update: {
+              align: { value: "center" },
+              baseline: { value: "middle" }
+            }
+          }
+        }
       },
       {
         orient: "left",
@@ -122,21 +141,54 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   setMarks() {
     return [
       {
-        type: "rect",
-        from: { data: "table" },
-        encode: {
-          update: {
-            opacity: { value: 1 },
-            x: { scale: "x", value: 0 },
-            x2: { scale: "x", field: sqlFields.category },
-            y: { scale: "y", field: "x" },
-            height: { scale: "y", band: 1 },
-          },
-          hover: {
-            opacity: { value: 0.8 },
-          },
+        "type": "group",
+        "from": {
+          "facet": {
+            "data": "table",
+            "name": "facet",
+            "groupby": "x"
+          }
         },
-      },
+        "encode": {
+          "enter": {
+            "y": { "scale": "y", "field": "x" }
+          }
+        },
+        "signals": [
+          { "name": "height", "update": "bandwidth('y')" }
+        ],
+        "scales": [
+          {
+            "name": "pos",
+            "type": "band",
+            "range": "height",
+            "domain": {
+              "data": "facet",
+              "field": "color",
+              "sort": true
+            }
+          }
+        ],
+        "marks": [
+          {
+            "type": "rect",
+            "from": { "data": "facet" },
+            "encode": {
+              "update": {
+                "opacity": { "value": 1 },
+                "fill": { "scale": "color", "field": "color" },
+                "y": { "scale": "pos", "field": "color" },
+                "height": { "scale": "pos", "band": 1 },
+                "x": { "scale": "x", "field": "y" },
+                "x2": { "scale": "x", "value": 0 }
+              },
+              "hover": {
+                "opacity": { "value": 0.8 }
+              }
+            }
+          }
+        ]
+      }
     ];
   }
 
@@ -151,6 +203,12 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
               property: this.resolveName('y'),
               type: "number",
               format: '.2s',
+            },
+            {
+              column: "color",
+              property: "color",
+              type: "string",
+              format: ".2f"
             },
             {
               column: "x",
@@ -177,22 +235,34 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
           }
         } : {}),
         transform: [
-          { type: "identifier", as: "id" },
-          { type: "joinaggregate", as: ["count"] },
+          { "type": "joinaggregate", "ops": ["distinct"], "fields": ["x"], "as": ["count"] },
         ],
-      },
-      {
-        values: {
-          xCol: this.resolveName('x'),
-          yCol: this.resolveName('y'),
-        },
-        name: "properties",
       },
     ];
   }
 
+  // FIXME: this is temporal, bar charts with a 3rd dimension (color) should be grouped bar charts
+  // This fix just displays the legend correctly while the grouped bar chart visualisation is
+  // brought back
   setLegend() {
-    return null;
+    const scheme = this.resolveScheme();
+
+    if (!this.colorField || !this.widgetData) {
+      return null;
+    }
+
+    return [
+      {
+        type: 'color',
+        label: null,
+        shape: 'square',
+        values: this.widgetData.map((d: { x: string, y: number }, index) => ({
+          label: d[this.colorField],
+          value: scheme.range.category20[index % scheme.range.category20.length],
+          type: 'string',
+        }))
+      }
+    ];
   }
 
   getChart() {

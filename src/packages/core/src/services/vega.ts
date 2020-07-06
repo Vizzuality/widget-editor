@@ -5,8 +5,10 @@ import { Charts, Vega } from "@widget-editor/types";
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
 import GroupedBars from "../charts/bars-grouped";
-import BarsHorizontal from "../charts/bars-horizontal";
 import BarsStacked from "../charts/bars-stacked";
+import BarsHorizontal from "../charts/bars-horizontal";
+import GroupedBarsHorizontal from "../charts/bars-grouped-horizontal";
+import BarsStackedHorizontal from "../charts/bars-stacked-horizontal";
 import Line from "../charts/line";
 import Scatter from "../charts/scatter";
 
@@ -187,15 +189,26 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "bar-horizontal") {
-      chart = new BarsHorizontal(
-        this.configuration,
-        this.editor,
-        this.schema,
-        this.widgetConfig,
-        data,
-        this.scheme,
-        this.configuration.color?.identifier
-      ).getChart();
+      if (this.configuration.color?.identifier) {
+        chart = new GroupedBarsHorizontal(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme,
+          this.configuration.color.identifier
+        ).getChart();
+      } else {
+        chart = new BarsHorizontal(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme
+        ).getChart();
+      }
     }
 
     if (chartType === "bar") {
