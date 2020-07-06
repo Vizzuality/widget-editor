@@ -19,7 +19,7 @@ export default class ChartCommon {
     return this.configuration.category?.type === 'date';
   }
 
-  resolveName(axis: 'x' | 'y') {
+  resolveName(axis: 'x' | 'y' | 'color') {
     const { xAxisTitle, yAxisTitle } = this.configuration;
 
     if (axis === 'x' && xAxisTitle) {
@@ -30,7 +30,16 @@ export default class ChartCommon {
       return yAxisTitle;
     }
 
-    const fieldName = this.configuration[axis === 'x' ? 'category' : 'value']?.name;
+    let fieldIdentifier;
+    if (axis === 'x') {
+      fieldIdentifier = 'category';
+    } else if (axis === 'y') {
+      fieldIdentifier = 'value';
+    } else {
+      fieldIdentifier = 'color';
+    }
+
+    const fieldName = this.configuration[fieldIdentifier]?.name;
     const field = this.editor.fields?.find(f => f.columnName === fieldName);
 
     const name = field?.metadata?.alias

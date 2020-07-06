@@ -5,7 +5,7 @@ import ParseSignals from './parse-signals';
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
-export default class BarsStacked extends ChartsCommon implements Charts.Bars {
+export default class GroupedBars extends ChartsCommon implements Charts.Bars {
   configuration: any;
   editor: any;
   schema: any;
@@ -54,23 +54,24 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   }
 
   setScales() {
-    const scale: any = [
+    return [
       {
         name: "x",
         type: "band",
         domain: {
           data: "table",
           field: "x",
+          ...(this.isDate() ? { sort: true } : {})
         },
         range: "width",
-        padding: 0.05,
+        "padding": 0.1,
       },
       {
         name: "y",
         type: "linear",
         domain: {
           data: "table",
-          field: "y1",
+          field: "y",
         },
         nice: true,
         zero: true,
@@ -83,29 +84,59 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         range: this.scheme.category,
       },
     ];
-
-    return scale;
   }
 
   setMarks() {
     return [
       {
-        type: "rect",
-        from: { data: "table" },
-        encode: {
-          update: {
-            opacity: { value: 1 },
-            fill: { scale: "color", field: "color" },
-            x: { scale: "x", field: "x" },
-            width: { scale: "x", band: 1 },
-            y: { scale: "y", field: "y0" },
-            y2: { scale: "y", field: "y1" },
-          },
-          hover: {
-            opacity: { value: 0.8 },
-          },
+        "type": "group",
+        "from": {
+          "facet": {
+            "data": "table",
+            "name": "facet",
+            "groupby": "x"
+          }
         },
-      },
+        "encode": {
+          "enter": {
+            "x": { "scale": "x", "field": "x" }
+          }
+        },
+        "signals": [
+          { "name": "width", "update": "bandwidth('x')" }
+        ],
+        "scales": [
+          {
+            "name": "pos",
+            "type": "band",
+            "range": "width",
+            "domain": {
+              "data": "facet",
+              "field": "color",
+              "sort": true
+            }
+          }
+        ],
+        "marks": [
+          {
+            "type": "rect",
+            "from": { "data": "facet" },
+            "encode": {
+              "update": {
+                "opacity": { "value": 1 },
+                "fill": { "scale": "color", "field": "color" },
+                "x": { "scale": "pos", "field": "color" },
+                "width": { "scale": "pos", "band": 1 },
+                "y": { "scale": "y", "field": "y" },
+                "y2": { "scale": "y", "value": 0 }
+              },
+              "hover": {
+                "opacity": { "value": 0.8 }
+              }
+            }
+          }
+        ]
+      }
     ];
   }
 
@@ -166,7 +197,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
                 signal: "width < 300 || data('table')[0].count > 10 ? -90 : 0",
               },
             },
-          },
+          }
         },
       },
       {
@@ -204,7 +235,6 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
           }
         } : {}),
         transform: [
-          { "type": "stack", "field": "y", "groupby": ["x"], "sort": { "field": "color" } },
           { "type": "joinaggregate", "ops": ["distinct"], "fields": ["x"], "as": ["count"] }
         ],
       },
@@ -217,7 +247,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   setLegend() {
     const scheme = this.resolveScheme();
 
-    if (!this.colorField || !this.widgetData) {
+    if (!this.widgetData) {
       return null;
     }
 

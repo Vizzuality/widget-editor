@@ -66,7 +66,7 @@ const Legend = ({
             menuPlacement="top"
             value={selectedColor}
             onChange={handleChange}
-            getOptionLabel={(option) => option.alias}
+            getOptionLabel={(option) => option.alias || option.name}
             getOptionValue={(option) => option.identifier}
             options={columns}
             configuration={configuration}

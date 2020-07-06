@@ -11,7 +11,6 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
   schema: any;
   widgetConfig: any;
   widgetData: Generic.ObjectPayload;
-  colorField: string;
 
   constructor(
     configuration: any,
@@ -20,7 +19,6 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     widgetConfig: any,
     widgetData: Generic.ObjectPayload,
     scheme: any,
-    colorField: string,
   ) {
     super(configuration, editor, widgetData, scheme);
     this.configuration = configuration;
@@ -28,7 +26,6 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
-    this.colorField = colorField;
 
     this.generateSchema();
     this.setGenericSettings();
@@ -79,15 +76,6 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
       },
     ];
 
-    if (this.colorField) {
-      scale.push({
-        name: "color",
-        type: "ordinal",
-        domain: { data: "table", field: sqlFields.category },
-        range: this.scheme.category,
-      });
-    }
-
     return scale;
   }
 
@@ -97,11 +85,6 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         type: "rect",
         from: { data: "table" },
         encode: {
-          enter: {
-            ...(this.colorField
-              ? { fill: { scale: "color", field: sqlFields.category } }
-              : {}),
-          },
           update: {
             opacity: { value: 1 },
             x: { scale: "x", field: "id" },
@@ -213,28 +196,8 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     ];
   }
 
-  // FIXME: this is temporal, bar charts with a 3rd dimension (color) should be grouped bar charts
-  // This fix just displays the legend correctly while the grouped bar chart visualisation is
-  // brought back
   setLegend() {
-    const scheme = this.resolveScheme();
-
-    if (!this.colorField || !this.widgetData) {
-      return null;
-    }
-
-    return [
-      {
-        type: 'color',
-        label: null,
-        shape: 'square',
-        values: this.widgetData.map((d: { x: string, y: number }, index) => ({
-          label: d[this.colorField],
-          value: scheme.range.category20[index % scheme.range.category20.length],
-          type: 'string',
-        }))
-      }
-    ];
+    return null;
   }
 
   getChart() {
