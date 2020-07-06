@@ -52,12 +52,17 @@ function* updateHookState() {
 
 // Called when our services have initialized data required to render chart
 // Sets up our visualization using @core/VegaService
-function* initializeWidget() {
+function* initializeWidget({ payload }) {
   const {
     widgetEditor: { editor, configuration, theme, widget },
   } = yield select();
 
-  if (!editor.widget || editor.initialized) {
+  // Action should only run on initialization "one run"
+  // If this is not the case we simply cancel it
+  if (
+    !payload.hasOwnProperty('initialized') ||
+    payload.initialized === false ||
+    !editor.initialized) {
     yield cancel();
   }
 
@@ -115,7 +120,6 @@ function* checkWithProxyIfShouldUpdate(payload) {
   // State proxy checks editor state if any data updates are required.
   // state proxy returns array of actions that we call to update the editor
   const proxyResult = yield call([stateProxy, "sync"], widgetEditor, payload.type);
-
   if (proxyResult && proxyResult.length > 0) {
     for (const evnt in proxyResult) {
       yield put({ type: proxyResult[evnt] });
@@ -130,7 +134,6 @@ function* updateWidget() {
   const {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
-
   if (editor.initialized && (!editor.widgetData || typeof editor.widgetData === 'undefined')) {
     const fullState = yield select();
     const widgetData = yield call(getWidgetDataWithAdapter, fullState.widgetEditor);
@@ -222,7 +225,7 @@ export default function* baseSaga() {
 
   // --- Triggered once: When we have all nessesary information to render visualization
   yield takeLatest(
-    constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
+    getAction("EDITOR/setEditor"),
     initializeWidget
   );
 

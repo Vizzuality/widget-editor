@@ -68,7 +68,10 @@ export default class DataService {
     ) {
       await this.requestWithFilters(filters, this.widget.attributes?.widgetConfig?.paramsConfig);
     } else {
-      this.setEditor({ widgetData: null });
+      this.setEditor({
+        widgetData: null,
+        advanced: !this.widget?.attributes?.widgetConfig?.paramsConfig
+      });
     }
 
     if (cb) {
@@ -173,6 +176,5 @@ export default class DataService {
     await this.handleFilters();
 
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
-    this.setEditor({ initialized: true });
   }
 }
