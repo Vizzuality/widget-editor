@@ -137,7 +137,11 @@ function* updateWidget() {
     const fullState = yield select();
     const widgetData = yield call(getWidgetDataWithAdapter, fullState.widgetEditor);
 
-    if (widgetData) {
+    // XXX: Important!! only set widget data if we have it
+    // Some widgets especialy maps will return an empty array or simply nothing
+    // This will cause the editor to try and re render until we have resolved the data
+    // As our sagas will try to refetch data we will simply not call this and let the sagas cancel
+    if (widgetData && Array.isArray(widgetData) && widgetData.length > 0) {
       yield put(setEditor({ widgetData: widgetData.data }));
     }
   }
@@ -192,7 +196,11 @@ function* updateWidgetData() {
       widgetData = yield call(getWidgetDataWithAdapter, widgetEditor);
     }
 
-    if (widgetData) {
+    // XXX: Important!! only set widget data if we have it
+    // Some widgets especialy maps will return an empty array or simply nothing
+    // This will cause the editor to try and re render until we have resolved the data
+    // As our sagas will try to refetch data we will simply not call this and let the sagas cancel themself
+    if (widgetData && Array.isArray(widgetData) && widgetData.length > 0) {
       yield put(setEditor({ widgetData: widgetData.data }));
     }
 
