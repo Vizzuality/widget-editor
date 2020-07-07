@@ -42,7 +42,7 @@ const Standalone = ({
   wConfig.config = {
     ...getDefaultTheme(),
     ...(wConfig.config ? wConfig.config : {}),
-  };  
+  };
 
   return (
     <Fragment>
@@ -72,7 +72,7 @@ const Standalone = ({
               lng: widgetConfig.lng || 0,
               bbox: widgetConfig.bbox || 0,
               zoom: widgetConfig.zoom || 2,
-              basemap: widgetConfig.basemap || null,
+              basemap: widgetConfig.basemapLayers || null,
             }}
             caption={widgetName}
             layers={[layerData]}

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Select from "react-select";
 
-import BASEMAPS from "@widget-editor/shared/lib/constants/basemaps";
+import { BASEMAPS, LABELS, BOUNDARIES } from '@widget-editor/map/lib/constants';
 
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
@@ -10,6 +10,8 @@ import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 
 import BasemapSelection from "./basemaps";
+import LabelSelection from "./labels";
+import BoundariesSelection from "./boundries";
 
 const InputStyles = {
   control: () => ({
@@ -40,11 +42,14 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
   const options = generateOptions(layers);
   const selectedOption = options.find((o) => o.value === configuration.layer);
 
-  if (!selectedOption && options.length > 0) {
-    patchConfiguration({
-      layer: options[0].value
-    });
-  }
+  useEffect(() => {
+    if (!selectedOption && options.length > 0) {
+      patchConfiguration({
+        layer: options[0].value
+      });
+    }
+  }, [selectedOption, options, patchConfiguration])
+
 
   const handleChange = (option) => {
     patchConfiguration({
@@ -57,13 +62,36 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
       map: {
         ...configuration.map,
         basemap: {
-          basemap: BASEMAPS[basemap].id,
-          labels: BASEMAPS[basemap].label,
-          boundaries: false,
-        },
+            ...configuration.map.basemap,
+            basemap
+        }
       },
     });
   };
+
+  const setLabels = (label) => {
+    patchConfiguration({
+      map: {
+        ...configuration.map,
+        basemap: {
+          ...configuration.map.basemap,
+         labels: label
+        },
+      },
+    });
+  }
+
+  const setBoundaries = (active) => {
+    patchConfiguration({
+      map: {
+        ...configuration.map,
+        basemap: {
+            ...configuration.map.basemap,
+            boundaries: active
+        }
+      },
+    });
+  }
 
   return (
     <FlexContainer>
@@ -77,11 +105,27 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
         />
       </InputGroup>
       <InputGroup>
-        <FormLabel htmlFor="options-zoom">Basemap</FormLabel>
+        <FormLabel htmlFor="options-basemap">Basemap</FormLabel>
         <BasemapSelection
           configuration={configuration}
           basemaps={BASEMAPS}
-          onSetBasemap={(basemap) => setBasemap(basemap.value)}
+          onSetBasemap={(basemap) => setBasemap(basemap)}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-labels">Labels</FormLabel>
+        <LabelSelection
+          configuration={configuration}
+          labels={LABELS}
+          onSetLabel={(label) => setLabels(label)}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-boundries">Boundaries</FormLabel>
+        <BoundariesSelection
+          configuration={configuration}
+          boundaries={BOUNDARIES}
+          onSetBoundry={(active) => setBoundaries(active)}
         />
       </InputGroup>
       <InputGroup>

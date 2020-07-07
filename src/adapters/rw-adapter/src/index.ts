@@ -280,8 +280,8 @@ export default class RwAdapter implements Adapter.Service {
           ? {
             basemapLayers: {
               basemap: editorState.configuration.map.basemap.basemap,
-              labels: editorState.configuration.map.basemap.labels,
-              boundaries: false,
+              labels: editorState.configuration.map?.basemap?.labels || null,
+              boundaries: editorState.configuration.map?.basemap?.boundaries || false,
             },
           }
           : {
