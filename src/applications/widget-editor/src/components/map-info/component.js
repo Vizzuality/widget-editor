@@ -58,14 +58,12 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
   };
 
   const setBasemap = (basemap) => {
-  const selected = BASEMAPS[basemap];
     patchConfiguration({
       map: {
         ...configuration.map,
         basemap: {
-            basemap: selected.id,
-            labels: selected.label,
-            boundaries: false
+            ...configuration.map.basemap,
+            basemap
         }
       },
     });
@@ -75,8 +73,9 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
     patchConfiguration({
       map: {
         ...configuration.map,
-        labels: {
-          ...LABELS[label]
+        basemap: {
+          ...configuration.map.basemap,
+         labels: label
         },
       },
     });
@@ -110,7 +109,7 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
         <BasemapSelection
           configuration={configuration}
           basemaps={BASEMAPS}
-          onSetBasemap={(basemap) => setBasemap(basemap.value)}
+          onSetBasemap={(basemap) => setBasemap(basemap)}
         />
       </InputGroup>
       <InputGroup>

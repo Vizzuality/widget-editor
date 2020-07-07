@@ -16,7 +16,7 @@ const BasemapSelection = ({ configuration, basemaps, onSetBasemap }) => {
   );
   return (
     <Select
-      onChange={(option) => onSetBasemap(option)}
+      onChange={(option) => onSetBasemap(option.value)}
       value={selectedOption}
       options={serialize}
       styles={InputStyles}

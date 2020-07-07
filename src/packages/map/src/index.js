@@ -169,8 +169,8 @@ class Map extends React.Component {
       this.addLayers(layers);
     }
 
-    if (this.props.mapConfiguration.labels !== nextProps.mapConfiguration.labels) {
-      this.setLabels(nextProps.mapConfiguration.labels);
+    if (this.props.mapConfiguration?.basemap?.labels !== nextProps.mapConfiguration?.basemap?.labels) {
+      this.setLabels(LABELS[nextProps.mapConfiguration.basemap.labels]);
     }
 
     if (this.props.mapConfiguration?.basemap?.boundaries !== nextProps.mapConfiguration?.basemap?.boundaries) {
@@ -324,7 +324,6 @@ class Map extends React.Component {
           lng,
           zoom,
           basemap: mapParams.basemap,
-          labels: mapParams.labels || null,
           bounds: mapParams.bounds,
           bbox: [...bbox1, ...bbox2],
         },
