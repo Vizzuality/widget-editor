@@ -74,7 +74,7 @@ export default class VegaService implements Charts.Service {
     this.configuration = configuration;
     this.editor = editor;
 
-    this.sliceCount = configuration?.sliceCount || 5;
+    this.sliceCount = configuration?.sliceCount || 6;
 
     this.setConfig();
     this.resolveChart();
