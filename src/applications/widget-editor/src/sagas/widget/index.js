@@ -1,4 +1,4 @@
-import { takeLatest, put, call, select, cancel } from "redux-saga/effects";
+import { takeLatest, put, call, select, cancel, cancelled, takeEvery } from "redux-saga/effects";
 import isEqual from 'lodash/isEqual';
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
@@ -111,7 +111,6 @@ function* initializeWidget({ payload }) {
 // If no updates required we yield cancel
 function* checkWithProxyIfShouldUpdate(payload) {
   const { widgetEditor } = yield select();
-
   // We only want to resolve proxy if the editor itself is initialized
   if (!widgetEditor.editor.initialized) {
     yield cancel();
@@ -185,6 +184,7 @@ function* updateWidgetData() {
   if (!widgetEditor.editor.initialized) {
     yield cancel();
   }
+
   if (widgetEditor.configuration.visualizationType !== "map") {
     let widgetData;
 
@@ -239,7 +239,8 @@ export default function* baseSaga() {
     [
       getAction("CONFIGURATION/patchConfiguration"),
       getAction("EDITOR/THEME/setTheme"),
-      getAction('WIDGET/setWidget')
+      getAction('WIDGET/setWidget'),
+      getAction("EDITOR/setEditor")
     ],
     checkWithProxyIfShouldUpdate
   );

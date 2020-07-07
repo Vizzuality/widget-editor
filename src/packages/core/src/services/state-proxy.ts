@@ -5,7 +5,7 @@ import isEqual from "lodash/isEqual";
 
 export default class StateProxy {
   chartCache: any;
-  configuration: object;
+  configuration: any;
   donutRadius?: number;
   sliceCount?: number;
   visualizationType: string;
@@ -54,6 +54,11 @@ export default class StateProxy {
       return true;
     }
 
+
+    if (this.configuration && !isEqual(this.configuration.orderBy, editor.configuration.orderBy)) {
+      return true;
+    }
+
     this.chartCache = { visualizationType, chartType, format, donutRadius, sliceCount };
     return hasUpdate && editor.initialized;
   }
@@ -78,11 +83,24 @@ export default class StateProxy {
     return updates;
   }
 
-  
+
   configurationHasUpdate(state) {
     const { configuration } = state;
+
+    // XXX: This is simlified in another pr and less greedy
     const hasUpdates = !isEqual(this.configuration, configuration) && this.configuration !== null;
+
+    // Did limit update?
+    if (this.configuration && this.configuration.limit !== configuration.limit) {
+      return true;
+    }
+
+    if (this.configuration && !isEqual(this.configuration.orderBy, configuration.orderBy)) {
+      return true;
+    }
+
     this.configuration = configuration;
+
     return hasUpdates;
   }
 
@@ -112,6 +130,7 @@ export default class StateProxy {
       this.chartHasUpdate(editorState)) {
       UPDATES.push(sagaEvents.DATA_FLOW_UPDATE_WIDGET);
     }
+
     return UPDATES;
   }
 }

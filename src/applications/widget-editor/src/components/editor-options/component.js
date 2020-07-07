@@ -19,7 +19,7 @@ const TableView = React.lazy(() => import("../table-view"));
 const Typography = React.lazy(() => import("../typography"));
 const ColorShemes = React.lazy(() => import("../color-shemes"));
 const DonutRadius = React.lazy(() => import("../donut-radius"));
-const SlizeCount = React.lazy(() => import("../slize-count"));
+const SliceCount = React.lazy(() => import("../slice-count"));
 const MapInfo = React.lazy(() => import("../map-info"));
 
 const StyleEditorOptionsInfo = styled.div`
@@ -89,23 +89,26 @@ const EditorOptions = ({
   dataService,
   isMap,
 }) => {
-  const handleChange = (value, type) => {
-    if (type === "limit") {
-      patchConfiguration({ limit: value });
-    }
-    if (type === "orderBy") {
-      patchConfiguration({ orderBy: value });
-    }
-    if (type === "groupBy") {
-      patchConfiguration({ groupBy: value });
-    }
-    if (type === "donut-radius") {
-      patchConfiguration({ donutRadius: parseInt(value) });
-    }
-    if (type === "slize-count") {
-      patchConfiguration({ sliceCount: parseInt(value) });
-    }
+
+  const handleSliceCount = (value) => {
+    patchConfiguration({ sliceCount: parseInt(value) });
   };
+
+  const handleDonutRadius = (value) => {
+    patchConfiguration({ donutRadius: parseInt(value) });
+  }
+
+  const handleOrderBy = (value) => {
+    patchConfiguration({ orderBy: value });
+  }
+
+  const handleGroupBy = (value) => {
+    patchConfiguration({ groupBy: value });
+  }
+
+  const handleLimit = (value) => {
+    patchConfiguration({ limit: value });
+  }
 
   if (!initialized || restoring) {
     return (
@@ -144,16 +147,16 @@ const EditorOptions = ({
             {!isMap && !advanced && (
               <AccordionSection title="Order">
                 <OrderValues
-                  onChange={(value) => handleChange(value, "orderBy")}
+                  onChange={(value) => handleOrderBy(value)}
                 />
                 <GroupValues
-                  onChange={(value) => handleChange(value, "groupBy")}
+                  onChange={(value) => handleGroupBy(value)}
                 />
                 {limit && (
                   <QueryLimit
                     min={0}
                     max={500}
-                    onChange={(value) => handleChange(value, "limit")}
+                    onChange={(value) => handleLimit(value)}
                     label="Limit"
                     value={limit}
                   />
@@ -166,16 +169,16 @@ const EditorOptions = ({
                   {donutRadius && (
                     <DonutRadius
                       value={donutRadius}
-                      onChange={(value) => handleChange(value, "donut-radius")}
+                      onChange={(value) => handleDonutRadius(value)}
                     />
                   )}
                 </Suspense>
                 <Suspense fallback={<div>Loading...</div>}>
                   {sliceCount && data && (
-                    <SlizeCount
+                    <SliceCount
                       value={sliceCount}
                       data={data}
-                      onChange={(value) => handleChange(value, "slize-count")}
+                      onChange={(value) => handleSliceCount(value)}
                     />
                   )}
                 </Suspense>

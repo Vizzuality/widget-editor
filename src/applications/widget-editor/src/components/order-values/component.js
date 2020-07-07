@@ -64,7 +64,7 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
   return (
     <FlexContainer>
       <InputGroup>
-        <FormLabel htmlFor="options-title">Order by</FormLabel>
+        <FormLabel htmlFor="options-order-title">Order by</FormLabel>
         <FlexContainer row={true}>
           <FlexController contain={90}>
             <Select

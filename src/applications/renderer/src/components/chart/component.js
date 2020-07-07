@@ -59,8 +59,9 @@ class Chart extends React.Component {
 
   componentDidUpdate(prevProps) {
     const widgetChanged = !isEqual(prevProps.widget, this.props.widget);
-    const standaloneConfigChanged = 
+    const standaloneConfigChanged =
       !isEqual(prevProps.standaloneConfiguration, this.props.standaloneConfiguration);
+
     if (widgetChanged || standaloneConfigChanged) {
       this.generateVegaChart();
     }
@@ -70,14 +71,12 @@ class Chart extends React.Component {
     if (this.vega) {
       window.removeEventListener("resize", this.handleResize);
       this.vega = null;
-      this.setState({ chartReady: false });
+      this.setState({ chartReady: false, invalidData: false });
       this.chart.innerHTML = '';
     }
   }
 
-
   setSize() {
-    const { standalone } = this.props;
     if (this.view) {
       const computedStyles = getComputedStyle(this.view);
       const boundingRect = this.view.getBoundingClientRect();
@@ -104,8 +103,8 @@ class Chart extends React.Component {
         .run();
       }
     }
-  }  
-  
+  }
+
   instantiateTooltip(widget) {
     const fields = getTooltipConfigFields(widget);
     vegaTooltip(this.vega, {
@@ -118,7 +117,7 @@ class Chart extends React.Component {
       })),
     });
   };
-  
+
   generateRuntime(configuration) {
     const { chart } = this;
     this.setSize();
@@ -127,9 +126,9 @@ class Chart extends React.Component {
         let conf;
         if (this.standalone) {
           const parseSignals = new ParseSignals(
-            configuration, 
-            configuration.paramsConfig, 
-            configuration?.paramsConfig?.category?.type === 'date', 
+            configuration,
+            configuration.paramsConfig,
+            configuration?.paramsConfig?.category?.type === 'date',
             this.props.standalone
           );
           conf = {
@@ -141,7 +140,7 @@ class Chart extends React.Component {
         }
 
         const runtime = vega.parse(conf, configuration.config);
-        
+
         this.vega = new vega.View(runtime)
           .initialize(chart)
           .renderer("canvas")
@@ -149,14 +148,14 @@ class Chart extends React.Component {
           .height(this.height)
           .hover()
           .run();
-          
+
         if (
           configuration.interaction_config &&
           configuration.interaction_config.length &&
           !this.props.thumbnail
         ) {
           this.instantiateTooltip(configuration);
-        } 
+        }
         this.setState({ chartReady: true });
       } catch (err) {
         console.error(
@@ -169,7 +168,9 @@ class Chart extends React.Component {
   }
 
   noDataAvailable() {
-    return !this.standalone && !this.props.advanced && !this.props.editor.widgetData;
+    return !this.standalone &&
+      !this.props.advanced &&
+      (!this.props.editor.widgetData || this.props.editor.widgetData.length === 0);
   }
 
   // XXX: makes sure custom charts has nessesary info to render
@@ -199,7 +200,14 @@ class Chart extends React.Component {
     } = this.props;
 
     if (this.noDataAvailable()) {
+      if (this.vega) {
+        window.removeEventListener("resize", this.handleResize);
+        this.vega = null;
+        this.setState({ chartReady: false, invalidData: true });
+      }
       return;
+    } else {
+      this.setState({ invalidData: false });
     }
 
     if (this.standalone && standaloneConfiguration) {
@@ -234,7 +242,8 @@ class Chart extends React.Component {
 
   render() {
     const { thumbnail, standalone, advanced = false } = this.props;
-    const { chartReady } = this.state;
+    const { chartReady, invalidData } = this.state;
+
     return (
       <StyledContainer
         standalone={standalone}
@@ -244,17 +253,19 @@ class Chart extends React.Component {
           this.view = c;
         }}
       >
-        <div
+        {!this.noDataAvailable() && <div
           className="c-chart"
           ref={(c) => {
             this.chart = c;
           }}
-        ></div>
-
+        ></div>}
         {this.noDataAvailable() && (
           <Fragment>
             {chartReady && <ChartNeedsOptions>
               Select value & category to visualize data
+            </ChartNeedsOptions>}
+            {invalidData && <ChartNeedsOptions>
+              No data available
             </ChartNeedsOptions>}
             {this.columnSelection()}
           </Fragment>
