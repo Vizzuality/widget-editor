@@ -9,8 +9,8 @@ const serializeSelection = (o) => ({
 });
 
 const LabelsSelection = ({ configuration, labels, onSetLabel }) => {
-  const selectedBasemap = configuration?.map?.labels?.id || "none";
-  const selectedOption = serializeSelection(labels[selectedBasemap]);
+  const selectedLabel = configuration?.map?.basemap?.labels || "none";
+  const selectedOption = serializeSelection(labels[selectedLabel]);
   const serialize = Object.keys(labels).map((basemap) =>
     serializeSelection(labels[basemap])
   );

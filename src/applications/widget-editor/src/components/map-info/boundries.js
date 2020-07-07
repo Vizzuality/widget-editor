@@ -8,7 +8,7 @@ const serializeSelection = (o) => ({
   label: o.label,
 });
 
-const BoundriesSelection = ({ configuration, boundaries, onSetBoundry }) => {
+const BoundariesSelection = ({ configuration, boundaries, onSetBoundry }) => {
   const selectedBoundry = configuration?.map?.basemap?.boundaries === true ? boundaries['dark'] : null;
   const serialize = Object.keys(boundaries).map((bound) =>
     serializeSelection(boundaries[bound])
@@ -24,4 +24,4 @@ const BoundriesSelection = ({ configuration, boundaries, onSetBoundry }) => {
   );
 };
 
-export default BoundriesSelection;
+export default BoundariesSelection;

@@ -80,6 +80,11 @@ class Map extends React.Component {
     } else {
       this.basemap = BASEMAPS.dark;
     }
+
+    if (this.mapConfiguration.basemap?.labels) {
+      this.labels = LABELS[this.mapConfiguration.basemap.labels];
+    }
+
   }
 
   createLayerGroups(layers, layerId) {
@@ -126,6 +131,8 @@ class Map extends React.Component {
     if (!this.props?.mapConfig?.bounds || !mapOptions.hasOwnProperty("bbox")) {
       this.onMapChange();
     }
+
+
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -218,8 +225,6 @@ class Map extends React.Component {
     }
 
     this.setBasemap(this.basemap);
-    this.setLabels(this.labels);
-    this.setBoundaries(!!this.props?.mapConfiguration?.bbox || false);
 
     this.setEventListeners();
     this.instantiateLayerManager();
@@ -231,6 +236,9 @@ class Map extends React.Component {
 
     this.activeLayers = layers;
     this.addLayers(layers);
+
+    this.setLabels(this.labels);
+    this.setBoundaries(this.props.mapConfiguration?.basemap?.boundries || false);
 
     // In version2 of the editor we are storing the bbox
     // This is so in the future we can migrate to for example mapbox

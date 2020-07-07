@@ -36,7 +36,7 @@ const Standalone = ({ thumbnail, widgetConfig, changeBbox, interactionEnabled })
   wConfig.config = {
     ...getDefaultTheme(),
     ...(wConfig.config ? wConfig.config : {}),
-  };  
+  };
 
   return (
     <Fragment>
@@ -66,7 +66,7 @@ const Standalone = ({ thumbnail, widgetConfig, changeBbox, interactionEnabled })
               lng: widgetConfig.lng || 0,
               bbox: widgetConfig.bbox || 0,
               zoom: widgetConfig.zoom || 2,
-              basemap: widgetConfig.basemap || null,
+              basemap: widgetConfig.basemapLayers || null,
             }}
             caption={widgetConfig?.paramsConfig?.caption || null}
             layers={[layerData]}

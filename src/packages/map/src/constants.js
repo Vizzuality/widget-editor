@@ -21,7 +21,7 @@ const LABELS = {
 const BOUNDARIES = {
   dark: {
     id: "dark",
-    label: "Boundaries",
+    label: "Show boundaries",
     value:
       "https://api.mapbox.com/styles/v1/resourcewatch/cjgcf8qdaai1x2rn6w3j4q805/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoicmVzb3VyY2V3YXRjaCIsImEiOiJjajFlcXZhNzcwMDBqMzNzMTQ0bDN6Y3U4In0.FRcIP_yusVaAy0mwAX1B8w",
   },
@@ -71,3 +71,4 @@ const BASEMAPS = {
 };
 
 export { LABELS, BOUNDARIES, BASEMAPS };
+

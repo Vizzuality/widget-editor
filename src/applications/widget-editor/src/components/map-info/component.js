@@ -11,7 +11,7 @@ import Input from "styles-common/input";
 
 import BasemapSelection from "./basemaps";
 import LabelSelection from "./labels";
-import BoundriesSelection from "./boundries";
+import BoundariesSelection from "./boundries";
 
 const InputStyles = {
   control: () => ({
@@ -82,7 +82,7 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
     });
   }
 
-  const setBoundries = (active) => {
+  const setBoundaries = (active) => {
     patchConfiguration({
       map: {
         ...configuration.map,
@@ -122,11 +122,11 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
         />
       </InputGroup>
       <InputGroup>
-        <FormLabel htmlFor="options-boundries">Boundries</FormLabel>
-        <BoundriesSelection
+        <FormLabel htmlFor="options-boundries">Boundaries</FormLabel>
+        <BoundariesSelection
           configuration={configuration}
           boundaries={BOUNDARIES}
-          onSetBoundry={(active) => setBoundries(active)}
+          onSetBoundry={(active) => setBoundaries(active)}
         />
       </InputGroup>
       <InputGroup>
