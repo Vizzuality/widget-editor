@@ -26,7 +26,8 @@ const Renderer = ({
   configuration,
   compact,
   changeBbox,
-  interactionEnabled
+  interactionEnabled,
+  widgetName
 }) => {
   const { restoring, initialized } = editor;
   const missingWidget =
@@ -56,6 +57,7 @@ const Renderer = ({
         <Standalone
           thumbnail={thumbnail}
           widgetConfig={widgetConfig}
+          widgetName={widgetName}
           theme={theme}
           changeBbox={changeBbox}
           interactionEnabled={interactionEnabled}
@@ -97,7 +99,7 @@ const Renderer = ({
           {editor.widget && editor.layers && (
             <Map
               mapConfiguration={configuration.map}
-              caption={configuration.caption}
+              caption={editor.widget?.attributes?.name}
               layerId={configuration.layer}
               interactionEnabled={!standalone}
               widget={editor.widget}
