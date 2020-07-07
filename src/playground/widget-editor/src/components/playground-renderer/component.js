@@ -16,6 +16,7 @@ const PlaygroundRenderer = ({ activeWidget }) => {
           <Renderer
             thumbnail={false}
             // widgetConfig={widgetTest.data.attributes.widgetConfig}
+            // widgetName={widgetTest.data.attributes.name}
             widgetConfig={activeWidget.attributes.widgetConfig}
           />
         </div>

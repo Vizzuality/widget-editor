@@ -74,8 +74,8 @@ class EditorOptions extends React.Component {
           <option value="a86d906d-9862-4783-9e30-cdb68cd808b8">
             Global Power Plant Database
           </option>
-          <option value="d9034fa9-8db0-4d52-b018-46fae37d3136">
-            Terrestrial Ecoregions
+          <option value="5b5a21ac-0835-43fb-86b9-64b93d472e10">
+            Endangered Species Critical Habitats
           </option>
           <option value="1bc94710-d7ec-46f9-aa27-edddd87b1625">
             Cold Water Corals
