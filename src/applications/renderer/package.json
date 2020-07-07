@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/renderer",
-  "version": "2.2.17",
+  "version": "2.2.18",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -13,10 +13,10 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@widget-editor/core": "^2.2.17",
-    "@widget-editor/map": "^2.2.17",
-    "@widget-editor/shared": "^2.2.17",
-    "@widget-editor/types": "^2.2.17",
+    "@widget-editor/core": "^2.2.18",
+    "@widget-editor/map": "^2.2.18",
+    "@widget-editor/shared": "^2.2.18",
+    "@widget-editor/types": "^2.2.18",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "react-resize-detector": "^4.2.1",
