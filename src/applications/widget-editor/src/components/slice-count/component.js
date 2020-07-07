@@ -24,7 +24,7 @@ const getGroupedCount = (data) => {
   return Object.values(out).length;
 };
 
-const SlizeCount = ({
+const SliceCount = ({
   min = 1,
   value = 40,
   data = null,
@@ -40,12 +40,12 @@ const SlizeCount = ({
     } else {
       onChange(debouncedValue.value, debouncedValue.key);
     }
-  }, [debouncedValue]);
+  }, [debouncedValue, onChange]);
 
   return (
     <InputGroup>
       <FormLabel htmlFor="options-donut-radius">
-        Slize count (donut and pie charts)
+        Slice count (donut and pie charts)
       </FormLabel>
       <FlexContainer row={true}>
         <FlexController contain={20}>
@@ -54,7 +54,7 @@ const SlizeCount = ({
             type="number"
             name="options-donut-radius"
             onChange={(e) =>
-              setLocalValue({ value: e.target.value, key: "slize-count" })
+              setLocalValue({ value: e.target.value, key: "slice-count" })
             }
           />
         </FlexController>
@@ -71,4 +71,4 @@ const SlizeCount = ({
   );
 };
 
-export default SlizeCount;
+export default SliceCount;

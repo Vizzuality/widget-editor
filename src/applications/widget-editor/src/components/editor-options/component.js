@@ -19,7 +19,7 @@ const TableView = React.lazy(() => import("../table-view"));
 const Typography = React.lazy(() => import("../typography"));
 const ColorShemes = React.lazy(() => import("../color-shemes"));
 const DonutRadius = React.lazy(() => import("../donut-radius"));
-const SlizeCount = React.lazy(() => import("../slize-count"));
+const SliceCount = React.lazy(() => import("../slice-count"));
 const MapInfo = React.lazy(() => import("../map-info"));
 
 const StyleEditorOptionsInfo = styled.div`
@@ -102,7 +102,7 @@ const EditorOptions = ({
     if (type === "donut-radius") {
       patchConfiguration({ donutRadius: parseInt(value) });
     }
-    if (type === "slize-count") {
+    if (type === "slice-count") {
       patchConfiguration({ sliceCount: parseInt(value) });
     }
   };
@@ -172,10 +172,10 @@ const EditorOptions = ({
                 </Suspense>
                 <Suspense fallback={<div>Loading...</div>}>
                   {sliceCount && data && (
-                    <SlizeCount
+                    <SliceCount
                       value={sliceCount}
                       data={data}
-                      onChange={(value) => handleChange(value, "slize-count")}
+                      onChange={(value) => handleChange(value, "slice-count")}
                     />
                   )}
                 </Suspense>
