@@ -2,17 +2,16 @@ import React from "react";
 
 import { redux } from "@widget-editor/shared";
 import isEqual from "lodash/isEqual";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
+
 // vizzuality-components icons
 import { Icons } from 'vizzuality-components';
 
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
-import BASEMAPS from "@widget-editor/shared/lib/constants/basemaps";
 
 import LayerManager from "helpers/layer-manager";
 
-
-import { LABELS, BOUNDARIES } from "constants";
+import { LABELS, BOUNDARIES, BASEMAPS } from "constants";
 
 import chroma from "chroma-js";
 
@@ -30,8 +29,6 @@ import {
   StyledMapContainer,
   StyledCaption
 } from "./styles";
-
-import CloseIcon from "./close-icon";
 
 const DEFAULT_MAP_PROPERTIES = {
   zoom: 2,
@@ -149,7 +146,7 @@ class Map extends React.Component {
     );
   }
 
-  componentWillReceiveProps(nextProps) {    
+  componentWillReceiveProps(nextProps) {
     if (nextProps.layerId !== this.props.layerId) {
       const expectedLayerGroups = this.createLayerGroups(
         nextProps.layers,
@@ -164,6 +161,15 @@ class Map extends React.Component {
       this.layerManager.removeLayers();
       this.addLayers(layers);
     }
+
+    if (this.props.mapConfiguration.labels !== nextProps.mapConfiguration.labels) {
+      this.setLabels(nextProps.mapConfiguration.labels);
+    }
+
+    if (this.props.mapConfiguration?.basemap?.boundaries !== nextProps.mapConfiguration?.basemap?.boundaries) {
+      this.setBoundaries(nextProps.mapConfiguration.basemap.boundaries);
+    }
+
     // Map bbox changed
     if (!isEqual(nextProps.changeBbox, this.props.changeBbox)) {
       const [b0, b1, b2, b3] = nextProps.changeBbox;
@@ -172,6 +178,7 @@ class Map extends React.Component {
         [b3, b2]
       ], { animate: false });
     }
+
   }
 
   componentDidUpdate() {
@@ -256,13 +263,17 @@ class Map extends React.Component {
     });
   }
 
-  setLabels(labels) {
-    if (this.labelsLayer) this.labelsLayer.remove();
 
-    if (labels.id !== "none") {
+  /**
+   * Set the map's labels
+   * @param {Label} labels Labels
+   */
+  setLabels(labels) {
+    if (labels && this.labelsLayer) this.labelsLayer.remove();
+    if (labels && labels.id !== 'none') {
       this.labelsLayer = L.tileLayer(labels.value, labels.options || {})
         .addTo(this.map)
-        .setZIndex(this.props.layerGroups.length + 1);
+        .setZIndex(this.activeLayers.length + 1);
     }
   }
 
@@ -282,6 +293,8 @@ class Map extends React.Component {
     const params = {
       zoom: this.map.getZoom(),
       latLng: this.map.getCenter(),
+      basemap: this.props.mapConfiguration.basemap,
+      labels: this.props.mapConfiguration.labels,
       bounds: [
         [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
         [bounds.getNorthEast().lat, bounds.getNorthEast().lng],
@@ -297,12 +310,13 @@ class Map extends React.Component {
       const { zoom } = mapParams;
       const { lat, lng } = mapParams.latLng;
       const [bbox1, bbox2] = mapParams.bounds;
-
       patchConfiguration({
         map: {
           lat,
           lng,
           zoom,
+          basemap: mapParams.basemap,
+          labels: mapParams.labels || null,
           bounds: mapParams.bounds,
           bbox: [...bbox1, ...bbox2],
         },
@@ -317,13 +331,13 @@ class Map extends React.Component {
 
   setBoundaries(showBoundaries) {
     if (this.boundariesLayer) this.boundariesLayer.remove();
-    if (showBoundaries && this.props.layerGroups) {
+    if (showBoundaries && this.activeLayers) {
       this.boundariesLayer = L.tileLayer(
         BOUNDARIES.dark.value,
         BOUNDARIES.dark.options || {}
       )
         .addTo(this.map)
-        .setZIndex(this.props.layerGroups.length + 2);
+        .setZIndex(this.activeLayers.length + 2);
     }
   }
 
@@ -351,7 +365,7 @@ class Map extends React.Component {
 
   render() {
     const { caption = null, thumbnail = false, layerId } = this.props;
-    
+
     return (
       <StyledMapContainer>
         <Icons />
