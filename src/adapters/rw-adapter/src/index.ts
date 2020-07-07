@@ -90,7 +90,7 @@ export default class RwAdapter implements Adapter.Service {
       ${this.endpoint}
       /dataset/
       ${this.datasetId}?
-      ${applications.join(",")}
+      application=${applications.join(",")}
       &env=${env}
       &language=${locale}
       &includes=${includes}
@@ -104,7 +104,6 @@ export default class RwAdapter implements Adapter.Service {
     // -- Serialize widgets
     // -- We dont want to expose widgets where { published: true }
     // -- These are user created widgets
-
     const serializeDataset = {
       ...dataset,
       attributes: {
