@@ -64,12 +64,12 @@ export const getWidgetColumns = createSelector(
     }
 
     const relevantProps = dataset.attributes.widgetRelevantProps;
-    const datasetMeta = dataset.attributes.metadata[0];
+    const datasetMeta = dataset.attributes.metadata?.[0];
 
     let columns = [];
     if (fields) {
       columns = fields.map(field => ({
-        ...(datasetMeta.attributes.columns?.[field.columnName] ?? {}),
+        ...(datasetMeta?.attributes.columns?.[field.columnName] ?? {}),
         identifier: field.columnName,
         name: field.columnName,
         type: getColumnDataType(field.columnName, fields),
