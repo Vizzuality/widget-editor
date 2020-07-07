@@ -1,5 +1,6 @@
 // TODO: Rename this filter!
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import debounce from 'lodash/debounce';
 
 import useDebounce from "hooks/use-debounce";
 
@@ -19,15 +20,16 @@ const DonutRadius = ({
   onChange = (data) => {},
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
-  const debouncedValue = useDebounce(localValue, 400);
 
-  useEffect(() => {
-    if (!debouncedValue.key) {
-      onChange(debouncedValue.value);
-    } else {
-      onChange(debouncedValue.value, debouncedValue.key);
-    }
-  }, [debouncedValue]);
+  const changeValue = (data) => {
+    setLocalValue(data);
+    debounceOnChange(data);
+  }
+
+  const debounceOnChange = debounce(q => {
+    onChange(q.value, q.key);
+  }, 1000);
+
 
   return (
     <InputGroup>
@@ -39,7 +41,7 @@ const DonutRadius = ({
             type="number"
             name="options-donut-radius"
             onChange={(e) =>
-              setLocalValue({ value: e.target.value, key: "donut-radius" })
+              changeValue({ value: e.target.value, key: "donut-radius" })
             }
           />
         </FlexController>
@@ -48,7 +50,7 @@ const DonutRadius = ({
             min={min}
             max={max}
             value={localValue.value}
-            onChange={(v) => setLocalValue({ value: v, key: null })}
+            onChange={(v) => changeValue({ value: v, key: null })}
           />
         </FlexController>
       </FlexContainer>

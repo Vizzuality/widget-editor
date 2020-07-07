@@ -74,8 +74,6 @@ export default class VegaService implements Charts.Service {
     this.configuration = configuration;
     this.editor = editor;
 
-    this.sliceCount = configuration?.sliceCount || 5;
-
     this.setConfig();
     this.resolveChart();
   }
@@ -85,6 +83,7 @@ export default class VegaService implements Charts.Service {
     let chart;
 
     const data = this.widgetData;
+
     if (SUPPORTED_CHARTS.indexOf(chartType) === -1) {
       throw new Error(
         `Chart of type: ${chartType} is not supported. we support: (${SUPPORTED_CHARTS.join(

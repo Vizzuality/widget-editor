@@ -377,7 +377,3 @@ export default class FiltersService implements Filters.Service {
     return patch;
   }
 }
-
-
-// SELECT acq_date as x , count(frp) as y FROM vnp14imgtdl_nrt_global_7d WHERE frp >= 100 AND frp <= 857 GROUP BY x ORDER BY y desc LIMIT 7
-// SELECT acq_date as x, COUNT(frp) as y FROM vnp14imgtdl_nrt_global_7d WHERE frp >= 100 AND frp <= 857 GROUP BY  x ORDER BY acq_date desc LIMIT 7

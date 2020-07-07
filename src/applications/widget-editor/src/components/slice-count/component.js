@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-
-import useDebounce from "hooks/use-debounce";
+import React, { useState } from "react";
+import debounce from 'lodash/debounce';
 
 import FlexContainer from "styles-common/flex";
 import FlexController from "styles-common/flex-controller";
@@ -9,42 +8,29 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 
-// TODO: Move me
-const getGroupedCount = (data) => {
-  const out = {};
-
-  data.forEach((entry) => {
-    if (out.hasOwnProperty(entry.x)) {
-      out[entry.x] = out[entry.x] + 1;
-    } else {
-      out[entry.x] = 1;
-    }
-  });
-
-  return Object.values(out).length;
-};
-
 const SliceCount = ({
   min = 1,
-  value = 40,
+  value = null,
   data = null,
   minDistance = 1,
   onChange = (data) => {},
 }) => {
-  const [localValue, setLocalValue] = useState({ value, key: null });
-  const debouncedValue = useDebounce(localValue, 400);
+  const [localValue, setLocalValue] = useState({ value: value, key: null });
 
-  useEffect(() => {
-    if (!debouncedValue.key) {
-      onChange(debouncedValue.value);
-    } else {
-      onChange(debouncedValue.value, debouncedValue.key);
+  const changeValue = (data) => {
+    if (data.value !== 0) {
+      setLocalValue(data);
+      debounceOnChange(data);
     }
-  }, [debouncedValue, onChange]);
+  }
+
+  const debounceOnChange = debounce(q => {
+    onChange(q.value, q.key);
+  }, 1000);
 
   return (
     <InputGroup>
-      <FormLabel htmlFor="options-donut-radius">
+      <FormLabel htmlFor="options-slice-count">
         Slice count (donut and pie charts)
       </FormLabel>
       <FlexContainer row={true}>
@@ -52,18 +38,18 @@ const SliceCount = ({
           <Input
             value={localValue.value}
             type="number"
-            name="options-donut-radius"
+            name="options-slice-count"
             onChange={(e) =>
-              setLocalValue({ value: e.target.value, key: "slice-count" })
+              changeValue({ value: e.target.value, key: "slice-count" })
             }
           />
         </FlexController>
         <FlexController contain={80}>
           <Slider
             min={min}
-            max={data ? getGroupedCount(data) : 10}
+            max={10} // TODO: Can we be dynamic with this?
             value={localValue.value}
-            onChange={(v) => setLocalValue({ value: v, key: null })}
+            onChange={(v) => changeValue({ value: v, key: null })}
           />
         </FlexController>
       </FlexContainer>

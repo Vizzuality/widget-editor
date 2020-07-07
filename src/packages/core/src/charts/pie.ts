@@ -20,6 +20,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     scheme: any
   ) {
     super(configuration, editor, widgetData, scheme);
+
     this.configuration = configuration;
     this.editor = editor;
     this.schema = schema;
@@ -176,7 +177,6 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
 
   setLegend() {
     const scheme = this.resolveScheme();
-
     if (!this.widgetData) {
       return null;
     }
