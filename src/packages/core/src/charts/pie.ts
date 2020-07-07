@@ -1,3 +1,4 @@
+import uniqBy from 'lodash/uniqBy';
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import ChartsCommon from './chart-common';
@@ -98,7 +99,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           data: "table",
           field: 'value',
         },
-        range: 'category20',
+        range: this.scheme.category,
       },
     ];
   }
@@ -153,7 +154,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           {
             "type": "formula",
             "as": "category",
-            "expr": "datum.rank < 6 ? datum.x : 'Others'"
+            "expr": `datum.rank < ${this.configuration.sliceCount} ? datum.x : 'Others'`
           },
           {
             "type": "aggregate",
@@ -180,16 +181,23 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
       return null;
     }
 
+    const values = uniqBy(
+      this.widgetData.map((d, i) => ({ ...d, x: i + 1 < this.configuration.sliceCount ? d.x : 'Others' })),
+      'x'
+    )
+      .slice(0, this.configuration.sliceCount)
+      .map((d, i) => ({
+        label: d.x,
+        value: scheme.range.category20[i % this.configuration.sliceCount],
+        type: 'string'
+      }));
+
     return [
       {
         type: 'color',
         label: null,
         shape: 'square',
-        values: this.widgetData.map((d: { x: string, y: number }, index) => ({
-          label: d.x,
-          value: scheme.range.category20[index % scheme.range.category20.length],
-          type: 'string',
-        }))
+        values,
       }
     ];
   }
