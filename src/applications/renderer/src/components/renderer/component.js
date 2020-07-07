@@ -8,7 +8,7 @@ import {
 
 import ChartTitle from '../chart-title';
 
-// Lazy components 
+// Lazy components
 const Chart = React.lazy(() => import("../chart"));
 const SelectChart = React.lazy(() => import("../select-chart"));
 const Legend = React.lazy(() => import("../legend"));
@@ -32,8 +32,8 @@ const Renderer = ({
   const missingWidget =
     initialized && !restoring && widget && Object.keys(widget).length === 0;
 
-  const isMap = configuration.visualizationType === "map";  
-  
+  const isMap = configuration.visualizationType === "map";
+
   if (restoring) {
     return (
       <StyledContainer>

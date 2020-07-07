@@ -130,9 +130,6 @@ function* checkWithProxyIfShouldUpdate(payload) {
 }
 
 function* updateWidget() {
-  if (yield cancelled()) {
-    console.log('Im canceled!');
-  }
   const {
     widgetEditor: { editor, configuration, theme },
   } = yield select();
