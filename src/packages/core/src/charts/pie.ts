@@ -182,7 +182,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     }
 
     const values = uniqBy(
-      this.widgetData.map((d, i) => ({ ...d, x: i + 1 < this.configuration.sliceCount ? d.x : 'Others' })),
+      this.widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < this.configuration.sliceCount ? d.x : 'Others' })),
       'x'
     )
       .slice(0, this.configuration.sliceCount)
