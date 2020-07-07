@@ -281,12 +281,13 @@ export default class FiltersService implements Filters.Service {
     }
 
     // If the user sorts by a field that is aggregated, then, instead of ordering by the name of the
-    // field, we order by its alias
-    // Since only the value column (which has the alias “y”) can be aggregated, the sort field is
-    // “y”
-    // The reason for doing this is that the API doesn't support functions in the ORDER BY
-    // (ex: ORDER BY count(number))
-    if (aggregateFunction && orderByField === this.configuration?.value?.name) {
+    // field, we order by its alias. The reason for doing this is that the API doesn't support
+    // functions in the ORDER BY (ex: ORDER BY count(number)).
+    // Nevertheless, if the user uses the same field for the category, value and order by fields,
+    // then we understand the user wants to order, not by the aggregation, but by the raw value
+    // instead (the category field). In that case, we don't replace the previous orderByField.
+    if (aggregateFunction && orderByField === this.configuration?.value?.name
+      && this.configuration?.category?.name !== orderByField) {
       orderByField = 'y';
     }
 
