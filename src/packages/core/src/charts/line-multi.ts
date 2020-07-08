@@ -305,7 +305,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
     }
 
     const colorValuesOrder = [...new Set(this.widgetData.map((d: any) => d.color))];
-    const getColor = d => scheme.range.category20[colorValuesOrder.indexOf(d.color)];
+    const getColor = d => scheme.range.category20[colorValuesOrder.indexOf(d.color) % scheme.range.category20.length];
     const values = sortBy(uniqBy(this.widgetData, 'color'), ['color'], ['asc'])
       .map((d: any) => ({ label: d.color, value: getColor(d), type: 'string' }));
 

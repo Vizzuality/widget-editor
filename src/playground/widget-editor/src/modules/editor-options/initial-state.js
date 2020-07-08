@@ -2,7 +2,7 @@ export default {
   authToken: "",
   optionsOpen: false,
   compactMode: false,
-  widget: null,
+  widget: undefined,
   theme: { color: "#C32D7B" },
-  dataset: "20cc5eca-8c63-4c41-8e8e-134dcf1e6d76",
+  dataset: "852f2275-91a8-4500-9f10-89880dc53f22",
 };
