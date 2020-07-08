@@ -30,7 +30,7 @@ const Legend = ({
   compact,
 }) => {
   const isPie = configuration.chartType === "pie";
-  const multipleItems = widget.legend?.[0]?.values.length > 0;
+  const multipleItems = widget?.legend?.[0]?.values.length > 0;
 
   const handleChange = useCallback((option) => {
     const color = option.identifier === "___single_color" ? null : option;
