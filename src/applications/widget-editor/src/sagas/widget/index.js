@@ -141,7 +141,7 @@ function* updateWidget() {
     // Some widgets especialy maps will return an empty array or simply nothing
     // This will cause the editor to try and re render until we have resolved the data
     // As our sagas will try to refetch data we will simply not call this and let the sagas cancel
-    if (widgetData && Array.isArray(widgetData) && widgetData.length > 0) {
+    if (widgetData && widgetData.data && Array.isArray(widgetData.data) && widgetData.data.length > 0) {
       yield put(setEditor({ widgetData: widgetData.data }));
     }
   }
@@ -200,7 +200,7 @@ function* updateWidgetData() {
     // Some widgets especialy maps will return an empty array or simply nothing
     // This will cause the editor to try and re render until we have resolved the data
     // As our sagas will try to refetch data we will simply not call this and let the sagas cancel themself
-    if (widgetData && Array.isArray(widgetData) && widgetData.length > 0) {
+    if (widgetData && widgetData.data && Array.isArray(widgetData.data) && widgetData.data.length > 0) {
       yield put(setEditor({ widgetData: widgetData.data }));
     }
 
