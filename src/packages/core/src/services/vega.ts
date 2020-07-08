@@ -10,6 +10,7 @@ import BarsHorizontal from "../charts/bars-horizontal";
 import GroupedBarsHorizontal from "../charts/bars-grouped-horizontal";
 import BarsStackedHorizontal from "../charts/bars-stacked-horizontal";
 import Line from "../charts/line";
+import MultiLine from "../charts/line-multi";
 import Scatter from "../charts/scatter";
 
 import { SUPPORTED_CHARTS } from "../charts/constants";
@@ -196,14 +197,26 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "line") {
-      chart = new Line(
-        this.configuration,
-        this.editor,
-        this.schema,
-        this.widgetConfig,
-        data,
-        this.scheme
-      ).getChart();
+      if (this.configuration.color?.identifier) {
+        chart = new MultiLine(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme,
+          this.configuration.color.identifier
+        ).getChart();
+      } else {
+        chart = new Line(
+          this.configuration,
+          this.editor,
+          this.schema,
+          this.widgetConfig,
+          data,
+          this.scheme
+        ).getChart();
+      }
     }
 
     if (chartType === "scatter") {
