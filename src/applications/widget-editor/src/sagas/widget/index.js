@@ -1,5 +1,4 @@
 import { fork, take, takeLatest, put, call, select, cancel, cancelled, takeEvery } from "redux-saga/effects";
-import isEqual from 'lodash/isEqual';
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
 import { getLocalCache, localOnChangeState } from "exposed-hooks";
@@ -10,25 +9,25 @@ import {
   StateProxy,
 } from "@widget-editor/core";
 
-import { setEditor, dataInitialized, syncingEditor } from "@widget-editor/shared/lib/modules/editor/actions";
+import { setEditor, dataInitialized } from "@widget-editor/shared/lib/modules/editor/actions";
 import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 const stateProxy = new StateProxy();
 
-const columnsSet = (value, category) => {
-  return (
-    value &&
-    category &&
-    typeof value === "object" &&
-    typeof category === "object" &&
-    "name" in value &&
-    "name" in category
-  );
-};
-
 function* getWidgetDataWithAdapter(editorState) {
   const { adapter } = getLocalCache();
+
+  const columnsSet = (value, category) => {
+    return (
+      value &&
+      category &&
+      typeof value === "object" &&
+      typeof category === "object" &&
+      "name" in value &&
+      "name" in category
+    );
+  };
 
   const { configuration } = editorState;
   const { value, category } = configuration;
@@ -112,6 +111,14 @@ function* syncEditor() {
   if (stateProxy.ShouldUpdateData(widgetEditor)) {
     yield fork(initializeData);
   }
+
+  if (stateProxy.ShouldUpdateVega(widgetEditor)) {
+    yield fork(initializeVega);
+  }
+
+  const { widgetEditor: updatedState } = yield select();
+  stateProxy.update(updatedState);
+  yield fork(updateHookState);
 }
 
 export default function* baseSaga() {

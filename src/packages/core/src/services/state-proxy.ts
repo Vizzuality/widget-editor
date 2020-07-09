@@ -40,7 +40,18 @@ export default class StateProxy {
     shouldUpdate = shouldUpdate || !isEqual(prev.configuration.orderBy, next.configuration.orderBy);
     shouldUpdate = shouldUpdate || !isEqual(prev.configuration.groupBy, next.configuration.groupBy);
 
-    this.localState = state;
+    return shouldUpdate;
+  }
+
+  ShouldUpdateVega(state: any) {
+    const { prev, next } = this.getStateDiff(state);
+    let shouldUpdate = false;
+
+    // If theme changes
+    shouldUpdate = !isEqual(prev.theme, next.theme);
+
+    // Chart type changes
+    shouldUpdate = shouldUpdate || !isEqual(prev.configuration.chartType, next.configuration.chartType);
 
     return shouldUpdate;
   }
