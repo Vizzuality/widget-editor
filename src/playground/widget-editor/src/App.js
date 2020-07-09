@@ -14,6 +14,7 @@ import "./App.scss";
 
 function App() {
   const { store } = configureStore();
+  const [isUnmounted, setIsUnmounted] = useState(false);
   const [isRenderer, setIsRenderer] = useState(false);
   const [activeWidget, setActiveWidget] = useState(null);
 
@@ -25,7 +26,7 @@ function App() {
     }
     setIsRenderer(!isRenderer);
   };
-  
+
   return (
     <Provider store={store}>
       <div className="App">
@@ -41,13 +42,15 @@ function App() {
           <button type="button" onClick={() => console.log(ModifyEditorState({ description: 'Hello'}))}>
             Modify Editor state hook
           </button>
+          <button type="button" onClick={() => setIsUnmounted(!isUnmounted)}>Toggle unmounting</button>
         </header>
-        {!isRenderer && (
+        {!isRenderer && !isUnmounted && (
           <Fragment>
             <Editor />
             <EditorOptions />
           </Fragment>
         )}
+        {!isRenderer && isUnmounted && <p>Unmounted editor</p> }
         {isRenderer && <PlaygroundRenderer activeWidget={activeWidget} />}
       </div>
     </Provider>

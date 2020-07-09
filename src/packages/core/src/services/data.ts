@@ -28,7 +28,6 @@ export default class DataService {
     dispatch: Generic.Dispatcher
   ) {
     this.adapter = adapter;
-
     setAdapter(this.adapter);
 
     this.setEditor = setEditor;
@@ -174,7 +173,6 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
-
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
   }
 }

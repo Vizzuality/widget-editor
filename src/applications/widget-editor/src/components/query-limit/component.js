@@ -1,6 +1,7 @@
-import React, { Fragment, useState, useCallback, useMemo } from "react";
-import styled from "styled-components";
+import React, { Fragment, useState } from "react";
 import debounce from 'lodash/debounce';
+
+import styled from "styled-components";
 
 import FlexContainer from "styles-common/flex";
 import FlexController from "styles-common/flex-controller";
@@ -28,7 +29,18 @@ const QueryLimit = ({
   value,
   onChange = () => null,
 }) => {
-  const [localValue, setLocalValue] = useState(value);
+  const [localValue, setLocalValue] = useState({ value: value, key: null });
+
+  const changeValue = (data) => {
+    if (data.value !== 0) {
+      setLocalValue(data);
+      debounceOnChange(data);
+    }
+  }
+
+  const debounceOnChange = debounce(q => {
+    onChange(q.value, q.key);
+  }, 1000);
 
   const isDouble = Array.isArray(localValue);
   const isFloatingPoint = isFloat(min) || isFloat(max);
@@ -72,16 +84,18 @@ const QueryLimit = ({
               value={maxValue}
               type={dateType ? "date" : "number"}
               name="options-limit-max"
-              onChange={e => onChangeValue(isDouble ? [min, +e.target.value] : +e.target.value)}
+              onChange={(e) =>
+                changeValue({ value: e.target.value, key: "maxValue" })
+              }
             />
           </FlexController>
           <FlexController contain={80}>
             <Slider
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
-              value={sliderValue}
-              defaultValue={isDouble ? [min, max] : max}
-              onChange={onChangeValue}
+              value={isDouble ? [minValue, maxValue] : maxValue}
+              defaultValue={isDouble ? min : [min, max]}
+              onChange={(value) => changeValue({ value, key: null })}
             />
           </FlexController>
         </FlexContainer>
@@ -95,25 +109,24 @@ const QueryLimit = ({
                 <Slider
                   {...minMaxProps}
                   step={isFloatingPoint ? 0.1 : 1}
-                  value={sliderValue}
-                  defaultValue={isDouble ? [min, max] : max}
-                  onChange={onChangeValue}
+                  value={isDouble ? [minValue, maxValue] : maxValue}
+                  defaultValue={isDouble ? min : [min, max]}
+                  onChange={(value) => changeValue({ value, key: null })}
                 />
               </RangeWrapper>
             </FlexController>
           </FlexContainer>
           <FlexContainer row={true}>
             <FlexController contain={50} constrainElement={40}>
-              {isDouble && (
-                <Input
-                  {...minMaxProps}
-                  step={isFloatingPoint ? 0.1 : 1}
-                  value={minValue}
-                  type={dateType ? "date" : "number"}
-                  name="options-limit-min"
-                  onChange={e => onChangeValue([+e.target.value, maxValue])}
-                />
-            )}
+              <Input
+                {...minMaxProps}
+                value={minValue}
+                type={dateType ? "date" : "number"}
+                name="options-limit-min"
+                onChange={(e) =>
+                  changeValue({ value: e.target.value, key: "minValue" })
+                }
+              />
             </FlexController>
             <FlexController
               contain={50}
@@ -126,8 +139,8 @@ const QueryLimit = ({
                 value={maxValue}
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
-                onChange={e =>
-                  onChangeValue(isDouble ? [minValue, +e.target.value] : +e.target.value)
+                onChange={(e) =>
+                  changeValue({ value: e.target.value, key: "maxValue" })
                 }
               />
             </FlexController>

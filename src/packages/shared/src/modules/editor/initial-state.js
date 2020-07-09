@@ -1,6 +1,7 @@
 export default {
   restoring: false,
   disabledFeatures: [],
+  dataSync: false,
   initialized: false,
   dataset: null,
   advanced: false,
