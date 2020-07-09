@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import styled, { css } from "styled-components";
+import debounce from 'lodash/debounce';
 
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
@@ -106,9 +107,9 @@ const EditorOptions = ({
     patchConfiguration({ groupBy: value });
   }
 
-  const handleLimit = (value) => {
+  const handleLimit = debounce((value) => {
     patchConfiguration({ limit: value });
-  }
+  }, 1000);
 
   if (!initialized || restoring) {
     return (

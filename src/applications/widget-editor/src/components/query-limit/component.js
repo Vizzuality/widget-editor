@@ -1,7 +1,7 @@
-import React, { Fragment, useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { Fragment, useState } from "react";
+import debounce from 'lodash/debounce';
 
-import useDebounce from "hooks/use-debounce";
+import styled from "styled-components";
 
 import FlexContainer from "styles-common/flex";
 import FlexController from "styles-common/flex-controller";
@@ -30,16 +30,18 @@ const QueryLimit = ({
   minDistance = 1,
   onChange = (data) => {},
 }) => {
-  const [localValue, setLocalValue] = useState({ value, key: null });
-  const debouncedValue = useDebounce(localValue, 1000);
+  const [localValue, setLocalValue] = useState({ value: value, key: null });
 
-  useEffect(() => {
-    if (!debouncedValue.key) {
-      onChange(debouncedValue.value);
-    } else {
-      onChange(debouncedValue.value, debouncedValue.key);
+  const changeValue = (data) => {
+    if (data.value !== 0) {
+      setLocalValue(data);
+      debounceOnChange(data);
     }
-  }, [debouncedValue]);
+  }
+
+  const debounceOnChange = debounce(q => {
+    onChange(q.value, q.key);
+  }, 1000);
 
   const isDouble = Array.isArray(localValue.value);
   const isFloatingPoint = isFloat(min) || isFloat(max);
@@ -75,7 +77,7 @@ const QueryLimit = ({
               type={dateType ? "date" : "number"}
               name="options-limit-max"
               onChange={(e) =>
-                setLocalValue({ value: e.target.value, key: "maxValue" })
+                changeValue({ value: e.target.value, key: "maxValue" })
               }
             />
           </FlexController>
@@ -85,7 +87,7 @@ const QueryLimit = ({
               step={isFloatingPoint ? 0.1 : 1}
               value={isDouble ? [minValue, maxValue] : maxValue}
               defaultValue={isDouble ? min : [min, max]}
-              onChange={(value) => setLocalValue({ value, key: null })}
+              onChange={(value) => changeValue({ value, key: null })}
             />
           </FlexController>
         </FlexContainer>
@@ -101,7 +103,7 @@ const QueryLimit = ({
                   step={isFloatingPoint ? 0.1 : 1}
                   value={isDouble ? [minValue, maxValue] : maxValue}
                   defaultValue={isDouble ? min : [min, max]}
-                  onChange={(value) => setLocalValue({ value, key: null })}
+                  onChange={(value) => changeValue({ value, key: null })}
                 />
               </RangeWrapper>
             </FlexController>
@@ -114,7 +116,7 @@ const QueryLimit = ({
                 type={dateType ? "date" : "number"}
                 name="options-limit-min"
                 onChange={(e) =>
-                  setLocalValue({ value: e.target.value, key: "minValue" })
+                  changeValue({ value: e.target.value, key: "minValue" })
                 }
               />
             </FlexController>
@@ -129,7 +131,7 @@ const QueryLimit = ({
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
                 onChange={(e) =>
-                  setLocalValue({ value: e.target.value, key: "maxValue" })
+                  changeValue({ value: e.target.value, key: "maxValue" })
                 }
               />
             </FlexController>

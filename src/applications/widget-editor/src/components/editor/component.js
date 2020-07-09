@@ -32,7 +32,7 @@ class Editor extends React.Component {
       setEditor,
       dispatch
     );
-
+      console.log('Constructor', this);
     this.dataService.resolveInitialState();
 
     this.resolveTheme(userPassedTheme);
