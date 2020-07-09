@@ -78,6 +78,7 @@ export default class DataService {
     }
 
     this.setEditor({ restoring: false });
+    this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
   }
 
   async handleFilters(restore: boolean = false) {

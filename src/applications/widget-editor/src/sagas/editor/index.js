@@ -7,6 +7,7 @@ import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor
 import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 
 import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
+import { take } from "lodash";
 
 function* restoreEditor() {
   yield put(resetEditor());

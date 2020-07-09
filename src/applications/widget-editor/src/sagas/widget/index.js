@@ -1,45 +1,27 @@
-import { fork, take, takeLatest, put, call, select, cancel, cancelled, takeEvery } from "redux-saga/effects";
+import { fork, take, takeLatest, put, call, select } from "redux-saga/effects";
+
+// EDITOR HELPERS
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
-import { getLocalCache, localOnChangeState } from "exposed-hooks";
-
+// CORE SERVICES
 import {
   constants,
   VegaService,
   StateProxy,
 } from "@widget-editor/core";
 
+// ACTIONS
 import { setEditor, dataInitialized } from "@widget-editor/shared/lib/modules/editor/actions";
 import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
-import { setConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
+// EXPOSED HOOKS
+import { localOnChangeState } from "exposed-hooks";
+
+// LOCALS
+import getWidgetDataWithAdapter from './getWidgetData';
+
+// Initialize state proxy so we can store the state of the editor
 const stateProxy = new StateProxy();
-
-function* getWidgetDataWithAdapter(editorState) {
-  const { adapter } = getLocalCache();
-
-  const columnsSet = (value, category) => {
-    return (
-      value &&
-      category &&
-      typeof value === "object" &&
-      typeof category === "object" &&
-      "name" in value &&
-      "name" in category
-    );
-  };
-
-  const { configuration } = editorState;
-  const { value, category } = configuration;
-
-  if (columnsSet(value, category)) {
-    const { widgetEditor } = yield select();
-    const { configuration, filters, editor: { dataset } } = widgetEditor;
-    const data = yield adapter.requestData({ configuration, filters, dataset });
-    return data;
-  }
-  yield [];
-}
 
 // This generator updates local state used for our api hooks
 // When editor changes or restores this gets called
@@ -51,6 +33,11 @@ function* updateHookState() {
   }
 }
 
+/**
+ * @generator initializeData
+ * sets widget data based on configuration
+ * @triggers <void>
+ */
 function* initializeData(props) {
   const { widgetEditor } = yield select();
   const widgetData = yield call(getWidgetDataWithAdapter, widgetEditor)
@@ -62,6 +49,11 @@ function* initializeData(props) {
   yield put(dataInitialized());
 }
 
+/**
+ * @generator initializeVega
+ * Generates a vega configuration that is displayed within the renderer
+ * @triggers <void>
+ */
 function* initializeVega(props) {
   const { widgetEditor: { editor, configuration, theme } } = yield select();
   const { widgetData, advanced } = editor;
@@ -107,11 +99,25 @@ function* initializeVega(props) {
   stateProxy.update(newEditorState);
 }
 
+/**
+ * @generator syncEditor
+ * Validates and checks if we need to update the state of the editor
+ * 1. does widget data need to update?
+ * 2. does vega configuration need to update?
+ * @triggers <void>
+ */
 function* syncEditor() {
   const { widgetEditor } = yield select();
   if (stateProxy.ShouldUpdateData(widgetEditor)) {
     yield fork(initializeData);
   }
+
+  /**
+   * Advanced widgets
+   * For these widgets we will grab all properties in widget config and assume;
+   * a valid vega configuration.
+   * When in advanced mode we save the advanced input into the widgets config.
+   */
 
   if (stateProxy.ShouldUpdateVega(widgetEditor)) {
     yield fork(initializeVega);
@@ -122,25 +128,48 @@ function* syncEditor() {
   yield fork(updateHookState);
 }
 
-function* cancelAll() {
-  const tasks = yield all([
-    fork(updateWidgetData),
-    fork(initializeWidget),
-    fork(updateWidget),
-    fork(checkWithProxyIfShouldUpdate),
-    fork(updateHookState)
-  ])
-  yield cancel([...tasks]);
-}
-
+/**
+ * @generator main
+ * Runs on load
+ * @triggers <void>
+ */
 export default function* baseSaga() {
+
+  /**
+   * Trigger initial data request
+   * @sagaEvents DATA_FLOW_VISUALISATION_READY
+   * Will resolve sql query and any editor state requried for rendering a widget
+   * @triggers > EDITOR/dataInitialized
+   */
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
     initializeData
   );
 
+  /**
+   * When data is initialized we can initialize vega
+   * @EDITOR_EVENT EDITOR/dataInitialized
+   * Will resolve sql query and any editor state requried for rendering a widget
+   * @triggers <void>
+   */
   yield takeLatest(getAction('EDITOR/dataInitialized'), initializeVega);
 
+  /**
+   * When editor is restored, sync editor
+   * @sagaEvents DATA_FLOW_RESTORED
+   * Will resolve sql query and any editor state requried for rendering a widget
+   * @triggers <void>
+   */
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORED, syncEditor);
+
+  /**
+   * Runs when app is active, on event sync editor
+   * @reduxActions EDITOR_PATCH_CONFIGURATION
+   * Whenever a patch gets triggered, we will check for updates on:
+   * @widgetData Do we need to update data for a widget?
+   * @vegaConfiguration Do we need to update vega configuration?
+   * @triggers <void>
+   */
   while(true) {
     yield take(constants.reduxActions.EDITOR_PATCH_CONFIGURATION)
     yield fork(syncEditor)

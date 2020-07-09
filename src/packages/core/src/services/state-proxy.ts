@@ -51,7 +51,7 @@ export default class StateProxy {
     shouldUpdate = !isEqual(prev.theme, next.theme);
 
     // Chart type changes
-    shouldUpdate = shouldUpdate || !isEqual(prev.configuration.chartType, next.configuration.chartType);
+    shouldUpdate = shouldUpdate || (!isEqual(prev.configuration.chartType, next.configuration.chartType) && next.configuration.chartType !== 'map');
 
     return shouldUpdate;
   }
