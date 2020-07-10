@@ -264,11 +264,11 @@ export default class RwAdapter implements Adapter.Service {
       output = {
         type: 'map',
         layer_id: editorState.configuration.layer,
-        zoom: editorState.configuration.map.zoom,
-        lat: editorState.configuration.map.lat,
-        lng: editorState.configuration.map.lng,
-        bounds: editorState.configuration.map.bounds,
-        bbox: editorState.configuration.map.bbox,
+        zoom: editorState.editor.map?.zoom,
+        lat: editorState.editor.map?.lat,
+        lng: editorState.editor.map?.lng,
+        bounds: editorState.editor.map?.bounds,
+        bbox: editorState.editor.map?.bbox,
         ...(editorState.configuration.map.basemap
           ? {
             basemapLayers: {

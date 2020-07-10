@@ -135,10 +135,15 @@ function* syncEditor() {
 
 function* handleRestore() {
   yield call(initializeData);
-  yield call(initializeVega);
+
+  const { widgetEditor } = yield select();
+
+  if (widgetEditor.configuration.visualizationType !== 'map') {
+    yield call(initializeVega);
+  }
+
   const { widgetEditor: updatedState } = yield select();
   stateProxy.update(updatedState);
-
 }
 
 /**
