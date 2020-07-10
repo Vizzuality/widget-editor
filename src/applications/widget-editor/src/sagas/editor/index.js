@@ -7,7 +7,6 @@ import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor
 import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 
 import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
-import { take } from "lodash";
 
 function* restoreEditor() {
   yield put(resetEditor());
@@ -102,6 +101,6 @@ export default function* baseSaga() {
     preloadData
   );
 
-  yield takeLatest('WIDGET/EDITOR/RESTORE', restoreEditor);
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORE, restoreEditor);
   yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALISATION_READY, setEditorInitialized);
 }

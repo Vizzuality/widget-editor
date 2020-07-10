@@ -46,6 +46,10 @@ function* initializeData(props) {
   }
 
   yield put(dataInitialized());
+
+  if (props?.type === constants.sagaEvents.DATA_FLOW_VISUALISATION_READY) {
+    yield call(initializeVega);
+  }
 }
 
 /**
@@ -107,8 +111,9 @@ function* initializeVega(props) {
  */
 function* syncEditor() {
   const { widgetEditor } = yield select();
+
   if (stateProxy.ShouldUpdateData(widgetEditor)) {
-    yield fork(initializeData);
+    yield call(initializeData);
   }
 
   /**
@@ -119,12 +124,20 @@ function* syncEditor() {
    */
 
   if (stateProxy.ShouldUpdateVega(widgetEditor)) {
-    yield fork(initializeVega);
+    yield call(initializeVega);
   }
 
   const { widgetEditor: updatedState } = yield select();
   stateProxy.update(updatedState);
-  yield fork(updateHookState);
+  yield call(updateHookState);
+}
+
+function* handleRestore() {
+  yield call(initializeData);
+  yield call(initializeVega);
+  const { widgetEditor: updatedState } = yield select();
+  stateProxy.update(updatedState);
+
 }
 
 /**
@@ -146,20 +159,12 @@ export default function* baseSaga() {
   );
 
   /**
-   * When data is initialized we can initialize vega
-   * @EDITOR_EVENT EDITOR/dataInitialized
-   * Will resolve sql query and any editor state requried for rendering a widget
-   * @triggers <void>
-   */
-  yield takeLatest(getAction('EDITOR/dataInitialized'), initializeVega);
-
-  /**
    * When editor is restored, sync editor
    * @sagaEvents DATA_FLOW_RESTORED
-   * Will resolve sql query and any editor state requried for rendering a widget
+   * Will resolve sql query and any editor state required for rendering a widget
    * @triggers <void>
    */
-  yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORED, syncEditor);
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORED, handleRestore);
 
   /**
    * Runs when app is active, on event sync editor
