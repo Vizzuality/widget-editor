@@ -93,9 +93,9 @@ const EditorOptions = ({
     patchConfiguration({ sliceCount: parseInt(value) });
   };
 
-  const handleDonutRadius = (value) => {
+  const handleDonutRadius = debounce((value) => {
     patchConfiguration({ donutRadius: parseInt(value) });
-  }
+  }, 500);
 
   const handleOrderBy = (value) => {
     patchConfiguration({ orderBy: value });
@@ -107,7 +107,7 @@ const EditorOptions = ({
 
   const handleLimit = debounce((value) => {
     patchConfiguration({ limit: value });
-  }, 1000);
+  }, 500);
 
   if (!initialized || restoring) {
     return (
