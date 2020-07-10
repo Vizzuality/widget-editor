@@ -52,6 +52,7 @@ export default class DataService {
     this.setEditor({
       restoring: true
     });
+    this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORE });
 
     this.widgetId = widgetId;
     this.adapter.setDatasetId(datasetId);
@@ -79,6 +80,7 @@ export default class DataService {
 
     this.setEditor({ restoring: false });
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
+    this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
   }
 
   async handleFilters(restore: boolean = false) {

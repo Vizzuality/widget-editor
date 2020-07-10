@@ -53,6 +53,9 @@ export default class StateProxy {
     // Chart type changes
     shouldUpdate = shouldUpdate || (!isEqual(prev.configuration.chartType, next.configuration.chartType) && next.configuration.chartType !== 'map');
 
+    shouldUpdate = shouldUpdate || !isEqual(prev.editor.widgetData, next.editor.widgetData);
+
+
     return shouldUpdate;
   }
 
