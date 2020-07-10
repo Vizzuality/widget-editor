@@ -1,6 +1,3 @@
-import { sagaEvents } from "../constants";
-import { getAction } from "@widget-editor/shared/lib/helpers/redux";
-
 import isEqual from "lodash/isEqual";
 
 export default class StateProxy {
