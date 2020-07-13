@@ -1,4 +1,4 @@
-import { takeLatest, put, call, select, cancel, cancelled, takeEvery } from "redux-saga/effects";
+import { takeLatest, put, call, select, cancel, all, fork, cancelled } from "redux-saga/effects";
 import isEqual from 'lodash/isEqual';
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
 
@@ -47,12 +47,20 @@ function* getWidgetDataWithAdapter(editorState) {
 // Action triggering this is: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE
 function* updateHookState() {
   const state = yield select();
-  localOnChangeState(state.widgetEditor);
+  if (state.widgetEditor.editor.initialized && state.widgetEditor.widget) {
+    localOnChangeState(state.widgetEditor);
+  }
 }
 
 // Called when our services have initialized data required to render chart
 // Sets up our visualization using @core/VegaService
-function* initializeWidget({ payload }) {
+function* initializeWidget(action) {
+  if (!action || typeof action.payload === 'undefined') {
+    yield cancel();
+  }
+
+  const { payload } = action;
+
   const {
     widgetEditor: { editor, configuration, theme, widget },
   } = yield select();
@@ -64,6 +72,11 @@ function* initializeWidget({ payload }) {
     payload.initialized === false ||
     !editor.initialized) {
     yield cancel();
+  }
+
+  if (!editor.widget) {
+    yield cancel();
+    return;
   }
 
   const { widgetData } = editor;
@@ -110,6 +123,10 @@ function* initializeWidget({ payload }) {
 // Using @core/stateProxy
 // If no updates required we yield cancel
 function* checkWithProxyIfShouldUpdate(payload) {
+  if (!payload || typeof payload === 'undefined') {
+    yield cancel();
+  }
+
   const { widgetEditor } = yield select();
   // We only want to resolve proxy if the editor itself is initialized
   if (!widgetEditor.editor.initialized) {
@@ -206,7 +223,6 @@ function* updateWidgetData() {
 
     yield call(updateWidget);
   }
-
   yield put(
     setConfiguration({
       visualizationType: widgetEditor.configuration.visualizationType,
@@ -218,7 +234,23 @@ function* updateWidgetData() {
   );
 }
 
+function* cancelAll() {
+  const tasks = yield all([
+    fork(updateWidgetData),
+    fork(initializeWidget),
+    fork(updateWidget),
+    fork(checkWithProxyIfShouldUpdate),
+    fork(updateHookState)
+  ])
+  yield cancel([...tasks]);
+}
+
 export default function* baseSaga() {
+  yield takeLatest(
+    constants.sagaEvents.DATA_FLOW_UNMOUNT,
+    cancelAll
+  )
+
   // --- Triggered once: When we have all nessesary information to render visualization
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
