@@ -29,11 +29,17 @@ export default class FiltersService implements Filters.Service {
 
     this.dataset = dataset;
 
-    this.prepareSelectStatement();
-    this.prepareFilters();
-    this.prepareGroupBy();
-    this.prepareOrderBy();
-    this.prepareLimit();
+    if (this.hasRequiredFields()) {
+      this.prepareSelectStatement();
+      this.prepareFilters();
+      this.prepareGroupBy();
+      this.prepareOrderBy();
+      this.prepareLimit();
+    }
+  }
+
+  private hasRequiredFields() {
+    return this.configuration?.value?.name && this.configuration?.category?.name;
   }
 
   private resolveTableName() {
