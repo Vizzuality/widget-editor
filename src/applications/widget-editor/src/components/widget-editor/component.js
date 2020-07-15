@@ -12,7 +12,6 @@ class WidgetEditor extends React.Component {
       theme,
       disable,
       enableSave,
-      enableInfo,
       schemes,
       compact = false,
     } = this.props;
@@ -33,7 +32,6 @@ class WidgetEditor extends React.Component {
         application={application}
         onSave={onSave}
         enableSave={enableSave}
-        enableInfo={enableInfo}
         datasetId={datasetId}
         widgetId={widgetId}
         adapter={new adapter()}
