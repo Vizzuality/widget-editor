@@ -3,8 +3,6 @@ import styled, { css } from "styled-components";
 
 import { Button } from "@widget-editor/shared";
 
-import { Modal } from "components/modal";
-
 import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants";
 
 const StyledFooter = styled.footer`
