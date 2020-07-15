@@ -76,11 +76,10 @@ function* preloadData() {
 
     const format = widgetConfig?.paramsConfig?.value?.format || "s";
 
-    if (configuration.orderBy || configuration.groupBy) {
+    if (configuration.orderBy) {
       yield put(
         setFilters({
           ...(configuration.orderBy ? { orderBy: configuration.orderBy } : {}),
-          ...(configuration.groupBy ? { groupBy: configuration.groupBy } : {}),
         })
       );
     }
