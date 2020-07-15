@@ -112,13 +112,11 @@ class Editor extends React.Component {
       setEditor,
       disable = [],
       enableSave = true,
-      enableInfo = true,
     } = this.props;
 
     setEditor({
       disabledFeatures: disable,
       enableSave,
-      enableInfo,
     });
   }
 

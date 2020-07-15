@@ -22,26 +22,9 @@ const StyledFooter = styled.footer`
   justify-content: space-between;
 `;
 
-const Footer = ({ enableSave, enableInfo, onSave }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-
+const Footer = ({ enableSave, onSave }) => {
   return (
-    <StyledFooter disabled={!enableSave && !enableInfo}>
-      {enableInfo && (
-        <Fragment>
-          <Modal isOpen={modalOpen} closeModal={() => setModalOpen(false)}>
-            <h2>How to customize the visualization</h2>
-          </Modal>
-          <Button
-            role="button"
-            type="button"
-            onClick={() => setModalOpen(true)}
-            btnType="highlight"
-          >
-            Need help?
-          </Button>
-        </Fragment>
-      )}
+    <StyledFooter disabled={!enableSave}>
       {enableSave && (
         <Button role="button" type="button" btnType="cta" onClick={onSave}>
           Save widget
