@@ -250,7 +250,7 @@ export default class FiltersService implements Filters.Service {
   }
 
   prepareGroupBy() {
-    const { groupBy, aggregateFunction, chartType, color } = this.configuration;
+    const { aggregateFunction, chartType, color } = this.configuration;
 
     if (!!aggregateFunction) {
       this.sql = `${this.sql} GROUP BY x`;
@@ -262,11 +262,6 @@ export default class FiltersService implements Filters.Service {
       }
 
       return;
-    }
-
-    if (groupBy) {
-      const { name } = groupBy;
-      this.sql = `${this.sql} GROUP BY ${name || sqlFields.value}`;
     }
   }
 

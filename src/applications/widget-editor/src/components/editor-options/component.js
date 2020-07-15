@@ -5,7 +5,6 @@ import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
-import GroupValues from "components/group-values";
 import QueryLimit from "components/query-limit";
 import Filter from "components/filter";
 
@@ -83,7 +82,6 @@ const EditorOptions = ({
   sliceCount,
   data,
   orderBy,
-  groupBy,
   patchConfiguration,
   compact,
   dataService,
@@ -100,10 +98,6 @@ const EditorOptions = ({
 
   const handleOrderBy = (value) => {
     patchConfiguration({ orderBy: value });
-  }
-
-  const handleGroupBy = (value) => {
-    patchConfiguration({ groupBy: value });
   }
 
   const handleLimit = (value) => {
@@ -148,9 +142,6 @@ const EditorOptions = ({
               <AccordionSection title="Order">
                 <OrderValues
                   onChange={(value) => handleOrderBy(value)}
-                />
-                <GroupValues
-                  onChange={(value) => handleGroupBy(value)}
                 />
                 {limit && (
                   <QueryLimit

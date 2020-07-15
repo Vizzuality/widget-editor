@@ -20,7 +20,6 @@ export default connectState(
     isMap: state.configuration.chartType === "map",
     data: state.editor.widgetData,
     orderBy: state.configuration.orderBy,
-    groupBy: state.configuration.groupBy,
     compact: state.theme.compact,
   }),
   { patchConfiguration }
