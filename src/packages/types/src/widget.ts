@@ -22,6 +22,5 @@ export interface Payload {
 }
 
 export interface Service {
-  fromDataset(dataset: object): object;
   fetchWidget(widgetId: Id): Promise<Payload>;
 }
