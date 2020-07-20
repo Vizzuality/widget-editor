@@ -84,7 +84,7 @@ export default class RwAdapter implements Adapter.Service {
 
   async getDataset() {
     const { applications, env, locale } = this.config.getConfig();
-    const includes = "metadata,vocabulary,widget,layer";
+    const includes = "metadata,vocabulary,layer";
 
     const url = tags.oneLineTrim`
       ${this.endpoint}
@@ -108,9 +108,6 @@ export default class RwAdapter implements Adapter.Service {
       ...dataset,
       attributes: {
         ...dataset.attributes,
-        widget: dataset.attributes.widget.filter(
-          (w) => !!w.attributes.published
-        ),
       },
     };
 
@@ -155,11 +152,7 @@ export default class RwAdapter implements Adapter.Service {
     const { applications, env, locale } = this.config.getConfig();
     const includes = "metadata";
 
-    const resolveWidgetId = !widgetId
-      ? this.widgetService.fromDataset(dataset)?.id
-      : widgetId;
-
-    if (!resolveWidgetId) {
+    if (!widgetId) {
       return {
         ...defaultWidget,
         attributes: {
@@ -173,7 +166,7 @@ export default class RwAdapter implements Adapter.Service {
     const url = tags.oneLineTrim`
       ${this.endpoint}
       /widget/
-      ${resolveWidgetId}?
+      ${widgetId}?
       ${applications.join(",")}
       &env=${env}
       &language=${locale}

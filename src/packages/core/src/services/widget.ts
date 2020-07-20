@@ -9,13 +9,6 @@ export default class WidgetService implements Widget.Service {
     this.config = config;
   }
 
-  fromDataset(dataset: Dataset.Payload): Widget.Payload {
-    return find(
-      dataset.attributes?.widget,
-      (widget) => !!widget.attributes.defaultEditableWidget
-    );
-  }
-
   async fetchWidget(url: string): Promise<Widget.Payload> {
     try {
       const response = await fetch(url);
