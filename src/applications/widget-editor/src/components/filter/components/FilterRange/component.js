@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import QueryLimit from "components/query-limit";
 
@@ -17,9 +17,9 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
 
   const [minValue, maxValue] = Array.isArray(values)
     ? values
-    : (values, min, max);
+    : [min, max];
 
-  const onSetData = (values) => {
+  const onSetData = useCallback((values) => {
     let serializeValues;
     if (filter.dataType === "date") {
       serializeValues = [UTCString(values[0]), UTCString(values[1])];
@@ -27,25 +27,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
       serializeValues = values;
     }
     setData(serializeValues, filter.id, TYPE_RANGE);
-  };
-
-  const handleOnChangeValue = (value, key = "maxValue") => {
-    let newValues;
-
-    if (filter.dataType === "date") {
-      newValues =
-        key === "maxValue"
-          ? [ToUTCString(minValue), ToUTCString(value)]
-          : [ToUTCString(value), ToUTCString(maxValue)];
-    } else {
-      newValues =
-        key === "maxValue"
-          ? [minValue, Number(value)]
-          : [Number(value), maxValue];
-    }
-
-    setData(newValues, filter.id, TYPE_RANGE);
-  };
+  }, [filter, setData]);
 
   if (filter.dataType === "date") {
     return (
@@ -56,8 +38,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
         max={max}
         disabled={disabled}
         value={[UTCString(minValue), UTCString(maxValue)]}
-        onChange={(value) => onSetData(value)}
-        handleOnChangeValue={handleOnChangeValue}
+        onChange={onSetData}
       />
     );
   }
@@ -69,8 +50,7 @@ const FilterRange = ({ filter, disabled = false, setData }) => {
       max={max}
       disabled={disabled}
       value={[minValue, maxValue]}
-      onChange={(value) => onSetData(value)}
-      handleOnChangeValue={handleOnChangeValue}
+      onChange={onSetData}
     />
   );
 };

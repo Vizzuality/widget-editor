@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useCallback } from "react";
 import styled, { css } from "styled-components";
 
 import { Accordion, AccordionSection } from "components/accordion";
@@ -100,9 +100,9 @@ const EditorOptions = ({
     patchConfiguration({ orderBy: value });
   }
 
-  const handleLimit = (value) => {
+  const handleLimit = useCallback((value) => {
     patchConfiguration({ limit: value });
-  }
+  }, [patchConfiguration]);
 
   if (!initialized || restoring) {
     return (
@@ -146,8 +146,8 @@ const EditorOptions = ({
                 {limit && (
                   <QueryLimit
                     min={0}
-                    max={500}
-                    onChange={(value) => handleLimit(value)}
+                    max={50}
+                    onChange={handleLimit}
                     label="Limit"
                     value={limit}
                   />
