@@ -101,7 +101,7 @@ const QueryLimit = ({
                   step={isFloatingPoint ? 0.1 : 1}
                   value={isDouble ? [minValue, maxValue] : maxValue}
                   defaultValue={isDouble ? min : [min, max]}
-                  onChange={(value) => setLocalValue({ value, key: null })}
+                  onChange={(value) => setLocalValue({ value })}
                 />
               </RangeWrapper>
             </FlexController>
@@ -114,7 +114,7 @@ const QueryLimit = ({
                 type={dateType ? "date" : "number"}
                 name="options-limit-min"
                 onChange={(e) =>
-                  setLocalValue({ value: e.target.value, key: "minValue" })
+                  setLocalValue({ value: [+e.target.value, maxValue] })
                 }
               />
             </FlexController>
@@ -129,7 +129,7 @@ const QueryLimit = ({
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
                 onChange={(e) =>
-                  setLocalValue({ value: e.target.value, key: "maxValue" })
+                  setLocalValue({ value: [minValue, +e.target.value] })
                 }
               />
             </FlexController>
