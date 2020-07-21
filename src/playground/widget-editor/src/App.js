@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { Provider } from "react-redux";
+import { RiLoginBoxLine, RiMistLine, RiEye2Line, RiPaletteLine } from 'react-icons/ri';
 
 import configureStore from "store";
 
@@ -17,6 +18,7 @@ function App() {
   const [isUnmounted, setIsUnmounted] = useState(false);
   const [isRenderer, setIsRenderer] = useState(false);
   const [activeWidget, setActiveWidget] = useState(null);
+  const [editorState, setEditorState] = useState(null);
 
   const handleSetRenderer = () => {
     if (!isRenderer) {
@@ -31,18 +33,17 @@ function App() {
     <Provider store={store}>
       <div className="App">
         <header className="App-header">
-          Widget editor playground
-          <ToggleOptions />
-          <button type="button" onClick={() => handleSetRenderer()}>
-            {isRenderer ? "View editor" : "View renderer"}
-          </button>
-          <button type="button" onClick={() => console.log(getEditorState())}>
-            Get Editor state hook
-          </button>
-          <button type="button" onClick={() => console.log(ModifyEditorState({ description: 'Hello'}))}>
-            Modify Editor state hook
-          </button>
-          <button type="button" onClick={() => setIsUnmounted(!isUnmounted)}>Toggle unmounting</button>
+          Widget editor
+          <div className="App-header--nav">
+            <button type="button" onClick={() => handleSetRenderer()}>
+              {isRenderer ? <RiMistLine /> : <RiPaletteLine /> } {isRenderer ? "View editor" : "View renderer"}
+            </button>
+            <button type="button" onClick={() => console.log(getEditorState())}>
+              <RiEye2Line /> Get Editor state
+            </button>
+            <button type="button" onClick={() => setIsUnmounted(!isUnmounted)}><RiLoginBoxLine /> Toggle unmounting</button>
+            <ToggleOptions />
+          </div>
         </header>
         {!isRenderer && !isUnmounted && (
           <Fragment>
@@ -50,7 +51,10 @@ function App() {
             <EditorOptions />
           </Fragment>
         )}
-        {!isRenderer && isUnmounted && <p>Unmounted editor</p> }
+        {!isRenderer && isUnmounted && <div className="c-unmounted">
+            <p>Editor is unmounted.</p>
+            <span>Redux dev tools wont show updates, so if you need to debug redux you need to refresh your browser. But in this context you can make sure that the editor does not crash and cancels all necessary events when un-mounting the editor.</span>
+          </div>}
         {isRenderer && <PlaygroundRenderer activeWidget={activeWidget} />}
       </div>
     </Provider>

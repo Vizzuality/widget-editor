@@ -1,4 +1,4 @@
-import { fork, take, takeLatest, put, call, select } from "redux-saga/effects";
+import { fork, take, takeLatest, put, call, cancel, select } from "redux-saga/effects";
 
 // EDITOR HELPERS
 import { getAction } from "@widget-editor/shared/lib/helpers/redux";
@@ -48,7 +48,7 @@ function* initializeData(props) {
 
   yield put(dataInitialized());
 
-  if (props?.type === constants.sagaEvents.DATA_FLOW_VISUALISATION_READY) {
+  if (props?.type === constants.sagaEvents.DATA_FLOW_VISUALIZATION_READY) {
     yield call(initializeVega);
   }
 }
@@ -61,6 +61,11 @@ function* initializeData(props) {
 function* initializeVega(props) {
   const { widgetEditor: { editor, configuration, theme } } = yield select();
   const { widgetData, advanced } = editor;
+
+  if (!editor?.widget?.attributes) {
+    yield cancel();
+  }
+
   const { widgetConfig } = editor.widget.attributes;
 
   /**
@@ -155,12 +160,12 @@ export default function* baseSaga() {
 
   /**
    * Trigger initial data request
-   * @sagaEvents DATA_FLOW_VISUALISATION_READY
+   * @sagaEvents DATA_FLOW_VISUALIZATION_READY
    * Will resolve sql query and any editor state requried for rendering a widget
    * @triggers > EDITOR/dataInitialized
    */
   yield takeLatest(
-    constants.sagaEvents.DATA_FLOW_VISUALISATION_READY,
+    constants.sagaEvents.DATA_FLOW_VISUALIZATION_READY,
     initializeData
   );
 

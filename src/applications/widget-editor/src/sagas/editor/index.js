@@ -110,7 +110,7 @@ export default function* baseSaga() {
   );
 
   yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORE, restoreEditor);
-  yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALISATION_READY, setEditorInitialized);
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALIZATION_READY, setEditorInitialized);
 
 
   yield takeLatest(

@@ -80,7 +80,7 @@ export default class DataService {
 
     this.setEditor({ restoring: false });
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
-    this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
+    this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
   }
 
   async handleFilters(restore: boolean = false) {
@@ -176,6 +176,6 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
-    this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALISATION_READY });
+    this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
   }
 }
