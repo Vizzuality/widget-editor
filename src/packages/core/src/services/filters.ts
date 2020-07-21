@@ -4,7 +4,7 @@
 import isPlainObject from "lodash/isPlainObject";
 import isArray from "lodash/isArray";
 
-import { Filters, Config } from "@widget-editor/types";
+import { Filters, Config, Adapter } from "@widget-editor/types";
 
 import FieldsService from "./fields";
 
@@ -21,11 +21,13 @@ export default class FiltersService implements Filters.Service {
   dataset: any;
   configuration: Config.Payload;
   filters: any;
+  adapter: Adapter.Service;
 
-  constructor(configuration: any, filters: any, dataset: any) {
+  constructor(configuration: any, filters: any, dataset: any, adapter: Adapter.Service) {
     this.configuration = configuration;
     this.filters = filters;
     this.sql = "";
+    this.adapter = adapter;
 
     this.dataset = dataset;
 
@@ -307,12 +309,11 @@ export default class FiltersService implements Filters.Service {
       throw new Error("Error, datasetId not present in Filters service.");
     }
 
-    const response = await fetch(
+    const response = await this.adapter.prepareRequest(
       `https://api.resourcewatch.org/v1/query/${this.dataset.id}?sql=${this.sql}`
     );
 
-    const data = await response.json();
-    return data;
+    return response.data;
   }
 
   getQuery() {

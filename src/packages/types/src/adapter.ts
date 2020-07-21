@@ -13,8 +13,11 @@ export interface Service {
   endpoint: Endpoint;
   dataEndpoint: Endpoint;
   datasetId: datasetId;
+  requestQue: any;
+  isAborting: boolean;
   // Used when saving data
   // This will be grabbed and put into onSave on any request
+  prepareRequest(url: string): Promise<any>;
   payload(): object;
   filterSerializer(filters: any): any;
   requestData({ configuration, filters, dataset }: { configuration: any, filters: any, dataset: Dataset.Payload }): Promise<any>;

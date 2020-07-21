@@ -8,6 +8,8 @@ import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 
 import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
+import { getLocalCache } from "exposed-hooks";
+
 function* restoreEditor() {
   yield put(resetEditor());
   yield put(resetConfiguration());
@@ -95,6 +97,8 @@ function* preloadData() {
 }
 
 function* cancelAll() {
+  const { adapter } = getLocalCache();
+  adapter.abortRequests();
   const tasks = yield all([
     fork(preloadData),
     fork(setEditorInitialized)
