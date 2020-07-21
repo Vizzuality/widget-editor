@@ -3,7 +3,7 @@ import { getLocalCache } from "exposed-hooks";
 
 /**
  * @generator getWidgetDataWithAdapter
- * utalizing the specified adapter to request widget data
+ * utilizing the specified adapter to request widget data
  * @triggers <void>
  */
 function* getWidgetDataWithAdapter(editorState) {
