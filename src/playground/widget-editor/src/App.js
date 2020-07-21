@@ -4,9 +4,8 @@ import { RiLoginBoxLine, RiMistLine, RiEye2Line, RiPaletteLine } from 'react-ico
 
 import configureStore from "store";
 
-import { getEditorState, ModifyEditorState } from "@widget-editor/widget-editor";
-
 import Editor from "./components/editor";
+import DebugOption from "components/debug-options";
 import EditorOptions from "components/editor-options";
 import ToggleOptions from "components/toggle-options";
 import PlaygroundRenderer from "components/playground-renderer";
@@ -38,10 +37,8 @@ function App() {
             <button type="button" onClick={() => handleSetRenderer()}>
               {isRenderer ? <RiMistLine /> : <RiPaletteLine /> } {isRenderer ? "View editor" : "View renderer"}
             </button>
-            <button type="button" onClick={() => console.log(getEditorState())}>
-              <RiEye2Line /> Get Editor state
-            </button>
-            <button type="button" onClick={() => setIsUnmounted(!isUnmounted)}><RiLoginBoxLine /> Toggle unmounting</button>
+            <button type="button" onClick={() => setIsUnmounted(!isUnmounted)}><RiLoginBoxLine /> Toggle un-mounting</button>
+            <DebugOption />
             <ToggleOptions />
           </div>
         </header>
