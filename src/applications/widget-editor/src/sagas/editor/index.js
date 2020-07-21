@@ -1,4 +1,4 @@
-import { takeLatest, put, select } from "redux-saga/effects";
+import { takeLatest, put, select, all, fork, call, take, cancel } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
 
 import { setConfiguration, resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
@@ -76,11 +76,10 @@ function* preloadData() {
 
     const format = widgetConfig?.paramsConfig?.value?.format || "s";
 
-    if (configuration.orderBy || configuration.groupBy) {
+    if (configuration.orderBy) {
       yield put(
         setFilters({
           ...(configuration.orderBy ? { orderBy: configuration.orderBy } : {}),
-          ...(configuration.groupBy ? { groupBy: configuration.groupBy } : {}),
         })
       );
     }
@@ -95,6 +94,15 @@ function* preloadData() {
   }
 }
 
+function* cancelAll() {
+  const tasks = yield all([
+    fork(preloadData),
+    fork(setEditorInitialized)
+  ])
+  yield cancel([...tasks]);
+  yield call(restoreEditor)
+}
+
 export default function* baseSaga() {
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_DATASET_WIDGET_READY,
@@ -103,4 +111,11 @@ export default function* baseSaga() {
 
   yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORE, restoreEditor);
   yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALISATION_READY, setEditorInitialized);
+
+
+  yield takeLatest(
+    constants.sagaEvents.DATA_FLOW_UNMOUNT,
+    cancelAll
+  )
+
 }

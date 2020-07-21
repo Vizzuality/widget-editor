@@ -28,7 +28,9 @@ const stateProxy = new StateProxy();
 // Action triggering this is: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE
 function* updateHookState() {
   const state = yield select();
-  localOnChangeState(state.widgetEditor);
+  if (state.widgetEditor.editor.initialized && state.widgetEditor.widget) {
+    localOnChangeState(state.widgetEditor);
+  }
 }
 
 /**
@@ -38,7 +40,6 @@ function* updateHookState() {
  */
 function* initializeData(props) {
   const { widgetEditor } = yield select();
-
   const widgetData = yield call(getWidgetDataWithAdapter, widgetEditor)
 
   if (widgetData) {

@@ -58,8 +58,13 @@ class Editor extends React.Component {
   }
 
   componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: constants.sagaEvents.DATA_FLOW_UNMOUNT
+    });
     this.resetEditor();
   }
+
 
   componentDidUpdate(prevProps) {
     const {
@@ -107,13 +112,11 @@ class Editor extends React.Component {
       setEditor,
       disable = [],
       enableSave = true,
-      enableInfo = true,
     } = this.props;
 
     setEditor({
       disabledFeatures: disable,
       enableSave,
-      enableInfo,
     });
   }
 

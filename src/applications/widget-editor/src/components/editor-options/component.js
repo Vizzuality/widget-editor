@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useCallback } from "react";
 import styled, { css } from "styled-components";
 import debounce from 'lodash/debounce';
 
@@ -6,7 +6,6 @@ import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
 import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
-import GroupValues from "components/group-values";
 import QueryLimit from "components/query-limit";
 import Filter from "components/filter";
 
@@ -84,7 +83,6 @@ const EditorOptions = ({
   sliceCount,
   data,
   orderBy,
-  groupBy,
   patchConfiguration,
   compact,
   dataService,
@@ -110,6 +108,7 @@ const EditorOptions = ({
   const handleLimit = debounce((value) => {
     patchConfiguration({ limit: value });
   }, 500);
+
 
   if (!initialized || restoring) {
     return (
@@ -150,14 +149,11 @@ const EditorOptions = ({
                 <OrderValues
                   onChange={(value) => handleOrderBy(value)}
                 />
-                <GroupValues
-                  onChange={(value) => handleGroupBy(value)}
-                />
                 {limit && (
                   <QueryLimit
                     min={0}
-                    max={500}
-                    onChange={(value) => handleLimit(value)}
+                    max={50}
+                    onChange={handleLimit}
                     label="Limit"
                     value={limit}
                   />

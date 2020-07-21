@@ -27,9 +27,9 @@ const QueryLimit = ({
   min = null,
   max = null,
   value,
-  minDistance = 1,
-  onChange = (data) => {},
+  onChange = () => null,
 }) => {
+
   const [localValue, setLocalValue] = useState({ value: value, key: null });
 
   const changeValue = (data) => {
@@ -43,26 +43,35 @@ const QueryLimit = ({
     onChange(q.value, q.key);
   }, 1000);
 
-  const isDouble = Array.isArray(localValue.value);
+
+  const isDouble = Array.isArray(localValue);
   const isFloatingPoint = isFloat(min) || isFloat(max);
 
   let minValue = min;
   let maxValue = max;
   if (isDouble) {
-    minValue = localValue.value[0];
-    maxValue = localValue.value[1];
+    minValue = localValue[0];
+    maxValue = localValue[1];
   } else {
-    maxValue = localValue.value ? localValue.value : max;
-  }
-
-  if (maxValue - minValue <= minDistance) {
-    minValue = maxValue - minDistance;
+    maxValue = localValue ?? max;
   }
 
   const minMaxProps = {
     ...(min !== null && { min }),
     ...(max !== null && { max }),
   };
+
+  const sliderValue = useMemo(
+    () => isDouble ? [minValue, maxValue] : maxValue,
+    [isDouble, minValue, maxValue]
+  );
+
+  const onChangeDebounced = useCallback(debounce(onChange, 1000), [onChange]);
+
+  const onChangeValue = useCallback((value) => {
+    setLocalValue(value);
+    onChangeDebounced(value);
+  }, [setLocalValue, onChangeDebounced]);
 
   return (
     <InputGroup>
@@ -73,6 +82,7 @@ const QueryLimit = ({
           <FlexController contain={20}>
             <Input
               {...minMaxProps}
+              step={isFloatingPoint ? 0.1 : 1}
               value={maxValue}
               type={dateType ? "date" : "number"}
               name="options-limit-max"
@@ -127,6 +137,7 @@ const QueryLimit = ({
             >
               <Input
                 {...minMaxProps}
+                step={isFloatingPoint ? 0.1 : 1}
                 value={maxValue}
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
