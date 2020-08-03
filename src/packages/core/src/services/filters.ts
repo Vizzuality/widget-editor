@@ -14,8 +14,6 @@ import filtersHelper from "../helpers/filters";
 
 import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
-import aggregations from "@widget-editor/shared/lib/constants/aggregations";
-
 export default class FiltersService implements Filters.Service {
   sql: string;
   dataset: any;
