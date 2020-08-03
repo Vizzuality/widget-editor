@@ -10,6 +10,12 @@ export const StyledEmpty = styled.div`
   text-align: center;
 `;
 
+export const StyledAddSection = styled.div`
+  position: absolute;
+  top: -40px;
+  right: 0;
+`;
+
 export const StyledFilterSection = styled.div`
   padding: 10px 0;
   position: relative;

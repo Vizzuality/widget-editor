@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 
 import { FiltersService } from "@widget-editor/core";
 
@@ -25,11 +25,11 @@ import FilterValue from "./components/FilterValue";
 import FilterColumn from "./components/FilterColumn";
 import FilterStrings from "./components/FilterStrings";
 import FilterIndicator from "./components/FilterIndicator";
-import AddSection from "./components/AddSection";
 
 import {
   StyledFilterBox,
   StyledEmpty,
+  StyledAddSection,
   StyledFilterSection,
   StyledFilter,
   StyledDeleteBox,
@@ -43,16 +43,25 @@ const Filter = ({
   configuration,
   dataset,
 }) => {
-  const availableColumns = fields.map((field) => {
-    return {
-      label:
-        field.metadata && field.metadata.alias
-          ? field.metadata.alias
-          : field.columnName.replace(/_/gi, " "),
-      value: field.columnName,
-      dataType: field.type,
-    };
-  });
+  const availableColumns = useMemo(() => {
+    const usedColumns = filters.map(filter => filter.column).filter(column => !!column);
+
+    return fields
+      .filter(field => usedColumns.indexOf(field.columnName) === -1)
+      .map(field => ({
+        label:
+          field.metadata && field.metadata.alias
+            ? field.metadata.alias
+            : field.columnName,
+          value: field.columnName,
+          dataType: field.type,
+        }))
+  }, [filters, fields]);
+
+  const canAddFilter = useMemo(
+    () => filters.length < fields.length && filters.every(filter => filter.column),
+    [filters, fields]
+  );
 
   const setData = async (values, id, type) => {
     const patch = await FiltersService.patchFilters(
@@ -70,7 +79,7 @@ const Filter = ({
     dataService.requestWithFilters(patch, configuration);
   };
 
-  const addFilter = () => {
+  const addFilter = useCallback(() => {
     const patch = [
       ...filters,
       { ...COLUMN_FILTER_GROUP, id: uniqueId("we-filter-") },
@@ -78,18 +87,23 @@ const Filter = ({
     setFilters({
       list: patch,
     });
-  };
+  }, [filters, setFilters]);
 
-  const removeFilter = (id) => {
+  const removeFilter = useCallback((id) => {
     const patch = filters.filter((f) => f.id !== id) || [];
     setFilters({
       list: patch,
     });
-  };
+  }, [filters, setFilters]);
 
   return (
     <StyledFilterBox>
-      <AddSection addFilter={addFilter} />
+      <StyledAddSection>
+        <Button size="small" onClick={addFilter} disabled={!canAddFilter}>
+          Add filter
+        </Button>
+      </StyledAddSection>
+
       {!filters.length && (
         <StyledEmpty>
           Click "Add filter" to start filtering the data.
@@ -103,6 +117,7 @@ const Filter = ({
               filter={filter}
               setData={setData}
               optionData={availableColumns}
+              isDisabled={!!filter.column}
             />
             <StyledDeleteBox>
               <Button type="highlight" onClick={() => removeFilter(filter.id)}>
@@ -110,6 +125,7 @@ const Filter = ({
               </Button>
             </StyledDeleteBox>
           </InputGroup>
+
           {filter.column !== null && (
             <StyledFilter>
               {NUMBER_TYPES.indexOf(filter.indicator) > -1 && (

@@ -3,7 +3,7 @@ import Select from "react-select";
 
 import { TYPE_COLUMNS } from "components/filter/const";
 
-const FilterColumn = ({ filter, setData = () => {}, optionData = [] }) => {
+const FilterColumn = ({ filter, setData = () => {}, optionData = [], ...rest }) => {
   const handleChange = options => {
     setData(options, filter.id, TYPE_COLUMNS);
   };
@@ -17,6 +17,7 @@ const FilterColumn = ({ filter, setData = () => {}, optionData = [] }) => {
       name={`filter-column-${filter.id}`}
       options={optionData}
       onChange={handleChange}
+      {...rest}
     />
   );
 };
