@@ -1,9 +1,9 @@
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
+import { Charts, Vega, Generic } from "@widget-editor/types";
 
 import ChartsCommon from './chart-common';
 import ParseSignals from './parse-signals';
-
-import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class BarsStacked extends ChartsCommon implements Charts.Bars {
   configuration: any;
@@ -211,9 +211,6 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
     ];
   }
 
-  // FIXME: this is temporal, bar charts with a 3rd dimension (color) should be grouped bar charts
-  // This fix just displays the legend correctly while the grouped bar chart visualisation is
-  // brought back
   setLegend() {
     const scheme = this.resolveScheme();
 
@@ -221,16 +218,22 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
       return null;
     }
 
+    const colorValuesOrder = [...new Set(this.widgetData.map((d: { color: string | number }) => d.color))];
+    const colorRange = scheme.range.category20;
+    const getColor = d => colorRange[colorValuesOrder.indexOf(d.color)];
+    const values = sortBy(uniqBy(this.widgetData, 'color'), ['color'], ['asc'])
+      .map((d: { color: string | number }) => ({
+        label: d.color,
+        value: getColor(d),
+        type: 'string',
+      }));
+
     return [
       {
         type: 'color',
         label: null,
         shape: 'square',
-        values: this.widgetData.map((d: { x: string, y: number }, index) => ({
-          label: d[this.colorField],
-          value: scheme.range.category20[index % scheme.range.category20.length],
-          type: 'string',
-        }))
+        values,
       }
     ];
   }
