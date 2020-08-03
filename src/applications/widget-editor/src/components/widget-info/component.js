@@ -7,6 +7,7 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import debounce from "lodash/debounce";
+import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
 import { InputStyles } from "./style";
@@ -199,7 +200,7 @@ class WidgetInfo extends React.Component {
         {!isMap && (
           <InputGroup>
             <FormLabel htmlFor="options-title">Value aggregation</FormLabel>
-            <CreatableSelect
+            <Select
               value={this.aggregationOptions.find(
                 (agg) => agg.value === aggregateFunction
               )}
