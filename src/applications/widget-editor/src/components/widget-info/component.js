@@ -13,17 +13,12 @@ import CreatableSelect from "react-select/creatable";
 import { InputStyles } from "./style";
 
 import VALUE_FORMAT_OPTIONS from "@widget-editor/shared/lib/constants/value-formats";
-import aggregations from "@widget-editor/shared/lib/constants/aggregations";
+import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
 class WidgetInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.stateFromProps(props.configuration);
-
-    this.aggregationOptions = aggregations.map((agg) => ({
-      value: agg.toUpperCase(),
-      label: agg.charAt(0).toUpperCase() + agg.slice(1),
-    }));
 
     this.setValueFormat = this.setValueFormat.bind(this);
     this.setAggregation = this.setAggregation.bind(this);
@@ -201,11 +196,11 @@ class WidgetInfo extends React.Component {
           <InputGroup>
             <FormLabel htmlFor="options-title">Value aggregation</FormLabel>
             <Select
-              value={this.aggregationOptions.find(
+              value={AGGREGATION_OPTIONS.find(
                 (agg) => agg.value === aggregateFunction
               )}
               onChange={this.setAggregation}
-              options={this.aggregationOptions}
+              options={AGGREGATION_OPTIONS}
               styles={InputStyles}
             />
           </InputGroup>
