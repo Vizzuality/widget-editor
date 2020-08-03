@@ -7,9 +7,6 @@ export const StyledFilterBox = styled.div`
 export const StyledEmpty = styled.div`
   max-width: 300px;
   margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
 `;
 

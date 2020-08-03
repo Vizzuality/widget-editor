@@ -91,7 +91,9 @@ const Filter = ({
     <StyledFilterBox>
       <AddSection addFilter={addFilter} />
       {!filters.length && (
-        <StyledEmpty>No filters found. Please, add them.</StyledEmpty>
+        <StyledEmpty>
+          Click "Add filter" to start filtering the data.
+        </StyledEmpty>
       )}
 
       {filters.map((filter) => (
