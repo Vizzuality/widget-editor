@@ -7,22 +7,18 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
 import debounce from "lodash/debounce";
+import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
 import { InputStyles } from "./style";
 
 import VALUE_FORMAT_OPTIONS from "@widget-editor/shared/lib/constants/value-formats";
-import aggregations from "@widget-editor/shared/lib/constants/aggregations";
+import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
 class WidgetInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.stateFromProps(props.configuration);
-
-    this.aggregationOptions = aggregations.map((agg) => ({
-      value: agg.toUpperCase(),
-      label: agg.charAt(0).toUpperCase() + agg.slice(1),
-    }));
 
     this.setValueFormat = this.setValueFormat.bind(this);
     this.setAggregation = this.setAggregation.bind(this);
@@ -199,12 +195,12 @@ class WidgetInfo extends React.Component {
         {!isMap && (
           <InputGroup>
             <FormLabel htmlFor="options-title">Value aggregation</FormLabel>
-            <CreatableSelect
-              value={this.aggregationOptions.find(
+            <Select
+              value={AGGREGATION_OPTIONS.find(
                 (agg) => agg.value === aggregateFunction
               )}
               onChange={this.setAggregation}
-              options={this.aggregationOptions}
+              options={AGGREGATION_OPTIONS}
               styles={InputStyles}
             />
           </InputGroup>

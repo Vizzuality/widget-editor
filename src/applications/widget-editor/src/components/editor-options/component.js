@@ -149,7 +149,7 @@ const EditorOptions = ({
                 <OrderValues
                   onChange={(value) => handleOrderBy(value)}
                 />
-                {limit && (
+                {limit !== undefined && limit !== null && (
                   <QueryLimit
                     min={0}
                     max={50}
