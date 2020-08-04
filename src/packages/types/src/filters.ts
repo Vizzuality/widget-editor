@@ -7,5 +7,6 @@ export interface Service {
   prepareGroupBy(): void;
   prepareOrderBy(): void;
   prepareLimit(): void;
+  getDeserializedFilters(filters: any[], fields: any[], dataset: any): Promise<any[]>;
   requestWidgetData(): Promise<Generic.ObjectPayload>;
 }

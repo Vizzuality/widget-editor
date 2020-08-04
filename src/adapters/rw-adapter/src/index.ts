@@ -229,7 +229,7 @@ export default class RwAdapter implements Adapter.Service {
           orderBy: editorState.configuration.orderBy,
           aggregateFunction: editorState.configuration.aggregateFunction,
           chartType: editorState.configuration.chartType,
-          filters: this.filterSerializer(editorFilters),
+          filters: this.getSerializedFilters(editorFilters ?? []),
           areaIntersection: editorState.configuration.areaIntersection,
           band: editorState.configuration.band,
           donutRadius: editorState.configuration.donutRadius,
@@ -312,41 +312,6 @@ export default class RwAdapter implements Adapter.Service {
     consumerOnSave(out);
   }
 
-  // Called when filters are updated
-  // Its up to the adapter to serialize these in a format the api wants
-  filterSerializer(filters: any) {
-    const serialize = filters.map((filter) => ({
-      value:
-        filter.indicator === "FILTER_ON_VALUES"
-          ? filter.filter.values.map((v) => v.value)
-          : filter.filter.values,
-      type: filter.dataType,
-      name: filter.column,
-      datasetID: this.datasetId,
-      tableName: this.tableName,
-      alias: filter.column, // TODO: Fix me
-    }));
-
-    // If any of these props are empty, dont apply the filter
-    const REQUIRED_PROPS = ["value", "type", "datasetID", "tableName"];
-
-    const validateProperty = (prop) => {
-      if (Array.isArray(prop) && prop.length === 0) {
-        return false;
-      }
-      if (typeof prop === "string" && prop.length === 0) {
-        return false;
-      }
-      return prop === null ? false : true;
-    };
-
-    return serialize.filter(
-      (f) =>
-        [...REQUIRED_PROPS].filter((prop) => validateProperty(f[prop]))
-          .length === REQUIRED_PROPS.length
-    );
-  }
-
   getDataUrl() {
     return tags.oneLineTrim`
       https://api.resourcewatch.org/v1/query/
@@ -364,36 +329,48 @@ export default class RwAdapter implements Adapter.Service {
     return await response.json();
   }
 
-  async filterUpdate(
+  /**
+   * Serialize the editor's filters for the widgetConfig
+   * @param filters Filters
+   */
+  private getSerializedFilters(filters: any[]) {
+    const getSerializedValue = (value, type) => {
+      if (type === 'date') {
+        if (Array.isArray(value)) {
+          return value.map(date => date.toISOString());
+        }
+
+        return value.toISOString();
+      }
+
+      return value;
+    }
+
+    return filters
+      .filter(filter => filter.value !== undefined && filter.value !== null)
+      .map(({ column, type, value, notNull }) => ({
+        name: column,
+        type,
+        value: getSerializedValue(value, type),
+        notNull,
+      }));
+  }
+
+  /**
+   * Deserialize the filters for for the widget-editor's application
+   * @param filters Serialized filters
+   * @param fields Dataset's fields
+   * @param dataset Dataset object
+   */
+  async getDeserializedFilters(
     filters: any,
-    fields: any,
-    widget: Widget.Payload,
+    fields: any[],
     dataset: Dataset.Payload
-  ) {
+  ): Promise<any[]> {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];
     }
 
-    const {
-      attributes: { name, description, widgetConfig },
-    } = widget;
-
-    const configuration = {
-      ...widgetConfig.paramsConfig,
-      title: name,
-      caption: description,
-    };
-
-    const out = await FiltersService.handleFilters(
-      filters,
-      {
-        column: "name",
-        values: "value",
-        type: "type",
-      },
-      { configuration, dataset, fields, widget }
-    );
-
-    return out;
+    return await FiltersService.getDeserializedFilters(filters, fields, dataset,);
   }
 }

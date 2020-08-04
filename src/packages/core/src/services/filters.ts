@@ -5,22 +5,18 @@ import isPlainObject from "lodash/isPlainObject";
 import isArray from "lodash/isArray";
 
 import { Filters, Config } from "@widget-editor/types";
-
-import FieldsService from "./fields";
+import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
-
-import filtersHelper from "../helpers/filters";
-
-import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
+import FieldsService from "./fields";
 
 export default class FiltersService implements Filters.Service {
   sql: string;
   dataset: any;
   configuration: Config.Payload;
-  filters: any;
+  filters: any[];
 
-  constructor(configuration: any, filters: any, dataset: any) {
+  constructor(configuration: any, filters: any[], dataset: any) {
     this.configuration = configuration;
     this.filters = filters;
     this.sql = "";
@@ -41,9 +37,6 @@ export default class FiltersService implements Filters.Service {
   }
 
   private resolveTableName() {
-    // const { value, category } = this.configuration;
-    // const { tableName: xTableName } = value;
-    // const { tableName: yTableName } = category;
     return this.dataset.attributes.tableName;
   }
 
@@ -75,180 +68,177 @@ export default class FiltersService implements Filters.Service {
       } FROM ${this.resolveTableName()}`;
   }
 
-  private escapeValue(value, dataType) {
-    return dataType === "date" || dataType === "string" ? `'${value}'` : value;
-  }
+  /**
+   * Return the serialization of the number filter as SQL (for the WHERE statement)
+   * @param filter Number filter to serialize
+   */
+  private getNumberFilterQuery(filter: any): string {
+    const { column, operation, value } = filter;
 
-  private rangeCondition(
-    sql: string,
-    column: string,
-    values: any,
-    dataType: string
-  ): string {
-    let out = sql;
-    return `${out} ${column} >= ${this.escapeValue(
-      values[0],
-      dataType
-    )} AND ${column} <= ${this.escapeValue(values[1], dataType)}`;
-  }
+    let sql;
+    switch (operation) {
+      case 'not-between':
+        sql = `${column} < ${value[0]} OR ${column} > ${value[1]}`;
+        break;
 
-  private valueRange(
-    sql: string,
-    column: string,
-    values: any,
-    dataType: string
-  ): string {
-    let out = sql;
+      case '>':
+        sql = `${column} > ${value}`;
+        break;
 
-    if (!Array.isArray(values) || values.length === 0) {
-      return `${out} ${column} IN ()`;
+      case '>=':
+        sql = `${column} >= ${value}`;
+        break;
+
+      case '<':
+        sql = `${column} < ${value}`;
+        break;
+
+      case '<=':
+        sql = `${column} <= ${value}`;
+        break;
+
+      case '=':
+        sql = `${column} = ${value}`;
+        break;
+
+      case '!=':
+        sql = `${column} <> ${value}`;
+        break;
+
+      case 'between':
+      default:
+        sql = `${column} >= ${value[0]} AND ${column} <= ${value[1]}`;
+        break;
     }
 
-    return `${out} ${column} IN (${values
-      .map((v) => this.escapeValue(v.value, dataType))
-      .join(",")})`;
+    return sql;
   }
 
-  private textContains(
-    sql: string,
-    column: string,
-    values: any,
-    dataType: string
-  ): string {
-    let out = sql;
-    return `${out} ${column} LIKE \'%${values}%\'`;
-  }
+  /**
+   * Return the serialization of the date filter as SQL (for the WHERE statement)
+   * @param filter Date filter to serialize
+   */
+  private getDateFilterQuery(filter: any): string {
+    const { column, operation, value } = filter;
+    const getSerializedValue = date => this.dataset.attributes.provider === 'featureservice'
+      ? `date '${date.toISOString().split('T')[0]}'`
+      : `'${date.toISOString()}'`;
 
-  private valueEquals(
-    sql: string,
-    column: string,
-    values: any,
-    dataType: string
-  ): string {
-    let out = sql;
+    let sql;
+    switch (operation) {
+      case 'not-between':
+        sql = `${column} < ${getSerializedValue(value[0])} OR ${column} > ${getSerializedValue(value[1])}`;
+        break;
 
-    // If the user hasn't selected a value yet, we don't want the filter but we can't return an
-    // empty string either because if the filter is not the first we would get something like:
-    // SELECT * FROM XXX WHERE otherFilter = YYY AND LIMIT 50
-    // Instead, we can use the condition 1 = 1 which is always true
-    if (values === undefined || values === null) {
-      return `${out} 1 = 1`;
+      case '>':
+        sql = `${column} > ${getSerializedValue(value)}`;
+        break;
+
+      case '>=':
+        sql = `${column} >= ${getSerializedValue(value)}`;
+        break;
+
+      case '<':
+        sql = `${column} < ${getSerializedValue(value)}`;
+        break;
+
+      case '<=':
+        sql = `${column} <= ${getSerializedValue(value)}`;
+        break;
+
+      case '=':
+        sql = `${column} = ${getSerializedValue(value)}`;
+        break;
+
+      case '!=':
+        sql = `${column} <> ${getSerializedValue(value)}`;
+        break;
+
+      case 'between':
+      default:
+        sql = `${column} >= ${getSerializedValue(value[0])} AND ${column} <= ${getSerializedValue(value[1])}`;
+        break;
     }
 
-    if (Array.isArray(values)) {
-      return `${out} ${column} IN (${values
-        .map((v) => this.escapeValue(v, dataType))
-        .join(",")})`;
+    return sql;
+  }
+
+  /**
+   * Return the serialization of the string filter as SQL (for the WHERE statement)
+   * @param filter String filter to serialize
+   */
+  private getStringFilterQuery(filter: any): string {
+    const { column, operation, value } = filter;
+
+    let sql;
+    switch (operation) {
+      case 'contains':
+        sql = `${column} LIKE '%${value}%'`;
+        break;
+
+      case 'not-contain':
+        sql = `${column} NOT LIKE '%${value}%'`;
+        break;
+
+      case 'starts-with':
+        sql = `${column} LIKE '${value}%'`;
+        break;
+
+      case 'ends-with':
+        sql = `${column} LIKE '%${value}'`;
+        break;
+
+      case '=':
+        sql = `${column} LIKE '${value}'`;
+        break;
+
+      case '!=':
+        sql = `${column} NOT LIKE '${value}'`;
+        break;
+
+      case 'by-values':
+      default:
+        sql = `${column} IN ('${value.join('\', \'')}')`;
+        break;
     }
 
-    return `${out} ${column} = ${this.escapeValue(values, dataType)}`;
-  }
-
-  private textNotContains(
-    sql: string,
-    column: string,
-    values: any,
-    dataType: string
-  ): string {
-    let out = sql;
-    return `${out} ${column} NOT LIKE \'%${values}%\'`;
-  }
-
-  private textStartsWith(
-    sql: string,
-    column: string,
-    values: any,
-    dataType: string
-  ): string {
-    let out = sql;
-    return `${out} (lower(${column}) LIKE '${values}%')`;
-  }
-
-  private textEndsWith(
-    sql: string,
-    column: string,
-    values: any,
-    dataType: string
-  ): string {
-    let out = sql;
-    return `${out} (lower(${column}) LIKE '%${values}')`;
-  }
-
-  notNullCheck(out, column, notNull = false) {
-    if (notNull) {
-      out = `${out} AND ${column} IS NOT NULL`;
-    }
-    return out;
+    return sql;
   }
 
   prepareFilters() {
-    let out = this.sql;
+    let sql = this.sql;
 
-    const filters = Array.isArray(this.filters)
-      ? this.filters
-      : this.filters?.list;
+    const validFilters = (this.filters ?? [])
+      .filter(filter => filter.value !== undefined && filter.value !== null
+        && (!Array.isArray(filter.value) || filter.value.length > 0));
 
-    if (filters && filters.length > 0) {
-      out = `${out} WHERE `;
-      filters.forEach((weFilter, index) => {
-        const {
-          indicator,
-          column,
-          dataType,
-          filter: { values, notNull },
-        } = weFilter;
+    if (validFilters.length > 0) {
+      sql = `${sql} WHERE `;
 
-        if (indicator === "range") {
-          out = index > 0 ? `${out} AND ` : out;
-          out = this.rangeCondition(out, column, values, dataType);
-          out = this.notNullCheck(out, column, notNull);
-        }
-        if (
-          indicator === "FILTER_ON_VALUES" &&
-          Array.isArray(values) &&
-          values.length > 0
-        ) {
-          out = index > 0 ? `${out} AND ` : out;
-          out = this.valueRange(out, column, values, dataType);
-          out = this.notNullCheck(out, column, notNull);
-        }
-        if (indicator === "TEXT_CONTAINS") {
-          out = index > 0 ? `${out} AND ` : out;
-          out = this.textContains(out, column, values, dataType);
-          out = this.notNullCheck(out, column, notNull);
+      validFilters.forEach((filter, index) => {
+        const { column, type, notNull } = filter;
+
+        sql = index > 0 ? `${sql} AND ` : sql;
+
+        if (type === 'number') {
+          sql = `${sql} ${this.getNumberFilterQuery(filter)}`;
+        } else if (type === 'date') {
+          sql = `${sql} ${this.getDateFilterQuery(filter)}`;
+        } else if (type === 'string') {
+          sql = `${sql} ${this.getStringFilterQuery(filter)}`;
         }
 
-        if (indicator === "TEXT_NOT_CONTAINS") {
-          out = index > 0 ? `${out} AND ` : out;
-          out = this.textNotContains(out, column, values, dataType);
-          out = this.notNullCheck(out, column, notNull);
-        }
-
-        if (indicator === "TEXT_STARTS_WITH") {
-          out = index > 0 ? `${out} AND ` : out;
-          out = this.textStartsWith(out, column, values, dataType);
-          out = this.notNullCheck(out, column, notNull);
-        }
-
-        if (indicator === "TEXT_ENDS_WITH") {
-          out = index > 0 ? `${out} AND ` : out;
-          out = this.textEndsWith(out, column, values, dataType);
-          out = this.notNullCheck(out, column, notNull);
-        }
-
-        if (indicator === "value") {
-          out = index > 0 ? `${out} AND ` : out;
-          out = this.valueEquals(out, column, values, dataType);
-          out = this.notNullCheck(out, column, notNull);
+        if (notNull) {
+          sql = `${sql} AND ${column} IS NOT NULL`;
         }
       });
     }
 
-    this.sql = out.replace(/ +(?= )/g, "");
+    this.sql = sql.replace(/ +(?= )/g, "");
   }
 
   prepareGroupBy() {
-    const { aggregateFunction, chartType, color } = this.configuration;
+    const { aggregateFunction, color } = this.configuration;
 
     if (!!aggregateFunction) {
       this.sql = `${this.sql} GROUP BY x`;
@@ -317,62 +307,54 @@ export default class FiltersService implements Filters.Service {
     return encodeURIComponent(this.sql.replace(/ +(?= )/g, ""));
   }
 
-  static async handleFilters(filters, config, payload) {
-    const {
-      column: configuredColumn,
-      type: configuredType,
-      values: configuredValues,
-    } = config;
-
-    const { configuration, dataset, fields, widget } = payload;
-
-    const out = [];
-
-    const assignIndicator = (val, filter) => {
-      if (filter?.operation === "not-contain") {
-        return "TEXT_NOT_CONTAINS";
-      }
-
-      if (filter?.operation === "contains") {
-        return "TEXT_CONTAINS";
-      }
-
-      if (isPlainObject(val)) {
-        return Object.keys(val).length === 2 ? "range" : "value";
-      }
-      return isArray(val) && val.length === 2 ? "range" : "value";
-    };
+  /**
+   * Return the deserialized filters allow with their configuration (values and/or minimum and
+   * maximum)
+   * @param filters Serialized filters
+   * @param fields Dataset's fields
+   * @param dataset Dataset object
+   */
+  static async getDeserializedFilters(filters: any[], fields: any[], dataset: any): Promise<any[]> {
+    const res = [];
 
     await asyncForEach(filters, async (filter, index) => {
-      const values = filter[configuredValues] || undefined;
-      const column = filter[configuredColumn];
-      const type = filter[configuredType];
+      const { value, name: column, type, operation, notNull } = filter;
+
+      // The default operation must match the default case of the getNumberFilterQuery,
+      // getDateFilterQuery and getStringFilterQuery functions
+      // A lot of widgets have operation undefined because in v1, we would default to the operation
+      // below
+      let defaultOperation = 'between'; // For type number and date
+      if (type === 'string') {
+        defaultOperation = 'by-values';
+      }
 
       // Resolve metadata for current field
-      const fieldService = new FieldsService(configuration, dataset, fields);
+      const fieldService = new FieldsService(dataset, fields);
 
-      out.push({
-        column,
-        indicator: assignIndicator(values, filter),
+      res.push({
         id: `we-filter-${column}-${index}`,
-        exlude: !filter.operation,
-        dataType: type,
-        filter: {
-          values: values,
-          notNull: filter?.notNull || false,
-        },
-        fieldInfo: await fieldService.getFieldInfo(filter, column),
+        column,
+        type,
+        operation: operation ?? defaultOperation,
+        value,
+        notNull,
+        config: await fieldService.getFieldInfo(column),
       });
     });
 
-    return out;
+    return res;
   }
 
-  static async patchFilters(filters, payload, configuration, dataset, fields) {
-    const { values, id, type } = payload;
-    const fieldService = new FieldsService(configuration, dataset, fields);
-
-    const patch = await filtersHelper(filters, fieldService, payload);
-    return patch;
+  /**
+   * Fetch the configuration of a filter i.e. it's possible values, min value, max value, etc.
+   * @param dataset Dataset object
+   * @param fields The fields of the dataset
+   * @param fieldName Name of the column attached to the filter
+   */
+  static async fetchConfiguration(dataset: any, fields: any[], fieldName: string) {
+    const fieldService = new FieldsService(dataset, fields);
+    const configuration = await fieldService.getFieldInfo(fieldName);
+    return configuration;
   }
 }

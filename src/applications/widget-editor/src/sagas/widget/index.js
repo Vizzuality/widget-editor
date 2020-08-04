@@ -35,8 +35,8 @@ function* getWidgetDataWithAdapter(editorState) {
 
   if (columnsSet(value, category)) {
     const { widgetEditor } = yield select();
-    const { configuration, filters, editor: { dataset } } = widgetEditor;
-    return yield adapter.requestData({ configuration, filters, dataset });
+    const { configuration, filters: { list }, editor: { dataset } } = widgetEditor;
+    return yield adapter.requestData({ configuration, filters: list, dataset });
   }
 
   return yield [];
