@@ -6,7 +6,7 @@ export default {
   },
   schemes: [
     {
-      name: "Resource watch",
+      name: "Resource Watch",
       mainColor: "#40B2CE",
       category: [
         "#40B2CE",
@@ -32,7 +32,7 @@ export default {
     track: "#a3daf3",
     trackBackground: "#f5f5f5",
   },
-  selectedScheme: "Resource watch",
+  selectedScheme: "Resource Watch",
   font: "lato",
   titleSize: "auto",
   captionSize: "auto",

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const StyledShemesContainer = styled.div`
+export const StyledSchemesContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -13,7 +13,7 @@ export const StyledShemesContainer = styled.div`
     box-sizing: border-box;
   }
 `;
-export const StyledShemesCard = styled.div`
+export const StyledSchemesCard = styled.div`
   width: 33.333%;
   display: flex;
   align-items: center;
@@ -41,16 +41,16 @@ export const StyledCardBox = styled.div`
   }
 `;
 
-export const StyledShemeInfo = styled.div``;
+export const StyledSchemeInfo = styled.div``;
 
-export const StyledShemeName = styled.div`
+export const StyledSchemeName = styled.div`
   font-size: 14px;
   margin: 0;
   padding-bottom: 7px;
   text-transform: uppercase;
 `;
 
-export const StyledShemeColors = styled.div`
+export const StyledSchemeColors = styled.div`
   div {
     height: 21px;
   }

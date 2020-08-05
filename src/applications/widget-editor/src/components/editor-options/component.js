@@ -17,7 +17,7 @@ import {
 const AdvancedEditor = React.lazy(() => import("../advanced-editor"));
 const TableView = React.lazy(() => import("../table-view"));
 const Typography = React.lazy(() => import("../typography"));
-const ColorShemes = React.lazy(() => import("../color-shemes"));
+const ColorSchemes = React.lazy(() => import("../color-schemes"));
 const DonutRadius = React.lazy(() => import("../donut-radius"));
 const SliceCount = React.lazy(() => import("../slice-count"));
 const MapInfo = React.lazy(() => import("../map-info"));
@@ -212,7 +212,7 @@ const EditorOptions = ({
                   openDefault={disabledFeatures.indexOf("typography") !== -1}
                 >
                   <Suspense fallback={<div>Loading...</div>}>
-                    <ColorShemes />
+                    <ColorSchemes />
                   </Suspense>
                 </AccordionSection>
               )}

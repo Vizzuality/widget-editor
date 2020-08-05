@@ -7,21 +7,17 @@ export default {
   [actions.setTheme]: (state, { payload }) => {
     return { ...state, ...payload };
   },
-  [actions.setScheme]: (state, { payload }) => {
-    let selectedScheme = payload.find(
-      (scheme) => scheme.name === state.selectedScheme
-    );
-
-    if (!selectedScheme) {
-      selectedScheme = payload[0].name;
-    } else {
-      selectedScheme = selectedScheme.name;
-    }
-
+  [actions.setSchemes]: (state, { payload }) => {
+    const activeScheme = payload.find(scheme => scheme.name === state.selectedScheme);
+    
     return {
       ...state,
-      selectedScheme,
+      selectedScheme: !activeScheme ? payload[0].name : state.selectedScheme,
       schemes: payload,
     };
   },
+  [actions.setSelectedScheme]: (state, { payload }) => ({
+    ...state,
+    selectedScheme: payload,
+  })
 };

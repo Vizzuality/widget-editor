@@ -7,7 +7,7 @@ import { resetFilters } from "@widget-editor/shared/lib/modules/filters/actions"
 
 import {
   setTheme,
-  setScheme,
+  setSchemes,
   resetTheme,
 } from "@widget-editor/shared/lib/modules/theme/actions";
 
@@ -32,7 +32,7 @@ export default connectState(
       resetFilters: () => dispatch(resetFilters()),
       setEditor: (data) => dispatch(setEditor(data)),
       setTheme: (data) => dispatch(setTheme(data)),
-      setScheme: (data) => dispatch(setScheme(data)),
+      setSchemes: (data) => dispatch(setSchemes(data)),
     };
   }
 )(EditorComponent);

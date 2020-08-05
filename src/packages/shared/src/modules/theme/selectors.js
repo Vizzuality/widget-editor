@@ -1,20 +1,18 @@
 import { createSelector } from "reselect";
 
-const getSchemes = state => state.theme.schemes;
+export const getSchemes = state => state.theme.schemes;
 const selectedScheme = state => state.theme.selectedScheme;
 
-export const getMainThemeColor = createSelector(
-  [getSchemes, selectedScheme],
-  (schemes, selectedScheme) => {
-    const activeScheme = schemes.find(s => s.name === selectedScheme);
-    return activeScheme.mainColor;
-  }
-);
-
-export const getActiveScheme = createSelector(
+export const getSelectedScheme = createSelector(
   [getSchemes, selectedScheme],
   (schemes, selectedScheme) => {
     const activeScheme = schemes.find(s => s.name === selectedScheme);
     return activeScheme;
   }
+);
+
+
+export const getSchemeMainColor = createSelector(
+  [getSelectedScheme],
+  selectedScheme => selectedScheme.mainColor,
 );
