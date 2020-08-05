@@ -10,33 +10,33 @@ import {
   StyledSchemeColors,
 } from "./style";
 
-const ColorSchemes = ({ schemes, selectedScheme, setSelectedScheme, patchConfiguration }) => {
-  const onChangeScheme = useCallback(scheme => {
-    setSelectedScheme(scheme.name);
+const ColorSchemes = ({ schemes, scheme, setSelectedScheme, patchConfiguration }) => {
+  const onChangeScheme = useCallback(s => {
+    setSelectedScheme(s.name);
     patchConfiguration();
   }, [patchConfiguration, setSelectedScheme]);
 
   return (
     <StyledSchemesContainer>
-      {schemes.map((scheme, index) => {
+      {schemes.map((s, index) => {
         return (
-          <StyledSchemesCard key={`${scheme.name}-${index}`}>
+          <StyledSchemesCard key={`${s.name}-${index}`}>
             <StyledCardBox
-              active={selectedScheme.name === scheme.name}
-              onClick={() => onChangeScheme(scheme)}
+              active={s.name === scheme.name}
+              onClick={() => onChangeScheme(s)}
             >
               <StyledSchemeInfo>
-                <StyledSchemeName>{scheme.name}</StyledSchemeName>
+                <StyledSchemeName>{s.name}</StyledSchemeName>
                 <StyledSchemeColors>
                   <div
-                    style={{ flexBasis: "100%", background: scheme.mainColor }}
+                    style={{ flexBasis: "100%", background: s.mainColor }}
                   />
                   <div style={{ flexBasis: "100%", display: "flex" }}>
-                    {scheme.category.map((color) => (
+                    {s.category.map((color) => (
                       <div
                         key={color}
                         style={{
-                          flexBasis: `${100 / scheme.category.length}%`,
+                          flexBasis: `${100 / s.category.length}%`,
                           background: color,
                         }}
                       />
@@ -54,7 +54,7 @@ const ColorSchemes = ({ schemes, selectedScheme, setSelectedScheme, patchConfigu
 
 ColorSchemes.propTypes = {
   schemes: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectedScheme: PropTypes.object.isRequired,
+  scheme: PropTypes.object.isRequired,
   setSelectedScheme: PropTypes.func.isRequired,
   patchConfiguration: PropTypes.func.isRequired,
 };

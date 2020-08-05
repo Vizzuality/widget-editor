@@ -1,14 +1,14 @@
 import { fork, take, takeLatest, put, call, cancel, select } from "redux-saga/effects";
 
-// EDITOR HELPERS
-import { getAction } from "@widget-editor/shared/lib/helpers/redux";
-
 // CORE SERVICES
 import {
   constants,
   VegaService,
   StateProxy,
 } from "@widget-editor/core";
+
+// SELECTORS
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 
 // ACTIONS
 import { setEditor, dataInitialized } from "@widget-editor/shared/lib/modules/editor/actions";
@@ -58,7 +58,8 @@ function* initializeData(props) {
  * @triggers <void>
  */
 function* initializeVega(props) {
-  const { widgetEditor: { editor, configuration, theme } } = yield select();
+  const { widgetEditor: store } = yield select();
+  const { editor, configuration } = store;
   const { widgetData, advanced } = editor;
 
   if (!editor?.widget?.attributes) {
@@ -71,7 +72,7 @@ function* initializeVega(props) {
    * Traditional widgets
    * Using: @core VegaService
    * DataService has figured out how a widget will be configured
-   * VegaService utalizes store properties and generates a vega config for us
+   * VegaService utilizes store properties and generates a vega config for us
    */
   if (!advanced) {
     const vega = new VegaService(
@@ -82,7 +83,7 @@ function* initializeVega(props) {
       widgetData,
       configuration,
       editor,
-      theme
+      selectScheme(store),
     );
     yield put(setWidget(vega.getChart()));
   }

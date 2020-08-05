@@ -23,7 +23,7 @@ const Legend = ({
   widget,
   advanced,
   configuration,
-  schemeColor,
+  scheme,
   selectedColor,
   columns,
   patchConfiguration,
@@ -47,7 +47,7 @@ const Legend = ({
       <StyledColorsBoxContainer overflowIsHidden={multipleItems} alignCenter={!multipleItems}>
           {!multipleItems && (
             <StyledColorsBox alignCenter={false}>
-              <StyledColorDot color={schemeColor} />
+              <StyledColorDot color={scheme.mainColor} />
               Single color
             </StyledColorsBox>
           )}

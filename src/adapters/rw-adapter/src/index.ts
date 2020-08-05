@@ -12,6 +12,7 @@ import { SerializedFilter } from './types';
 import defaultWidget from "./default-widget";
 
 import ConfigHelper from "./helpers/config";
+import { SerializedScheme } from "./types";
 
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
@@ -407,5 +408,21 @@ export default class RwAdapter implements Adapter.Service {
     }
 
     return await FiltersService.getDeserializedFilters(filters, fields, dataset);
+  }
+
+  /**
+   * Return the deserialized scheme (config)
+   * @param config config object of the widget
+   */
+  getDeserializedScheme(config: SerializedScheme): Widget.Scheme {
+    if (!config?.range?.category20 || config.range.category20.length === 0) {
+      return null;
+    }
+
+    return {
+      name: config.name ?? 'user-custom',
+      mainColor: config.range.category20[0],
+      category: config.range.category20,
+    };
   }
 }

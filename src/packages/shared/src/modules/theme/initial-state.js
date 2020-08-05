@@ -32,7 +32,7 @@ export default {
     track: "#a3daf3",
     trackBackground: "#f5f5f5",
   },
-  selectedScheme: "Resource Watch",
+  selectedScheme: null,
   font: "lato",
   titleSize: "auto",
   captionSize: "auto",

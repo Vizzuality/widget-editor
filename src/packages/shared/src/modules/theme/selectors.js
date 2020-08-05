@@ -1,18 +1,24 @@
 import { createSelector } from "reselect";
 
-export const getSchemes = state => state.theme.schemes;
-const selectedScheme = state => state.theme.selectedScheme;
+import { selectWidgetScheme } from "../editor/selectors";
 
-export const getSelectedScheme = createSelector(
-  [getSchemes, selectedScheme],
-  (schemes, selectedScheme) => {
-    const activeScheme = schemes.find(s => s.name === selectedScheme);
-    return activeScheme;
+export const selectSchemes = state => state.theme.schemes;
+const selectSelectedScheme = state => state.theme.selectedScheme;
+
+export const selectScheme = createSelector(
+  [selectWidgetScheme, selectSelectedScheme, selectSchemes],
+  (widgetScheme, selectedScheme, schemes) => {
+    // If the user manually picked a scheme, this is the one we want to be shown
+    if (selectedScheme) {
+      return schemes.find(scheme => scheme.name === selectedScheme);
+    }
+
+    // Otherwise, if the widget has an embedded scheme, that's the one we're displaying
+    if (widgetScheme) {
+      return widgetScheme;
+    }
+
+    // As a fallback, we otherwise display the first scheme available
+    return schemes[0];
   }
-);
-
-
-export const getSchemeMainColor = createSelector(
-  [getSelectedScheme],
-  selectedScheme => selectedScheme.mainColor,
 );

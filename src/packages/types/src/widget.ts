@@ -21,6 +21,12 @@ export interface Payload {
   };
 }
 
+export type Scheme = {
+  name: string;
+  mainColor: string;
+  category: string[];
+};
+
 export interface Service {
   fetchWidget(widgetId: Id): Promise<Payload>;
 }
