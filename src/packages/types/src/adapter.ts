@@ -1,6 +1,8 @@
 import * as Dataset from "./dataset";
 import * as Widget from "./widget";
 import * as Config from "./config";
+import * as Generic from "./generic";
+import * as Filters from "./filters";
 
 type Id = string | number;
 type WidgetId = Id;
@@ -16,7 +18,7 @@ export interface Service {
   // Used when saving data
   // This will be grabbed and put into onSave on any request
   payload(): object;
-  requestData({ configuration, filters, dataset }: { configuration: any, filters: any, dataset: Dataset.Payload }): Promise<any>;
+  requestData({ configuration, filters, dataset }: { configuration: any, filters: Filters.Filter[], dataset: Dataset.Payload }): Promise<any>;
   getDataset(): Promise<Dataset.Payload>;
   extendProperties(prop: any): void;
   getWidget(
@@ -29,7 +31,7 @@ export interface Service {
   setDatasetId(datasetId: datasetId): void;
   getDeserializedFilters(
     filters: any[],
-    fields: any[],
-    dataet: Dataset.Payload
-  ): Promise<any[]>;
+    fields: Generic.Array[],
+    dataset: Dataset.Payload
+  ): Promise<Filters.Filter[]>;
 }

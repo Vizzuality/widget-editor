@@ -1,6 +1,6 @@
 import isObjectLike from "lodash/isObjectLike";
 
-import { Dataset, Widget, Adapter, Generic } from "@widget-editor/types";
+import { Dataset, Widget, Adapter, Generic, Filters } from "@widget-editor/types";
 
 import FiltersService from "./filters";
 import VegaService from "./vega";
@@ -150,7 +150,7 @@ export default class DataService {
     this.setEditor({ layers, fields: this.allowedFields });
   }
 
-  async requestWithFilters(filters: any[], configuration: any) {
+  async requestWithFilters(filters: Filters.Filter[], configuration: any) {
     const request = await this.adapter.requestData({
       configuration,
       filters,

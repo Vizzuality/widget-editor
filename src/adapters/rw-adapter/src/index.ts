@@ -1,4 +1,4 @@
-import { Adapter, Dataset, Widget, Config } from "@widget-editor/types";
+import { Adapter, Dataset, Widget, Config, Filters, Generic } from "@widget-editor/types";
 import { getEditorMeta, tags } from "@widget-editor/shared";
 
 import {
@@ -7,6 +7,7 @@ import {
   FiltersService,
 } from "@widget-editor/core";
 
+import { SerializedFilter } from './types';
 import defaultWidget from "./default-widget";
 
 import ConfigHelper from "./helpers/config";
@@ -333,8 +334,8 @@ export default class RwAdapter implements Adapter.Service {
    * Serialize the editor's filters for the widgetConfig
    * @param filters Filters
    */
-  private getSerializedFilters(filters: any[]) {
-    const getSerializedValue = (value, type) => {
+  private getSerializedFilters(filters: Filters.Filter[]): SerializedFilter[] {
+    const getSerializedValue = ({ type, value }) => {
       if (type === 'date') {
         if (Array.isArray(value)) {
           return value.map(date => date.toISOString());
@@ -348,11 +349,12 @@ export default class RwAdapter implements Adapter.Service {
 
     return filters
       .filter(filter => filter.value !== undefined && filter.value !== null)
-      .map(({ column, type, value, notNull }) => ({
-        name: column,
-        type,
-        value: getSerializedValue(value, type),
-        notNull,
+      .map(filter => ({
+        name: filter.column,
+        type: filter.type,
+        operation: filter.operation,
+        value: getSerializedValue(filter),
+        notNull: filter.notNull,
       }));
   }
 
@@ -363,10 +365,10 @@ export default class RwAdapter implements Adapter.Service {
    * @param dataset Dataset object
    */
   async getDeserializedFilters(
-    filters: any,
-    fields: any[],
+    filters: SerializedFilter[],
+    fields: Generic.Array,
     dataset: Dataset.Payload
-  ): Promise<any[]> {
+  ): Promise<Filters.Filter[]> {
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return [];
     }

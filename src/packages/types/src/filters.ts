@@ -7,6 +7,31 @@ export interface Service {
   prepareGroupBy(): void;
   prepareOrderBy(): void;
   prepareLimit(): void;
-  getDeserializedFilters(filters: any[], fields: any[], dataset: any): Promise<any[]>;
   requestWidgetData(): Promise<Generic.ObjectPayload>;
 }
+
+type GenericFilter<T> = {
+  id: string;
+  column: string;
+  type: string;
+  value: T | T[];
+  operation: string;
+  notNull: boolean;
+  config?: any;
+};
+
+export type NumberFilter = GenericFilter<number> & {
+  type: 'number';
+}
+
+export type DateFilter = GenericFilter<Date> & {
+  type: 'date';
+};
+
+export type StringFilter = GenericFilter<string> & {
+  type: 'string';
+};
+
+export type Filter = NumberFilter | DateFilter | StringFilter;
+
+export type SerializedFilter = any;

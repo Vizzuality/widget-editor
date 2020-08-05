@@ -1,14 +1,15 @@
+import { Generic } from "@widget-editor/types";
 import { ALLOWED_FIELD_TYPES } from "../constants";
 
 export default class FieldsService {
   dataset: any;
-  fields: any[];
+  fields: Generic.Array;
 
   NUMERIC_TYPE = "number";
   COLUMN_TYPE = "string";
   DATE_TYPE = "date";
 
-  constructor(dataset: any, fields: any[]) {
+  constructor(dataset: any, fields: Generic.Array) {
     this.dataset = dataset;
     this.fields = fields;
   }

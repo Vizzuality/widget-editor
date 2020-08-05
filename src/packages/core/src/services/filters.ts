@@ -4,7 +4,7 @@
 import isPlainObject from "lodash/isPlainObject";
 import isArray from "lodash/isArray";
 
-import { Filters, Config } from "@widget-editor/types";
+import { Filters, Config, Generic } from "@widget-editor/types";
 import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
@@ -14,9 +14,9 @@ export default class FiltersService implements Filters.Service {
   sql: string;
   dataset: any;
   configuration: Config.Payload;
-  filters: any[];
+  filters: Filters.Filter[];
 
-  constructor(configuration: any, filters: any[], dataset: any) {
+  constructor(configuration: any, filters: Filters.Filter[], dataset: any) {
     this.configuration = configuration;
     this.filters = filters;
     this.sql = "";
@@ -72,7 +72,7 @@ export default class FiltersService implements Filters.Service {
    * Return the serialization of the number filter as SQL (for the WHERE statement)
    * @param filter Number filter to serialize
    */
-  private getNumberFilterQuery(filter: any): string {
+  private getNumberFilterQuery(filter: Filters.NumberFilter): string {
     const { column, operation, value } = filter;
 
     let sql;
@@ -118,7 +118,7 @@ export default class FiltersService implements Filters.Service {
    * Return the serialization of the date filter as SQL (for the WHERE statement)
    * @param filter Date filter to serialize
    */
-  private getDateFilterQuery(filter: any): string {
+  private getDateFilterQuery(filter: Filters.DateFilter): string {
     const { column, operation, value } = filter;
     const getSerializedValue = date => this.dataset.attributes.provider === 'featureservice'
       ? `date '${date.toISOString().split('T')[0]}'`
@@ -167,7 +167,7 @@ export default class FiltersService implements Filters.Service {
    * Return the serialization of the string filter as SQL (for the WHERE statement)
    * @param filter String filter to serialize
    */
-  private getStringFilterQuery(filter: any): string {
+  private getStringFilterQuery(filter: Filters.StringFilter): string {
     const { column, operation, value } = filter;
 
     let sql;
@@ -198,7 +198,7 @@ export default class FiltersService implements Filters.Service {
 
       case 'by-values':
       default:
-        sql = `${column} IN ('${value.join('\', \'')}')`;
+        sql = `${column} IN ('${(value as string[]).join('\', \'')}')`;
         break;
     }
 
@@ -221,11 +221,11 @@ export default class FiltersService implements Filters.Service {
         sql = index > 0 ? `${sql} AND ` : sql;
 
         if (type === 'number') {
-          sql = `${sql} ${this.getNumberFilterQuery(filter)}`;
+          sql = `${sql} ${this.getNumberFilterQuery(filter as Filters.NumberFilter)}`;
         } else if (type === 'date') {
-          sql = `${sql} ${this.getDateFilterQuery(filter)}`;
+          sql = `${sql} ${this.getDateFilterQuery(filter as Filters.DateFilter)}`;
         } else if (type === 'string') {
-          sql = `${sql} ${this.getStringFilterQuery(filter)}`;
+          sql = `${sql} ${this.getStringFilterQuery(filter as Filters.StringFilter)}`;
         }
 
         if (notNull) {
@@ -314,7 +314,7 @@ export default class FiltersService implements Filters.Service {
    * @param fields Dataset's fields
    * @param dataset Dataset object
    */
-  static async getDeserializedFilters(filters: any[], fields: any[], dataset: any): Promise<any[]> {
+  static async getDeserializedFilters(filters: Filters.SerializedFilter[], fields: Generic.Array, dataset: any): Promise<Filters.Filter[]> {
     const res = [];
 
     await asyncForEach(filters, async (filter, index) => {
