@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const StyledSchemesContainer = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -8,13 +9,14 @@ export const StyledSchemesContainer = styled.div`
   width: 100%;
   margin-left: -5px;
   margin-right: -5px;
+  padding-top: 10px;
 
   * {
     box-sizing: border-box;
   }
 `;
 export const StyledSchemesCard = styled.div`
-  width: 33.333%;
+  width: 25%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,4 +56,10 @@ export const StyledSchemeColors = styled.div`
   div {
     height: 21px;
   }
+`;
+
+export const StyledCustomSchemeButtonWrapper = styled.div`
+  position: absolute;
+  top: -40px;
+  right: 0;
 `;

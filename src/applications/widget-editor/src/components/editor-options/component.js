@@ -208,7 +208,7 @@ const EditorOptions = ({
 
               {disabledFeatures.indexOf("theme-selection") === -1 && (
                 <AccordionSection
-                  title="Color"
+                  title="Color scheme"
                   openDefault={disabledFeatures.indexOf("typography") !== -1}
                 >
                   <Suspense fallback={<div>Loading...</div>}>
