@@ -1,5 +1,5 @@
 import { Vega, Generic } from "@widget-editor/types";
-import getDefaultTheme from './theme';
+import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks"
 
 export default class ChartCommon {
   configuration: any;
@@ -96,25 +96,7 @@ export default class ChartCommon {
   }
 
   resolveScheme() {
-    return {
-      ...getDefaultTheme(),
-      name: this.scheme.name,
-      range: Object.assign({}, getDefaultTheme().range, {
-        category20: this.scheme.category
-      }),
-      mark: Object.assign({}, getDefaultTheme().mark, {
-        fill: this.scheme.mainColor
-      }),
-      symbol: Object.assign({}, getDefaultTheme().symbol, {
-        fill: this.scheme.mainColor
-      }),
-      rect: Object.assign({}, getDefaultTheme().rect, {
-        fill: this.scheme.mainColor
-      }),
-      line: Object.assign({}, getDefaultTheme().line, {
-        stroke: this.scheme.mainColor
-      })
-    };
+    return getLocalCache().adapter.getSerializedScheme(this.scheme);
   }
 }
 

@@ -38,9 +38,9 @@ export default class StateProxy {
       !isEqual(prev.configuration.color, next.configuration.color) ||
       !isEqual(prev.configuration.limit, next.configuration.limit) ||
       !isEqual(prev.configuration.aggregateFunction, next.configuration.aggregateFunction ||
-      !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
-    )) {
-        this.forceVegaUpdate = true;
+        !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
+      )) {
+      this.forceVegaUpdate = true;
     } else {
       this.forceVegaUpdate = false;
     }
