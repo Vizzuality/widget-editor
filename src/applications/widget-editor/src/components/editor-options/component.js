@@ -151,7 +151,7 @@ const EditorOptions = ({
                 {limit !== undefined && limit !== null && (
                   <QueryLimit
                     min={0}
-                    max={50}
+                    max={500}
                     onChange={handleLimit}
                     label="Limit"
                     value={limit}

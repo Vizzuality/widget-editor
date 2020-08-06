@@ -52,7 +52,7 @@ const QueryLimit = ({
     minValue = localValue[0];
     maxValue = localValue[1];
   } else {
-    maxValue = localValue ?? max;
+    maxValue = localValue.value ?? max;
   }
 
   const minMaxProps = {
@@ -82,7 +82,7 @@ const QueryLimit = ({
             <Input
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
-              value={maxValue}
+              value={localValue.value}
               type={dateType ? "date" : "number"}
               name="options-limit-max"
               onChange={(e) =>
