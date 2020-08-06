@@ -9,8 +9,10 @@
  * @param {Scheme} scheme Scheme to evaluate
  * @param {Scheme[]} schemeList List of schemes available to the editor
  */
-export const isSchemeCustom = (scheme, schemeList) => scheme.name === 'user-custom'
-  || !schemeList.find(s => s.name === scheme.name);
+export const isSchemeCustom = (scheme, schemeList) => scheme
+  && (
+    scheme.name === 'user-custom' || !schemeList.find(s => s.name === scheme.name)
+  );
 
 /**
  * Return whether the list of schemes contains a custom scheme
