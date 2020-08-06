@@ -124,9 +124,9 @@ const ColorSchemes = ({
                     style={{ flexBasis: "100%", background: availableScheme.mainColor }}
                   />
                   <div style={{ flexBasis: "100%", display: "flex" }}>
-                    {(availableScheme.category || []).map((color) => (
+                    {(availableScheme.category || []).map((color, index) => (
                       <div
-                        key={color}
+                        key={index}
                         style={{
                           flexBasis: `${100 / availableScheme.category.length}%`,
                           background: color,
