@@ -96,9 +96,9 @@ const ColorSchemes = ({
     // Then by setting the store's selectedScheme to `null`, we will tell the application to use the
     // widget's embedded scheme
     const isCustom = isSchemeCustom(selectedScheme, schemes);
-    setSelectedScheme(isCustom ? null : selectedScheme.id);
+    setSelectedScheme(isCustom && !schemesContainCustomScheme ? null : selectedScheme.id);
     patchConfiguration();
-  }, [patchConfiguration, schemes, setSelectedScheme]);
+  }, [schemes, schemesContainCustomScheme, setSelectedScheme, patchConfiguration]);
 
   return (
     <StyledSchemesContainer>
