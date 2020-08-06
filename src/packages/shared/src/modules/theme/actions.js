@@ -4,6 +4,7 @@ export const setTheme = createAction("EDITOR/THEME/setTheme");
 export const resetTheme = createAction("EDITOR/THEME/resetTheme");
 export const setSchemes = createAction("EDITOR/THEME/setSchemes");
 export const setSelectedScheme = createAction("EDITOR/THEME/setSelectedScheme");
+export const updateScheme = createAction("EDITOR/THEME/updateScheme");
 
 export default {
   setTheme,

@@ -1,11 +1,9 @@
 import styled from "styled-components";
 
+import StyledColorInput from "styles-common/color-input/style";
+
 export const StyledSchemesContainer = styled.div`
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: wrap;
   width: 100%;
   margin-left: -5px;
   margin-right: -5px;
@@ -15,13 +13,29 @@ export const StyledSchemesContainer = styled.div`
     box-sizing: border-box;
   }
 `;
-export const StyledSchemesCard = styled.div`
-  width: 25%;
+
+export const StyledSchemesCardWrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-right: 5px;
-  padding-left: 5px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
+
+export const StyledSchemesCard = styled.div`
+  flex-basis: calc((100% / 3) - (20px / 3));
+  margin: 0 5px 10px;
+
+  &:nth-of-type(3n + 1) {
+    margin-left: 0;
+  }
+
+  &:nth-of-type(3n + 3) {
+    margin-right: 0;
+  }
+
+  &:last-of-type {
+    margin-right: auto;
+  }
+
   input {
     display: none;
   }
@@ -62,4 +76,40 @@ export const StyledCustomSchemeButtonWrapper = styled.div`
   position: absolute;
   top: -40px;
   right: 0;
+`;
+
+export const StyledCustomSchemeWrapper = styled.fieldset`
+  margin-top: 20px;
+  border: 0;
+
+  legend {
+    margin-bottom: 10px;
+    color: #393f44;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    ${StyledColorInput} {
+      margin: 0 5px 10px;
+      margin-bottom: 10px;
+      flex-basis: calc((100% / 3) - (20px / 3));
+
+      &:nth-of-type(3n + 1) {
+        margin-left: 0;
+      }
+
+      &:nth-of-type(3n + 3) {
+        margin-right: 0;
+      }
+
+      &:last-of-type {
+        margin-right: auto;
+      }
+    }
+  }
 `;
