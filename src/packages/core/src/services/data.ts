@@ -1,6 +1,6 @@
 import isObjectLike from "lodash/isObjectLike";
 
-import { Dataset, Widget, Adapter, Generic } from "@widget-editor/types";
+import { Dataset, Widget, Adapter, Generic, Filters } from "@widget-editor/types";
 
 import FiltersService from "./filters";
 import VegaService from "./vega";
@@ -90,7 +90,7 @@ export default class DataService {
     let color = null;
 
     if (filters && Array.isArray(filters) && filters.length > 0) {
-      // --- If orderby exsists, assign it to stores
+      // --- If orderby exists, assign it to stores
       if (isObjectLike(paramsConfig.orderBy)) {
         orderBy = paramsConfig.orderBy;
       }
@@ -99,19 +99,18 @@ export default class DataService {
         color = paramsConfig.color;
       }
 
-      const normalizeFilters = await this.adapter.filterUpdate(
+      const deserializedFilters = await this.adapter.getDeserializedFilters(
         filters,
         this.allowedFields,
-        this.widget,
         this.dataset
       );
 
       if (restore) {
-        return normalizeFilters;
+        return deserializedFilters;
       } else {
         this.dispatch({
           type: reduxActions.EDITOR_SET_FILTERS,
-          payload: { color, orderBy, list: normalizeFilters },
+          payload: { color, orderBy, list: deserializedFilters },
         });
       }
     }
@@ -151,15 +150,10 @@ export default class DataService {
     this.setEditor({ layers, fields: this.allowedFields });
   }
 
-  async requestWithFilters(filters: any, configuration: any) {
-    const filtersService = new FiltersService(
-      { ...configuration },
-      filters,
-      this.dataset
-    );
-
+  async requestWithFilters(filters: Filters.Filter[], configuration: any) {
     const request = await this.adapter.requestData({
-      configuration, filters,
+      configuration,
+      filters,
       dataset: this.dataset
     });
 

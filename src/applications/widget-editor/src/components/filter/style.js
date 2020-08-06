@@ -7,10 +7,13 @@ export const StyledFilterBox = styled.div`
 export const StyledEmpty = styled.div`
   max-width: 300px;
   margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
+`;
+
+export const StyledAddSection = styled.div`
+  position: absolute;
+  top: -40px;
+  right: 0;
 `;
 
 export const StyledFilterSection = styled.div`
