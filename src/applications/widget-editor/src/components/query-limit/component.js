@@ -29,6 +29,7 @@ const QueryLimit = ({
   value,
   onChange = () => null,
 }) => {
+
   const [localValue, setLocalValue] = useState({ value: value, key: null });
 
   const changeValue = (data) => {
