@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Button } from "@widget-editor/shared";
 
 import ColorInput from "styles-common/color-input";
+import { isSchemeCustom, containsCustomScheme } from './helpers';
 import {
   StyledSchemesContainer,
   StyledSchemesCardWrapper,
@@ -19,22 +20,17 @@ import {
 const ColorSchemes = ({
   schemes,
   scheme,
+  widgetScheme,
   setSelectedScheme,
   updateScheme,
   setSchemes,
   patchConfiguration
 }) => {
-  const schemesContainCustomScheme = useMemo(
-    // If the user has manually created a custom scheme, it will be present in the schemes array
-    () => !!schemes.find(s => s.name === "user-custom"),
-    [schemes],
-  );
-
-  const isSchemeCustom = useMemo(
-    // The current scheme is considered custom if it's named user-custom or if it's not supported by
-    // the host app (i.e. not present in the schemes array)
-    () => scheme.name === 'user-custom' || !schemes.find(s => s.name === scheme.name),
-    [schemes, scheme],
+  const schemesContainCustomScheme = useMemo(() => containsCustomScheme(schemes), [schemes]);
+  const isCustomScheme = useMemo(() => isSchemeCustom(scheme, schemes), [schemes, scheme]);
+  const isWidgetSchemeCustom = useMemo(
+    () => isSchemeCustom(widgetScheme, schemes),
+    [schemes, widgetScheme],
   );
 
   const availableSchemes = useMemo(() => {
@@ -44,22 +40,28 @@ const ColorSchemes = ({
       name: s.name === 'user-custom' ? 'Custom' : s.name
     }));
 
-    // If the scheme is custom and wasn't defined by the user, then it's inherited through the
-    // widget (i.e. it's been embedded in the widget)
-    // An additional “Custom” option can be displayed using the custom scheme's configuration
-    if (isSchemeCustom && !schemesContainCustomScheme) {
+    if (isCustomScheme && !schemesContainCustomScheme) {
+      // If the scheme is custom and wasn't defined by the user, then it's inherited through the
+      // widget (i.e. it's been embedded in the widget)
+      // An additional “Custom” option can be displayed using the custom scheme's configuration
       return [...schemesWithIds, { ...scheme, id: scheme.name, name: "Custom" }];
+    } else if (isWidgetSchemeCustom && !schemesContainCustomScheme) {
+      // If the widget has an embedded scheme, it is custom and the user hasn't created a custom
+      // scheme yet, then we can add a “Custom” option representing the widget's embedded scheme
+      return [...schemesWithIds, { ...widgetScheme, id: widgetScheme.name, name: "Custom" }];
     }
 
     // If the user defined a custom scheme or the widget (if any) doesn't have any embedded one,
     // then we just return the schemes
     return schemesWithIds;
-  }, [schemes, scheme, schemesContainCustomScheme, isSchemeCustom]);
-
-  const onChangeScheme = useCallback(s => {
-    setSelectedScheme(s.name);
-    patchConfiguration();
-  }, [patchConfiguration, setSelectedScheme]);
+  }, [
+    schemes,
+    scheme,
+    widgetScheme,
+    schemesContainCustomScheme,
+    isCustomScheme,
+    isWidgetSchemeCustom
+  ]);
 
   const onChangeColor = useCallback((index, value) => {
     const newColorRange = [...scheme.category];
@@ -87,9 +89,20 @@ const ColorSchemes = ({
     [setSchemes, schemes, scheme, setSelectedScheme, patchConfiguration],
   );
 
+  const onSelectScheme = useCallback((selectedScheme) => {
+    // If the user clicks on a custom scheme that wasn't created by them (i.e. the scheme is not
+    // part of the `schemes` array), then it means that the schemes was embedded with the widget
+    // (if there's any)
+    // Then by setting the store's selectedScheme to `null`, we will tell the application to use the
+    // widget's embedded scheme
+    const isCustom = isSchemeCustom(selectedScheme, schemes);
+    setSelectedScheme(isCustom ? null : selectedScheme.id);
+    patchConfiguration();
+  }, [patchConfiguration, schemes, setSelectedScheme]);
+
   return (
     <StyledSchemesContainer>
-      {!isSchemeCustom && !schemesContainCustomScheme && (
+      {!isCustomScheme && !schemesContainCustomScheme && !isWidgetSchemeCustom && (
         <StyledCustomSchemeButtonWrapper>
           <Button size="small" onClick={onCreateCustomScheme}>
             Create custom scheme
@@ -102,7 +115,7 @@ const ColorSchemes = ({
           <StyledSchemesCard key={availableScheme.id}>
             <StyledCardBox
               active={scheme.name === availableScheme.id}
-              onClick={() => onChangeScheme(availableScheme)}
+              onClick={() => onSelectScheme(availableScheme)}
             >
               <StyledSchemeInfo>
                 <StyledSchemeName>{availableScheme.name}</StyledSchemeName>
@@ -128,7 +141,7 @@ const ColorSchemes = ({
         ))}
       </StyledSchemesCardWrapper>
 
-      {isSchemeCustom && (
+      {isCustomScheme && (
         <StyledCustomSchemeWrapper>
           <legend>Customize scheme</legend>
           <div className="container">
@@ -151,10 +164,15 @@ const ColorSchemes = ({
 ColorSchemes.propTypes = {
   schemes: PropTypes.arrayOf(PropTypes.object).isRequired,
   scheme: PropTypes.object.isRequired,
+  widgetScheme: PropTypes.object,
   setSelectedScheme: PropTypes.func.isRequired,
   updateScheme: PropTypes.func.isRequired,
   setSchemes: PropTypes.func.isRequired,
   patchConfiguration: PropTypes.func.isRequired,
+};
+
+ColorSchemes.defaultProps = {
+  widgetScheme: null,
 };
 
 export default ColorSchemes;
