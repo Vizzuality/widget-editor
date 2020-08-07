@@ -1,6 +1,7 @@
 import { takeLatest, put, select, all, fork, call, take, cancel } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
 
+import { LABELS, BASEMAPS } from "@widget-editor/map/src/constants";
 import { setConfiguration, resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 
@@ -41,8 +42,24 @@ function* preloadData() {
         ? { bbox: widgetConfig.bbox }
         : {}),
       ...(widgetConfig.hasOwnProperty("basemapLayers")
-        ? { basemap: widgetConfig.basemapLayers }
-        : {}),
+        ? {
+          basemap: {
+            basemap: Object.keys(BASEMAPS).indexOf(widgetConfig.basemapLayers.basemap) !== -1
+              ? widgetConfig.basemapLayers.basemap
+              : "dark",
+            labels: Object.keys(LABELS).indexOf(widgetConfig.basemapLayers.labels) !== -1
+              ? widgetConfig.basemapLayers.labels
+              : "none",
+            boundaries: typeof widgetConfig.basemapLayers.boundaries === 'boolean'
+              ? widgetConfig.basemapLayers.boundaries
+              : false,
+          }
+        }
+        : {
+          basemap: "dark",
+          labels: "none",
+          boundaries: false,
+        }),
       ...(widgetConfig.hasOwnProperty("zoom")
         ? { zoom: widgetConfig.zoom }
         : {}),

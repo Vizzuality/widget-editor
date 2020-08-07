@@ -9,7 +9,7 @@ const serializeSelection = (o) => ({
 });
 
 const BasemapSelection = ({ configuration, basemaps, onSetBasemap }) => {
-  const selectedBasemap = configuration?.map.basemap?.basemap || "dark";
+  const selectedBasemap = configuration.map.basemap.basemap;
   const selectedOption = serializeSelection(basemaps[selectedBasemap]);
   const serialize = Object.keys(basemaps).map((basemap) =>
     serializeSelection(basemaps[basemap])
