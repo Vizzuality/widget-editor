@@ -70,10 +70,7 @@ const Renderer = ({
     <StyledContainer compact={compact}>
       {!widgetConfig && initialized && (
         <Suspense fallback={<div>Loading...</div>}>
-          <SelectChart
-            advanced={editor.advanced}
-            rasterOnly={configuration.rasterOnly}
-          />
+          <SelectChart advanced={editor.advanced} />
         </Suspense>
       )}
 
