@@ -9,7 +9,7 @@ const serializeSelection = (o) => ({
 });
 
 const LabelsSelection = ({ configuration, labels, onSetLabel }) => {
-  const selectedLabel = configuration?.map?.basemap?.labels || "none";
+  const selectedLabel = configuration.map.basemap.labels;
   const selectedOption = serializeSelection(labels[selectedLabel]);
   const serialize = Object.keys(labels).map((basemap) =>
     serializeSelection(labels[basemap])
