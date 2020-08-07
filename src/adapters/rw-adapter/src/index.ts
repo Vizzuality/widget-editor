@@ -361,7 +361,8 @@ export default class RwAdapter implements Adapter.Service {
   }
 
   async requestData({ configuration, filters, dataset }) {
-    const filtersService = new FiltersService(configuration, filters, dataset, this);
+    const adapterInstance = this;
+    const filtersService = new FiltersService(configuration, filters, dataset, adapterInstance);
     this.SQL_STRING = filtersService.getQuery();
     const response = await this.prepareRequest(this.getDataUrl())
     return response.data;

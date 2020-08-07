@@ -26,7 +26,7 @@ function* getWidgetDataWithAdapter(editorState) {
   if (columnsSet(value, category)) {
     const { widgetEditor } = yield select();
     const { configuration, filters, editor: { dataset } } = widgetEditor;
-    const data = yield adapter.requestData({ configuration, filters, dataset });
+    const data = yield adapter.requestData({ configuration, filters: filters.list, dataset });
     return data;
   }
   yield [];

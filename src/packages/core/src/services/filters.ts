@@ -209,7 +209,7 @@ export default class FiltersService implements Filters.Service {
 
   prepareFilters() {
     let sql = this.sql;
-
+    debugger;
     const validFilters = (this.filters ?? [])
       .filter(filter => filter.value !== undefined && filter.value !== null
         && (!Array.isArray(filter.value) || filter.value.length > 0));
