@@ -38,6 +38,7 @@ import {
 const Filter = ({
   dataService,
   setFilters,
+  patchConfiguration,
   filters = [],
   fields = [],
   configuration,
@@ -68,6 +69,8 @@ const Filter = ({
     });
     // XXX: Update Data Service with applied filters
     dataService.requestWithFilters(patch, configuration);
+    // Let our state proxy know that our data has been filtered
+    patchConfiguration();
   };
 
   const addFilter = () => {
