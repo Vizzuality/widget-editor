@@ -49,11 +49,11 @@ function* preloadData() {
     };
 
     const datasetType = editor?.dataset?.attributes?.type;
-    const rasterOnly = datasetType && datasetType.match(/raster/);
+    const rasterOnly = !!(datasetType && datasetType.match(/raster/));
 
-    const isMap =
-      editor?.widget?.attributes?.widgetConfig?.paramsConfig
-        ?.visualizationType === "map";
+    // If the dataset is raster, only maps can be done right now
+    const isMap = rasterOnly
+      || editor?.widget?.attributes?.widgetConfig?.paramsConfig?.visualizationType === "map";
 
     const paramsConfig = widgetConfig.hasOwnProperty("paramsConfig")
       ? widgetConfig.paramsConfig
@@ -72,6 +72,7 @@ function* preloadData() {
       description,
       caption,
       rasterOnly,
+      visualizationType: isMap ? "map" : "chart",
       ...(isMap ? { chartType: "map" } : {}),
       map: mapSpecifics,
     };
