@@ -277,13 +277,8 @@ export default class RwAdapter implements Adapter.Service {
               boundaries: editorState.configuration.map?.basemap?.boundaries || false,
             },
           }
-          : {
-            basemapLayers: {
-              basemap: "dark",
-              labels: "Dark",
-              boundaries: false,
-            },
-          }),
+          : {}
+        ),
         paramsConfig: {
           visualizationType: editorState.configuration.visualizationType,
           layer: editorState.configuration.layer,
