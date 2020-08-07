@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import find from "lodash/find";
-import filter from "lodash/filter";
 import { Button } from "@widget-editor/shared";
 import Select from "react-select";
 import ChartMenu from "./components/ChartMenu";
@@ -21,8 +21,6 @@ const SelectChart = ({
   theme,
   advanced,
   setTheme,
-  rasterOnly,
-  disabledFeatures,
 }) => {
   const [selected, setSelected] = useState(find(options, { chartType }));
 
@@ -54,16 +52,8 @@ const SelectChart = ({
     });
   };
 
-  const filterOutDisabledCharts = filter(
-    options,
-    (o) => disabledFeatures.indexOf(o.value) === -1
-  );
-
   return (
-    <StyledContainer
-      rasterOnly={rasterOnly}
-      isCompact={isCompact || forceCompact}
-    >
+    <StyledContainer isCompact={isCompact || forceCompact}>
       {advanced && (
         <StyledSelectBox isCompact={isCompact || forceCompact}>
           <Select
@@ -80,14 +70,14 @@ const SelectChart = ({
         </StyledSelectBox>
       )}
 
-      {!advanced && !rasterOnly && (
+      {!advanced && (
         <StyledSelectBox isCompact={isCompact || forceCompact}>
           <Select
             onChange={handleChange}
             onMenuOpen={() => setIsOpenMenu(true)}
             onMenuClose={() => setIsOpenMenu(false)}
             value={selected}
-            options={filterOutDisabledCharts}
+            options={options}
             styles={InputStyles}
             components={{ Menu: ChartMenu }}
             menuIsOpen={isOpenMenu}
@@ -101,6 +91,13 @@ const SelectChart = ({
       )}
     </StyledContainer>
   );
+};
+
+SelectChart.propTypes = {
+  options: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+  })),
 };
 
 export default SelectChart;
