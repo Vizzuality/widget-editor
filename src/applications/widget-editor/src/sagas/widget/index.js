@@ -132,6 +132,7 @@ function* syncEditor() {
     yield call(initializeVega);
   }
 
+  // Make sure our local state hooks have the latest state
   const { widgetEditor: updatedState } = yield select();
   stateProxy.update(updatedState);
   yield call(updateHookState);
