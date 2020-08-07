@@ -42,7 +42,7 @@ const Filter = ({
           value: field.columnName,
           type:
             constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type ?? 'string',
-          isDisabled: usedColumns.indexOf(field.columnName) === -1,
+          isDisabled: usedColumns.indexOf(field.columnName) !== -1,
         }))
       .sort((option1, option2) => option1.label.localeCompare(option2.label))
   }, [filters, fields]);
