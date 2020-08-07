@@ -17,8 +17,11 @@ import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 // EXPOSED HOOKS
 import { localOnChangeState } from "exposed-hooks";
 
-// LOCALS
-import getWidgetDataWithAdapter from './getWidgetData';
+if (columnsSet(value, category)) {
+  const { widgetEditor } = yield select();
+  const { configuration, filters: { list }, editor: { dataset } } = widgetEditor;
+  return yield adapter.requestData({ configuration, filters: list, dataset });
+}
 
 // Initialize state proxy so we can store the state of the editor
 const stateProxy = new StateProxy();

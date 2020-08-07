@@ -74,6 +74,7 @@ export const MONTHS = [
 export default {
   MONTHS,
   APP_NAMESPACE,
+  ALLOWED_FIELD_TYPES,
   sagaEvents,
   reduxActions,
 };

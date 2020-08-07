@@ -12,14 +12,9 @@ const Input = styled.input`
   color: #393f44;
   font-size: 14px;
 
-  &[type="number"] {
-    padding: 11px 10px;
-  }
-
+  &[type="number"],
   &[type="date"] {
-    padding: 8px 10px;
-    margin-top: 10px;
-    max-width: 160px;
+    padding: 11px 10px;
   }
 
   &.read-only {

@@ -11,6 +11,11 @@ const StyledButton = styled.button`
   border-radius: 5px;
   outline: 1;
 
+  &[disabled] {
+    pointer: default;
+    opacity: 0.5;
+  }
+
   ${(props) =>
     props.size &&
     props.size === "small" &&
@@ -39,8 +44,8 @@ const StyledButton = styled.button`
     props.btnType &&
     props.btnType === "default" &&
     css`
-      &:hover,
-      &.active {
+      &:hover:not([disabled]),
+      &.active:not([disabled]) {
         ${(props) =>
           props.color &&
           css`
