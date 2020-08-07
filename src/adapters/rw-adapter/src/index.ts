@@ -410,6 +410,6 @@ export default class RwAdapter implements Adapter.Service {
       return [];
     }
 
-    return await FiltersService.getDeserializedFilters(filters, fields, dataset,);
+    return await FiltersService.getDeserializedFilters(filters, fields, dataset);
   }
 }

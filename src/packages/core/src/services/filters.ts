@@ -4,7 +4,7 @@
 import isPlainObject from "lodash/isPlainObject";
 import isArray from "lodash/isArray";
 
-import { Filters, Config, Generic } from "@widget-editor/types";
+import { Filters, Config, Generic, Adapter } from "@widget-editor/types";
 import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
@@ -14,10 +14,10 @@ export default class FiltersService implements Filters.Service {
   sql: string;
   dataset: any;
   configuration: Config.Payload;
-
+  adapter: Adapter.Service;
   filters: Filters.Filter[];
 
-  constructor(configuration: any, filters: Filters.Filter[], dataset: any) {
+  constructor(configuration: any, filters: Filters.Filter[], dataset: any, adapter: Adapter.Service) {
     this.configuration = configuration;
     this.filters = filters;
     this.sql = "";
