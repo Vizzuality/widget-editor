@@ -12,12 +12,7 @@ export default class WidgetService implements Widget.Service {
   async fetchWidget(url: string): Promise<Widget.Payload> {
     try {
       const response = await this.adapter.prepareRequest(url);
-
-      if (response.status >= 400) {
-        throw new Error(response.statusText);
-      }
-
-      return await response.json();
+      return response.data;
     } catch (err) {
       throw new Error(err);
     }
