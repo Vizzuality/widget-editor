@@ -89,9 +89,9 @@ const EditorOptions = ({
   isMap,
 }) => {
 
-  const handleSliceCount = (value) => {
+  const handleSliceCount = debounce((value) => {
     patchConfiguration({ sliceCount: parseInt(value) });
-  };
+  }, 500);
 
   const handleDonutRadius = debounce((value) => {
     patchConfiguration({ donutRadius: parseInt(value) });
