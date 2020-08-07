@@ -77,6 +77,7 @@ const Filter = ({
     // We update the filter with its new values
     setFilters({ list: patch });
     dataService.requestWithFilters(patch, configuration);
+    // Let the state proxy know that this update occured
     patchConfiguration();
   }, [configuration, dataService, dataset, fields, filters, setFilters]);
 
