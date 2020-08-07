@@ -22,7 +22,8 @@
   "dependencies": {
     "@widget-editor/core": "^2.2.24",
     "@widget-editor/types": "^2.2.24",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "axios": "^0.19.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

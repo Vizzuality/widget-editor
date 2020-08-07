@@ -24,6 +24,7 @@ import {
 const Filter = ({
   dataService,
   setFilters,
+  patchConfiguration,
   filters = [],
   fields = [],
   configuration,
@@ -75,7 +76,10 @@ const Filter = ({
 
     // We update the filter with its new values
     setFilters({ list: patch });
+    // TODO: State proxy could handle this data refresh
     dataService.requestWithFilters(patch, configuration);
+    // Let the state proxy know that this update occurred
+    patchConfiguration();
   }, [configuration, dataService, dataset, fields, filters, setFilters]);
 
 

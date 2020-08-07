@@ -1,6 +1,8 @@
 export default {
   restoring: false,
   disabledFeatures: [],
+  dataSync: false,
+  map: null,
   initialized: false,
   dataset: null,
   advanced: false,

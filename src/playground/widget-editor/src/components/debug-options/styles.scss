@@ -1,0 +1,57 @@
+.c-debug-options {
+  .debug-options--debug-view {
+    position: fixed;
+    display: flex;
+    flex-flow: column;
+    z-index: 2;
+    width: 75%;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 30px);
+    background: #FFF;
+    min-height: 200px;
+    max-height: calc(100vh - 10vh);
+    border-radius: 5px;
+    box-shadow: 0px 2px 17px #d8d8d8;
+    &--header {
+      color: #464646;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid #dadada;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      button {
+        margin: 0;
+        padding: 0;
+        background: none;
+        color: #3e3e3e;
+        font-size: 26px;
+        svg {
+          margin: 0;
+        }
+      }
+    }
+
+    &--result {
+      margin: 0 20px;
+      height: 100vh;
+      overflow: scroll;
+      background: #fffff9;
+      padding: 10px 10px;
+    }
+
+  }
+  .debug-options--debug-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(255,255,255,0.5);
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+}

@@ -8,6 +8,8 @@ import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions";
 
 import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
+import { getLocalCache } from "exposed-hooks";
+
 function* restoreEditor() {
   yield put(resetEditor());
   yield put(resetConfiguration());
@@ -95,6 +97,8 @@ function* preloadData() {
 }
 
 function* cancelAll() {
+  const { adapter } = getLocalCache();
+  adapter.abortRequests();
   const tasks = yield all([
     fork(preloadData),
     fork(setEditorInitialized)
@@ -109,8 +113,8 @@ export default function* baseSaga() {
     preloadData
   );
 
-  yield takeLatest('WIDGET/EDITOR/RESTORE', restoreEditor);
-  yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALISATION_READY, setEditorInitialized);
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORE, restoreEditor);
+  yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALIZATION_READY, setEditorInitialized);
 
 
   yield takeLatest(

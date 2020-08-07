@@ -4,7 +4,7 @@
 import isPlainObject from "lodash/isPlainObject";
 import isArray from "lodash/isArray";
 
-import { Filters, Config, Generic } from "@widget-editor/types";
+import { Filters, Config, Generic, Adapter } from "@widget-editor/types";
 import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
@@ -14,12 +14,14 @@ export default class FiltersService implements Filters.Service {
   sql: string;
   dataset: any;
   configuration: Config.Payload;
+  adapter: Adapter.Service;
   filters: Filters.Filter[];
 
-  constructor(configuration: any, filters: Filters.Filter[], dataset: any) {
+  constructor(configuration: any, filters: Filters.Filter[], dataset: any, adapter: Adapter.Service) {
     this.configuration = configuration;
     this.filters = filters;
     this.sql = "";
+    this.adapter = adapter;
 
     this.dataset = dataset;
 
@@ -207,7 +209,6 @@ export default class FiltersService implements Filters.Service {
 
   prepareFilters() {
     let sql = this.sql;
-
     const validFilters = (this.filters ?? [])
       .filter(filter => filter.value !== undefined && filter.value !== null
         && (!Array.isArray(filter.value) || filter.value.length > 0));
@@ -295,12 +296,11 @@ export default class FiltersService implements Filters.Service {
       throw new Error("Error, datasetId not present in Filters service.");
     }
 
-    const response = await fetch(
+    const response = await this.adapter.prepareRequest(
       `https://api.resourcewatch.org/v1/query/${this.dataset.id}?sql=${this.sql}`
     );
 
-    const data = await response.json();
-    return data;
+    return response.data;
   }
 
   getQuery() {

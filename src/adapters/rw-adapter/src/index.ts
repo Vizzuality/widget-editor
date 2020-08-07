@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Adapter, Dataset, Widget, Config, Filters, Generic } from "@widget-editor/types";
 import { getEditorMeta, tags } from "@widget-editor/shared";
 
@@ -27,6 +28,9 @@ export default class RwAdapter implements Adapter.Service {
   applications = ["rw"];
   env = "production";
   locale = "en";
+  requestHandler = null;
+  requestQue = [];
+  isAborting = false;
 
   constructor() {
     const asConfig: Config.Payload = {
@@ -35,9 +39,11 @@ export default class RwAdapter implements Adapter.Service {
       locale: this.locale,
     };
 
+    this.requestHandler = axios.create();
+
     this.config = ConfigHelper(asConfig);
-    this.datasetService = new DatasetService(this.config);
-    this.widgetService = new WidgetService(this.config);
+    this.datasetService = new DatasetService(this);
+    this.widgetService = new WidgetService(this);
   }
 
   // XXX: If we are using the AdapterModifier hook
@@ -100,6 +106,10 @@ export default class RwAdapter implements Adapter.Service {
 
     const { data: dataset } = await this.datasetService.fetchData(url);
 
+    if (!dataset) {
+      return {};
+    }
+
     this.tableName = dataset?.attributes?.tableName || null;
 
     // -- Serialize widgets
@@ -108,7 +118,7 @@ export default class RwAdapter implements Adapter.Service {
     const serializeDataset = {
       ...dataset,
       attributes: {
-        ...dataset.attributes,
+        ...dataset?.attributes,
       },
     };
 
@@ -147,6 +157,35 @@ export default class RwAdapter implements Adapter.Service {
         },
       },
     };
+  }
+
+  async abortRequests() {
+    this.isAborting = true;
+    this.requestQue.forEach(item => {
+      item.cancel();
+    })
+  }
+
+  async prepareRequest(url: string) {
+    const self = this;
+    if (this.isAborting) {
+      return null;
+    }
+    const cancelToken =  new axios.CancelToken(function executor(source) {
+      // An executor function receives a cancel function as a parameter
+      self.requestQue.push({
+        id: url,
+        cancel: source
+      });
+    });
+
+    const response = await this.requestHandler.get(url, {
+      cancelToken
+    });
+
+    this.requestQue = this.requestQue.filter(q => q.id !== url);
+
+    return response;
   }
 
   async getWidget(dataset: Dataset.Payload, widgetId: Widget.Id) {
@@ -265,11 +304,11 @@ export default class RwAdapter implements Adapter.Service {
       output = {
         type: 'map',
         layer_id: editorState.configuration.layer,
-        zoom: editorState.configuration.map.zoom,
-        lat: editorState.configuration.map.lat,
-        lng: editorState.configuration.map.lng,
-        bounds: editorState.configuration.map.bounds,
-        bbox: editorState.configuration.map.bbox,
+        zoom: editorState.editor.map?.zoom,
+        lat: editorState.editor.map?.lat,
+        lng: editorState.editor.map?.lng,
+        bounds: editorState.editor.map?.bounds,
+        bbox: editorState.editor.map?.bbox,
         ...(editorState.configuration.map.basemap
           ? {
             basemapLayers: {
@@ -322,12 +361,11 @@ export default class RwAdapter implements Adapter.Service {
   }
 
   async requestData({ configuration, filters, dataset }) {
-    const filtersService = new FiltersService(configuration, filters, dataset);
+    const adapterInstance = this;
+    const filtersService = new FiltersService(configuration, filters, dataset, adapterInstance);
     this.SQL_STRING = filtersService.getQuery();
-
-    const response = await fetch(this.getDataUrl());
-
-    return await response.json();
+    const response = await this.prepareRequest(this.getDataUrl())
+    return response.data;
   }
 
   /**
@@ -373,6 +411,6 @@ export default class RwAdapter implements Adapter.Service {
       return [];
     }
 
-    return await FiltersService.getDeserializedFilters(filters, fields, dataset,);
+    return await FiltersService.getDeserializedFilters(filters, fields, dataset);
   }
 }
