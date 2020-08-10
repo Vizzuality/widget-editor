@@ -128,6 +128,36 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
           onSetBoundry={(active) => setBoundaries(active)}
         />
       </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-zoom">Map Zoom</FormLabel>
+        <Input
+          type="text"
+          className="read-only"
+          readOnly
+          name="options-zoom"
+          value={configuration.map.zoom}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-lat-lng">Latitude & Longitude</FormLabel>
+        <Input
+          type="text"
+          className="read-only"
+          readOnly
+          name="options-lat-lng"
+          value={`${configuration.map.lat},${configuration.map.lng}`}
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormLabel htmlFor="options-bbox">Bounding box</FormLabel>
+        <Input
+          type="text"
+          className="read-only"
+          readOnly
+          name="options-bbox"
+          value={`[${configuration.map.bbox.join()}]`}
+        />
+      </InputGroup>
     </FlexContainer>
   );
 };

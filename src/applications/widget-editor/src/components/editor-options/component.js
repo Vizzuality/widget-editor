@@ -1,6 +1,5 @@
 import React, { Suspense, useCallback } from "react";
 import styled, { css } from "styled-components";
-import debounce from 'lodash/debounce';
 
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
@@ -89,25 +88,21 @@ const EditorOptions = ({
   isMap,
 }) => {
 
-  const handleSliceCount = debounce((value) => {
+  const handleSliceCount = (value) => {
     patchConfiguration({ sliceCount: parseInt(value) });
-  }, 500);
+  };
 
-  const handleDonutRadius = debounce((value) => {
+  const handleDonutRadius = (value) => {
     patchConfiguration({ donutRadius: parseInt(value) });
-  }, 500);
+  }
 
   const handleOrderBy = (value) => {
     patchConfiguration({ orderBy: value });
   }
 
-  const handleGroupBy = (value) => {
-    patchConfiguration({ groupBy: value });
-  }
-
-  const handleLimit = debounce((value) => {
+  const handleLimit = useCallback((value) => {
     patchConfiguration({ limit: value });
-  }, 500);
+  }, [patchConfiguration]);
 
   if (!initialized || restoring) {
     return (
@@ -151,7 +146,7 @@ const EditorOptions = ({
                 {limit !== undefined && limit !== null && (
                   <QueryLimit
                     min={0}
-                    max={500}
+                    max={50}
                     onChange={handleLimit}
                     label="Limit"
                     value={limit}

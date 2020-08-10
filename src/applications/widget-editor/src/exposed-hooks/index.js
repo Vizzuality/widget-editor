@@ -19,8 +19,7 @@ export const localGetEditorState = (payload) => {
 export const localOnChangeState = (editorState) => {
   if (
     localCache.adapter &&
-    typeof localCache.adapter.handleSave === "function" &&
-    !!editorState.editor.dataset
+    typeof localCache.adapter.handleSave === "function"
   ) {
     localCache.adapter.handleSave(
       (result) => {

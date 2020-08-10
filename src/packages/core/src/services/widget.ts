@@ -1,18 +1,23 @@
 import { find } from "lodash";
 
-import { Widget, Adapter } from "@widget-editor/types";
+import { Dataset, Widget, Config } from "@widget-editor/types";
 
 export default class WidgetService implements Widget.Service {
-  adapter: Adapter.Service;
+  config: Config.Payload;
 
-  constructor(adapter: Adapter.Service) {
-    this.adapter = adapter;
+  constructor(config: Config.Payload) {
+    this.config = config;
   }
 
   async fetchWidget(url: string): Promise<Widget.Payload> {
     try {
-      const response = await this.adapter.prepareRequest(url);
-      return response.data;
+      const response = await fetch(url);
+
+      if (response.status >= 400) {
+        throw new Error(response.statusText);
+      }
+
+      return await response.json();
     } catch (err) {
       throw new Error(err);
     }

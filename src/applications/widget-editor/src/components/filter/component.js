@@ -1,21 +1,35 @@
-import React, { useMemo, useCallback } from "react";
-import Select from "react-select";
-import uniqueId from "lodash/uniqueId";
+import React from "react";
 
-import { FiltersService, constants } from "@widget-editor/core";
-import { Button } from "@widget-editor/shared";
+import { FiltersService } from "@widget-editor/core";
 
 import InputGroup from "styles-common/input-group";
-import { DEFAULT_FILTER_VALUE } from "./const";
+import { Button } from "@widget-editor/shared";
+import uniqueId from "lodash/uniqueId";
+
+// FieldsService
+
+import {
+  TYPE_RANGE,
+  TYPE_VALUE,
+  COLUMN_FILTER_GROUP,
+  TYPE_FILTER_ON_VALUES,
+  FILTER_NUMBER_INDICATOR_TYPES,
+  FILTER_STRING_INDICATOR_TYPES,
+  STRING_TYPES,
+  NUMBER_TYPES,
+} from "./const";
+
 import NotNullInput from "./components/NotNullInput";
-import NumberFilter from './components/number-filter';
-import DateFilter from './components/date-filter';
-import StringFilter from './components/string-filter';
+import FilterRange from "./components/FilterRange";
+import FilterValue from "./components/FilterValue";
+import FilterColumn from "./components/FilterColumn";
+import FilterStrings from "./components/FilterStrings";
+import FilterIndicator from "./components/FilterIndicator";
+import AddSection from "./components/AddSection";
 
 import {
   StyledFilterBox,
   StyledEmpty,
-  StyledAddSection,
   StyledFilterSection,
   StyledFilter,
   StyledDeleteBox,
@@ -24,132 +38,145 @@ import {
 const Filter = ({
   dataService,
   setFilters,
-  patchConfiguration,
   filters = [],
   fields = [],
   configuration,
   dataset,
 }) => {
-  const columnOptions = useMemo(() => {
-    const usedColumns = filters.map(filter => filter.column).filter(column => !!column);
+  const availableColumns = fields.map((field) => {
+    return {
+      label:
+        field.metadata && field.metadata.alias
+          ? field.metadata.alias
+          : field.columnName.replace(/_/gi, " "),
+      value: field.columnName,
+      dataType: field.type,
+    };
+  });
 
-    return fields
-      .map(field => ({
-        label:
-          field.metadata && field.metadata.alias
-            ? field.metadata.alias
-            : field.columnName,
-          value: field.columnName,
-          type:
-            constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type ?? 'string',
-          isDisabled: usedColumns.indexOf(field.columnName) !== -1,
-        }))
-      .sort((option1, option2) => option1.label.localeCompare(option2.label))
-  }, [filters, fields]);
+  const setData = async (values, id, type) => {
+    const patch = await FiltersService.patchFilters(
+      filters,
+      { values, id, type },
+      configuration,
+      dataset,
+      fields
+    );
 
-  const canAddFilter = useMemo(
-    () => filters.length < fields.length && filters.every(filter => filter.column),
-    [filters, fields]
-  );
+    setFilters({
+      list: patch,
+    });
+    // XXX: Update Data Service with applied filters
+    dataService.requestWithFilters(patch, configuration);
+  };
 
-  const addFilter = useCallback(() => setFilters({
-    list: [
+  const addFilter = () => {
+    const patch = [
       ...filters,
-      { ...DEFAULT_FILTER_VALUE, id: uniqueId("we-filter-") },
-    ],
-  }), [filters, setFilters]);
+      { ...COLUMN_FILTER_GROUP, id: uniqueId("we-filter-") },
+    ];
+    setFilters({
+      list: patch,
+    });
+  };
 
-  const updateFilter = useCallback(async (filterId, change) => {
-    const patch = await Promise.all(filters.map(async filter => {
-      if (filter.id !== filterId) {
-        return filter;
-      }
-
-      return {
-        ...filter,
-        ...change,
-        config: !filter.column
-          ? await FiltersService.fetchConfiguration(dataset, fields, change.column)
-          : filter.config,
-      };
-    }));
-
-    // We update the filter with its new values
-    setFilters({ list: patch });
-    // TODO: State proxy could handle this data refresh
-    dataService.requestWithFilters(patch, configuration);
-    // Let the state proxy know that this update occurred
-    patchConfiguration();
-  }, [configuration, dataService, dataset, fields, filters, setFilters]);
-
-
-  const removeFilter = useCallback((id) => {
-    const patch = filters.filter(filter => filter.id !== id);
-
-    setFilters({ list: patch });
-    dataService.requestWithFilters(patch, configuration);
-  }, [configuration, dataService, filters, setFilters]);
+  const removeFilter = (id) => {
+    const patch = filters.filter((f) => f.id !== id) || [];
+    setFilters({
+      list: patch,
+    });
+  };
 
   return (
     <StyledFilterBox>
-      <StyledAddSection>
-        <Button size="small" onClick={addFilter} disabled={!canAddFilter}>
-          Add filter
-        </Button>
-      </StyledAddSection>
-
+      <AddSection addFilter={addFilter} />
       {!filters.length && (
-        <StyledEmpty>
-          Click "Add filter" to start filtering the data.
-        </StyledEmpty>
+        <StyledEmpty>No filters found. Please, add them.</StyledEmpty>
       )}
 
       {filters.map((filter) => (
         <StyledFilterSection key={filter.id}>
           <InputGroup noMargins={true}>
-            <Select
-              placeholder="Select column"
-              value={columnOptions.find(({ value }) => value === filter.column)}
-              options={columnOptions}
-              onChange={
-                ({ value, type }) => updateFilter(filter.id, { column: value, type })
-              }
-              isDisabled={!!filter.column}
+            <FilterColumn
+              filter={filter}
+              setData={setData}
+              optionData={availableColumns}
             />
-
             <StyledDeleteBox>
               <Button type="highlight" onClick={() => removeFilter(filter.id)}>
                 Delete
               </Button>
             </StyledDeleteBox>
           </InputGroup>
-
           {filter.column !== null && (
             <StyledFilter>
-              {filter.type === 'number' && (
-                <NumberFilter
-                  filter={filter}
-                  onChange={change => updateFilter(filter.id, change)}
-                />
+              {NUMBER_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup noMargins={filter.indicator === TYPE_RANGE}>
+                  <FilterIndicator
+                    filter={filter}
+                    disabled={filter.column === null}
+                    setData={setData}
+                    optionData={FILTER_NUMBER_INDICATOR_TYPES}
+                  />
+                </InputGroup>
               )}
 
-              {filter.type === 'date' && (
-                <DateFilter
-                  filter={filter}
-                  onChange={change => updateFilter(filter.id, change)}
-                />
+              {STRING_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup>
+                  <FilterIndicator
+                    filter={filter}
+                    disabled={filter.column === null}
+                    setData={setData}
+                    optionData={FILTER_STRING_INDICATOR_TYPES}
+                  />
+                </InputGroup>
               )}
 
-              {filter.type === 'string' && (
-                <StringFilter
-                  filter={filter}
-                  onChange={change => updateFilter(filter.id, change)}
-                />
+              {STRING_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup>
+                  {filter.indicator === TYPE_FILTER_ON_VALUES && (
+                    <FilterStrings
+                      filter={filter}
+                      setData={setData}
+                      optionData={filter.fieldInfo}
+                    />
+                  )}
+
+                  {filter.indicator !== TYPE_FILTER_ON_VALUES && (
+                    <FilterValue
+                      isNumeric={filter.dataType.toLowerCase() !== 'string'}
+                      filter={filter}
+                      setData={setData}
+                    />
+                  )}
+                </InputGroup>
               )}
 
+              {NUMBER_TYPES.indexOf(filter.indicator) > -1 && (
+                <InputGroup>
+                  {filter.indicator === TYPE_RANGE && (
+                    <FilterRange
+                      disabled={filter.column === null}
+                      filter={filter}
+                      setData={setData}
+                    />
+                  )}
+
+                  {filter.indicator === TYPE_VALUE && (
+                    <FilterValue
+                      isNumeric={filter.dataType.toLowerCase() !== 'string'}
+                      disabled={filter.column === null}
+                      filter={filter}
+                      setData={setData}
+                    />
+                  )}
+                </InputGroup>
+              )}
               <NotNullInput
                 filter={filter}
-                onChange={notNull => updateFilter(filter.id, { notNull })}
+                name={`filter-not-null-${filter.id}`}
+                label="Not null values"
+                setData={setData}
               />
             </StyledFilter>
           )}

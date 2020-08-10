@@ -1,17 +1,24 @@
-import { Dataset, Adapter } from "@widget-editor/types";
+import { Dataset, Config } from "@widget-editor/types";
 
 export default class DatasetService implements Dataset.Service {
-  adapter: Adapter.Service;
+  config: Config.Payload;
 
-  constructor(adapter: Adapter.Service) {
-    this.adapter = adapter;
+  constructor(config: Config.Payload) {
+    this.config = config;
   }
 
   async fetchData(url: string): Promise<any> {
     try {
-      const response = await this.adapter.prepareRequest(url);
-      return response.data;
+      const response = await fetch(url);
+
+      if (response.status >= 400) {
+        throw new Error(response.statusText);
+        return {};
+      }
+
+      return await response.json();
     } catch (err) {
+      console.error("Error loading dataset:", url);
       return {};
     }
   }

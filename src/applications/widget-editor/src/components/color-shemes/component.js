@@ -8,12 +8,11 @@ import {
   StyledShemeColors,
 } from "./style";
 
-const ColorShemes = ({ theme, setTheme, patchConfiguration }) => {
+const ColorShemes = ({ theme, setTheme }) => {
   const { schemes, selectedScheme } = theme;
 
   const onChangeTheme = (sheme) => {
     setTheme({ ...theme, selectedScheme: sheme.name });
-    patchConfiguration();
   };
 
   return (

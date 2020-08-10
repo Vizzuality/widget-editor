@@ -4,5 +4,5 @@ export default {
   compactMode: false,
   widget: undefined,
   theme: { color: "#C32D7B" },
-  dataset: "03bfb30e-829f-4299-bab9-b2be1b66b5d4",
+  dataset: "852f2275-91a8-4500-9f10-89880dc53f22",
 };
