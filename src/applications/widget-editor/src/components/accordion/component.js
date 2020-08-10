@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-import ReactResizeDetector from "react-resize-detector";
+import React, { useState, useCallback } from "react";
 
 import {
   StyledAccordionSection,
@@ -9,44 +8,21 @@ import {
 } from "./style";
 
 export const AccordionSection = ({ title, openDefault, children }) => {
-  const contentRef = useRef({});
-  const [outerHeight, setOuterHeight] = useState(0);
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(openDefault);
 
-  const clickToTitle = () => {
-    setOpen(!isOpen);
-    const panel = contentRef.current;
-    if (panel) {
-      const height = outerHeight ? 0 : panel.scrollHeight;
-      setOuterHeight(height);
-    }
-  };
-
-  const updateHeight = () => {
-    const panel = contentRef.current;
-    if (panel && panel.scrollHeight > 0 && isOpen) {
-      const height = panel.scrollHeight;
-      setOuterHeight(height);
-    }
-  };
-
-  useEffect(() => {
-    setTimeout(() => (openDefault ? clickToTitle() : null), 0);
-  }, []);
+  const onClickTitle = useCallback(() => setOpen(o => !o), [setOpen]);
 
   return (
     <StyledAccordionSection>
       <StyledAccordionButton
         type="button"
         role="button"
-        onClick={() => clickToTitle()}
+        onClick={onClickTitle}
       >
         {title}
       </StyledAccordionButton>
-      <StyledAccordionContent ref={contentRef} scrollHeight={outerHeight}>
-        <ReactResizeDetector handleHeight skipOnMount onResize={updateHeight}>
-          <div>{children}</div>
-        </ReactResizeDetector>
+      <StyledAccordionContent isOpen={isOpen}>
+        {children}
       </StyledAccordionContent>
     </StyledAccordionSection>
   );

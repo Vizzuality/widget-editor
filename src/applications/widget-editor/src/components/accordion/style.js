@@ -8,12 +8,12 @@ export const StyledAccordion = styled.div`
 
 export const StyledAccordionContent = styled.div`
   display: "block";
-  max-height: ${(props) => props.scrollHeight + "px" || "0"};
-  overflow-y: ${(props) => (props.scrollHeight ? "visible" : "hidden")};
-  transition: all 0.2s ease-out;
+  max-height: ${props => props.isOpen ? 'none' : 0};
+  overflow-y: ${props => props.isOpen ? 'visible' : 'hidden'};
+  transition: padding 0.2s ease-out;
   padding-left: 24px;
-  padding-top: ${(props) => (props.scrollHeight ? "18px" : "0" || "0")};
-  padding-bottom: ${(props) => (props.scrollHeight ? "18px" : "0" || "0")};
+  padding-top: ${(props) => (props.isOpen ? "18px" : 0)};
+  padding-bottom: ${(props) => (props.isOpen ? "18px" : 0)};
 `;
 
 export const StyledAccordionButton = styled.button`
