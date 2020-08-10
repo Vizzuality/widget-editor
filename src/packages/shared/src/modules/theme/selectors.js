@@ -4,6 +4,7 @@ import { selectWidgetScheme } from "../editor/selectors";
 
 export const selectSchemes = state => state.theme.schemes;
 const selectSelectedScheme = state => state.theme.selectedScheme;
+export const selectThemeColor = state => state.theme.color;
 
 export const selectScheme = createSelector(
   [selectWidgetScheme, selectSelectedScheme, selectSchemes],

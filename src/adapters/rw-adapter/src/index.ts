@@ -11,7 +11,6 @@ import {
 } from "@widget-editor/core";
 
 import { SerializedFilter } from './types';
-import defaultWidget from "./default-widget";
 
 import ConfigHelper from "./helpers/config";
 import { SerializedScheme } from "./types";
@@ -174,7 +173,7 @@ export default class RwAdapter implements Adapter.Service {
     if (this.isAborting) {
       return null;
     }
-    const cancelToken =  new axios.CancelToken(function executor(source) {
+    const cancelToken = new axios.CancelToken(function executor(source) {
       // An executor function receives a cancel function as a parameter
       self.requestQue.push({
         id: url,
@@ -196,14 +195,7 @@ export default class RwAdapter implements Adapter.Service {
     const includes = "metadata";
 
     if (!widgetId) {
-      return {
-        ...defaultWidget,
-        attributes: {
-          ...defaultWidget.attributes,
-          dataset: dataset.id,
-          widgetConfig: this.handleDefaultWidgetConf(dataset),
-        },
-      };
+      return null;
     }
 
     const url = tags.oneLineTrim`
