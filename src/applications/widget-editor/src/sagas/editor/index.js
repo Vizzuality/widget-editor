@@ -1,7 +1,7 @@
 import { takeLatest, put, select, all, fork, call, take, cancel } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
 
-import { LABELS, BASEMAPS } from "@widget-editor/map/src/constants";
+import { LABELS, BASEMAPS } from "@widget-editor/map/lib/constants";
 import { setConfiguration, resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 
