@@ -16,6 +16,11 @@ const StyledButton = styled.button`
     opacity: 0.5;
   }
 
+  &[aria-pressed = "true"]:not([disabled]) {
+    border: 1px solid ${props => props.color};
+    color: ${props => props.color};
+  }
+
   ${(props) =>
     props.size &&
     props.size === "small" &&
@@ -44,8 +49,7 @@ const StyledButton = styled.button`
     props.btnType &&
     props.btnType === "default" &&
     css`
-      &:hover:not([disabled]),
-      &.active:not([disabled]) {
+      &:hover:not([disabled]) {
         ${(props) =>
           props.color &&
           css`
@@ -54,16 +58,9 @@ const StyledButton = styled.button`
           `}
       }
     `}
-
-  ${(props) =>
-    props.active &&
-    css`
-      border: 1px solid ${props.color};
-      color: ${props.color};
-    `}
 `;
 
-const Button = ({ type, btnType = "default", theme, children, ...props }) => {
+const Button = ({ type, btnType = "default", theme, children, active, ...props }) => {
   return (
     <StyledButton
       {...props}
@@ -71,6 +68,10 @@ const Button = ({ type, btnType = "default", theme, children, ...props }) => {
       type="button"
       role="button"
       btnType={btnType}
+      {...(typeof active === 'boolean'
+        ? { 'aria-pressed': active }
+        : {}
+      )}
     >
       {children}
     </StyledButton>
