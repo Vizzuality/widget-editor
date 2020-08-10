@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "@widget-editor/shared";
 import {
   StyledTabsContainer,
@@ -13,40 +13,29 @@ const TabButton = (props) => {
 };
 
 export const Tabs = ({ children }) => {
-  const serializeChildren = children.filter((c) => !!c);
-
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const defaultNum = serializeChildren.findIndex(
-      (child) => child.props.default
-    );
-    setActive(defaultNum === -1 ? 0 : defaultNum);
-  }, []);
+  const validChildren = useMemo(() => children.filter(c => !!c), [children]);
+  const [activeId, setActiveId] = useState(validChildren[0].props.id);
 
   return (
     <StyledTabsContainer>
       <StyledList>
-        {serializeChildren.map((child, num) => {
-          const { label } = child.props;
-          return label ? (
-            <StyledListLabel key={num}>
-              <TabButton onClick={() => setActive(num)} active={num === active}>
+        {validChildren.map(({ props: { id, label } }) => label
+          ? (
+            <StyledListLabel key={id}>
+              <TabButton onClick={() => setActiveId(id)} active={id === activeId}>
                 {label}
               </TabButton>
             </StyledListLabel>
-          ) : null;
-        })}
+          )
+          : null
+        )}
       </StyledList>
       <StyledTabsContentBox>
-        {serializeChildren.map((child, num) => {
-          const { children: tabContent } = child.props;
-          return (
-            <StyledTabsContent key={num} active={num === active}>
-              {tabContent}
-            </StyledTabsContent>
-          );
-        })}
+        {validChildren.map(({ props: { id, children: content } }) => (
+          <StyledTabsContent key={id} active={id === activeId}>
+            {content}
+          </StyledTabsContent>
+        ))}
       </StyledTabsContentBox>
     </StyledTabsContainer>
   );

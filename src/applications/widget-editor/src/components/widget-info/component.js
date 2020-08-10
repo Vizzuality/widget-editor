@@ -135,7 +135,7 @@ class WidgetInfo extends React.Component {
       aggregateFunction,
       format,
     } = this.state;
-    const { isMap } = this.props;
+    const { isMap, advanced } = this.props;
     return (
       <FlexContainer>
         <InputGroup>
@@ -168,7 +168,7 @@ class WidgetInfo extends React.Component {
             onChange={(e) => this.setCaption(e.target.value)}
           />
         </InputGroup>
-        {!isMap && (
+        {!isMap && !advanced && (
           <FlexContainer row={true}>
             <InputGroup>
               <FormLabel htmlFor="options-y-axis">Value</FormLabel>
@@ -192,7 +192,7 @@ class WidgetInfo extends React.Component {
             </InputGroup>
           </FlexContainer>
         )}
-        {!isMap && (
+        {!isMap && !advanced && (
           <InputGroup>
             <FormLabel htmlFor="options-title">Value aggregation</FormLabel>
             <Select
@@ -205,7 +205,7 @@ class WidgetInfo extends React.Component {
             />
           </InputGroup>
         )}
-        {!isMap && (
+        {!isMap && !advanced && (
           <InputGroup>
             <FormLabel htmlFor="options-title">Value format</FormLabel>
             <CreatableSelect
