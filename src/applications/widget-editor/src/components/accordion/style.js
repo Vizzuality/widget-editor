@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { AccordionArrow } from "@widget-editor/shared"
+
 export const StyledAccordion = styled.div`
   width: 100%;
   padding-top: 24px;
@@ -29,16 +31,15 @@ export const StyledAccordionButton = styled.button`
   border: none;
   background: none;
   outline: none;
-  &:before {
-    content: " ";
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #c32d7b;
-    position: absolute;
-    left: 0;
-    top: 8px;
-  }
+`;
+
+export const StyledIcon = styled(AccordionArrow)`
+  position: absolute;
+  left: 0;
+  top: 5px;
+  stroke: ${props => props.themeColor};
+  transform: ${props => props.isOpen ? 'rotate(0)' : 'rotate(-90deg)'};
+  transition: transform 0.2s ease-out;
 `;
 
 export const StyledAccordionSection = styled.div`
