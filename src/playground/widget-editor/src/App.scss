@@ -11,17 +11,43 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #2ba49f;
   display: flex;
   font-size: calc(10px + 1vmin);
   color: white;
   height: 60px;
-  justify-content: center;
-  text-align: left;
   padding: 0 20px;
   font-weight: 600;
   flex-flow: row;
   align-items: center;
+  justify-content: space-between;
+
+  &--nav {
+    display: flex;
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 0 0 12px;
+      border: none;
+      padding: 9px 7px;
+      font-size: 12px;
+      border-radius: 5px;
+      background: #22716d;
+      color: #FFF;
+      font-weight: 700;
+      transition: all 0.4s;
+      cursor: pointer;
+      svg {
+        margin-right: 4px;
+      }
+      &:hover {
+        transition: all 0.4s;
+        background: #FFF;
+        color: #2ba49e;
+      }
+    }
+  }
 }
 
 .App-set-theme {
@@ -86,4 +112,25 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.c-unmounted {
+  width: 60%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  p {
+    font-size: 30px;
+    padding: 0 0 20px 0;
+  }
+
+  span {
+    color: #8e8e8e;
+    font-size: 13px;
+    max-width: 70%;
+    display: block;
+    margin: 0 auto;
+  }
 }

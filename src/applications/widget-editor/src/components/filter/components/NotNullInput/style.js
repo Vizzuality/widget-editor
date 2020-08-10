@@ -13,6 +13,7 @@ export const StyledCheckbox = styled.div`
     display: inline-block;
     padding-left: 22px;
     font-size: 14px;
+    text-transform: none !important;
   }
 
   label::before,

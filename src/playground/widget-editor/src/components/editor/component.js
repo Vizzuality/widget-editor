@@ -80,7 +80,6 @@ class Editor extends React.Component {
     x.document.close();
   }
 
-
   render() {
     const {
       editorOptions: { compactMode, dataset, widget, theme },

@@ -7,7 +7,7 @@ import styled from "styled-components";
 // vizzuality-components icons
 import { Icons } from 'vizzuality-components';
 
-import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import { editorSyncMap } from "@widget-editor/shared/lib/modules/editor/actions";
 
 import LayerManager from "helpers/layer-manager";
 
@@ -60,7 +60,7 @@ class Map extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      legendOpen: true,
+      legendOpen: true
     };
 
     this.labels = props.labels || LABELS["none"];
@@ -131,8 +131,6 @@ class Map extends React.Component {
     if (!this.props?.mapConfig?.bounds || !mapOptions.hasOwnProperty("bbox")) {
       this.onMapChange();
     }
-
-
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -203,7 +201,6 @@ class Map extends React.Component {
   instantiateMap() {
     if (!this.mapNode) return;
     const mapOptions = this.getMapOptions();
-
     this.map = L.map(this.mapNode, mapOptions);
     this.map.scrollWheelZoom.disable();
 
@@ -256,6 +253,7 @@ class Map extends React.Component {
       this.map.fitBounds(this.props.mapConfig.bounds, { animate: false });
     }
 
+    this.map.setZoom(mapOptions.zoom);
   }
 
   instantiateLayerManager() {
@@ -312,21 +310,19 @@ class Map extends React.Component {
   }
 
   onMapChange() {
-    const { patchConfiguration = null } = this.props;
-    if (patchConfiguration) {
+    const { editorSyncMap } = this.props;
+    if (editorSyncMap) {
       const mapParams = this.getMapParams();
       const { zoom } = mapParams;
       const { lat, lng } = mapParams.latLng;
       const [bbox1, bbox2] = mapParams.bounds;
-      patchConfiguration({
-        map: {
-          lat,
-          lng,
-          zoom,
-          basemap: mapParams.basemap,
-          bounds: mapParams.bounds,
-          bbox: [...bbox1, ...bbox2],
-        },
+      editorSyncMap({
+        lat,
+        lng,
+        zoom,
+        basemap: mapParams.basemap,
+        bounds: mapParams.bounds,
+        bbox: [...bbox1, ...bbox2]
       });
     }
   }
@@ -372,7 +368,6 @@ class Map extends React.Component {
 
   render() {
     const { caption = null, thumbnail = false, layerId } = this.props;
-
     return (
       <StyledMapContainer>
         <Icons />
@@ -411,5 +406,5 @@ export default redux.connectState(
   (state) => ({
     configuration: state.configuration,
   }),
-  { patchConfiguration }
+  { editorSyncMap }
 )(Map);
