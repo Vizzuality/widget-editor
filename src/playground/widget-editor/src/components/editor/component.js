@@ -89,7 +89,6 @@ class Editor extends React.Component {
         <WidgetEditor
           schemes={SCHEMES}
           compact={compactMode}
-          disable={[]}
           datasetId={dataset}
           widgetId={widget}
           onSave={this.handleOnSave}

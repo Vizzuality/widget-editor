@@ -198,7 +198,7 @@ const EditorOptions = ({
         {!isMap && (
           <Tab label="Visual style">
             <Accordion>
-              {disabledFeatures.indexOf("typogrophy") === -1 && (
+              {disabledFeatures.indexOf("typography") === -1 && (
                 <AccordionSection title="Typography">
                   <Suspense fallback={<div>Loading...</div>}>
                     <Typography />
@@ -207,7 +207,10 @@ const EditorOptions = ({
               )}
 
               {disabledFeatures.indexOf("theme-selection") === -1 && (
-                <AccordionSection title="Color">
+                <AccordionSection
+                  title="Color"
+                  openDefault={disabledFeatures.indexOf("typography") !== -1}
+                >
                   <Suspense fallback={<div>Loading...</div>}>
                     <ColorShemes />
                   </Suspense>

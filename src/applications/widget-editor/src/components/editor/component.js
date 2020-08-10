@@ -110,13 +110,16 @@ class Editor extends React.Component {
   resolveEditorFunctionality() {
     const {
       setEditor,
-      disable = [],
+      disable,
       enableSave = true,
     } = this.props;
 
     setEditor({
-      disabledFeatures: disable,
       enableSave,
+      ...(disable !== undefined && disable !== null
+        ? {disabledFeatures: disable }
+        : {}
+      ),
     });
   }
 
