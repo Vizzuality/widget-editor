@@ -106,7 +106,7 @@ function* preloadData() {
 
     if (!paramsConfig) {
       yield put(
-        setEditor({ advanced: true, customWidgetConfig: widgetConfig })
+        setEditor({ advanced: true })
       );
     }
 

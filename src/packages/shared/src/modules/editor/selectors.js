@@ -5,7 +5,6 @@ import { getLocalCache } from '@widget-editor/widget-editor/lib/exposed-hooks';
 export const selectDisabledFeatures = state => state.editor.disabledFeatures;
 export const selectAdvanced = state => state.editor.advanced;
 export const selectWidget = state => state.editor.widget;
-export const selectCustomWidgetConfig = state => state.editor.customWidgetConfig;
 
 export const selectWidgetConfig = createSelector(
   [selectWidget],

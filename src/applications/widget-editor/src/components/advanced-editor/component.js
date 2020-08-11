@@ -16,8 +16,9 @@ const AdvancedEditor = ({
   isEditing,
   isWidgetAdvanced,
   serializedWidgetConfig,
-  customWidgetConfig,
-  setEditor
+  setEditor,
+  setWidgetConfig,
+  patchConfiguration,
 }) => {
   const [editorValue, setEditorValue] = useState('');
   const [validationErrors, setValidationErrors] = useState([]);
@@ -25,11 +26,6 @@ const AdvancedEditor = ({
   const stringifiedWidgetConfig = useMemo(
     () => JSON.stringify(serializedWidgetConfig, null, 2),
     [serializedWidgetConfig],
-  );
-
-  const stringifiedCustomWidgetConfig = useMemo(
-    () => JSON.stringify(customWidgetConfig, null, 2),
-    [customWidgetConfig],
   );
 
   const onSwitchToAdvancedMode = useCallback(
@@ -60,19 +56,22 @@ const AdvancedEditor = ({
 
       const config = JSON.stringify(json, null, 2);
       
-      setEditor({
-        advanced: true,
-        customWidgetConfig: JSON.parse(config),
-      })
+      setEditor({ advanced: true });
+      setWidgetConfig(JSON.parse(config));
     },
-    [stringifiedWidgetConfig, setEditor],
+    [stringifiedWidgetConfig, setEditor, setWidgetConfig],
   );
   const onSwitchToInteractiveMode = useCallback(
     () => {
       setEditor({ advanced: false });
       setValidationErrors([]);
+      
+      // We need to render the visualisation again with the editor's settings
+      // We introduce a slight delay so that the renderer displays the rest of the UI before we
+      // render the visualisation again to avoid the visualisation being below some parts of the UI
+      setTimeout(() => patchConfiguration(), 0);
     },
-    [setValidationErrors, setEditor],
+    [setEditor, patchConfiguration],
   );
 
   const onChange = useCallback((value) => {
@@ -86,20 +85,16 @@ const AdvancedEditor = ({
         setValidationErrors(errors);
       } else {
         setValidationErrors([]);
-        setEditor({ customWidgetConfig: json });
+        setWidgetConfig(json)
       }
     } catch (e) {
       setValidationErrors(['Cannot parse into a JSON file']);
     }
-  }, [setValidationErrors, setEditor]);
+  }, [setWidgetConfig]);
 
   useEffect(() => {
-    if (!advanced) {
-      setEditorValue(stringifiedWidgetConfig);
-    } else {
-      setEditorValue(stringifiedCustomWidgetConfig);
-    }
-  }, [advanced, stringifiedWidgetConfig, stringifiedCustomWidgetConfig, setEditorValue]);
+    setEditorValue(stringifiedWidgetConfig);
+  }, [stringifiedWidgetConfig, setEditorValue]);
 
   return (
     <Container>
@@ -166,13 +161,13 @@ AdvancedEditor.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   isWidgetAdvanced: PropTypes.bool.isRequired,
   serializedWidgetConfig: PropTypes.object,
-  customWidgetConfig: PropTypes.object,
   setEditor: PropTypes.func.isRequired,
+  setWidgetConfig: PropTypes.func.isRequired,
+  patchConfiguration: PropTypes.func.isRequired,
 };
 
 AdvancedEditor.defaultProps = {
   serializedWidgetConfig: null,
-  customWidgetConfig: null,
 };
 
 export default AdvancedEditor;
