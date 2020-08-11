@@ -7,7 +7,7 @@ export default {
   dataset: null,
   advanced: false,
   enableSave: true,
-  customConfiguration: null,
+  customWidgetConfig: null,
   widget: null,
   widgetData: null,
   errors: null,

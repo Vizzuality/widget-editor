@@ -4,12 +4,14 @@ export const StyledField = styled.div`
   box-sizing: border-box;
   max-height: 400px;
   width: 100%;
-  border: 1px solid rgba(202, 204, 208, 0.85);
+  border: 1px solid ${props => props.invalid ? '#ff4141' : 'rgba(202, 204, 208, 0.85)'};
   border-radius: 4px;
   background-color: #ffffff;
   padding: 0;
   font-size: 14px;
   overflow: scroll;
+  pointer-events: ${props => props.disabled ? 'none' : 'initial'};
+  opacity: ${props => props.disabled ? '0.4' : '1'};
 `;
 
 export const EditorStyles = styled.div`

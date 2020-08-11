@@ -18,7 +18,7 @@ const Component = (props) => {
 
 export default redux.connectState((state) => ({
   editor: state.editor,
-  widget: state.widget,
+  widget: state.widgetConfig,
   configuration: state.configuration,
   compact: state.theme.compact.isCompact || state.theme.compact.forceCompact,
 }))(Component);

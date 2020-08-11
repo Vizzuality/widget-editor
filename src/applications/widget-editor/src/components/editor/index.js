@@ -2,7 +2,7 @@ import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 
 import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 import { resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
-import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions";
+import { resetWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
 import { resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
 import {
@@ -19,7 +19,7 @@ export default connectState(
     editor: state.editor,
     theme: state.theme,
     configuration: state.configuration,
-    widget: state.widget,
+    widget: state.widgetConfig,
     editorState: state,
   }),
   (dispatch) => {
@@ -28,7 +28,7 @@ export default connectState(
       resetConfiguration: () => dispatch(resetConfiguration()),
       resetTheme: () => dispatch(resetTheme()),
       resetEditor: () => dispatch(resetEditor()),
-      resetWidget: () => dispatch(resetWidget()),
+      resetWidgetConfig: () => dispatch(resetWidgetConfig()),
       resetFilters: () => dispatch(resetFilters()),
       setEditor: (data) => dispatch(setEditor(data)),
       setTheme: (data) => dispatch(setTheme(data)),

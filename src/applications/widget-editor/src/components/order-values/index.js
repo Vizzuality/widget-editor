@@ -4,7 +4,7 @@ import { setFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
 import OrderValuesComponent from "./component";
 
-import * as selectors from "@widget-editor/shared/lib/modules/widget/selectors";
+import * as selectors from "@widget-editor/shared/lib/modules/widget-config/selectors";
 
 export default connectState(
   (state) => ({

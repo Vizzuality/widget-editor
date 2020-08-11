@@ -5,7 +5,7 @@ import { LABELS, BASEMAPS } from "@widget-editor/map/lib/constants";
 import { setConfiguration, resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 
-import { resetWidget } from "@widget-editor/shared/lib/modules/widget/actions";
+import { resetWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
 
 import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
@@ -14,7 +14,7 @@ import { getLocalCache } from "exposed-hooks";
 function* restoreEditor() {
   yield put(resetEditor());
   yield put(resetConfiguration());
-  yield put(resetWidget());
+  yield put(resetWidgetConfig());
   yield put(resetFilters());
 }
 
@@ -106,7 +106,7 @@ function* preloadData() {
 
     if (!paramsConfig) {
       yield put(
-        setEditor({ advanced: true, customConfiguration: widgetConfig })
+        setEditor({ advanced: true, customWidgetConfig: widgetConfig })
       );
     }
 

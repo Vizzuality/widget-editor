@@ -12,7 +12,7 @@ import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors"
 
 // ACTIONS
 import { setEditor, dataInitialized } from "@widget-editor/shared/lib/modules/editor/actions";
-import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
+import { setWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
 
 import getWidgetDataWithAdapter from './getWidgetData';
 
@@ -27,7 +27,7 @@ const stateProxy = new StateProxy();
 // Action triggering this is: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE
 function* updateHookState() {
   const state = yield select();
-  if (state.widgetEditor.editor.initialized && state.widgetEditor.widget) {
+  if (state.widgetEditor.editor.initialized && state.widgetEditor.widgetConfig) {
     localOnChangeState(state.widgetEditor);
   }
 }
@@ -85,7 +85,7 @@ function* initializeVega(props) {
       editor,
       selectScheme(store),
     );
-    yield put(setWidget(vega.getChart()));
+    yield put(setWidgetConfig(vega.getChart()));
   }
 
   /**
@@ -101,7 +101,7 @@ function* initializeVega(props) {
       },
       ...editor.widget.attributes.widgetConfig,
     };
-    yield put(setWidget(ensureVegaProperties));
+    yield put(setWidgetConfig(ensureVegaProperties));
   }
 
   const { widgetEditor: newEditorState } = yield select();

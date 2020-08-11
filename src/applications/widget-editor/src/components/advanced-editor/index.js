@@ -4,10 +4,12 @@ import {
   selectAdvanced,
   selectIsEditing,
   selectIsWidgetAdvanced,
+  selectCustomWidgetConfig,
 } from "@widget-editor/shared/lib/modules/editor/selectors";
 import { selectThemeColor } from "@widget-editor/shared/lib/modules/theme/selectors";
+import { selectSerializedWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/selectors";
 import { setEditor } from "@widget-editor/shared/lib/modules/editor/actions";
-import { setWidget } from "@widget-editor/shared/lib/modules/widget/actions";
+import { setWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
 import AdvancedEditorComponent from "./component";
 
 export default connectState(
@@ -16,7 +18,9 @@ export default connectState(
     isEditing: selectIsEditing(state),
     isWidgetAdvanced: selectIsWidgetAdvanced(state),
     themeColor: selectThemeColor(state),
+    serializedWidgetConfig: selectSerializedWidgetConfig(state),
+    customWidgetConfig: selectCustomWidgetConfig(state),
     editor: state.editor,
   }),
-  { setEditor, setWidget }
+  { setEditor, setWidgetConfig }
 )(AdvancedEditorComponent);

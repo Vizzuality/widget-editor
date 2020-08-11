@@ -235,7 +235,7 @@ export default class RwAdapter implements Adapter.Service {
   handleSave(consumerOnSave, dataService, application = "rw", editorState) {
     const {
       configuration,
-      widget,
+      widgetConfig,
       editor,
       filters: { list: editorFilters },
     } = editorState;
@@ -249,7 +249,7 @@ export default class RwAdapter implements Adapter.Service {
     this.setDatasetId(id);
     this.setTableName(tableName);
 
-    let vegaConfiguration = widget;
+    let vegaConfiguration = widgetConfig;
     let output = {};
 
     if (editorState.configuration.visualizationType !== "map") {
@@ -277,7 +277,7 @@ export default class RwAdapter implements Adapter.Service {
           if (d.name === 'table') {
             return {
               name: 'table',
-              transform: d.transform,
+              transform: d.transform ?? null,
               format: {
                 type: 'json',
                 property: 'data',

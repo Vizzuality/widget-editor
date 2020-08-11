@@ -1,5 +1,7 @@
 import { createSelector } from "reselect";
 
+import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks";
+
 const SINGLE_COLOR_OPTION = {
   alias: "Single color",
   name: "Single color",
@@ -21,6 +23,7 @@ const getColumnDataType = (columnName, fields) => {
   return o;
 };
 
+export const selectWidgetConfig = state => state.widgetConfig;
 const getConfiguration = (state) => state.configuration;
 const getDataset = (state) => state.editor.dataset;
 const getFilters = (state) => state.filters;
@@ -117,5 +120,32 @@ export const getSelectedColor = createSelector(
       : null;
 
     return  colorColumn || SINGLE_COLOR_OPTION;
+  }
+);
+
+export const selectSerializedWidgetConfig = createSelector(
+  [selectWidgetConfig],
+  (widgetConfig) => {
+    const { adapter } = getLocalCache();
+
+    const config = { ...(widgetConfig ?? {}) };
+    if (config.data && Array.isArray(config.data)) {
+      config.data = config.data.map(data => {
+        if (data.name === 'table') {
+          return {
+            name: 'table',
+            transform: data.transform ?? null,
+            format: {
+              type: 'json',
+              property: 'data',
+            },
+            url: adapter.getDataUrl(),
+          };
+        }
+        return data;
+      });
+    }
+
+    return config;
   }
 );
