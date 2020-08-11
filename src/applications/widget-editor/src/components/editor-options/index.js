@@ -1,6 +1,7 @@
 import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import { isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
 import EditorOptionsComponent from "./component";
 
 export default connectState(
@@ -17,7 +18,7 @@ export default connectState(
     limit: state.configuration.limit,
     donutRadius: state.configuration.donutRadius,
     sliceCount: state.configuration.sliceCount,
-    isMap: state.configuration.chartType === "map",
+    isMap: isMap(state),
     data: state.editor.widgetData,
     orderBy: state.configuration.orderBy,
     compact: state.theme.compact,

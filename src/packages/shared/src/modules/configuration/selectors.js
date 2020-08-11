@@ -4,6 +4,7 @@ import { selectDisabledFeatures } from "../editor/selectors";
 
 const selectAvailableCharts = state => state.configuration.availableCharts;
 const selectRasterOnly = state => state.configuration.rasterOnly;
+const selectChartType = state => state.configuration.chartType;
 
 export const selectChartOptions = createSelector(
   [selectAvailableCharts, selectRasterOnly, selectDisabledFeatures],
@@ -20,4 +21,9 @@ export const selectChartOptions = createSelector(
 
     return res;
   },
+);
+
+export const isMap = createSelector(
+  [selectChartType],
+  chartType => chartType === 'map',
 );

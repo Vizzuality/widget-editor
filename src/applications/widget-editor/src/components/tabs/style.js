@@ -37,20 +37,25 @@ export const StyledTabsContent = styled.div`
 
 export const StyledList = styled.ul`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 20px 30px 20px 0;
   list-style: none;
 `;
 
 export const StyledListLabel = styled.li`
   color: red;
-  padding-right: 5px;
-  padding-left: 5px;
+  margin: 0 5px 0 0;
 
-  &:first-child {
-    padding-left: 0;
-  }
   &:last-child {
-    padding-right: 0;
+    margin-right: 0;
+  }
+
+  button[aria-pressed = "true"] {
+    border-width: 2px !important;
+  }
+
+  button[aria-pressed = "false"] {
+    // Prevent the change from a 1px width to a 2px width to cause a jump
+    margin: 0 1px;
   }
 `;

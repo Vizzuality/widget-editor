@@ -1,6 +1,6 @@
 export default {
   restoring: false,
-  disabledFeatures: [],
+  disabledFeatures: ['typography'],
   dataSync: false,
   map: null,
   initialized: false,

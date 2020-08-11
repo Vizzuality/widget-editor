@@ -180,37 +180,47 @@ const EditorOptions = ({
                 </Suspense>
               </AccordionSection>
             )}
-            {isMap && (
-              <AccordionSection title="Map configuration" openDefault>
+          </Accordion>
+        </Tab>
+        
+        {isMap && (
+          <Tab label="Map">
+            <Accordion>
+              <AccordionSection title="Configuration" openDefault>
                 <Suspense fallback={<div>Loading...</div>}>
                   <MapInfo />
                 </Suspense>
               </AccordionSection>
-            )}
-          </Accordion>
-        </Tab>
+            </Accordion>
+          </Tab>
+        )}
 
-        <Tab label="Visual style">
-          <Accordion>
-            {disabledFeatures.indexOf("typogrophy") === -1 && (
-              <AccordionSection title="Typography">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <Typography />
-                </Suspense>
-              </AccordionSection>
-            )}
+        {!isMap && (
+          <Tab label="Visual style">
+            <Accordion>
+              {disabledFeatures.indexOf("typography") === -1 && (
+                <AccordionSection title="Typography">
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Typography />
+                  </Suspense>
+                </AccordionSection>
+              )}
 
-            {disabledFeatures.indexOf("theme-selection") === -1 && (
-              <AccordionSection title="Color">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <ColorShemes />
-                </Suspense>
-              </AccordionSection>
-            )}
-          </Accordion>
-        </Tab>
+              {disabledFeatures.indexOf("theme-selection") === -1 && (
+                <AccordionSection
+                  title="Color"
+                  openDefault={disabledFeatures.indexOf("typography") !== -1}
+                >
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ColorShemes />
+                  </Suspense>
+                </AccordionSection>
+              )}
+            </Accordion>
+          </Tab>
+        )}
 
-        {disabledFeatures.indexOf("advanced-editor") === -1 && (
+        {disabledFeatures.indexOf("advanced-editor") === -1 && !isMap && (
           <Tab label="Advanced">
             <Suspense fallback={<div>Loading...</div>}>
               <AdvancedEditor />

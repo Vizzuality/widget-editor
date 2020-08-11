@@ -19,7 +19,6 @@
     "@widget-editor/types": "^2.2.25",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
-    "react-resize-detector": "^4.2.1",
     "react-select": "^3.0.8",
     "react-slick": "^0.25.2",
     "react-slider": "^1.0.2",
