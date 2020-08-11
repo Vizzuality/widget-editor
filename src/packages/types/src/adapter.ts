@@ -37,4 +37,6 @@ export interface Service {
     fields: Generic.Array[],
     dataset: Dataset.Payload
   ): Promise<Filters.Filter[]>;
+  getSerializedScheme(config: Widget.Scheme): any;
+  getDeserializedScheme(config: any): Widget.Scheme;
 }

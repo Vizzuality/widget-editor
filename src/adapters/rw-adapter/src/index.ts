@@ -1,17 +1,20 @@
 import axios from 'axios';
 import { Adapter, Dataset, Widget, Config, Filters, Generic } from "@widget-editor/types";
 import { getEditorMeta, tags } from "@widget-editor/shared";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 
 import {
   DatasetService,
   WidgetService,
   FiltersService,
+  getDefaultTheme,
 } from "@widget-editor/core";
 
 import { SerializedFilter } from './types';
 import defaultWidget from "./default-widget";
 
 import ConfigHelper from "./helpers/config";
+import { SerializedScheme } from "./types";
 
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
@@ -258,6 +261,8 @@ export default class RwAdapter implements Adapter.Service {
     let output = {};
 
     if (editorState.configuration.visualizationType !== "map") {
+      const scheme = selectScheme(editorState);
+
       output = {
         paramsConfig: {
           visualizationType: editorState.configuration.visualizationType,
@@ -294,7 +299,7 @@ export default class RwAdapter implements Adapter.Service {
         axes: vegaConfiguration.axes,
         marks: vegaConfiguration.marks,
         interaction_config: vegaConfiguration.interaction_config,
-        config: vegaConfiguration.config,
+        config: this.getSerializedScheme(scheme),
         legend: vegaConfiguration.legend ?? null,
       };
 
@@ -407,5 +412,47 @@ export default class RwAdapter implements Adapter.Service {
     }
 
     return await FiltersService.getDeserializedFilters(filters, fields, dataset);
+  }
+
+  /**
+   * Return the serialized scheme (`config` object)
+   * @param scheme Scheme used by the widget
+   */
+  getSerializedScheme(scheme: Widget.Scheme): SerializedScheme {
+    return {
+      ...getDefaultTheme(),
+      name: scheme.name,
+      range: Object.assign({}, getDefaultTheme().range, {
+        category20: scheme.category
+      }),
+      mark: Object.assign({}, getDefaultTheme().mark, {
+        fill: scheme.mainColor
+      }),
+      symbol: Object.assign({}, getDefaultTheme().symbol, {
+        fill: scheme.mainColor
+      }),
+      rect: Object.assign({}, getDefaultTheme().rect, {
+        fill: scheme.mainColor
+      }),
+      line: Object.assign({}, getDefaultTheme().line, {
+        stroke: scheme.mainColor
+      })
+    };
+  }
+
+  /**
+   * Return the scheme from the `config` object
+   * @param config config object of the widget
+   */
+  getDeserializedScheme(config: SerializedScheme): Widget.Scheme {
+    if (!config?.range?.category20 || config.range.category20.length === 0) {
+      return null;
+    }
+
+    return {
+      name: config.name ?? 'user-custom',
+      mainColor: config.range.category20[0],
+      category: config.range.category20,
+    };
   }
 }

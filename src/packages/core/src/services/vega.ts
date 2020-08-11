@@ -1,6 +1,6 @@
 import isObjectLike from "lodash/isObjectLike";
 
-import { Charts, Vega } from "@widget-editor/types";
+import { Charts, Vega, Widget } from "@widget-editor/types";
 
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
@@ -14,33 +14,7 @@ import MultiLine from "../charts/line-multi";
 import Scatter from "../charts/scatter";
 
 import { SUPPORTED_CHARTS } from "../charts/constants";
-
-import {
-  defaultVegaSchema,
-  sqlFields,
-} from "../helpers/wiget-helper/constants";
-
-const DEFAULT_SCHEME = {
-  name: "default",
-  mainColor: "#3BB2D0",
-  category: [
-    '#3BB2D0',
-    '#2C75B0',
-    '#FAB72E',
-    '#EF4848',
-    '#65B60D',
-    '#C32D7B',
-    '#F577B9',
-    '#5FD2B8',
-    '#F1800F',
-    '#9F1C00',
-    '#A5E9E3',
-    '#B9D765',
-    '#393F44',
-    '#CACCD0',
-    '#717171',
-  ],
-};
+import { defaultVegaSchema } from "../helpers/wiget-helper/constants";
 
 export default class VegaService implements Charts.Service {
   widgetConfig: any;
@@ -48,7 +22,7 @@ export default class VegaService implements Charts.Service {
   configuration: any;
   editor: any;
   sliceCount: number;
-  scheme: any;
+  scheme: Widget.Scheme;
   schema: Vega.Schema;
   colorApplied: boolean;
 
@@ -57,18 +31,11 @@ export default class VegaService implements Charts.Service {
     widgetData: any,
     configuration: any,
     editor: any,
-    theme: any
+    scheme: Widget.Scheme
   ) {
-    if (theme) {
-      this.scheme = theme.schemes.find(
-        (scheme) => scheme.name === theme.selectedScheme
-      );
-    } else {
-      this.scheme = DEFAULT_SCHEME;
-    }
-
     this.colorApplied = isObjectLike(configuration.color);
 
+    this.scheme = scheme;
     this.schema = defaultVegaSchema();
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;

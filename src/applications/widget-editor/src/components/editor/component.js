@@ -8,7 +8,7 @@ import { DataService } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
 import { StyledContainer, StyleEditorContainer } from "./style";
 
-import { localGetEditorState, setReduxCache, localOnChangeState } from "exposed-hooks";
+import { localGetEditorState, setReduxCache } from "exposed-hooks";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -145,9 +145,9 @@ class Editor extends React.Component {
   }, 1000);
 
   resolveSchemes = debounce((schemes) => {
-    const { setScheme } = this.props;
-    if (Array.isArray(schemes)) {
-      setScheme(schemes);
+    const { setSchemes } = this.props;
+    if (Array.isArray(schemes) && schemes.length > 0) {
+      setSchemes(schemes);
     }
   }, 1000);
 
