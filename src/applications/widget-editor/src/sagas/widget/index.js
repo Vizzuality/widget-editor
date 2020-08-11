@@ -59,14 +59,12 @@ function* initializeData(props) {
  */
 function* initializeVega(props) {
   const { widgetEditor: store } = yield select();
-  const { editor, configuration } = store;
-  const { widgetData, advanced } = editor;
+  const { editor, configuration, widgetConfig } = store;
+  const { widget, widgetData, advanced } = editor;
 
-  if (!editor?.widget?.attributes) {
+  if (!widget?.attributes) {
     yield cancel();
   }
-
-  const { widgetConfig } = editor.widget.attributes;
 
   /**
    * Traditional widgets
@@ -78,7 +76,7 @@ function* initializeVega(props) {
     const vega = new VegaService(
       {
         ...widgetConfig,
-        paramsConfig: { ...widgetConfig.paramsConfig, ...configuration },
+        paramsConfig: { ...configuration },
       },
       widgetData,
       configuration,
@@ -99,7 +97,7 @@ function* initializeVega(props) {
       autosize: {
         type: "fit",
       },
-      ...editor.widget.attributes.widgetConfig,
+      ...widgetConfig,
     };
     yield put(setWidgetConfig(ensureVegaProperties));
   }

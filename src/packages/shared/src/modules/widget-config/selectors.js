@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 
 import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks";
+import { selectIsWidgetAdvanced } from "@widget-editor/shared/lib/modules/editor/selectors";
 
 const SINGLE_COLOR_OPTION = {
   alias: "Single color",
@@ -124,11 +125,17 @@ export const getSelectedColor = createSelector(
 );
 
 export const selectSerializedWidgetConfig = createSelector(
-  [selectWidgetConfig],
-  (widgetConfig) => {
+  [selectWidgetConfig, selectIsWidgetAdvanced],
+  (widgetConfig, isAdvancedWidget) => {
     const { adapter } = getLocalCache();
-
     const config = { ...(widgetConfig ?? {}) };
+
+    if (isAdvancedWidget) {
+      return config;
+    }
+
+    // When the user is creating or editing a widget, the data is embedded within the widgetConfig
+    // This function replaces it by the URL of the data
     if (config.data && Array.isArray(config.data)) {
       config.data = config.data.map(data => {
         if (data.name === 'table') {

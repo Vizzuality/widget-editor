@@ -21,12 +21,15 @@ const AdvancedEditor = ({
   setWidgetConfig,
   patchConfiguration,
 }) => {
-  const [editorValue, setEditorValue] = useState('');
-  const [validationErrors, setValidationErrors] = useState([]);
-
   const stringifiedWidgetConfig = useMemo(
     () => JSON.stringify(serializedWidgetConfig, null, 2),
     [serializedWidgetConfig],
+  );
+
+  const [editorValue, setEditorValue] = useState(advanced ? stringifiedWidgetConfig : '');
+  const [validationErrors, setValidationErrors] = useState(advanced
+    ? getValidationErrors(serializedWidgetConfig)
+    : []
   );
 
   const onSwitchToAdvancedMode = useCallback(

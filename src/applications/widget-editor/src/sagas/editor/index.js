@@ -5,7 +5,7 @@ import { LABELS, BASEMAPS } from "@widget-editor/map/lib/constants";
 import { setConfiguration, resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 
-import { resetWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
+import { setWidgetConfig, resetWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
 
 import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
 
@@ -105,9 +105,8 @@ function* preloadData() {
     }
 
     if (!paramsConfig) {
-      yield put(
-        setEditor({ advanced: true })
-      );
+      yield put(setEditor({ advanced: true }));
+      yield put(setWidgetConfig(widgetConfig));
     }
 
     yield put(setConfiguration({ ...configuration, format }));
