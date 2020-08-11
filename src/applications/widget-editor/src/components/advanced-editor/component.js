@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import PropTypes from 'prop-types';
+import debounce from 'lodash/debounce';
 
 import Callout from "components/callout";
 import CodeEditor from "components/code-editor";
@@ -58,6 +59,7 @@ const AdvancedEditor = ({
       
       setEditor({ advanced: true });
       setWidgetConfig(JSON.parse(config));
+      setEditorValue(config);
     },
     [stringifiedWidgetConfig, setEditor, setWidgetConfig],
   );
@@ -74,9 +76,7 @@ const AdvancedEditor = ({
     [setEditor, patchConfiguration],
   );
 
-  const onChange = useCallback((value) => {
-    setEditorValue(value);
-
+  const validateAndUpdateStore = useCallback(debounce((value) => {
     try {
       const json = JSON.parse(value);
       const errors = getValidationErrors(json);
@@ -90,11 +90,18 @@ const AdvancedEditor = ({
     } catch (e) {
       setValidationErrors(['Cannot parse into a JSON file']);
     }
-  }, [setWidgetConfig]);
+  }, 1500), [setValidationErrors]);
+
+  const onChange = useCallback((value) => {
+    setEditorValue(value);
+    validateAndUpdateStore(value);
+  }, [validateAndUpdateStore, setEditorValue]);
 
   useEffect(() => {
-    setEditorValue(stringifiedWidgetConfig);
-  }, [stringifiedWidgetConfig, setEditorValue]);
+    if (!advanced) {
+      setEditorValue(stringifiedWidgetConfig);
+    }
+  }, [advanced, stringifiedWidgetConfig, setEditorValue]);
 
   return (
     <Container>
