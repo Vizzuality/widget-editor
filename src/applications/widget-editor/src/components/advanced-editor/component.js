@@ -56,8 +56,10 @@ const AdvancedEditor = ({
       setEditor({ advanced: true });
       setWidgetConfig(JSON.parse(config));
       setEditorValue(config);
+      // We need to patch the configuration so `paramsConfig` is removed from the payload
+      patchConfiguration();
     },
-    [stringifiedWidgetConfig, setEditor, setWidgetConfig],
+    [stringifiedWidgetConfig, setEditor, setWidgetConfig, patchConfiguration],
   );
   const onSwitchToInteractiveMode = useCallback(
     () => {
@@ -81,12 +83,13 @@ const AdvancedEditor = ({
         setValidationErrors(errors);
       } else {
         setValidationErrors([]);
-        setWidgetConfig(json)
+        setWidgetConfig(json);
+        patchConfiguration();
       }
     } catch (e) {
       setValidationErrors(['Cannot parse into a JSON file']);
     }
-  }, 1500), [setValidationErrors]);
+  }, 1500), [setWidgetConfig, setValidationErrors, patchConfiguration]);
 
   const onChange = useCallback((value) => {
     setEditorValue(value);
