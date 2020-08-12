@@ -7,6 +7,7 @@ export default {
   chartType: "bar",
   sliceCount: 6,
   donutRadius: 100,
+  limit: 50,
   map: {
     zoom: 2,
     lat: 0,
