@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 
 import { AccordionArrow } from "@widget-editor/shared"
@@ -33,7 +34,7 @@ export const StyledAccordionButton = styled.button`
   outline: none;
 `;
 
-export const StyledIcon = styled(AccordionArrow)`
+export const StyledIcon = styled(({ themeColor, isOpen, ...rest }) => <AccordionArrow {...rest} />)`
   position: absolute;
   left: 0;
   top: 5px;
