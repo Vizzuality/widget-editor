@@ -20,10 +20,6 @@ export const getValidationErrors = (widgetConfig) => {
     validationErrors.push('The property we_meta is not allowed');
   }
 
-  if (widgetConfig.$schema !== null && widgetConfig.$schema !== undefined) {
-    validationErrors.push('The property $schema is not allowed');
-  }
-
   if (widgetConfig.interaction_config !== null && widgetConfig.interaction_config !== undefined) {
     if (!Array.isArray(widgetConfig.interaction_config)
       || widgetConfig.interaction_config.some(o => typeof o !== 'object')) {

@@ -250,12 +250,15 @@ export default class RwAdapter implements Adapter.Service {
     this.setTableName(tableName);
 
     let vegaConfiguration = widgetConfig;
-    let output = {};
+    let output: any = {};
 
     if (editorState.configuration.visualizationType !== "map") {
       const scheme = selectScheme(editorState);
 
       output = {
+        // We shouldn't filter out keys coming from vegaConfig because the wigdet might be advanced
+        // and use keys we don't initially use with the interactive mode
+        ...vegaConfiguration,
         paramsConfig: {
           visualizationType: editorState.configuration.visualizationType,
           limit: editorState.configuration.limit || 50,
@@ -287,13 +290,14 @@ export default class RwAdapter implements Adapter.Service {
           }
           return d;
         }),
-        scales: vegaConfiguration.scales,
-        axes: vegaConfiguration.axes,
-        marks: vegaConfiguration.marks,
-        interaction_config: vegaConfiguration.interaction_config,
-        config: this.getSerializedScheme(scheme),
-        legend: vegaConfiguration.legend ?? null,
+        config: editor.advanced ? vegaConfiguration.config : this.getSerializedScheme(scheme),
       };
+
+      // One key we must remove though is $schema because the RW API doesn't support keys that start
+      // with the dollar symbol
+      if (output.$schema) {
+        delete output.$schema;
+      }
 
     }
 

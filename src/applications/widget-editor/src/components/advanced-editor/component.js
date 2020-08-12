@@ -51,13 +51,6 @@ const AdvancedEditor = ({
         delete json.we_meta;
       }
 
-      if (json.$schema) {
-        // This key is part of the Vega specification but is not accepted by RW's API
-        // As a rule, we decided not to include it in any of the widgets (whether using the RW API
-        // or not)
-        delete json.$schema;
-      }
-
       const config = JSON.stringify(json, null, 2);
       
       setEditor({ advanced: true });
