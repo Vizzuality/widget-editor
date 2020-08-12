@@ -5,13 +5,13 @@ import { patchConfiguration } from "@widget-editor/shared/lib/modules/configurat
 // Components
 import ChartColorFilter from "./component";
 
-import * as widgetSelectors from "@widget-editor/shared/lib/modules/widget/selectors";
+import * as widgetSelectors from "@widget-editor/shared/lib/modules/widget-config/selectors";
 import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selectors";
 
 export default redux.connectState(
   (state) => ({
     advanced: state.editor.advanced,
-    widget: state.widget,
+    widget: state.widgetConfig,
     configuration: state.configuration,
     selectedColor: widgetSelectors.getSelectedColor(state),
     columns: widgetSelectors.getWidgetColumns(state, { colorDimention: true }),

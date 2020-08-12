@@ -96,13 +96,13 @@ class Editor extends React.Component {
     const {
       resetEditor,
       resetConfiguration,
-      resetWidget,
+      resetWidgetConfig,
       resetFilters,
       resetTheme
     } = this.props;
     resetEditor();
     resetConfiguration();
-    resetWidget();
+    resetWidgetConfig();
     resetFilters();
     resetTheme();
   }

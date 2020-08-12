@@ -11,7 +11,6 @@ import {
 } from "@widget-editor/core";
 
 import { SerializedFilter } from './types';
-import defaultWidget from "./default-widget";
 
 import ConfigHelper from "./helpers/config";
 import { SerializedScheme } from "./types";
@@ -174,7 +173,7 @@ export default class RwAdapter implements Adapter.Service {
     if (this.isAborting) {
       return null;
     }
-    const cancelToken =  new axios.CancelToken(function executor(source) {
+    const cancelToken = new axios.CancelToken(function executor(source) {
       // An executor function receives a cancel function as a parameter
       self.requestQue.push({
         id: url,
@@ -196,14 +195,7 @@ export default class RwAdapter implements Adapter.Service {
     const includes = "metadata";
 
     if (!widgetId) {
-      return {
-        ...defaultWidget,
-        attributes: {
-          ...defaultWidget.attributes,
-          dataset: dataset.id,
-          widgetConfig: this.handleDefaultWidgetConf(dataset),
-        },
-      };
+      return null;
     }
 
     const url = tags.oneLineTrim`
@@ -243,7 +235,7 @@ export default class RwAdapter implements Adapter.Service {
   handleSave(consumerOnSave, dataService, application = "rw", editorState) {
     const {
       configuration,
-      widget,
+      widgetConfig,
       editor,
       filters: { list: editorFilters },
     } = editorState;
@@ -257,35 +249,46 @@ export default class RwAdapter implements Adapter.Service {
     this.setDatasetId(id);
     this.setTableName(tableName);
 
-    let vegaConfiguration = widget;
-    let output = {};
+    let vegaConfiguration = widgetConfig;
+    let output: any = {};
 
     if (editorState.configuration.visualizationType !== "map") {
       const scheme = selectScheme(editorState);
 
       output = {
-        paramsConfig: {
-          visualizationType: editorState.configuration.visualizationType,
-          limit: editorState.configuration.limit || 50,
-          value: editorState.configuration.value || null,
-          category: editorState.configuration.category || null,
-          color: editorState.configuration.color,
-          size: editorState.configuration.size,
-          orderBy: editorState.configuration.orderBy,
-          aggregateFunction: editorState.configuration.aggregateFunction,
-          chartType: editorState.configuration.chartType,
-          filters: this.getSerializedFilters(editorFilters ?? []),
-          areaIntersection: editorState.configuration.areaIntersection,
-          band: editorState.configuration.band,
-          donutRadius: editorState.configuration.donutRadius,
-          sliceCount: editorState.configuration.sliceCount,
-          layer: null
-        },
-        data: vegaConfiguration.data.map(d => {
+        // We shouldn't filter out keys coming from vegaConfig because the wigdet might be advanced
+        // and use keys we don't initially use with the interactive mode
+        ...vegaConfiguration,
+        ...(editor.advanced
+          ? {}
+          : {
+            paramsConfig: {
+              visualizationType: editorState.configuration.visualizationType,
+              limit: editorState.configuration.limit || 50,
+              value: editorState.configuration.value || null,
+              category: editorState.configuration.category || null,
+              color: editorState.configuration.color,
+              size: editorState.configuration.size,
+              orderBy: editorState.configuration.orderBy,
+              aggregateFunction: editorState.configuration.aggregateFunction,
+              chartType: editorState.configuration.chartType,
+              filters: this.getSerializedFilters(editorFilters ?? []),
+              areaIntersection: editorState.configuration.areaIntersection,
+              band: editorState.configuration.band,
+              donutRadius: editorState.configuration.donutRadius,
+              sliceCount: editorState.configuration.sliceCount,
+              layer: null
+            }
+          }
+        ),
+        // Advanced widget might not provide data
+        // This does not make sense, but we need to prepare to case like this to avoid crashes from
+        // the editor
+        data: vegaConfiguration.data?.map(d => {
           if (d.name === 'table') {
             return {
               name: 'table',
-              transform: d.transform,
+              transform: d.transform ?? null,
               format: {
                 type: 'json',
                 property: 'data',
@@ -294,14 +297,15 @@ export default class RwAdapter implements Adapter.Service {
             }
           }
           return d;
-        }),
-        scales: vegaConfiguration.scales,
-        axes: vegaConfiguration.axes,
-        marks: vegaConfiguration.marks,
-        interaction_config: vegaConfiguration.interaction_config,
-        config: this.getSerializedScheme(scheme),
-        legend: vegaConfiguration.legend ?? null,
+        }) ?? null,
+        config: editor.advanced ? vegaConfiguration.config : this.getSerializedScheme(scheme),
       };
+
+      // One key we must remove though is $schema because the RW API doesn't support keys that start
+      // with the dollar symbol
+      if (output.$schema) {
+        delete output.$schema;
+      }
 
     }
 

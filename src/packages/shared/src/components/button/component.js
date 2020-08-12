@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 
 const StyledButton = styled.button`
   cursor: pointer;
+  font-family: inherit;
   font-size: 16px;
   color: #393f44;
   border: 1px solid rgba(202, 204, 208, 0.85);

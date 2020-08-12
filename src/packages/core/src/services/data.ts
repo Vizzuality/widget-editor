@@ -171,5 +171,7 @@ export default class DataService {
     await this.getFieldsAndLayers();
     await this.handleFilters();
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
+    // If this dispatch is not executed, the local state is not set on init
+    this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
   }
 }

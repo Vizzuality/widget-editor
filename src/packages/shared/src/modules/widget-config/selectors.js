@@ -1,5 +1,8 @@
 import { createSelector } from "reselect";
 
+import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks";
+import { selectIsWidgetAdvanced } from "@widget-editor/shared/lib/modules/editor/selectors";
+
 const SINGLE_COLOR_OPTION = {
   alias: "Single color",
   name: "Single color",
@@ -21,6 +24,7 @@ const getColumnDataType = (columnName, fields) => {
   return o;
 };
 
+export const selectWidgetConfig = state => state.widgetConfig;
 const getConfiguration = (state) => state.configuration;
 const getDataset = (state) => state.editor.dataset;
 const getFilters = (state) => state.filters;
@@ -117,5 +121,38 @@ export const getSelectedColor = createSelector(
       : null;
 
     return  colorColumn || SINGLE_COLOR_OPTION;
+  }
+);
+
+export const selectSerializedWidgetConfig = createSelector(
+  [selectWidgetConfig, selectIsWidgetAdvanced],
+  (widgetConfig, isAdvancedWidget) => {
+    const { adapter } = getLocalCache();
+    const config = { ...(widgetConfig ?? {}) };
+
+    if (isAdvancedWidget) {
+      return config;
+    }
+
+    // When the user is creating or editing a widget, the data is embedded within the widgetConfig
+    // This function replaces it by the URL of the data
+    if (config.data && Array.isArray(config.data)) {
+      config.data = config.data.map(data => {
+        if (data.name === 'table') {
+          return {
+            name: 'table',
+            transform: data.transform ?? null,
+            format: {
+              type: 'json',
+              property: 'data',
+            },
+            url: adapter.getDataUrl(),
+          };
+        }
+        return data;
+      });
+    }
+
+    return config;
   }
 );

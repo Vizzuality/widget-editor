@@ -1,13 +1,17 @@
 import { connectState } from "@widget-editor/shared/lib/helpers/redux";
-
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import { isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
+import {
+  selectDisabledFeatures,
+  selectAdvanced,
+} from "@widget-editor/shared/lib/modules/editor/selectors";
+
 import EditorOptionsComponent from "./component";
 
 export default connectState(
   (state) => ({
-    disabledFeatures: state.editor.disabledFeatures,
-    advanced: state.editor.advanced,
+    disabledFeatures: selectDisabledFeatures(state),
+    advanced: selectAdvanced(state),
     initialized: state.editor.initialized,
     restoring: state.editor.restoring,
     rasterOnly: state.configuration.rasterOnly,

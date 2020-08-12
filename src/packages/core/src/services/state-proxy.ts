@@ -92,6 +92,8 @@ export default class StateProxy {
     shouldUpdate = shouldUpdate || !isEqual(prev.configuration.donutRadius, next.configuration.donutRadius);
     // If sliceCount changes
     shouldUpdate = shouldUpdate || !isEqual(prev.configuration.sliceCount, next.configuration.sliceCount);
+    // If the advanced mode is toggled on or off
+    shouldUpdate = shouldUpdate || prev.editor.advanced !== next.editor.advanced;
 
     return shouldUpdate;
   }

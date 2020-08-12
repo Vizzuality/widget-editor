@@ -133,7 +133,7 @@ const EditorOptions = ({
   return (
     <StyledContainer compact={compact}>
       <Tabs>
-        <Tab label="General">
+        <Tab id="general" label="General">
           <Accordion>
             <AccordionSection title="Description and labels" openDefault>
               <WidgetInfo isMap={isMap} />
@@ -184,7 +184,7 @@ const EditorOptions = ({
         </Tab>
         
         {isMap && (
-          <Tab label="Map">
+          <Tab id="map" label="Map">
             <Accordion>
               <AccordionSection title="Configuration" openDefault>
                 <Suspense fallback={<div>Loading...</div>}>
@@ -195,8 +195,8 @@ const EditorOptions = ({
           </Tab>
         )}
 
-        {!isMap && (
-          <Tab label="Visual style">
+        {!isMap && !advanced && (
+          <Tab id="style" label="Visual style">
             <Accordion>
               {disabledFeatures.indexOf("typography") === -1 && (
                 <AccordionSection title="Typography">
@@ -221,15 +221,15 @@ const EditorOptions = ({
         )}
 
         {disabledFeatures.indexOf("advanced-editor") === -1 && !isMap && (
-          <Tab label="Advanced">
+          <Tab id="advanced" label="Advanced">
             <Suspense fallback={<div>Loading...</div>}>
               <AdvancedEditor />
             </Suspense>
           </Tab>
         )}
 
-        {disabledFeatures.indexOf("table-view") === -1 && !isMap && (
-          <Tab label="Table view">
+        {disabledFeatures.indexOf("table-view") === -1 && !isMap && !advanced && (
+          <Tab id="table" label="Table view">
             <Suspense fallback={<div>Loading...</div>}>
               <TableView />
             </Suspense>
