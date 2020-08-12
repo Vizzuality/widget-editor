@@ -56,9 +56,11 @@ function* preloadData() {
           }
         }
         : {
-          basemap: "dark",
-          labels: "none",
-          boundaries: false,
+            basemap: {
+              basemap: "dark",
+              labels: "none",
+              boundaries: false,
+            }
         }),
       ...(widgetConfig.hasOwnProperty("zoom")
         ? { zoom: widgetConfig.zoom }
