@@ -9,7 +9,13 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 
 import { getValidationErrors } from './helpers';
-import { Container, CalloutButton, CalloutLinkButton, ValidationCallout } from "./style";
+import {
+  Container,
+  CalloutButton,
+  CalloutLinkButton,
+  ValidationCallout,
+  InfoCallout,
+} from "./style";
 
 const AdvancedEditor = ({
   themeColor,
@@ -111,7 +117,7 @@ const AdvancedEditor = ({
             widget using code instead of the interactive interface.
           </p>
           <p>
-            Once activated, you <strong>cannot</strong> use the interactive interface anymore.
+            Once activated, you <strong>may not</strong> use the interactive interface anymore.
           </p>
           <p>
             <CalloutButton size="small" btnType="highlight" onClick={onSwitchToAdvancedMode}>
@@ -134,6 +140,30 @@ const AdvancedEditor = ({
             . <strong>All your code changes will be lost.</strong>
           </p>
         </Callout>
+      )}
+
+      {advanced && (
+        <InfoCallout>
+          <p>
+            Advanced widgets follow the{' '}
+            <a href="https://vega.github.io/vega/docs/" target="_blank" rel="noopener noreferrer">
+              Vega specification
+            </a>
+            . The widget editor supports any properties of Vega 5.9 and below.
+          </p>
+          <p>
+            Some parts of the editor's generated Vega JSON use custom formats. This applies to the
+            tooltip and legend. To learn more about these, please have a look at this{' '}
+            <a
+              href="https://github.com/Vizzuality/widget-editor/wiki/Widgets'-specification"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              reference document
+            </a>
+            .
+          </p>
+        </InfoCallout>
       )}
 
       {advanced && validationErrors.length > 0 && (

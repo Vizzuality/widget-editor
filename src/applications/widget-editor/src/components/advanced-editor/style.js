@@ -40,3 +40,15 @@ export const ValidationCallout = styled(StyledCallout)`
     }
   }
 `;
+
+export const InfoCallout = styled(StyledCallout)`
+  margin-top: 20px;
+  padding: 0;
+  border: none;
+  background: none;
+
+  a {
+    text-decoration: underline;
+    color: inherit;
+  }
+`;
