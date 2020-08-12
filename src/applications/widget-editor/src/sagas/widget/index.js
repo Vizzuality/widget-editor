@@ -148,6 +148,8 @@ function* handleRestore() {
 
   const { widgetEditor: updatedState } = yield select();
   stateProxy.update(updatedState);
+  // Update the local state
+  yield call(updateHookState);
 }
 
 /**
