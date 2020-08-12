@@ -45,9 +45,8 @@ export const getValidationErrors = (widgetConfig) => {
       validationErrors.push('The property legend must be an array of objects or be omitted');
     } else if (widgetConfig.legend.length > 0) {
       const legend = widgetConfig.legend[0];
-      if (typeof legend.type !== 'string' || typeof legend.shape !== 'string'
-        || !Array.isArray(legend.values)) {
-        validationErrors.push('The first item of the array legend must contain the following properties: type (string), shape (string, values (array)');
+      if (!Array.isArray(legend.values)) {
+        validationErrors.push('The first item of the array legend must contain the property values (array)');
       } else if (
         legend.values.some(
           v => (typeof v.label !== 'string' && typeof v.label !== 'number')
