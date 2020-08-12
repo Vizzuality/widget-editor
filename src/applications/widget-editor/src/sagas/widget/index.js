@@ -60,11 +60,17 @@ function* initializeData(props) {
 function* initializeVega(props) {
   const { widgetEditor: store } = yield select();
   const { editor, configuration, widgetConfig } = store;
-  const { widget, widgetData, advanced } = editor;
+  const { widgetData, advanced } = editor;
 
-  if (!widget?.attributes) {
-    yield cancel();
-  }
+  // FIXME
+  // We can't execute `yield cancel()` here if `editor.widget` is not defined because the editor
+  // may be instantiated with a dataset only
+  // If we were to do so, the user wouldn't be able to create a widget (whether advanced or not)
+  // because we would exit early in `syncEditor`
+  // The downside of this is that as soon as the user interacts with the UI, we will serialise an
+  // invalid widget (the local state will contain an incomplete widget) and the default content of
+  // the advanced text editor will be that invalid widget
+  // We could argue though that if the user decides to save an invalid widget, it's up to them
 
   /**
    * Traditional widgets
@@ -141,6 +147,16 @@ function* handleRestore() {
   yield call(initializeData);
 
   const { widgetEditor } = yield select();
+  const { editor } = widgetEditor;
+  const { widget } = editor;
+
+  if (!widget) {
+    // If the widget-editor is instantiated without a widget, we don't want to restore anything but
+    // we still need to initialise the state proxy or else it cannot compare future states
+    stateProxy.update(widgetEditor);
+    // We cancel early so we don't serialise empty widgets
+    yield cancel();
+  }
 
   if (widgetEditor.configuration.visualizationType !== 'map') {
     yield call(initializeVega);

@@ -281,7 +281,10 @@ export default class RwAdapter implements Adapter.Service {
             }
           }
         ),
-        data: vegaConfiguration.data.map(d => {
+        // Advanced widget might not provide data
+        // This does not make sense, but we need to prepare to case like this to avoid crashes from
+        // the editor
+        data: vegaConfiguration.data?.map(d => {
           if (d.name === 'table') {
             return {
               name: 'table',
@@ -294,7 +297,7 @@ export default class RwAdapter implements Adapter.Service {
             }
           }
           return d;
-        }),
+        }) ?? null,
         config: editor.advanced ? vegaConfiguration.config : this.getSerializedScheme(scheme),
       };
 
