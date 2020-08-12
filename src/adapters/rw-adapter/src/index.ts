@@ -259,23 +259,28 @@ export default class RwAdapter implements Adapter.Service {
         // We shouldn't filter out keys coming from vegaConfig because the wigdet might be advanced
         // and use keys we don't initially use with the interactive mode
         ...vegaConfiguration,
-        paramsConfig: {
-          visualizationType: editorState.configuration.visualizationType,
-          limit: editorState.configuration.limit || 50,
-          value: editorState.configuration.value || null,
-          category: editorState.configuration.category || null,
-          color: editorState.configuration.color,
-          size: editorState.configuration.size,
-          orderBy: editorState.configuration.orderBy,
-          aggregateFunction: editorState.configuration.aggregateFunction,
-          chartType: editorState.configuration.chartType,
-          filters: this.getSerializedFilters(editorFilters ?? []),
-          areaIntersection: editorState.configuration.areaIntersection,
-          band: editorState.configuration.band,
-          donutRadius: editorState.configuration.donutRadius,
-          sliceCount: editorState.configuration.sliceCount,
-          layer: null
-        },
+        ...(editor.advanced
+          ? {}
+          : {
+            paramsConfig: {
+              visualizationType: editorState.configuration.visualizationType,
+              limit: editorState.configuration.limit || 50,
+              value: editorState.configuration.value || null,
+              category: editorState.configuration.category || null,
+              color: editorState.configuration.color,
+              size: editorState.configuration.size,
+              orderBy: editorState.configuration.orderBy,
+              aggregateFunction: editorState.configuration.aggregateFunction,
+              chartType: editorState.configuration.chartType,
+              filters: this.getSerializedFilters(editorFilters ?? []),
+              areaIntersection: editorState.configuration.areaIntersection,
+              band: editorState.configuration.band,
+              donutRadius: editorState.configuration.donutRadius,
+              sliceCount: editorState.configuration.sliceCount,
+              layer: null
+            }
+          }
+        ),
         data: vegaConfiguration.data.map(d => {
           if (d.name === 'table') {
             return {
