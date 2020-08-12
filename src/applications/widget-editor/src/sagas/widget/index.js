@@ -9,6 +9,7 @@ import {
 
 // SELECTORS
 import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
+import { isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
 
 // ACTIONS
 import { setEditor, dataInitialized } from "@widget-editor/shared/lib/modules/editor/actions";
@@ -74,7 +75,7 @@ function* initializeVega(props) {
    * DataService has figured out how a widget will be configured
    * VegaService utilizes store properties and generates a vega config for us
    */
-  if (!advanced) {
+  if (!advanced && !isMap(store)) {
     const vega = new VegaService(
       {
         ...widgetConfig,
