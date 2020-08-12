@@ -45,7 +45,7 @@ const Legend = ({
   return (
     <StyledContainer compact={compact}>
       <StyledColorsBoxContainer overflowIsHidden={multipleItems} alignCenter={!multipleItems}>
-          {!multipleItems && (
+          {!multipleItems && !advanced && (
             <StyledColorsBox alignCenter={false}>
               <StyledColorDot color={scheme.mainColor} />
               Single color
