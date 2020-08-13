@@ -92,13 +92,13 @@ export default class Line extends ChartsCommon implements Charts.Line {
         config: {
           fields: [
             {
-              column: "y",
+              column: "datum.y",
               property: this.resolveName('y'),
               type: "number",
               format: '.2s',
             },
             {
-              column: "x",
+              column: "datum.x",
               property: this.resolveName('x'),
               type: this.configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
