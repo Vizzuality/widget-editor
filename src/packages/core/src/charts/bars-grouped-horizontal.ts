@@ -3,7 +3,6 @@ import uniqBy from 'lodash/uniqBy';
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import ChartsCommon from './chart-common';
-import ParseSignals from './parse-signals';
 
 export default class BarsHorizontal extends ChartsCommon implements Charts.Bars {
   configuration: any;
@@ -269,7 +268,6 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   getChart() {
-    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
-    return parseSignals;
+    return this.schema;
   }
 }

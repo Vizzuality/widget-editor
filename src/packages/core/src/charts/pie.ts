@@ -2,7 +2,6 @@ import uniqBy from 'lodash/uniqBy';
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import ChartsCommon from './chart-common';
-import ParseSignals from './parse-signals';
 
 export default class Pie extends ChartsCommon implements Charts.Pie {
   configuration: any;
@@ -203,7 +202,6 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   getChart() {
-    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
-    return parseSignals;
+    return this.schema;
   }
 }
