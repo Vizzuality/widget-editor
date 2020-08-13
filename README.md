@@ -75,3 +75,23 @@ Here we are exposing the editor, renderer, and redux related logic to the consum
 ### Components
 
 For our components we are using `styled-components` [documentation](https://www.styled-components.com/) .
+
+## Migrating widgets
+
+![Initial screen of the migration tool](assets/migration-tool.png.png)
+
+The widget-editor includes an easy-to-use CLI that runs migrations for you. Once you've selected the version you want to migrate to, the CLI gives you 3 choices:
+- Get the list of the widgets that need migration
+- Perform a dry-run of the migration
+- Perform the migration
+
+Then, the migration tool will ask you for information such as which applications or which environments are targeted. If you want to perform the migration, you'll also have to provide your token (you need admin privileges).
+
+Whichever option you select from the first screen, a complete report of the action will be generated in the folder you execute the command from.
+
+To run the migration tool, execute:
+```bash
+$ yarn migrate
+```
+
+**This tool has been ported from v1 and was built with the RW API in mind.**
