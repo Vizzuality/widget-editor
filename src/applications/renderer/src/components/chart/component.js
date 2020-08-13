@@ -1,6 +1,6 @@
 import React, { Fragment, Suspense } from "react";
 import * as vega from "vega";
-import vegaTooltip from "vega-tooltip";
+import { vega as vegaTooltip }  from "vega-tooltip";
 
 import { ParseSignals } from "@widget-editor/core";
 
