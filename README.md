@@ -78,7 +78,7 @@ For our components we are using `styled-components` [documentation](https://www.
 
 ## Migrating widgets
 
-![Initial screen of the migration tool](assets/migration-tool.png.png)
+![Initial screen of the migration tool](https://github.com/Vizzuality/widget-editor/blob/develop/assets/migration-tool.png)
 
 The widget-editor includes an easy-to-use CLI that runs migrations for you. Once you've selected the version you want to migrate to, the CLI gives you 3 choices:
 - Get the list of the widgets that need migration
