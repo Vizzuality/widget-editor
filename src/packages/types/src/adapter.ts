@@ -17,6 +17,7 @@ export interface Service {
   datasetId: datasetId;
   requestQue: any;
   isAborting: boolean;
+  getName(): string;
   // Used when saving data
   // This will be grabbed and put into onSave on any request
   prepareRequest(url: string): Promise<any>;
@@ -32,11 +33,6 @@ export interface Service {
   getDataUrl(): string;
   getLayers(): Promise<[object]>;
   setDatasetId(datasetId: datasetId): void;
-  getDeserializedFilters(
-    filters: any[],
-    fields: Generic.Array[],
-    dataset: Dataset.Payload
-  ): Promise<Filters.Filter[]>;
   getSerializedScheme(config: Widget.Scheme): any;
   getDeserializedScheme(config: any): Widget.Scheme;
 }

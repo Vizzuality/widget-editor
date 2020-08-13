@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 
 import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks";
 import { selectIsWidgetAdvanced } from "@widget-editor/shared/lib/modules/editor/selectors";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 
 const SINGLE_COLOR_OPTION = {
   alias: "Single color",
@@ -125,8 +126,8 @@ export const getSelectedColor = createSelector(
 );
 
 export const selectSerializedWidgetConfig = createSelector(
-  [selectWidgetConfig, selectIsWidgetAdvanced],
-  (widgetConfig, isAdvancedWidget) => {
+  [selectWidgetConfig, selectIsWidgetAdvanced, selectScheme],
+  (widgetConfig, isAdvancedWidget, scheme) => {
     const { adapter } = getLocalCache();
     const config = { ...(widgetConfig ?? {}) };
 
@@ -152,6 +153,9 @@ export const selectSerializedWidgetConfig = createSelector(
         return data;
       });
     }
+
+    // We serialise the selected scheme
+    config.config = adapter.getSerializedScheme(scheme);
 
     return config;
   }

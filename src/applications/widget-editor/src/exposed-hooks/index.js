@@ -1,4 +1,4 @@
-import { constants } from "@widget-editor/core";
+import { constants, getOutputPayload } from "@widget-editor/core";
 
 let localCache = {};
 let REDUX_CACHE_DISPATCH = null;
@@ -17,29 +17,19 @@ export const localGetEditorState = (payload) => {
 };
 
 export const localOnChangeState = (editorState) => {
-  if (
-    localCache.adapter &&
-    typeof localCache.adapter.handleSave === "function" &&
-    !!editorState.editor.dataset
-  ) {
-    localCache.adapter.handleSave(
-      (result) => {
-        localCache = {
-          ...localCache,
-          adapterPayload: result,
-          editorState,
-        };
-      },
-      localCache.dataService,
-      localCache.adapter.applications.join(","),
-      editorState
-    );
+  if (localCache.adapter && !!editorState.editor.dataset) {
+    const outputPayload = getOutputPayload(editorState, localCache.adapter);
+    localCache = {
+      ...localCache,
+      outputPayload,
+      editorState,
+    };
   }
 };
 
 export const publicOnSave = () => {
   return {
-    payload: localCache.adapterPayload,
+    payload: localCache.outputPayload,
     editorState: localCache.editorState,
   };
 };

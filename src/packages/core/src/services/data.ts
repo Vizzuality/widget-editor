@@ -8,6 +8,7 @@ import VegaService from "./vega";
 import { setAdapter } from "../helpers/adapter";
 
 import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
+import { getDeserializedFilters } from '../filters';
 
 export default class DataService {
   adapter: Adapter.Service;
@@ -101,7 +102,7 @@ export default class DataService {
         color = paramsConfig.color;
       }
 
-      const deserializedFilters = await this.adapter.getDeserializedFilters(
+      const deserializedFilters = await getDeserializedFilters(
         filters,
         this.allowedFields,
         this.dataset

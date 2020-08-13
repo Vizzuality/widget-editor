@@ -1,5 +1,6 @@
 export default {
   title: "",
+  description: "",
   caption: "",
   format: "",
   visualizationType: "chart",

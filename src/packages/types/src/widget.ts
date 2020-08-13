@@ -11,15 +11,13 @@ export interface Payload {
     slug: string;
     description: string;
     application: [string];
-    widgetConfig: {
-      value: any;
-      category: any;
-      paramsConfig: any;
-    };
+    widgetConfig: WidgetConfig;
     defaultEditableWidget: boolean;
     env: string;
   };
 }
+
+export type WidgetConfig = any;
 
 export type Scheme = {
   name: string;

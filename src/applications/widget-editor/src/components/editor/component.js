@@ -4,7 +4,7 @@ import debounce from "lodash/debounce";
 import Renderer from "@widget-editor/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
-import { DataService } from "@widget-editor/core";
+import { DataService, getOutputPayload } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
 import { StyledContainer, StyleEditorContainer } from "./style";
 
@@ -152,12 +152,10 @@ class Editor extends React.Component {
   }, 1000);
 
   onSave() {
-    const { onSave, dispatch, editorState, adapter, application } = this.props;
-    if (
-      typeof onSave === "function" &&
-      typeof adapter.handleSave === "function"
-    ) {
-      adapter.handleSave(onSave, this.dataService, application, editorState);
+    const { onSave, dispatch, editorState, adapter } = this.props;
+    if (typeof onSave === "function") {
+      const outputPayload = getOutputPayload(editorState, adapter);
+      onSave(outputPayload);
     }
     dispatch({ type: constants.sagaEvents.EDITOR_SAVE });
   }

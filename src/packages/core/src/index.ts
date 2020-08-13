@@ -19,3 +19,5 @@ export { StateProxy };
 export { Filters as FiltersService };
 export { Datasets as DatasetService };
 export { Widget as WidgetService };
+export * from './filters';
+export { default as getOutputPayload } from './output-payload';

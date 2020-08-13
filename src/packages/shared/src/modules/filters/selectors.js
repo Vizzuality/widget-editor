@@ -1,0 +1,1 @@
+export const selectFiltersList = state => state.filters.list;
