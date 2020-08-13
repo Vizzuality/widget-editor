@@ -2,8 +2,6 @@ import React, { Fragment, Suspense } from "react";
 import * as vega from "vega";
 import { vega as vegaTooltip }  from "vega-tooltip";
 
-import { ParseSignals } from "@widget-editor/core";
-
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
 
@@ -123,23 +121,7 @@ class Chart extends React.Component {
     this.setSize();
     if (chart) {
       try {
-        let conf;
-        if (this.standalone) {
-          const parseSignals = new ParseSignals(
-            configuration,
-            configuration.paramsConfig,
-            configuration?.paramsConfig?.category?.type === 'date',
-            this.props.standalone
-          );
-          conf = {
-            ...configuration,
-            marks: parseSignals.parseLegacy()
-          }
-        } else {
-          conf = configuration;
-        }
-
-        const runtime = vega.parse(conf, configuration.config);
+        const runtime = vega.parse(configuration, configuration.config);
 
         this.vega = new vega.View(runtime)
           .initialize(chart)
