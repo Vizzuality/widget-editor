@@ -1,7 +1,6 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import ChartsCommon from './chart-common';
-import ParseSignals from './parse-signals';
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
@@ -93,13 +92,13 @@ export default class Line extends ChartsCommon implements Charts.Line {
         config: {
           fields: [
             {
-              column: "y",
+              column: "datum.y",
               property: this.resolveName('y'),
               type: "number",
               format: '.2s',
             },
             {
-              column: "x",
+              column: "datum.x",
               property: this.resolveName('x'),
               type: this.configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
@@ -256,7 +255,6 @@ export default class Line extends ChartsCommon implements Charts.Line {
   }
 
   getChart() {
-    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
-    return parseSignals;
+    return this.schema;
   }
 }

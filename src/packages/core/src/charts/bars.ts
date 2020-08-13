@@ -1,7 +1,6 @@
 import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
 import ChartsCommon from './chart-common';
-import ParseSignals from './parse-signals';
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
@@ -201,7 +200,6 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
   }
 
   getChart() {
-    const parseSignals = new ParseSignals(this.schema, this.widgetConfig, this.isDate()).serializeSignals();
-    return parseSignals;
+    return this.schema;
   }
 }

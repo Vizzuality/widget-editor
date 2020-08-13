@@ -1,7 +1,9 @@
 import { createGlobalStyle } from "styled-components";
+import "vega-tooltip/build/vega-tooltip.min.css";
 
 export default createGlobalStyle`
-  #vg-tooltip-element.vg-tooltip {
+  // We increase the specificity to override the default styles
+  div.vg-tooltip.light-theme {
     padding: 15px;
     background-color: #FFF;
     border-radius: 4px;
@@ -12,20 +14,14 @@ export default createGlobalStyle`
     color: #393f44;
 
     tr {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       td.key {
-        width: 140px;
-        color: #808080;
-        max-width: 150px;
-        font-size: 14px;
+        padding-right: 20px;
         text-align: left;
+        color: #808080;
       }
 
       td.value {
         font-weight: 700;
-        max-width: 110px;
       }
 
       &:first-of-type {
