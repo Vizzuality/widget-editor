@@ -30,7 +30,7 @@ function* preloadData() {
   if (editor.widget) {
     const {
       widget: {
-        attributes: { name, caption, description, widgetConfig },
+        attributes: { name, metadata, description, widgetConfig },
       },
     } = editor;
 
@@ -66,6 +66,9 @@ function* preloadData() {
         ? { zoom: widgetConfig.zoom }
         : {}),
     };
+
+    const relevantMetadata = metadata?.[0];
+    const caption = relevantMetadata?.attributes.info?.caption ?? '';
 
     const datasetType = editor?.dataset?.attributes?.type;
     const rasterOnly = !!(datasetType && datasetType.match(/raster/));
