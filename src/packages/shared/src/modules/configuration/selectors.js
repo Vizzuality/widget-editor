@@ -4,7 +4,24 @@ import { selectDisabledFeatures } from "../editor/selectors";
 
 const selectAvailableCharts = state => state.configuration.availableCharts;
 const selectRasterOnly = state => state.configuration.rasterOnly;
-const selectChartType = state => state.configuration.chartType;
+export const selectTitle = state => state.configuration.title;
+export const selectDescription = state => state.configuration.description;
+export const selectVisualizationType = state => state.configuration.visualizationType;
+export const selectLimit = state => state.configuration.limit;
+export const selectValue = state => state.configuration.value;
+export const selectCategory = state => state.configuration.category;
+export const selectColor = state => state.configuration.color;
+export const selectSize = state => state.configuration.size;
+export const selectOrderBy = state => state.configuration.orderBy;
+export const selectAggregateFunction = state => state.configuration.aggregateFunction;
+export const selectChartType = state => state.configuration.chartType;
+export const selectFilters = state => state.configuration.filters;
+export const selectAreaIntersection = state => state.configuration.areaIntersection;
+export const selectBand = state => state.configuration.band;
+export const selectDonutRadius = state => state.configuration.donutRadius;
+export const selectSliceCount = state => state.configuration.sliceCount;
+export const selectLayer = state => state.configuration.layer;
+export const selectCaption = state => state.configuration.caption;
 
 export const selectChartOptions = createSelector(
   [selectAvailableCharts, selectRasterOnly, selectDisabledFeatures],

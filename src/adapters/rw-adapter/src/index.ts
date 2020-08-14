@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Adapter, Dataset, Widget, Config, Filters, Generic } from "@widget-editor/types";
-import { getEditorMeta, tags } from "@widget-editor/shared";
-import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
+import { tags } from "@widget-editor/shared";
 
 import {
   DatasetService,
@@ -9,8 +8,6 @@ import {
   FiltersService,
   getDefaultTheme,
 } from "@widget-editor/core";
-
-import { SerializedFilter } from './types';
 
 import ConfigHelper from "./helpers/config";
 import { SerializedScheme } from "./types";
@@ -89,6 +86,10 @@ export default class RwAdapter implements Adapter.Service {
       console.error("Error: datasetId is required");
     }
     this.tableName = tableName;
+  }
+
+  getName(): string {
+    return 'rw-adapter';
   }
 
   async getDataset() {
@@ -231,131 +232,6 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
-  // Triggered when widget is atempting to be saved
-  handleSave(consumerOnSave, dataService, application = "rw", editorState) {
-    const {
-      configuration,
-      widgetConfig,
-      editor,
-      filters: { list: editorFilters },
-    } = editorState;
-    const {
-      dataset: {
-        id,
-        attributes: { tableName },
-      },
-    } = dataService;
-
-    this.setDatasetId(id);
-    this.setTableName(tableName);
-
-    let vegaConfiguration = widgetConfig;
-    let output: any = {};
-
-    if (editorState.configuration.visualizationType !== "map") {
-      const scheme = selectScheme(editorState);
-
-      output = {
-        // We shouldn't filter out keys coming from vegaConfig because the wigdet might be advanced
-        // and use keys we don't initially use with the interactive mode
-        ...vegaConfiguration,
-        ...(editor.advanced
-          ? {}
-          : {
-            paramsConfig: {
-              visualizationType: editorState.configuration.visualizationType,
-              limit: editorState.configuration.limit || 50,
-              value: editorState.configuration.value || null,
-              category: editorState.configuration.category || null,
-              color: editorState.configuration.color,
-              size: editorState.configuration.size,
-              orderBy: editorState.configuration.orderBy,
-              aggregateFunction: editorState.configuration.aggregateFunction,
-              chartType: editorState.configuration.chartType,
-              filters: this.getSerializedFilters(editorFilters ?? []),
-              areaIntersection: editorState.configuration.areaIntersection,
-              band: editorState.configuration.band,
-              donutRadius: editorState.configuration.donutRadius,
-              sliceCount: editorState.configuration.sliceCount,
-              layer: null
-            }
-          }
-        ),
-        // Advanced widget might not provide data
-        // This does not make sense, but we need to prepare to case like this to avoid crashes from
-        // the editor
-        data: vegaConfiguration.data?.map(d => {
-          if (d.name === 'table') {
-            return {
-              name: 'table',
-              transform: d.transform ?? null,
-              format: {
-                type: 'json',
-                property: 'data',
-              },
-              url: this.getDataUrl()
-            }
-          }
-          return d;
-        }) ?? null,
-        config: editor.advanced ? vegaConfiguration.config : this.getSerializedScheme(scheme),
-      };
-
-      // One key we must remove though is $schema because the RW API doesn't support keys that start
-      // with the dollar symbol
-      if (output.$schema) {
-        delete output.$schema;
-      }
-
-    }
-
-    if (editorState.configuration.visualizationType === "map") {
-      output = {
-        type: 'map',
-        layer_id: editorState.configuration.layer,
-        zoom: editorState.editor.map?.zoom,
-        lat: editorState.editor.map?.lat,
-        lng: editorState.editor.map?.lng,
-        bounds: editorState.editor.map?.bounds,
-        bbox: editorState.editor.map?.bbox,
-        ...(editorState.configuration.map.basemap
-          ? {
-            basemapLayers: {
-              basemap: editorState.configuration.map.basemap.basemap,
-              labels: editorState.configuration.map?.basemap?.labels || null,
-              boundaries: editorState.configuration.map?.basemap?.boundaries || false,
-            },
-          }
-          : {}
-        ),
-        paramsConfig: {
-          visualizationType: editorState.configuration.visualizationType,
-          layer: editorState.configuration.layer,
-        },
-        config: vegaConfiguration.config
-      };
-    }
-
-    const out = {
-      id: editorState?.editor?.widget?.id || null,
-      type: "widget",
-      attributes: {
-        name: configuration.title || null,
-        dataset: editor.dataset.id || null,
-        description: configuration.description || null,
-        application: [application],
-        widgetConfig: {
-          we_meta: {
-            ...getEditorMeta("rw-adapter", editorState.editor.advanced || false),
-          },
-          ...output,
-        },
-      }
-    };
-
-    consumerOnSave(out);
-  }
-
   getDataUrl() {
     return tags.oneLineTrim`
       https://api.resourcewatch.org/v1/query/
@@ -370,52 +246,6 @@ export default class RwAdapter implements Adapter.Service {
     this.SQL_STRING = filtersService.getQuery();
     const response = await this.prepareRequest(this.getDataUrl())
     return response.data;
-  }
-
-  /**
-   * Serialize the editor's filters for the widgetConfig
-   * @param filters Filters
-   */
-  private getSerializedFilters(filters: Filters.Filter[]): SerializedFilter[] {
-    const getSerializedValue = ({ type, value }) => {
-      if (type === 'date') {
-        if (Array.isArray(value)) {
-          return value.map(date => date.toISOString());
-        }
-
-        return value.toISOString();
-      }
-
-      return value;
-    }
-
-    return filters
-      .filter(filter => filter.value !== undefined && filter.value !== null)
-      .map(filter => ({
-        name: filter.column,
-        type: filter.type,
-        operation: filter.operation,
-        value: getSerializedValue(filter),
-        notNull: filter.notNull,
-      }));
-  }
-
-  /**
-   * Deserialize the filters for for the widget-editor's application
-   * @param filters Serialized filters
-   * @param fields Dataset's fields
-   * @param dataset Dataset object
-   */
-  async getDeserializedFilters(
-    filters: SerializedFilter[],
-    fields: Generic.Array,
-    dataset: Dataset.Payload
-  ): Promise<Filters.Filter[]> {
-    if (!filters || !Array.isArray(filters) || filters.length === 0) {
-      return [];
-    }
-
-    return await FiltersService.getDeserializedFilters(filters, fields, dataset);
   }
 
   /**

@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { Icons } from 'vizzuality-components';
 
 import { editorSyncMap } from "@widget-editor/shared/lib/modules/editor/actions";
+import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 
 import LayerManager from "helpers/layer-manager";
 
@@ -310,12 +311,13 @@ class Map extends React.Component {
   }
 
   onMapChange() {
-    const { editorSyncMap } = this.props;
+    const { editorSyncMap, patchConfiguration } = this.props;
     if (editorSyncMap) {
       const mapParams = this.getMapParams();
       const { zoom } = mapParams;
       const { lat, lng } = mapParams.latLng;
       const [bbox1, bbox2] = mapParams.bounds;
+
       editorSyncMap({
         lat,
         lng,
@@ -324,6 +326,7 @@ class Map extends React.Component {
         bounds: mapParams.bounds,
         bbox: [...bbox1, ...bbox2]
       });
+      patchConfiguration();
     }
   }
 
@@ -403,8 +406,11 @@ class Map extends React.Component {
 }
 
 export default redux.connectState(
-  (state) => ({
+  state => ({
     configuration: state.configuration,
   }),
-  { editorSyncMap }
+  {
+    editorSyncMap,
+    patchConfiguration,
+  }
 )(Map);
