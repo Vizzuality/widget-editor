@@ -93,13 +93,12 @@ const Renderer = ({
 
       {initialized && !restoring && isMap && (
         <Suspense fallback={<div>Loading...</div>}>
-          {editor.widget && editor.layers && (
+          {!!editor.layers && (
             <Map
               mapConfiguration={configuration.map}
-              caption={editor.widget?.attributes?.name}
+              caption={configuration.title}
               layerId={configuration.layer}
               interactionEnabled={!standalone}
-              widget={editor.widget}
               layers={editor.layers}
               changeBbox={changeBbox}
             />
