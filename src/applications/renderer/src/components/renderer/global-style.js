@@ -1,9 +1,10 @@
 import { createGlobalStyle } from "styled-components";
-import "vega-tooltip/build/vega-tooltip.min.css";
 
 export default createGlobalStyle`
-  // We increase the specificity to override the default styles
-  div.vg-tooltip.light-theme {
+  .vg-tooltip {
+    visibility: hidden;
+    position: fixed;
+    z-index: 2000;
     padding: 15px;
     background-color: #FFF;
     border-radius: 4px;
@@ -15,12 +16,17 @@ export default createGlobalStyle`
 
     tr {
       td.key {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
         padding-right: 20px;
-        text-align: left;
         color: #808080;
       }
 
       td.value {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
         font-weight: 700;
       }
 
