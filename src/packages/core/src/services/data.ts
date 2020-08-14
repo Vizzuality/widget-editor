@@ -63,6 +63,7 @@ export default class DataService {
     const filters = await this.handleFilters(true);
 
     if (
+      this.widget &&
       this.widget.attributes?.widgetConfig?.paramsConfig &&
       this.widget.attributes?.widgetConfig?.value &&
       this.widget.attributes?.widgetConfig?.category
@@ -71,7 +72,9 @@ export default class DataService {
     } else {
       this.setEditor({
         widgetData: null,
-        advanced: !this.widget?.attributes?.widgetConfig?.paramsConfig
+        advanced: !this.widget?.attributes?.widgetConfig
+          ? false
+          : !this.widget.attributes.widgetConfig.paramsConfig
       });
     }
 

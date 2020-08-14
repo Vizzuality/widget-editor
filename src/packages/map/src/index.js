@@ -86,7 +86,7 @@ class Map extends React.Component {
   }
 
   createLayerGroups(layers, layerId) {
-    if (!layers || !layers.reduce(Boolean)) {
+    if (!layers?.length) {
       return [];
     }
     return layers.map(({ id, attributes }) => ({
