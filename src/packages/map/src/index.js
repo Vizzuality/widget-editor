@@ -65,13 +65,10 @@ class Map extends React.Component {
     };
 
     this.labels = props.labels || LABELS["none"];
-    this.widget = props.widget;
 
     this.mapConfiguration = props?.mapConfiguration
       ? props.mapConfiguration
       : DEFAULT_MAP_PROPERTIES;
-
-    this.widgetConfig = this.widget.attributes.widgetConfig;
 
     this.layers = props.layers;
     this.layerGroups = this.createLayerGroups(this.layers, props.layerId);
