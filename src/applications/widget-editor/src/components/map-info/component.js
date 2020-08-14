@@ -37,7 +37,7 @@ const generateOptions = (layers) => {
   }));
 };
 
-const MapInfo = ({ editor, configuration, patchConfiguration }) => {
+const MapInfo = ({ editor, configuration, patchConfiguration, editorSyncMap }) => {
   const { layers = null } = editor;
   const options = generateOptions(layers);
   const selectedOption = options.find((o) => o.value === configuration.layer);
@@ -58,38 +58,44 @@ const MapInfo = ({ editor, configuration, patchConfiguration }) => {
   };
 
   const setBasemap = (basemap) => {
+    const patch = {
+      ...configuration.map,
+      basemap: {
+          ...configuration.map.basemap,
+          basemap
+      }
+    }
+    editorSyncMap(patch)
     patchConfiguration({
-      map: {
-        ...configuration.map,
-        basemap: {
-            ...configuration.map.basemap,
-            basemap
-        }
-      },
+      map: patch
     });
   };
 
   const setLabels = (label) => {
+    const patch = {
+      ...configuration.map,
+      basemap: {
+        ...configuration.map.basemap,
+       labels: label
+      }
+    }
+    editorSyncMap(patch)
     patchConfiguration({
-      map: {
-        ...configuration.map,
-        basemap: {
-          ...configuration.map.basemap,
-         labels: label
-        },
-      },
+      map: patch
     });
   }
 
   const setBoundaries = (active) => {
+    const patch = {
+      ...configuration.map,
+      basemap: {
+          ...configuration.map.basemap,
+          boundaries: active
+      }
+    };
+    editorSyncMap(patch)
     patchConfiguration({
-      map: {
-        ...configuration.map,
-        basemap: {
-            ...configuration.map.basemap,
-            boundaries: active
-        }
-      },
+      map: patch
     });
   }
 
