@@ -125,7 +125,8 @@ class Chart extends React.Component {
 
         this.vega = new vega.View(runtime)
           .initialize(chart)
-          .renderer("canvas")
+          // If the renderer is canvas, the fonts defined in the `config` object will be ignored
+          .renderer("svg")
           .width(this.width)
           .height(this.height)
           .hover()
