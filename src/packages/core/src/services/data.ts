@@ -60,21 +60,19 @@ export default class DataService {
 
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
-    const filters = await this.handleFilters(true);
+    await this.handleFilters();
 
-    if (
-      this.widget &&
-      this.widget.attributes?.widgetConfig?.paramsConfig &&
-      this.widget.attributes?.widgetConfig?.value &&
-      this.widget.attributes?.widgetConfig?.category
-    ) {
-      await this.requestWithFilters(filters, this.widget.attributes?.widgetConfig?.paramsConfig);
-    } else {
-      this.setEditor({
-        widgetData: [],
-        advanced: !this.widget?.attributes?.widgetConfig
-          ? false
-          : !this.widget.attributes.widgetConfig.paramsConfig
+    this.setEditor({
+      widgetData: [],
+      advanced: !this.widget?.attributes?.widgetConfig
+        ? false
+        : !this.widget.attributes.widgetConfig.paramsConfig
+    });
+
+    if (this.widget?.attributes?.widgetConfig) {
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_WIDGETCONFIG,
+        payload: this.widget?.attributes?.widgetConfig
       });
     }
 
@@ -83,8 +81,8 @@ export default class DataService {
     }
 
     this.setEditor({ restoring: false });
-    this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
+    this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
   }
 
   async handleFilters(restore: boolean = false) {
