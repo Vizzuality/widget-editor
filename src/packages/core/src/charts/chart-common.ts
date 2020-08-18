@@ -3,7 +3,8 @@ import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks"
 import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import { selectEndUserFilters } from "@widget-editor/shared/lib/modules/end-user-filters/selectors";
 import { selectFields } from '@widget-editor/shared/lib/modules/editor/selectors';
-import { constants, FieldsService } from '@widget-editor/core';
+import * as constants from '../constants';
+import FieldsService from '../services/fields'
 
 export default class ChartCommon {
   protected schema: Vega.Schema;

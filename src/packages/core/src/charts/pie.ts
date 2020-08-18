@@ -224,7 +224,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
         'x'
       )
         .slice(0, configuration.sliceCount)
-        .map((d, i) => ({
+        .map((d: { [key: string]: any }, i) => ({
           label: d.x,
           value: scheme.range.category20[i % configuration.sliceCount],
           type: 'string'

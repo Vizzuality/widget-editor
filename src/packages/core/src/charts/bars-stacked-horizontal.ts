@@ -204,7 +204,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     const colorRange = scheme.range.category20;
     const getColor = d => colorRange[colorValuesOrder.indexOf(d.color)];
     const values = sortBy(uniqBy(widgetData, 'color'), ['color'], ['asc'])
-      .map((d: { color: string | number }) => ({
+      .map((d: { [key: string]: any }) => ({
         label: d.color,
         value: getColor(d),
         type: 'string',
