@@ -2,6 +2,7 @@ import uniqBy from 'lodash/uniqBy';
 
 import { Charts, Vega } from "@widget-editor/types";
 import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
+import { selectEndUserFilters } from "@widget-editor/shared/lib/modules/end-user-filters/selectors";
 import ChartsCommon from './chart-common';
 
 export default class Pie extends ChartsCommon implements Charts.Pie {
@@ -72,8 +73,8 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
         name: "c",
         type: "ordinal",
         domain: {
-          data: "filtered",
-          field: 'value',
+          data: "color",
+          field: "pie_category",
         },
         range: scheme.category,
       },
@@ -94,10 +95,10 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     return [
       {
         type: "arc",
-        from: { data: "filtered" },
+        from: { data: "final" },
         encode: {
           enter: {
-            fill: { scale: "c", field: 'value' },
+            fill: { scale: "c", field: "pie_category" },
             x: { signal: "width / 2" },
             y: { signal: "height / 2" },
           },
@@ -120,14 +121,15 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
 
   bindData(): Vega.Data[] {
     const { editor: { widgetData }, configuration } = this.store;
+    const endUserFilters: string[] = selectEndUserFilters(this.store);
+
     return [
       {
         name: "table",
         values: widgetData,
-        transform: this.resolveEndUserFiltersTransforms(),
       },
       {
-        name: "filtered",
+        name: "color",
         source: "table",
         transform: [
           {
@@ -137,7 +139,44 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           {
             "type": "formula",
             "as": "pie_category",
-            "expr": `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
+            // When there are end-user filters, we don't cap the number of slices, because it would
+            // be impossible to determine the colour of the “Others” slice for the legend (which is
+            // not dynamically updated when the filters change)
+            "expr": endUserFilters.length
+              ? 'datum.x'
+              : `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
+          },
+          {
+            "type": "aggregate",
+            "groupby": ["pie_category"],
+            "ops": ["sum"],
+            "fields": ["y"],
+            "as": ["value"]
+          },
+        ],
+      },
+      {
+        name: "filtered",
+        source: "table",
+        transform: this.resolveEndUserFiltersTransforms(),
+      },
+      {
+        name: "final",
+        source: "filtered",
+        transform: [
+          {
+            "type": "window",
+            "ops": ["row_number"], "as": ["rank"]
+          },
+          {
+            "type": "formula",
+            "as": "pie_category",
+            // When there are end-user filters, we don't cap the number of slices, because it would
+            // be impossible to determine the colour of the “Others” slice for the legend (which is
+            // not dynamically updated when the filters change)
+            "expr": endUserFilters.length
+              ? 'datum.x'
+              : `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
           },
           {
             "type": "aggregate",
@@ -151,7 +190,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
             "field": "value",
             "startAngle": 0,
             "endAngle": 6.29
-          }
+          },
         ],
       },
     ];
@@ -160,21 +199,37 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   setLegend() {
     const scheme = this.resolveScheme();
     const { editor: { widgetData }, configuration } = this.store;
+    const endUserFilters: string[] = selectEndUserFilters(this.store);
 
     if (!widgetData) {
       return null;
     }
 
-    const values = uniqBy(
-      widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < configuration.sliceCount ? d.x : 'Others' })),
-      'x'
-    )
-      .slice(0, configuration.sliceCount)
-      .map((d, i) => ({
-        label: d.x,
-        value: scheme.range.category20[i % configuration.sliceCount],
-        type: 'string'
-      }));
+    let values;
+
+    // When there are end-user filters, the legend display all of the datasets items because we
+    // don't know in advance which ones will be shown in the visualisation
+    // We also don't cap the number of slices because it would be impossible to determine the colour
+    // of the “Others” slice (the legend is static and not updated with the filters)
+    if (endUserFilters.length) {
+      values = widgetData
+        .map((d, i) => ({
+          label: d.x,
+          value: scheme.range.category20[i % scheme.range.category20.length],
+          type: 'string'
+        }));
+    } else {
+      values = uniqBy(
+        widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < configuration.sliceCount ? d.x : 'Others' })),
+        'x'
+      )
+        .slice(0, configuration.sliceCount)
+        .map((d, i) => ({
+          label: d.x,
+          value: scheme.range.category20[i % configuration.sliceCount],
+          type: 'string'
+        }));
+    }
 
     return [
       {
