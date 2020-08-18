@@ -1,36 +1,10 @@
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
-
+import { Charts, Vega } from "@widget-editor/types";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import ChartsCommon from './chart-common';
 
 export default class Scatter extends ChartsCommon implements Charts.Scatter {
-  configuration: any;
-  editor: any;
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
-  widgetData: Generic.ObjectPayload;
-  colorField: string;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload,
-    scheme: any,
-    colorField: string,
-  ) {
-    super(configuration, editor, widgetData, scheme);
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-    this.colorField = colorField;
-  }
-
   async generateSchema() {
     this.schema = {
-      ...this.schema,
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
@@ -58,6 +32,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -72,7 +47,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
             {
               column: "x",
               property: this.resolveName('x'),
-              type: this.configuration.category?.type || 'string',
+              type: configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -92,6 +67,10 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   }
 
   setScales() {
+    const { configuration: { color } } = this.store;
+    const colorField = color?.identifier;
+    const scheme = selectScheme(this.store);
+
     const scale: any = [
       {
         name: "x",
@@ -116,12 +95,13 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         range: "height",
       },
     ];
-    if (this.colorField) {
+
+    if (colorField) {
       scale.push({
         name: "color",
         type: "ordinal",
-        domain: { data: "table", field: this.colorField },
-        range: this.scheme.category,
+        domain: { data: "table", field: colorField },
+        range: scheme.category,
       });
     }
 
@@ -129,6 +109,9 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   }
 
   setMarks() {
+    const { configuration: { color } } = this.store;
+    const colorField = color?.identifier;
+
     return [
       {
         name: "marks",
@@ -136,8 +119,8 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         from: { data: "table" },
         encode: {
           enter: {
-            ...(this.colorField
-              ? { fill: { scale: "color", field: this.colorField } }
+            ...(colorField
+              ? { fill: { scale: "color", field: colorField } }
               : {}),
           },
           update: {
@@ -195,7 +178,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { editor: { widgetData } } = this.store;
     return [
       {
         values: widgetData,
@@ -217,14 +200,16 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
 
   setLegend() {
     const scheme = this.resolveScheme();
+    const { editor: { widgetData }, configuration: { color } } = this.store;
+    const colorField = color?.identifier;
 
-    if (!this.colorField || !this.widgetData) {
+    if (!colorField || !widgetData) {
       return null;
     }
 
     // When the user adds the 3rd dimension (color), the widget data doesn't have the color field
     // available until the fetch is complete, so label might be undefined in the map function
-    const values = [...new Set(this.widgetData.map(d => d[this.colorField]))].map((label, index) => ({
+    const values = [...new Set(widgetData.map(d => d[colorField]))].map((label, index) => ({
       label: label,
       value: scheme.range.category20[index % scheme.range.category20.length],
       type: 'string',

@@ -1,38 +1,13 @@
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import { Charts, Vega } from "@widget-editor/types";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import ChartsCommon from './chart-common';
 
 export default class BarsHorizontal extends ChartsCommon implements Charts.Bars {
-  configuration: any;
-  editor: any;
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
-  widgetData: Generic.ObjectPayload;
-  colorField: string;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload,
-    scheme: any,
-    colorField: string,
-  ) {
-    super(configuration, editor, widgetData, scheme);
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-    this.colorField = colorField;
-  }
-
   async generateSchema() {
     this.schema = {
-      ...this.schema,
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
@@ -51,6 +26,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   setScales() {
+    const scheme = selectScheme(this.store);
     const scale = [
       {
         name: "x",
@@ -77,7 +53,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "color",
         type: "ordinal",
         domain: { data: "table", field: "color" },
-        range: this.scheme.category,
+        range: scheme.category,
       },
     ];
 
@@ -158,6 +134,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -178,7 +155,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
             {
               column: "x",
               property: this.resolveName('x'),
-              type: this.configuration.category?.type || 'string',
+              type: configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -188,9 +165,10 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   bindData(): Vega.Data[] {
+    const { editor: { widgetData } } = this.store;
     return [
       {
-        values: this.widgetData,
+        values: widgetData,
         name: "table",
         ...(this.isDate() ? {
           format: {
@@ -209,15 +187,16 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
 
   setLegend() {
     const scheme = this.resolveScheme();
+    const { editor: { widgetData } } = this.store;
 
-    if (!this.widgetData) {
+    if (!widgetData) {
       return null;
     }
 
-    const colorValuesOrder = [...new Set(this.widgetData.map((d: { color: string | number }) => d.color))];
+    const colorValuesOrder = [...new Set(widgetData.map((d: { color: string | number }) => d.color))];
     const colorRange = scheme.range.category20;
     const getColor = d => colorRange[colorValuesOrder.indexOf(d.color)];
-    const values = sortBy(uniqBy(this.widgetData, 'color'), ['color'], ['asc'])
+    const values = sortBy(uniqBy(widgetData, 'color'), ['color'], ['asc'])
       .map((d: { color: string | number }) => ({
         label: d.color,
         value: getColor(d),

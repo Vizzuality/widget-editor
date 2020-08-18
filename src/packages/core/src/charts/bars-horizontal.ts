@@ -1,35 +1,10 @@
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
-
+import { Charts, Vega } from "@widget-editor/types";
+import { sqlFields } from "../helpers/wiget-helper/constants";
 import ChartsCommon from './chart-common';
 
-import { sqlFields } from "../helpers/wiget-helper/constants";
-
 export default class BarsHorizontal extends ChartsCommon implements Charts.Bars {
-  configuration: any;
-  editor: any;
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
-  widgetData: Generic.ObjectPayload;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload,
-    scheme: any,
-  ) {
-    super(configuration, editor, widgetData, scheme);
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-  }
-
   async generateSchema() {
     this.schema = {
-      ...this.schema,
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
@@ -138,6 +113,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -152,7 +128,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
             {
               column: "x",
               property: this.resolveName('x'),
-              type: this.configuration.category?.type || 'string',
+              type: configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -162,9 +138,10 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   bindData(): Vega.Data[] {
+    const { editor: { widgetData } } = this.store;
     return [
       {
-        values: this.widgetData,
+        values: widgetData,
         name: "table",
         ...(this.isDate() ? {
           format: {

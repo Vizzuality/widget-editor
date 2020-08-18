@@ -1,6 +1,4 @@
-import isObjectLike from "lodash/isObjectLike";
-
-import { Charts, Vega, Widget } from "@widget-editor/types";
+import { Charts, Vega } from "@widget-editor/types";
 
 import Pie from "../charts/pie";
 import Bars from "../charts/bars";
@@ -17,183 +15,54 @@ import { SUPPORTED_CHARTS } from "../charts/constants";
 import { defaultVegaSchema } from "../helpers/wiget-helper/constants";
 
 export default class VegaService implements Charts.Service {
-  widgetConfig: any;
-  widgetData: any;
-  configuration: any;
-  editor: any;
-  sliceCount: number;
-  scheme: Widget.Scheme;
-  schema: Vega.Schema;
-  colorApplied: boolean;
+  private schema: Vega.Schema = defaultVegaSchema();
 
-  constructor(
-    widgetConfig: any,
-    widgetData: any,
-    configuration: any,
-    editor: any,
-    scheme: Widget.Scheme
-  ) {
-    this.colorApplied = isObjectLike(configuration.color);
-
-    this.scheme = scheme;
-    this.schema = defaultVegaSchema();
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-    this.configuration = configuration;
-    this.editor = editor;
-  }
+  constructor(private store: any) { }
 
   async resolveChart() {
-    const { chartType, direction } = this.configuration;
-    let chart;
+    const { configuration } = this.store;
+    const { chartType } = configuration;
 
-    const data = this.widgetData;
+    let Chart;
+    switch (chartType) {
+      case "pie":
+      case "donut":
+        Chart = Pie;
+        break;
 
-    if (SUPPORTED_CHARTS.indexOf(chartType) === -1) {
-      throw new Error(
-        `Chart of type: ${chartType} is not supported. we support: (${SUPPORTED_CHARTS.join(
-          "|"
-        )})`
-      );
+      case "bar-horizontal":
+        Chart = configuration.color?.identifier ? GroupedBarsHorizontal : BarsHorizontal;
+        break;
+
+      case "stacked-bar-horizontal":
+        Chart = configuration.color?.identifier ? BarsStackedHorizontal : BarsHorizontal;
+        break;
+
+      case "bar":
+        Chart = configuration.color?.identifier ? GroupedBars : Bars;
+        break;
+
+      case "stacked-bar":
+        Chart = configuration.color?.identifier ? BarsStacked : Bars;
+        break;
+
+      case "line":
+        Chart = configuration.color?.identifier ? MultiLine : Line;
+        break;
+
+      case "scatter":
+        Chart = Scatter;
+        break;
+
+      default:
+        throw new Error(
+          `Chart of type: ${chartType} is not supported. we support: (${SUPPORTED_CHARTS.join(
+            "|"
+          )})`
+        );
     }
 
-    if (chartType === "pie" || chartType === "donut") {
-      chart = await new Pie(
-        this.configuration,
-        this.editor,
-        this.schema,
-        this.widgetConfig,
-        data,
-        this.scheme
-      ).getChart();
-    }
-
-    if (chartType === "bar-horizontal") {
-      if (this.configuration.color?.identifier) {
-        chart = await new GroupedBarsHorizontal(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme,
-          this.configuration.color.identifier
-        ).getChart();
-      } else {
-        chart = await new BarsHorizontal(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme
-        ).getChart();
-      }
-    }
-
-    if (chartType === "stacked-bar-horizontal") {
-      if (this.configuration.color?.identifier) {
-        chart = await new BarsStackedHorizontal(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme,
-          this.configuration.color.identifier
-        ).getChart();
-      } else {
-        chart = await new BarsHorizontal(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme
-        ).getChart();
-      }
-    }
-
-    if (chartType === "bar") {
-      if (this.configuration.color?.identifier) {
-        chart = await new GroupedBars(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme,
-          this.configuration.color.identifier
-        ).getChart();
-      } else {
-        chart = await new Bars(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme
-        ).getChart();
-      }
-    }
-
-    if (chartType === "stacked-bar") {
-      if (this.configuration.color?.identifier) {
-        chart = await new BarsStacked(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme,
-          this.configuration.color.identifier
-        ).getChart();
-      } else {
-        chart = await new Bars(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme
-        ).getChart();
-      }
-    }
-
-    if (chartType === "line") {
-      if (this.configuration.color?.identifier) {
-        chart = await new MultiLine(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme,
-          this.configuration.color.identifier
-        ).getChart();
-      } else {
-        chart = await new Line(
-          this.configuration,
-          this.editor,
-          this.schema,
-          this.widgetConfig,
-          data,
-          this.scheme
-        ).getChart();
-      }
-    }
-
-    if (chartType === "scatter") {
-      chart = await new Scatter(
-        this.configuration,
-        this.editor,
-        this.schema,
-        this.widgetConfig,
-        data,
-        this.scheme,
-        this.configuration.color?.identifier
-      ).getChart();
-    }
+    const chart = await new Chart(this.store).getChart();
 
     this.schema = {
       ...this.schema,
@@ -202,11 +71,13 @@ export default class VegaService implements Charts.Service {
   }
 
   setConfig() {
+    const { widgetConfig } = this.store;
+
     this.schema = {
       ...this.schema,
       config: {
         ...this.schema.config,
-        ...this.widgetConfig.config,
+        ...widgetConfig.config,
       },
     };
   }

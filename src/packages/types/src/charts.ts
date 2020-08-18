@@ -37,10 +37,6 @@ export interface Scatter {
 }
 
 export interface Service {
-  schema: Vega.Schema;
-  sliceCount: number;
-  widgetConfig: object;
-  widgetData: object;
   resolveChart(): Promise<void>;
   setConfig(): void;
   getChart(): Promise<Vega.Schema>;

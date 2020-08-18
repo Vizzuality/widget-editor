@@ -1,40 +1,14 @@
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import { Charts, Vega } from "@widget-editor/types";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import ChartsCommon from './chart-common';
-
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class MultiLine extends ChartsCommon implements Charts.Line {
-  configuration: any;
-  editor: any;
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
-  widgetData: Generic.ObjectPayload;
-  colorField: string;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload,
-    scheme: any,
-    colorField: string,
-  ) {
-    super(configuration, editor, widgetData, scheme);
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-    this.colorField = colorField;
-  }
-
   async generateSchema() {
     this.schema = {
-      ...this.schema,
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
@@ -86,6 +60,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -106,7 +81,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
             {
               column: "datum.x",
               property: this.resolveName('x'),
-              type: this.configuration.category?.type || 'string',
+              type: configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -116,6 +91,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
   }
 
   setScales() {
+    const scheme = selectScheme(this.store);
     return [
       {
         name: "x",
@@ -138,7 +114,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
       {
         name: "color",
         type: "ordinal",
-        range: this.scheme.category,
+        range: scheme.category,
         domain: { data: "table", field: "color" }
       },
     ];
@@ -268,7 +244,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { editor: { widgetData } } = this.store;
     return [
       {
         values: widgetData,
@@ -296,14 +272,15 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
 
   setLegend() {
     const scheme = this.resolveScheme();
+    const { editor: { widgetData } } = this.store;
 
-    if (!this.widgetData) {
+    if (!widgetData) {
       return null;
     }
 
-    const colorValuesOrder = [...new Set(this.widgetData.map((d: any) => d.color))];
+    const colorValuesOrder = [...new Set(widgetData.map((d: any) => d.color))];
     const getColor = d => scheme.range.category20[colorValuesOrder.indexOf(d.color) % scheme.range.category20.length];
-    const values = sortBy(uniqBy(this.widgetData, 'color'), ['color'], ['asc'])
+    const values = sortBy(uniqBy(widgetData, 'color'), ['color'], ['asc'])
       .map((d: any) => ({ label: d.color, value: getColor(d), type: 'string' }));
 
     return [

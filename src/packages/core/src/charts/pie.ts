@@ -1,35 +1,12 @@
 import uniqBy from 'lodash/uniqBy';
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import { Charts, Vega } from "@widget-editor/types";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import ChartsCommon from './chart-common';
 
 export default class Pie extends ChartsCommon implements Charts.Pie {
-  configuration: any;
-  editor: any;
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
-  widgetData: Generic.ObjectPayload;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload,
-    scheme: any
-  ) {
-    super(configuration, editor, widgetData, scheme);
-
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-  }
-
   async generateSchema() {
     this.schema = {
-      ...this.schema,
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData(),
@@ -89,6 +66,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   setScales() {
+    const scheme = selectScheme(this.store);
     return [
       {
         name: "c",
@@ -97,17 +75,19 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           data: "table",
           field: 'value',
         },
-        range: this.scheme.category,
+        range: scheme.category,
       },
     ];
   }
 
   resolveInnerRadius() {
-    if (this.configuration.chartType === "pie") {
+    const { configuration } = this.store;
+
+    if (configuration.chartType === "pie") {
       return "0";
     }
 
-    return this.configuration.donutRadius;
+    return configuration.donutRadius;
   }
 
   setMarks() {
@@ -139,7 +119,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { editor: { widgetData }, configuration } = this.store;
     return [
       {
         values: widgetData,
@@ -152,7 +132,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           {
             "type": "formula",
             "as": "category",
-            "expr": `datum.rank < ${this.configuration.sliceCount} ? datum.x : 'Others'`
+            "expr": `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
           },
           {
             "type": "aggregate",
@@ -174,18 +154,20 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
 
   setLegend() {
     const scheme = this.resolveScheme();
-    if (!this.widgetData) {
+    const { editor: { widgetData }, configuration } = this.store;
+
+    if (!widgetData) {
       return null;
     }
 
     const values = uniqBy(
-      this.widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < this.configuration.sliceCount ? d.x : 'Others' })),
+      widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < configuration.sliceCount ? d.x : 'Others' })),
       'x'
     )
-      .slice(0, this.configuration.sliceCount)
+      .slice(0, configuration.sliceCount)
       .map((d, i) => ({
         label: d.x,
-        value: scheme.range.category20[i % this.configuration.sliceCount],
+        value: scheme.range.category20[i % configuration.sliceCount],
         type: 'string'
       }));
 
