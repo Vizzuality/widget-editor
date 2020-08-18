@@ -1,6 +1,9 @@
 import { Vega } from "@widget-editor/types";
 import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks"
 import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
+import { selectEndUserFilters } from "@widget-editor/shared/lib/modules/end-user-filters/selectors";
+import { selectFields } from '@widget-editor/shared/lib/modules/editor/selectors';
+import { constants, FieldsService } from '@widget-editor/core';
 
 export default class ChartCommon {
   protected schema: Vega.Schema;
@@ -98,7 +101,63 @@ export default class ChartCommon {
   }
 
   async resolveSignals(): Promise<any[]> {
-    return [];
+    const { editor: { dataset } } = this.store;
+
+    const endUserFilters: string[] = selectEndUserFilters(this.store);
+    const fields: any[] = selectFields(this.store);
+
+    const fieldService = new FieldsService(dataset, fields);
+
+    const promises = await endUserFilters.map(async (fieldName) => {
+      const field = fields.find(f => f.columnName === fieldName);
+      const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
+        ?? 'string';
+
+      const signal = {
+        name: field.metadata && field.metadata.alias ? field.metadata.alias : field.columnName,
+        value: null,
+        bind: {},
+      };
+
+      switch (type) {
+        case 'string': {
+          const options = await fieldService.getColumnValues(field);
+          signal.value = options.length ? options[0] : null;
+          signal.bind = {
+            input: 'select',
+            options,
+          };
+          break;
+        }
+
+        case 'number': {
+          const { min, max } = await fieldService.getColumnMinAndMax(field);
+          signal.value = min;
+          signal.bind = {
+            input: 'range',
+            min,
+            max,
+            step: null,
+          };
+          break;
+        }
+
+        case 'date': {
+          const { min, max } = await fieldService.getColumnMinAndMax(field);
+          signal.value = new Date(min).toISOString().split('T')[0];
+          signal.bind = {
+            input: 'date',
+            min: new Date(min).toISOString().split('T')[0],
+            max: new Date(max).toISOString().split('T')[0],
+          };
+          break;
+        }
+      };
+
+      return signal;
+    });
+
+    return Promise.all(promises);
   }
 }
 
