@@ -17,6 +17,7 @@ export const selectBasemap = state => state.editor.map?.basemap
     boundaries: state.editor.map.basemap.boundaries || false,
   }
   : null;
+export const selectFields = state => state.editor.fields;
 
 export const selectWidgetConfig = createSelector(
   [selectWidget],
