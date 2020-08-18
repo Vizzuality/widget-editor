@@ -52,7 +52,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
       {
         name: "color",
         type: "ordinal",
-        domain: { data: "filtered", field: "color" },
+        domain: { data: "table", field: "color" },
         range: scheme.category,
       },
     ];
