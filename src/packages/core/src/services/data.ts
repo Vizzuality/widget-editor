@@ -61,6 +61,7 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
+    this.handleEndUserFilters();
 
     this.setEditor({
       widgetData: [],
@@ -120,6 +121,20 @@ export default class DataService {
     }
   }
 
+  handleEndUserFilters(): void {
+    if (!this.widget) {
+      return;
+    }
+
+    const endUserFilters = this.widget.attributes?.widgetConfig?.paramsConfig?.endUserFilters;
+    if (endUserFilters) {
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_END_USER_FILTERS,
+        payload: endUserFilters,
+      })
+    }
+  }
+
   isFieldAllowed(field) {
     const fieldTypeAllowed = ALLOWED_FIELD_TYPES.find(
       (val) => val.name.toLowerCase() === field.type.toLowerCase()
@@ -168,6 +183,7 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
+    this.handleEndUserFilters();
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
     // If this dispatch is not executed, the local state is not set on init
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });

@@ -30,6 +30,7 @@ import {
   selectBasemap,
 } from '@widget-editor/shared/lib/modules/editor/selectors';
 import { selectFiltersList } from '@widget-editor/shared/lib/modules/filters/selectors';
+import { selectEndUserFilters } from '@widget-editor/shared/lib/modules/end-user-filters/selectors';
 import { getSerializedFilters } from '../filters';
 
 /**
@@ -70,6 +71,7 @@ const getSerializedWidgetConfig = (
         aggregateFunction: selectAggregateFunction(store),
         chartType: selectChartType(store),
         filters: getSerializedFilters(selectFiltersList(store)),
+        endUserFilters: selectEndUserFilters(store),
         areaIntersection: selectAreaIntersection(store),
         band: selectBand(store),
         donutRadius: selectDonutRadius(store),
