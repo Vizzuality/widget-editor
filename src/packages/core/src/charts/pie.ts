@@ -55,7 +55,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
               format: '.2s',
             },
             {
-              column: "category",
+              column: "pie_category",
               property: this.resolveName('x'),
               type: 'string',
             },
@@ -72,7 +72,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
         name: "c",
         type: "ordinal",
         domain: {
-          data: "table",
+          data: "filtered",
           field: 'value',
         },
         range: scheme.category,
@@ -94,7 +94,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     return [
       {
         type: "arc",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           enter: {
             fill: { scale: "c", field: 'value' },
@@ -122,8 +122,13 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     const { editor: { widgetData }, configuration } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
+        transform: this.resolveEndUserFiltersTransforms(),
+      },
+      {
+        name: "filtered",
+        source: "table",
         transform: [
           {
             "type": "window",
@@ -131,12 +136,12 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           },
           {
             "type": "formula",
-            "as": "category",
+            "as": "pie_category",
             "expr": `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
           },
           {
             "type": "aggregate",
-            "groupby": ["category"],
+            "groupby": ["pie_category"],
             "ops": ["sum"],
             "fields": ["y"],
             "as": ["value"]

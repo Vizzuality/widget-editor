@@ -34,7 +34,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         nice: true,
         zero: true,
         domain: {
-          data: "table",
+          data: "filtered",
           field: "y1",
         },
         range: "width",
@@ -43,7 +43,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "y",
         type: "band",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "x",
         },
         range: "height",
@@ -52,7 +52,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
       {
         name: "color",
         type: "ordinal",
-        domain: { data: "table", field: "color" },
+        domain: { data: "filtered", field: "color" },
         range: scheme.category,
       },
     ];
@@ -115,7 +115,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     return [
       {
         type: "rect",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           update: {
             opacity: { value: 1 },
@@ -180,6 +180,13 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         transform: [
           { type: "stack", field: "y", groupby: ["x"], sort: { field: "color" } },
           { type: "joinaggregate", ops: ["distinct"], fields: ["x"], as: ["count"] }
+        ],
+      },
+      {
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
         ],
       },
     ];

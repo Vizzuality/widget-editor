@@ -190,10 +190,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
             }
           }
         } : {}),
-        transform: [
-          { type: "identifier", as: "id" },
-          { type: "joinaggregate", as: ["count"] },
-        ],
+        transform: this.resolveEndUserFiltersTransforms(),
       },
     ];
   }

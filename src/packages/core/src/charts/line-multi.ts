@@ -256,6 +256,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
             }
           }
         } : {}),
+        transform: this.resolveEndUserFiltersTransforms(),
       },
       {
         name: "dots",

@@ -32,7 +32,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         name: "x",
         type: "band",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "x",
         },
         range: "width",
@@ -42,7 +42,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         name: "y",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "y1",
         },
         nice: true,
@@ -52,7 +52,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
       {
         name: "color",
         type: "ordinal",
-        domain: { data: "table", field: "color" },
+        domain: { data: "filtered", field: "color" },
         range: scheme.category,
       },
     ];
@@ -64,7 +64,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
     return [
       {
         type: "rect",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           update: {
             opacity: { value: 1 },
@@ -180,6 +180,13 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
         transform: [
           { "type": "stack", "field": "y", "groupby": ["x"], "sort": { "field": "color" } },
           { "type": "joinaggregate", "ops": ["distinct"], "fields": ["x"], "as": ["count"] }
+        ],
+      },
+      {
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
         ],
       },
     ];

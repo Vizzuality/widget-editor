@@ -32,7 +32,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "x",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "y",
         },
         range: "width",
@@ -43,7 +43,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "y",
         type: "band",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "x",
         },
         range: "height",
@@ -52,7 +52,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
       {
         name: "color",
         type: "ordinal",
-        domain: { data: "table", field: "color" },
+        domain: { data: "filtered", field: "color" },
         range: scheme.category,
       }
     ];
@@ -117,7 +117,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         "type": "group",
         "from": {
           "facet": {
-            "data": "table",
+            "data": "filtered",
             "name": "facet",
             "groupby": "x"
           }
@@ -200,8 +200,8 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -211,6 +211,13 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         } : {}),
         transform: [
           { "type": "joinaggregate", "ops": ["distinct"], "fields": ["x"], "as": ["count"] },
+        ],
+      },
+      {
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
         ],
       },
     ];

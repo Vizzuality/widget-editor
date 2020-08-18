@@ -30,7 +30,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         name: "x",
         type: "band",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "id",
           ...(this.isDate() ? { sort: true } : {})
         },
@@ -41,7 +41,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         name: "y",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: sqlFields.category,
         },
         nice: true,
@@ -57,7 +57,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     return [
       {
         type: "rect",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           update: {
             opacity: { value: 1 },
@@ -154,8 +154,8 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -166,6 +166,13 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         transform: [
           { type: "identifier", as: "id" },
           { type: "joinaggregate", as: ["count"] },
+        ],
+      },
+      {
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
         ],
       },
     ];

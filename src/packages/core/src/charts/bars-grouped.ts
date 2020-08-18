@@ -32,7 +32,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         name: "x",
         type: "band",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "x",
           ...(this.isDate() ? { sort: true } : {})
         },
@@ -43,7 +43,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         name: "y",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "y",
         },
         nice: true,
@@ -53,7 +53,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
       {
         name: "color",
         type: "ordinal",
-        domain: { data: "table", field: "color" },
+        domain: { data: "filtered", field: "color" },
         range: scheme.category,
       },
     ];
@@ -65,7 +65,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         "type": "group",
         "from": {
           "facet": {
-            "data": "table",
+            "data": "filtered",
             "name": "facet",
             "groupby": "x"
           }
@@ -199,8 +199,8 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -210,6 +210,13 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         } : {}),
         transform: [
           { "type": "joinaggregate", "ops": ["distinct"], "fields": ["x"], "as": ["count"] }
+        ],
+      },
+      {
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
         ],
       },
     ];

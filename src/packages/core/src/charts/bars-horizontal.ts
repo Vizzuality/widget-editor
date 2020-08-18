@@ -28,7 +28,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "x",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: sqlFields.category,
         },
         range: "width",
@@ -37,8 +37,9 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "y",
         type: "band",
         domain: {
-          data: "table",
-          field: "x",
+          data: "filtered",
+          field: "id",
+          ...(this.isDate() ? { sort: true } : {})
         },
         range: "height",
         padding: 0.05,
@@ -73,8 +74,8 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
             update: {
               text: {
                 signal: this.isDate()
-                  ? `utcFormat(datum.value, '${this.resolveFormat('x')}')`
-                  : "truncate(datum.value, 12)",
+                  ? `utcFormat(data('table')[datum.value - 1].x, '${this.resolveFormat('x')}')`
+                  : "truncate(data('table')[datum.value - 1].x, 12)",
               },
               align: {
                 signal:
@@ -95,13 +96,13 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     return [
       {
         type: "rect",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           update: {
             opacity: { value: 1 },
             x: { scale: "x", value: 0 },
             x2: { scale: "x", field: sqlFields.category },
-            y: { scale: "y", field: "x" },
+            y: { scale: "y", field: "id" },
             height: { scale: "y", band: 1 },
           },
           hover: {
@@ -141,8 +142,8 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -156,11 +157,11 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         ],
       },
       {
-        values: {
-          xCol: this.resolveName('x'),
-          yCol: this.resolveName('y'),
-        },
-        name: "properties",
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
+        ],
       },
     ];
   }
