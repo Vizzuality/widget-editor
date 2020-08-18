@@ -22,7 +22,7 @@ export interface Service {
   // This will be grabbed and put into onSave on any request
   prepareRequest(url: string): Promise<any>;
   payload(): object;
-  requestData({ configuration, filters, dataset }: { configuration: any, filters: Filters.Filter[], dataset: Dataset.Payload }): Promise<any>;
+  requestData(store: any): Promise<any>;
   getDataset(): Promise<Dataset.Payload>;
   extendProperties(prop: any): void;
   getWidget(

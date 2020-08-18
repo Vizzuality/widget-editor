@@ -61,6 +61,9 @@ export default class StateProxy {
     // If filters change
     shouldUpdate = shouldUpdate || !isEqual(prev.filters.list, next.filters.list);
 
+    // If the end-user filters change
+    shouldUpdate = shouldUpdate || !isEqual(prev.endUserFilters, next.endUserFilters);
+
     // If aggregateFunction changes
     shouldUpdate = shouldUpdate || !isEqual(prev.configuration.aggregateFunction, next.configuration.aggregateFunction);
 

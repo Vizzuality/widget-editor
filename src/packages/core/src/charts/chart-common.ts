@@ -137,7 +137,7 @@ export default class ChartCommon {
             input: 'range',
             min,
             max,
-            step: null,
+            step: 0.1,
           };
           break;
         }
@@ -157,7 +157,32 @@ export default class ChartCommon {
       return signal;
     });
 
-    return Promise.all(promises);
+    return Promise.all(promises).catch(() => []);
+  }
+
+  resolveEndUserFiltersTransforms(): { [key: string]: any }[] {
+    const endUserFilters: string[] = selectEndUserFilters(this.store);
+    const fields: any[] = selectFields(this.store);
+
+    if (!endUserFilters.length) {
+      return [];
+    }
+
+    return [
+      {
+        type: 'filter',
+        expr: endUserFilters.reduce((res, fieldName, index) => {
+          const field = fields.find(f => f.columnName === fieldName);
+          const signal = field.metadata && field.metadata.alias
+            ? field.metadata.alias
+            : field.columnName;
+          const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
+            ?? 'string';
+
+          return `${res}${index > 0 ? ' && ' : ''}${type === 'date' ? `toDate(datum.${fieldName})` : `datum.${fieldName}`} === ${type === 'date' ? `toDate(${signal})` : signal}`;
+        }, ''),
+      }
+    ];
   }
 }
 

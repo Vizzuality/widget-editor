@@ -156,12 +156,8 @@ export default class DataService {
     this.setEditor({ layers, fields: this.allowedFields });
   }
 
-  async requestWithFilters(filters: Filters.Filter[], configuration: any) {
-    const request = await this.adapter.requestData({
-      configuration,
-      filters,
-      dataset: this.dataset
-    });
+  async requestWithFilters(store: any) {
+    const request = await this.adapter.requestData(store);
 
     if (!request.data || "errors" in request) {
       this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
