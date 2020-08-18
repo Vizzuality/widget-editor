@@ -332,12 +332,17 @@ export default class FiltersService implements Filters.Service {
       // Resolve metadata for current field
       const fieldService = new FieldsService(dataset, fields);
 
+      let deserializedValue = value;
+      if (type === 'date') {
+        deserializedValue = Array.isArray(value) ? value.map(v => new Date(v)) : new Date(value);
+      }
+
       res.push({
         id: `we-filter-${column}-${index}`,
         column,
         type,
         operation: operation ?? defaultOperation,
-        value,
+        value: deserializedValue,
         notNull,
         config: await fieldService.getFieldInfo(column),
       });
