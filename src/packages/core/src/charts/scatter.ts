@@ -76,7 +76,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         name: "x",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "x",
           ...(this.isDate() ? { sort: true } : {})
         },
@@ -91,7 +91,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         round: true,
         nice: true,
         zero: true,
-        domain: { "data": "table", "field": "y" },
+        domain: { "data": "filtered", "field": "y" },
         range: "height",
       },
     ];
@@ -116,7 +116,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
       {
         name: "marks",
         type: "symbol",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           enter: {
             ...(colorField
@@ -190,6 +190,10 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
             }
           }
         } : {}),
+      },
+      {
+        name: "filtered",
+        source: "table",
         transform: this.resolveEndUserFiltersTransforms(),
       },
     ];
