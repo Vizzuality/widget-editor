@@ -98,7 +98,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
         type: this.isDate() ? 'utc' : 'point',
         range: "width",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "x",
           ...(this.isDate() ? { sort: true } : {})
         },
@@ -109,7 +109,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
         range: "height",
         nice: true,
         zero: true,
-        domain: { data: "table", field: sqlFields.category },
+        domain: { data: "filtered", field: sqlFields.category },
       },
       {
         name: "color",
@@ -126,7 +126,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
         type: "group",
         from: {
           facet: {
-            data: "table",
+            data: "filtered",
             name: "facet",
             groupby: "color"
           }
@@ -169,7 +169,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
         name: "points",
         interactive: false,
         type: "symbol",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           enter: {
             x: { scale: "x", field: "x" },
@@ -247,8 +247,8 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -256,11 +256,15 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
             }
           }
         } : {}),
+      },
+      {
+        name: "filtered",
+        source: "table",
         transform: this.resolveEndUserFiltersTransforms(),
       },
       {
         name: "dots",
-        source: "table",
+        source: "filtered",
         transform: [
           {
             type: "filter",
