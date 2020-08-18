@@ -7,7 +7,12 @@ import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import { InfoCallout } from './style';
 
-const EndUserFilters = ({ fields: serializedFields, endUserFilters, setEndUserFilters }) => {
+const EndUserFilters = ({
+  fields: serializedFields,
+  endUserFilters,
+  setEndUserFilters,
+  patchConfiguration,
+}) => {
   const fields = useMemo(
     () => serializedFields
       .map(field => ({
@@ -27,8 +32,9 @@ const EndUserFilters = ({ fields: serializedFields, endUserFilters, setEndUserFi
   );
 
   const onChangeColumns = useCallback((options) => {
-    setEndUserFilters(options.map(({ value }) => value));
-  }, [setEndUserFilters]);
+    setEndUserFilters((options ?? []).map(({ value }) => value));
+    patchConfiguration();
+  }, [patchConfiguration, setEndUserFilters]);
 
   return (
     <div>
@@ -56,6 +62,7 @@ EndUserFilters.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.object).isRequired,
   endUserFilters: PropTypes.arrayOf(PropTypes.string).isRequired,
   setEndUserFilters: PropTypes.func.isRequired,
+  patchConfiguration: PropTypes.func.isRequired,
 };
 
 export default EndUserFilters;
