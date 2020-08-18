@@ -41,12 +41,9 @@ export default class VegaService implements Charts.Service {
     this.widgetData = widgetData;
     this.configuration = configuration;
     this.editor = editor;
-
-    this.setConfig();
-    this.resolveChart();
   }
 
-  resolveChart() {
+  async resolveChart() {
     const { chartType, direction } = this.configuration;
     let chart;
 
@@ -61,7 +58,7 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "pie" || chartType === "donut") {
-      chart = new Pie(
+      chart = await new Pie(
         this.configuration,
         this.editor,
         this.schema,
@@ -73,7 +70,7 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "bar-horizontal") {
       if (this.configuration.color?.identifier) {
-        chart = new GroupedBarsHorizontal(
+        chart = await new GroupedBarsHorizontal(
           this.configuration,
           this.editor,
           this.schema,
@@ -83,7 +80,7 @@ export default class VegaService implements Charts.Service {
           this.configuration.color.identifier
         ).getChart();
       } else {
-        chart = new BarsHorizontal(
+        chart = await new BarsHorizontal(
           this.configuration,
           this.editor,
           this.schema,
@@ -96,7 +93,7 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "stacked-bar-horizontal") {
       if (this.configuration.color?.identifier) {
-        chart = new BarsStackedHorizontal(
+        chart = await new BarsStackedHorizontal(
           this.configuration,
           this.editor,
           this.schema,
@@ -106,7 +103,7 @@ export default class VegaService implements Charts.Service {
           this.configuration.color.identifier
         ).getChart();
       } else {
-        chart = new BarsHorizontal(
+        chart = await new BarsHorizontal(
           this.configuration,
           this.editor,
           this.schema,
@@ -119,7 +116,7 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "bar") {
       if (this.configuration.color?.identifier) {
-        chart = new GroupedBars(
+        chart = await new GroupedBars(
           this.configuration,
           this.editor,
           this.schema,
@@ -129,7 +126,7 @@ export default class VegaService implements Charts.Service {
           this.configuration.color.identifier
         ).getChart();
       } else {
-        chart = new Bars(
+        chart = await new Bars(
           this.configuration,
           this.editor,
           this.schema,
@@ -142,7 +139,7 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "stacked-bar") {
       if (this.configuration.color?.identifier) {
-        chart = new BarsStacked(
+        chart = await new BarsStacked(
           this.configuration,
           this.editor,
           this.schema,
@@ -152,7 +149,7 @@ export default class VegaService implements Charts.Service {
           this.configuration.color.identifier
         ).getChart();
       } else {
-        chart = new Bars(
+        chart = await new Bars(
           this.configuration,
           this.editor,
           this.schema,
@@ -165,7 +162,7 @@ export default class VegaService implements Charts.Service {
 
     if (chartType === "line") {
       if (this.configuration.color?.identifier) {
-        chart = new MultiLine(
+        chart = await new MultiLine(
           this.configuration,
           this.editor,
           this.schema,
@@ -175,7 +172,7 @@ export default class VegaService implements Charts.Service {
           this.configuration.color.identifier
         ).getChart();
       } else {
-        chart = new Line(
+        chart = await new Line(
           this.configuration,
           this.editor,
           this.schema,
@@ -187,7 +184,7 @@ export default class VegaService implements Charts.Service {
     }
 
     if (chartType === "scatter") {
-      chart = new Scatter(
+      chart = await new Scatter(
         this.configuration,
         this.editor,
         this.schema,
@@ -214,7 +211,9 @@ export default class VegaService implements Charts.Service {
     };
   }
 
-  getChart() {
+  async getChart() {
+    this.setConfig();
+    await this.resolveChart();
     return this.schema;
   }
 }

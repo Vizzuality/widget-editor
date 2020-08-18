@@ -90,7 +90,8 @@ function* initializeVega(props) {
       editor,
       selectScheme(store),
     );
-    yield put(setWidgetConfig(vega.getChart()));
+    const newWidgetConfig = yield vega.getChart();
+    yield put(setWidgetConfig(newWidgetConfig));
   }
 
   /**
