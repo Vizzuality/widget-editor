@@ -98,5 +98,9 @@ export default class ChartCommon {
   resolveScheme() {
     return getLocalCache().adapter.getSerializedScheme(this.scheme);
   }
+
+  async resolveSignals(): Promise<any[]> {
+    return [];
+  }
 }
 

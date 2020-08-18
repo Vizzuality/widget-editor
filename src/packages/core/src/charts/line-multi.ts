@@ -43,6 +43,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
       config: this.resolveScheme(),
       legend: this.setLegend(),
       signals: [
+        ...await this.resolveSignals(),
         {
           name: "hover",
           value: null,

@@ -36,17 +36,8 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
       config: this.resolveScheme(),
       interaction_config: this.interactionConfig(),
       legend: this.setLegend(),
-    };
-  }
-
-  setGenericSettings() {
-    this.schema = {
-      ...this.schema,
-      autosize: {
-        type: "fit",
-        contains: "padding",
-      },
       signals: [
+        ...await this.resolveSignals(),
         {
           name: "width",
           value: "",
@@ -61,6 +52,16 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           ],
         },
       ],
+    };
+  }
+
+  setGenericSettings() {
+    this.schema = {
+      ...this.schema,
+      autosize: {
+        type: "fit",
+        contains: "padding",
+      },
     };
   }
 

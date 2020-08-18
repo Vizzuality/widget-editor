@@ -37,6 +37,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
       interaction_config: this.interactionConfig(),
       config: this.resolveScheme(),
       legend: this.setLegend(),
+      signals: await this.resolveSignals(),
     };
   }
 

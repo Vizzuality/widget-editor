@@ -41,6 +41,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
         contains: "padding",
       },
       signals: [
+        ...await this.resolveSignals(),
         {
           name: "hover",
           value: null,

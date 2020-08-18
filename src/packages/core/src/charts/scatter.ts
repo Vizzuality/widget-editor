@@ -38,6 +38,22 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
       interaction_config: this.interactionConfig(),
       config: this.resolveScheme(),
       legend: this.setLegend(),
+      signals: [
+        ...await this.resolveSignals(),
+        {
+          name: "width",
+          value: "",
+          on: [
+            {
+              events: {
+                source: "window",
+                type: "resize",
+              },
+              update: "containerSize()[0]*0.95",
+            },
+          ],
+        },
+      ],
     };
   }
 
@@ -72,21 +88,6 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         type: "fit",
         contains: "padding",
       },
-      signals: [
-        {
-          name: "width",
-          value: "",
-          on: [
-            {
-              events: {
-                source: "window",
-                type: "resize",
-              },
-              update: "containerSize()[0]*0.95",
-            },
-          ],
-        },
-      ],
     };
   }
 

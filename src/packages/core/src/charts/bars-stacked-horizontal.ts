@@ -40,6 +40,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
       interaction_config: this.interactionConfig(),
       config: this.resolveScheme(),
       legend: this.setLegend(),
+      signals: await this.resolveSignals(),
     };
   }
 
