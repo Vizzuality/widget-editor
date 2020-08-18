@@ -25,12 +25,9 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
-
-    this.generateSchema();
-    this.setGenericSettings();
   }
 
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
       ...this.schema,
       scales: this.setScales(),
@@ -201,7 +198,9 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     ];
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }

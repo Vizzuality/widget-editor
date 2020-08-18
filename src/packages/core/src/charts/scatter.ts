@@ -26,12 +26,9 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.colorField = colorField;
-
-    this.generateSchema();
-    this.setGenericSettings();
   }
 
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
       ...this.schema,
       axes: this.setAxes(),
@@ -242,7 +239,9 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
     ];
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }

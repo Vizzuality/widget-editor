@@ -28,12 +28,9 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
     this.colorField = colorField;
-
-    this.generateSchema();
-    this.setGenericSettings();
   }
 
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
       ...this.schema,
       axes: this.setAxes(),
@@ -237,7 +234,9 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
     ];
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }

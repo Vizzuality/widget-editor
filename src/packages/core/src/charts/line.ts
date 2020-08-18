@@ -25,12 +25,9 @@ export default class Line extends ChartsCommon implements Charts.Line {
     this.schema = schema;
     this.widgetConfig = widgetConfig;
     this.widgetData = widgetData;
-
-    this.generateSchema();
-    this.setGenericSettings();
   }
 
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
       ...this.schema,
       axes: this.setAxes(),
@@ -254,7 +251,9 @@ export default class Line extends ChartsCommon implements Charts.Line {
     ];
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }
