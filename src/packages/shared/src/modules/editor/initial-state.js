@@ -8,6 +8,6 @@ export default {
   advanced: false,
   enableSave: true,
   widget: null,
-  widgetData: null,
+  widgetData: [],
   errors: null,
 };

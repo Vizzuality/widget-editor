@@ -71,7 +71,7 @@ export default class DataService {
       await this.requestWithFilters(filters, this.widget.attributes?.widgetConfig?.paramsConfig);
     } else {
       this.setEditor({
-        widgetData: null,
+        widgetData: [],
         advanced: !this.widget?.attributes?.widgetConfig
           ? false
           : !this.widget.attributes.widgetConfig.paramsConfig

@@ -77,7 +77,7 @@ export default class VegaService implements Charts.Service {
       ...this.schema,
       config: {
         ...this.schema.config,
-        ...widgetConfig.config,
+        ...(widgetConfig?.config ?? {}),
       },
     };
   }
