@@ -40,7 +40,7 @@ export default class FieldsService {
    * If the field is of type `date`, the values will be timestamps
    * @param field Field for which we want to get the minimum and maximum value
    */
-  private getColumnMinAndMax(field: any): Promise<{ min: number, max: number }> {
+  public getColumnMinAndMax(field: any): Promise<{ min: number, max: number }> {
     const { columnName } = field;
     const tableName = this.getTableName();
 
@@ -55,7 +55,7 @@ export default class FieldsService {
    * @param field Field for which we want to get the values
    * @param uniq Whether duplicated values should be removed
    */
-  private getColumnValues(field: any, uniq = true): Promise<string[]> {
+  public getColumnValues(field: any, uniq = true): Promise<string[]> {
     const { columnName } = field;
     const tableName = this.getTableName();
 

@@ -60,21 +60,20 @@ export default class DataService {
 
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
-    const filters = await this.handleFilters(true);
+    await this.handleFilters();
+    this.handleEndUserFilters();
 
-    if (
-      this.widget &&
-      this.widget.attributes?.widgetConfig?.paramsConfig &&
-      this.widget.attributes?.widgetConfig?.value &&
-      this.widget.attributes?.widgetConfig?.category
-    ) {
-      await this.requestWithFilters(filters, this.widget.attributes?.widgetConfig?.paramsConfig);
-    } else {
-      this.setEditor({
-        widgetData: null,
-        advanced: !this.widget?.attributes?.widgetConfig
-          ? false
-          : !this.widget.attributes.widgetConfig.paramsConfig
+    this.setEditor({
+      widgetData: [],
+      advanced: !this.widget?.attributes?.widgetConfig
+        ? false
+        : !this.widget.attributes.widgetConfig.paramsConfig
+    });
+
+    if (this.widget?.attributes?.widgetConfig) {
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_WIDGETCONFIG,
+        payload: this.widget?.attributes?.widgetConfig
       });
     }
 
@@ -83,8 +82,8 @@ export default class DataService {
     }
 
     this.setEditor({ restoring: false });
-    this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
+    this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
   }
 
   async handleFilters(restore: boolean = false) {
@@ -122,6 +121,20 @@ export default class DataService {
     }
   }
 
+  handleEndUserFilters(): void {
+    if (!this.widget) {
+      return;
+    }
+
+    const endUserFilters = this.widget.attributes?.widgetConfig?.paramsConfig?.endUserFilters;
+    if (endUserFilters) {
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_END_USER_FILTERS,
+        payload: endUserFilters,
+      })
+    }
+  }
+
   isFieldAllowed(field) {
     const fieldTypeAllowed = ALLOWED_FIELD_TYPES.find(
       (val) => val.name.toLowerCase() === field.type.toLowerCase()
@@ -156,12 +169,8 @@ export default class DataService {
     this.setEditor({ layers, fields: this.allowedFields });
   }
 
-  async requestWithFilters(filters: Filters.Filter[], configuration: any) {
-    const request = await this.adapter.requestData({
-      configuration,
-      filters,
-      dataset: this.dataset
-    });
+  async requestWithFilters(store: any) {
+    const request = await this.adapter.requestData(store);
 
     if (!request.data || "errors" in request) {
       this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
@@ -174,6 +183,7 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
+    this.handleEndUserFilters();
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
     // If this dispatch is not executed, the local state is not set on init
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });

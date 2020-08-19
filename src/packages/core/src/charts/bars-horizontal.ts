@@ -1,38 +1,10 @@
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
-
+import { Charts, Vega } from "@widget-editor/types";
+import { sqlFields } from "../helpers/wiget-helper/constants";
 import ChartsCommon from './chart-common';
 
-import { sqlFields } from "../helpers/wiget-helper/constants";
-
 export default class BarsHorizontal extends ChartsCommon implements Charts.Bars {
-  configuration: any;
-  editor: any;
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
-  widgetData: Generic.ObjectPayload;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload,
-    scheme: any,
-  ) {
-    super(configuration, editor, widgetData, scheme);
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-
-    this.generateSchema();
-    this.setGenericSettings();
-  }
-
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
-      ...this.schema,
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
@@ -40,6 +12,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
       interaction_config: this.interactionConfig(),
       config: this.resolveScheme(),
       legend: this.setLegend(),
+      signals: await this.resolveSignals(),
     };
   }
 
@@ -55,7 +28,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "x",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: sqlFields.category,
         },
         range: "width",
@@ -64,8 +37,9 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         name: "y",
         type: "band",
         domain: {
-          data: "table",
-          field: "x",
+          data: "filtered",
+          field: "id",
+          ...(this.isDate() ? { sort: true } : {})
         },
         range: "height",
         padding: 0.05,
@@ -100,8 +74,8 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
             update: {
               text: {
                 signal: this.isDate()
-                  ? `utcFormat(datum.value, '${this.resolveFormat('x')}')`
-                  : "truncate(datum.value, 12)",
+                  ? `utcFormat(data('table')[datum.value - 1].x, '${this.resolveFormat('x')}')`
+                  : "truncate(data('table')[datum.value - 1].x, 12)",
               },
               align: {
                 signal:
@@ -122,13 +96,13 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     return [
       {
         type: "rect",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           update: {
             opacity: { value: 1 },
             x: { scale: "x", value: 0 },
             x2: { scale: "x", field: sqlFields.category },
-            y: { scale: "y", field: "x" },
+            y: { scale: "y", field: "id" },
             height: { scale: "y", band: 1 },
           },
           hover: {
@@ -140,6 +114,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -154,7 +129,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
             {
               column: "x",
               property: this.resolveName('x'),
-              type: this.configuration.category?.type || 'string',
+              type: configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -164,10 +139,11 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   }
 
   bindData(): Vega.Data[] {
+    const { editor: { widgetData } } = this.store;
     return [
       {
-        values: this.widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -181,11 +157,11 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
         ],
       },
       {
-        values: {
-          xCol: this.resolveName('x'),
-          yCol: this.resolveName('y'),
-        },
-        name: "properties",
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
+        ],
       },
     ];
   }
@@ -194,7 +170,9 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
     return null;
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }

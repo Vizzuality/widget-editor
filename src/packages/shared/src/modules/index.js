@@ -8,6 +8,7 @@ import * as theme from "modules/theme";
 import * as widgetConfig from "modules/widget-config";
 import * as configuration from "modules/configuration";
 import * as filters from "modules/filters";
+import * as endUserFilters from "modules/end-user-filters";
 
 const modules = {
   configuration: handleModule(configuration),
@@ -15,6 +16,7 @@ const modules = {
   theme: handleModule(theme),
   filters: handleModule(filters),
   widgetConfig: handleModule(widgetConfig),
+  endUserFilters: handleModule(endUserFilters),
 };
 
 export default {

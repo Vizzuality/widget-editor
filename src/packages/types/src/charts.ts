@@ -6,7 +6,7 @@ export interface Bars {
   setScales(): Generic.ObjectPayload;
   setMarks(): Generic.ObjectPayload;
   bindData(): Generic.ObjectPayload;
-  generateSchema(): void;
+  generateSchema(): Promise<void>;
   setGenericSettings(): void;
 }
 
@@ -14,7 +14,7 @@ export interface Pie {
   setScales(): Generic.ObjectPayload;
   setMarks(): Generic.ObjectPayload;
   bindData(): Generic.ObjectPayload;
-  generateSchema(): void;
+  generateSchema(): Promise<void>;
   setGenericSettings(): void;
 }
 
@@ -23,7 +23,7 @@ export interface Line {
   setScales(): Generic.ObjectPayload;
   setMarks(): Generic.ObjectPayload;
   bindData(): Generic.ObjectPayload;
-  generateSchema(): void;
+  generateSchema(): Promise<void>;
   setGenericSettings(): void;
 }
 
@@ -32,16 +32,12 @@ export interface Scatter {
   setScales(): Generic.ObjectPayload;
   setMarks(): Generic.ObjectPayload;
   bindData(): Generic.ObjectPayload;
-  generateSchema(): void;
+  generateSchema(): Promise<void>;
   setGenericSettings(): void;
 }
 
 export interface Service {
-  schema: Vega.Schema;
-  sliceCount: number;
-  widgetConfig: object;
-  widgetData: object;
-  resolveChart(): void;
+  resolveChart(): Promise<void>;
   setConfig(): void;
-  getChart(): Vega.Schema;
+  getChart(): Promise<Vega.Schema>;
 }

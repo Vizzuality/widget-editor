@@ -96,6 +96,7 @@ class Editor extends React.Component {
           application="rw"
           adapter={RwAdapter}
           theme={theme}
+          disable={['typography']}
         />
       </div>
     );

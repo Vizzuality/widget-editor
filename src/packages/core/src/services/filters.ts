@@ -16,12 +16,16 @@ export default class FiltersService implements Filters.Service {
   configuration: Config.Payload;
   adapter: Adapter.Service;
   filters: Filters.Filter[];
+  endUserFilters: Filters.EndUserFilter[];
 
-  constructor(configuration: any, filters: Filters.Filter[], dataset: any, adapter: Adapter.Service) {
+  constructor(store: any, adapter: Adapter.Service) {
+    const { configuration, filters, editor: { dataset }, endUserFilters } = store;
+
     this.configuration = configuration;
-    this.filters = filters;
+    this.filters = filters.list;
     this.sql = "";
     this.adapter = adapter;
+    this.endUserFilters = endUserFilters;
 
     this.dataset = dataset;
 
@@ -60,14 +64,20 @@ export default class FiltersService implements Filters.Service {
     return column;
   }
 
+  resolveEndUserFilters() {
+    if (this.endUserFilters.length) {
+      return `, ${this.endUserFilters}`;
+    }
+
+    return '';
+  }
+
   prepareSelectStatement() {
     const { category, value } = this.configuration;
 
-    this.sql = `SELECT ${category.name} as ${sqlFields.value
-      } ${this.prepareColor()}`;
+    this.sql = `SELECT ${category.name} as ${sqlFields.value} ${this.prepareColor()} ${this.resolveEndUserFilters()}`;
 
-    this.sql = `${this.sql}, ${this.resolveAggregate(value.name)} as ${sqlFields.category
-      } FROM ${this.resolveTableName()}`;
+    this.sql = `${this.sql}, ${this.resolveAggregate(value.name)} as ${sqlFields.category} FROM ${this.resolveTableName()}`;
   }
 
   /**

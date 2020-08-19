@@ -8,6 +8,7 @@ import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import QueryLimit from "components/query-limit";
 import Filter from "components/filter";
+import EndUserFilters from "components/end-user-filters";
 
 import {
   FOOTER_HEIGHT,
@@ -141,6 +142,11 @@ const EditorOptions = ({
             {!isMap && !advanced && (
               <AccordionSection title="Filters">
                 <Filter dataService={dataService} />
+              </AccordionSection>
+            )}
+            {!isMap && !advanced && disabledFeatures.indexOf("end-user-filters") === -1 && (
+              <AccordionSection title="End-user filters">
+                <EndUserFilters />
               </AccordionSection>
             )}
             {!isMap && !advanced && (

@@ -1,38 +1,12 @@
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
+import { Charts, Vega } from "@widget-editor/types";
 
 import ChartsCommon from './chart-common';
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
 
 export default class Bars extends ChartsCommon implements Charts.Bars {
-  configuration: any;
-  editor: any;
-  schema: any;
-  widgetConfig: any;
-  widgetData: Generic.ObjectPayload;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: any,
-    widgetConfig: any,
-    widgetData: Generic.ObjectPayload,
-    scheme: any,
-  ) {
-    super(configuration, editor, widgetData, scheme);
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-
-    this.generateSchema();
-    this.setGenericSettings();
-  }
-
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
-      ...this.schema,
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
@@ -40,6 +14,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
       interaction_config: this.interactionConfig(),
       config: this.resolveScheme(),
       legend: this.setLegend(),
+      signals: await this.resolveSignals(),
     };
   }
 
@@ -55,7 +30,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         name: "x",
         type: "band",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "id",
           ...(this.isDate() ? { sort: true } : {})
         },
@@ -66,7 +41,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
         name: "y",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: sqlFields.category,
         },
         nice: true,
@@ -82,7 +57,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     return [
       {
         type: "rect",
-        from: { data: "table" },
+        from: { data: "filtered" },
         encode: {
           update: {
             opacity: { value: 1 },
@@ -100,6 +75,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -114,7 +90,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
             {
               column: "x",
               property: this.resolveName('x'),
-              type: this.configuration.category?.type || 'string',
+              type: configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -175,11 +151,11 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -192,6 +168,13 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
           { type: "joinaggregate", as: ["count"] },
         ],
       },
+      {
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
+        ],
+      },
     ];
   }
 
@@ -199,7 +182,9 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     return null;
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }
