@@ -3,7 +3,6 @@ on: pull_request
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 1
     steps:
       - uses: actions/checkout@v2
       - name: Use nodejs 🛎️
@@ -19,7 +18,6 @@ jobs:
   test:
     needs: [lint]
     runs-on: ubuntu-latest
-    timeout-minutes: 1
     steps:
       - uses: actions/checkout@v2
       - name: Use nodejs 🛎️
@@ -35,7 +33,6 @@ jobs:
   build:
     needs: [lint, test]
     runs-on: ubuntu-latest
-    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v2
       - name: Use nodejs
