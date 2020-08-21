@@ -1,0 +1,48 @@
+name: widget editor checks
+on: pull_request
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install dependence's
+        run: |
+          yarn policies set-version
+          yarn install
+      - name: Lint
+        run: yarn lint
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install dependence's
+        run: |
+          yarn policies set-version
+          yarn install
+      - name: Test
+        run: yarn test
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install dependence's
+        run: |
+          yarn policies set-version
+          yarn install
+      - name: Build project
+        run: yarn build
