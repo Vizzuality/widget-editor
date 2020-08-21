@@ -211,7 +211,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
     // When the user adds the 3rd dimension (color), the widget data doesn't have the color field
     // available until the fetch is complete, so label might be undefined in the map function
     const values = [...new Set(widgetData.map(d => d[colorField]))].map((label, index) => ({
-      label: label,
+      label,
       value: scheme.range.category20[index % scheme.range.category20.length],
       type: 'string',
     }));

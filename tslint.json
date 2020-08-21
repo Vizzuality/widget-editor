@@ -13,6 +13,9 @@
     ]
   },
   "jsRules": {},
-  "rules": {},
+  "rules": {
+    "no-console": [true, "log"],
+    "no-shadowed-variable": false
+  },
   "rulesDirectory": []
 }
