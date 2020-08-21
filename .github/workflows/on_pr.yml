@@ -17,6 +17,7 @@ jobs:
       - name: Lint 📖
         run: yarn lint
   test:
+    needs: [lint]
     runs-on: ubuntu-latest
     timeout-minutes: 1
     steps:
@@ -32,6 +33,7 @@ jobs:
       - name: Test 🤖
         run: yarn test
   build:
+    needs: [lint, test]
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
