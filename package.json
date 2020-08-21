@@ -28,7 +28,7 @@
     "build:widget-editor": "cd src/playground/widget-editor && npm run build",
     "test:widget-editor": "cd src/playground/widget-editor && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
-    "test": "jest --verbose ./src/packages",
+    "test": "jest --verbose ./src/packages/",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "migrate": "node ./migrations/cli/index.js"
   },

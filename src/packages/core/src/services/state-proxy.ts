@@ -37,9 +37,10 @@ export default class StateProxy {
       !isEqual(prev.configuration.category, next.configuration.category) ||
       !isEqual(prev.configuration.color, next.configuration.color) ||
       !isEqual(prev.configuration.limit, next.configuration.limit) ||
-      !isEqual(prev.configuration.aggregateFunction, next.configuration.aggregateFunction ||
-        !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
-      )) {
+      !isEqual(prev.configuration.aggregateFunction, next.configuration.aggregateFunction) ||
+      !isEqual(prev.configuration.orderBy, next.configuration.orderBy) ||
+      !isEqual(prev.editor.widgetData, next.editor.widgetData)
+      ) {
       this.forceVegaUpdate = true;
     } else {
       this.forceVegaUpdate = false;
