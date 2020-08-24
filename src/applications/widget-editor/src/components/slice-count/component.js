@@ -7,6 +7,7 @@ import Slider from "components/slider";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
+import { StyledNote } from './style';
 
 const SliceCount = ({
   min = 1,
@@ -14,6 +15,7 @@ const SliceCount = ({
   data = null,
   minDistance = 1,
   onChange = (data) => {},
+  disabledFeatures,
 }) => {
   const [localValue, setLocalValue] = useState({ value: value, key: null });
 
@@ -53,6 +55,11 @@ const SliceCount = ({
           />
         </FlexController>
       </FlexContainer>
+      {disabledFeatures.indexOf("end-user-filters") === -1 && (
+        <StyledNote>
+          This setting is ignored when end-user filters are defined.
+        </StyledNote>
+      )}
     </InputGroup>
   );
 };

@@ -8,7 +8,6 @@ import {
 } from "@widget-editor/core";
 
 // SELECTORS
-import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import { isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
 
 // ACTIONS
@@ -60,8 +59,8 @@ function* initializeData(props) {
  */
 function* initializeVega(props) {
   const { widgetEditor: store } = yield select();
-  const { editor, configuration, widgetConfig } = store;
-  const { widgetData, advanced } = editor;
+  const { editor, widgetConfig } = store;
+  const { advanced } = editor;
 
   // FIXME
   // We can't execute `yield cancel()` here if `editor.widget` is not defined because the editor
@@ -80,17 +79,9 @@ function* initializeVega(props) {
    * VegaService utilizes store properties and generates a vega config for us
    */
   if (!advanced && !isMap(store)) {
-    const vega = new VegaService(
-      {
-        ...widgetConfig,
-        paramsConfig: { ...configuration },
-      },
-      widgetData,
-      configuration,
-      editor,
-      selectScheme(store),
-    );
-    yield put(setWidgetConfig(vega.getChart()));
+    const vega = new VegaService(store);
+    const newWidgetConfig = yield vega.getChart();
+    yield put(setWidgetConfig(newWidgetConfig));
   }
 
   /**

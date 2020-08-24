@@ -1,55 +1,21 @@
 import uniqBy from 'lodash/uniqBy';
-import { Charts, Vega, Generic, Widget } from "@widget-editor/types";
 
+import { Charts, Vega } from "@widget-editor/types";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
+import { selectEndUserFilters } from "@widget-editor/shared/lib/modules/end-user-filters/selectors";
 import ChartsCommon from './chart-common';
 
 export default class Pie extends ChartsCommon implements Charts.Pie {
-  configuration: any;
-  editor: any;
-  schema: Vega.Schema;
-  widgetConfig: Widget.Payload;
-  widgetData: Generic.ObjectPayload;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: Vega.Schema,
-    widgetConfig: Widget.Payload,
-    widgetData: Generic.ObjectPayload,
-    scheme: any
-  ) {
-    super(configuration, editor, widgetData, scheme);
-
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-
-    this.generateSchema();
-    this.setGenericSettings();
-  }
-
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
-      ...this.schema,
       scales: this.setScales(),
       marks: this.setMarks(),
       data: this.bindData(),
       config: this.resolveScheme(),
       interaction_config: this.interactionConfig(),
       legend: this.setLegend(),
-    };
-  }
-
-  setGenericSettings() {
-    this.schema = {
-      ...this.schema,
-      autosize: {
-        type: "fit",
-        contains: "padding",
-      },
       signals: [
+        ...await this.resolveSignals(),
         {
           name: "width",
           value: "",
@@ -67,6 +33,16 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     };
   }
 
+  setGenericSettings() {
+    this.schema = {
+      ...this.schema,
+      autosize: {
+        type: "fit",
+        contains: "padding",
+      },
+    };
+  }
+
   interactionConfig() {
     return [
       {
@@ -80,7 +56,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
               format: '.2s',
             },
             {
-              column: "category",
+              column: "pie_category",
               property: this.resolveName('x'),
               type: 'string',
             },
@@ -91,35 +67,38 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   setScales() {
+    const scheme = selectScheme(this.store);
     return [
       {
         name: "c",
         type: "ordinal",
         domain: {
-          data: "table",
-          field: 'value',
+          data: "color",
+          field: "pie_category",
         },
-        range: this.scheme.category,
+        range: scheme.category,
       },
     ];
   }
 
   resolveInnerRadius() {
-    if (this.configuration.chartType === "pie") {
+    const { configuration } = this.store;
+
+    if (configuration.chartType === "pie") {
       return "0";
     }
 
-    return this.configuration.donutRadius;
+    return configuration.donutRadius;
   }
 
   setMarks() {
     return [
       {
         type: "arc",
-        from: { data: "table" },
+        from: { data: "final" },
         encode: {
           enter: {
-            fill: { scale: "c", field: 'value' },
+            fill: { scale: "c", field: "pie_category" },
             x: { signal: "width / 2" },
             y: { signal: "height / 2" },
           },
@@ -141,11 +120,17 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { editor: { widgetData }, configuration } = this.store;
+    const endUserFilters: string[] = selectEndUserFilters(this.store);
+
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
+      },
+      {
+        name: "color",
+        source: "table",
         transform: [
           {
             "type": "window",
@@ -153,12 +138,49 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           },
           {
             "type": "formula",
-            "as": "category",
-            "expr": `datum.rank < ${this.configuration.sliceCount} ? datum.x : 'Others'`
+            "as": "pie_category",
+            // When there are end-user filters, we don't cap the number of slices, because it would
+            // be impossible to determine the colour of the “Others” slice for the legend (which is
+            // not dynamically updated when the filters change)
+            "expr": endUserFilters.length
+              ? 'datum.x'
+              : `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
           },
           {
             "type": "aggregate",
-            "groupby": ["category"],
+            "groupby": ["pie_category"],
+            "ops": ["sum"],
+            "fields": ["y"],
+            "as": ["value"]
+          },
+        ],
+      },
+      {
+        name: "filtered",
+        source: "table",
+        transform: this.resolveEndUserFiltersTransforms(),
+      },
+      {
+        name: "final",
+        source: "filtered",
+        transform: [
+          {
+            "type": "window",
+            "ops": ["row_number"], "as": ["rank"]
+          },
+          {
+            "type": "formula",
+            "as": "pie_category",
+            // When there are end-user filters, we don't cap the number of slices, because it would
+            // be impossible to determine the colour of the “Others” slice for the legend (which is
+            // not dynamically updated when the filters change)
+            "expr": endUserFilters.length
+              ? 'datum.x'
+              : `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
+          },
+          {
+            "type": "aggregate",
+            "groupby": ["pie_category"],
             "ops": ["sum"],
             "fields": ["y"],
             "as": ["value"]
@@ -168,7 +190,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
             "field": "value",
             "startAngle": 0,
             "endAngle": 6.29
-          }
+          },
         ],
       },
     ];
@@ -176,20 +198,38 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
 
   setLegend() {
     const scheme = this.resolveScheme();
-    if (!this.widgetData) {
+    const { editor: { widgetData }, configuration } = this.store;
+    const endUserFilters: string[] = selectEndUserFilters(this.store);
+
+    if (!widgetData) {
       return null;
     }
 
-    const values = uniqBy(
-      this.widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < this.configuration.sliceCount ? d.x : 'Others' })),
-      'x'
-    )
-      .slice(0, this.configuration.sliceCount)
-      .map((d, i) => ({
-        label: d.x,
-        value: scheme.range.category20[i % this.configuration.sliceCount],
-        type: 'string'
-      }));
+    let values;
+
+    // When there are end-user filters, the legend display all of the datasets items because we
+    // don't know in advance which ones will be shown in the visualisation
+    // We also don't cap the number of slices because it would be impossible to determine the colour
+    // of the “Others” slice (the legend is static and not updated with the filters)
+    if (endUserFilters.length) {
+      values = widgetData
+        .map((d, i) => ({
+          label: d.x,
+          value: scheme.range.category20[i % scheme.range.category20.length],
+          type: 'string'
+        }));
+    } else {
+      values = uniqBy(
+        widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < configuration.sliceCount ? d.x : 'Others' })),
+        'x'
+      )
+        .slice(0, configuration.sliceCount)
+        .map((d: { [key: string]: any }, i) => ({
+          label: d.x,
+          value: scheme.range.category20[i % configuration.sliceCount],
+          type: 'string'
+        }));
+    }
 
     return [
       {
@@ -201,7 +241,9 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     ];
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }

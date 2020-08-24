@@ -1,41 +1,13 @@
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
-import { Charts, Vega, Generic } from "@widget-editor/types";
 
+import { Charts, Vega } from "@widget-editor/types";
+import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import ChartsCommon from './chart-common';
 
 export default class GroupedBars extends ChartsCommon implements Charts.Bars {
-  configuration: any;
-  editor: any;
-  schema: any;
-  widgetConfig: any;
-  widgetData: Generic.ObjectPayload;
-  colorField: string;
-
-  constructor(
-    configuration: any,
-    editor: any,
-    schema: any,
-    widgetConfig: any,
-    widgetData: Generic.ObjectPayload,
-    scheme: any,
-    colorField: string,
-  ) {
-    super(configuration, editor, widgetData, scheme);
-    this.configuration = configuration;
-    this.editor = editor;
-    this.schema = schema;
-    this.widgetConfig = widgetConfig;
-    this.widgetData = widgetData;
-    this.colorField = colorField;
-
-    this.generateSchema();
-    this.setGenericSettings();
-  }
-
-  generateSchema() {
+  async generateSchema() {
     this.schema = {
-      ...this.schema,
       axes: this.setAxes(),
       scales: this.setScales(),
       marks: this.setMarks(),
@@ -43,6 +15,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
       interaction_config: this.interactionConfig(),
       config: this.resolveScheme(),
       legend: this.setLegend(),
+      signals: await this.resolveSignals(),
     };
   }
 
@@ -53,12 +26,13 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
   }
 
   setScales() {
+    const scheme = selectScheme(this.store);
     return [
       {
         name: "x",
         type: "band",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "x",
           ...(this.isDate() ? { sort: true } : {})
         },
@@ -69,7 +43,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         name: "y",
         type: "linear",
         domain: {
-          data: "table",
+          data: "filtered",
           field: "y",
         },
         nice: true,
@@ -80,7 +54,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         name: "color",
         type: "ordinal",
         domain: { data: "table", field: "color" },
-        range: this.scheme.category,
+        range: scheme.category,
       },
     ];
   }
@@ -91,7 +65,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         "type": "group",
         "from": {
           "facet": {
-            "data": "table",
+            "data": "filtered",
             "name": "facet",
             "groupby": "x"
           }
@@ -140,6 +114,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -160,7 +135,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
             {
               column: "x",
               property: this.resolveName('x'),
-              type: this.configuration.category?.type || 'string',
+              type: configuration.category?.type || 'string',
               format: this.resolveFormat('x'),
             },
           ],
@@ -221,11 +196,11 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
   }
 
   bindData(): Vega.Data[] {
-    const { widgetData } = this;
+    const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
         name: "table",
+        values: widgetData,
         ...(this.isDate() ? {
           format: {
             parse: {
@@ -237,21 +212,29 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
           { "type": "joinaggregate", "ops": ["distinct"], "fields": ["x"], "as": ["count"] }
         ],
       },
+      {
+        name: "filtered",
+        source: "table",
+        transform: [
+          ...this.resolveEndUserFiltersTransforms(),
+        ],
+      },
     ];
   }
 
   setLegend() {
     const scheme = this.resolveScheme();
+    const { editor: { widgetData } } = this.store;
 
-    if (!this.widgetData) {
+    if (!widgetData) {
       return null;
     }
 
-    const colorValuesOrder = [...new Set(this.widgetData.map((d: { color: string | number }) => d.color))];
+    const colorValuesOrder = [...new Set(widgetData.map((d: { color: string | number }) => d.color))];
     const colorRange = scheme.range.category20;
     const getColor = d => colorRange[colorValuesOrder.indexOf(d.color)];
-    const values = sortBy(uniqBy(this.widgetData, 'color'), ['color'], ['asc'])
-      .map((d: { color: string | number }) => ({
+    const values = sortBy(uniqBy(widgetData, 'color'), ['color'], ['asc'])
+      .map((d: { [key: string]: any }) => ({
         label: d.color,
         value: getColor(d),
         type: 'string',
@@ -267,7 +250,9 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
     ];
   }
 
-  getChart() {
+  async getChart() {
+    await this.generateSchema();
+    this.setGenericSettings();
     return this.schema;
   }
 }

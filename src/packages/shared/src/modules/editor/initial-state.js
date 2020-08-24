@@ -1,6 +1,6 @@
 export default {
   restoring: false,
-  disabledFeatures: ['typography'],
+  disabledFeatures: ['typography', 'end-user-filters'],
   dataSync: false,
   map: null,
   initialized: false,
@@ -8,6 +8,6 @@ export default {
   advanced: false,
   enableSave: true,
   widget: null,
-  widgetData: null,
+  widgetData: [],
   errors: null,
 };

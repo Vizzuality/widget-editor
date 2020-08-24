@@ -56,3 +56,4 @@ type StringSerializedFilter = GenericSerializedFilter<string> & {
 
 export type SerializedFilter = NumberSerializedFilter | DateSerializedFilter | StringSerializedFilter;
 
+export type EndUserFilter = string[];
