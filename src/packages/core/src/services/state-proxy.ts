@@ -20,6 +20,14 @@ export default class StateProxy {
     }
   }
 
+  private userSpecifiedAggregation(state: any) {
+    const { prev, next } = this.getStateDiff(state);
+    return !isEqual(
+      prev.configuration.aggregateFunction, next.configuration.aggregateFunction ||
+      !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
+    );
+  }
+
   /**
    * @handleForceVegaUpdate
    * In a few cases we need to force vega to update, as these properties are already
@@ -32,15 +40,15 @@ export default class StateProxy {
    */
   private handleForceVegaUpdate(state: any) {
     const { prev, next } = this.getStateDiff(state);
+
     if (
       !isEqual(prev.configuration.value, next.configuration.value) ||
       !isEqual(prev.configuration.category, next.configuration.category) ||
       !isEqual(prev.configuration.color, next.configuration.color) ||
       !isEqual(prev.configuration.limit, next.configuration.limit) ||
-      !isEqual(prev.configuration.aggregateFunction, next.configuration.aggregateFunction) ||
-      !isEqual(prev.configuration.orderBy, next.configuration.orderBy) ||
-      !isEqual(prev.editor.widgetData, next.editor.widgetData)
-      ) {
+      !isEqual(prev.endUserFilters, next.endUserFilters) ||
+      this.userSpecifiedAggregation(state)
+    ) {
       this.forceVegaUpdate = true;
     } else {
       this.forceVegaUpdate = false;

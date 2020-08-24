@@ -52,17 +52,20 @@ describe('State proxy tests', () => {
     expect(shouldUpdateData).toBe(false);
   })
 
-  test("State proxy should update data and *NOT force vega update", () => {
+  test("State proxy should update filters, and force chart update", () => {
     const instance = genInstance();
 
-    let patch = setFilters({ list: ['one', 'two', 'three'] });
-    let shouldUpdateData = instance.ShouldUpdateData(patch);
-    expect(instance.forceVegaUpdate).toBe(false);
+    const patch = setFilters({ list: ['one', 'two', 'three'] });
+    const shouldUpdateData = instance.ShouldUpdateData(patch);
+    expect(instance.forceVegaUpdate).toBe(true);
     expect(shouldUpdateData).toBe(true);
+  });
 
-    patch = { ...BASE_STATE, endUserFilters: ['one', 'two', 'three'] };
-    shouldUpdateData = instance.ShouldUpdateData(patch);
-    expect(instance.forceVegaUpdate).toBe(false);
+  test("User defined end user filters, we should force vega update", () => {
+    const instance = genInstance();
+    const patch = { ...BASE_STATE, endUserFilters: ['one', 'two', 'three'] };
+    const shouldUpdateData = instance.ShouldUpdateData(patch);
+    expect(instance.forceVegaUpdate).toBe(true);
     expect(shouldUpdateData).toBe(true);
   });
 
