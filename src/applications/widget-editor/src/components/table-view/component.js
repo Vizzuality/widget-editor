@@ -9,8 +9,8 @@ import {
 } from "./style";
 
 const TableView = ({ widgetData, configuration }) => {
-  const value = configuration?.value?.alias || "";
-  const category = configuration?.category?.alias || "";
+  const value = configuration?.value?.alias || configuration?.value?.name || "";
+  const category = configuration?.category?.alias || configuration?.category?.name || "";
 
   return (
     <StyledTableBox>
