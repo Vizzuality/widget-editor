@@ -248,7 +248,7 @@ export default class MultiLine extends ChartsCommon implements Charts.Line {
     return [
       {
         name: "table",
-        values: widgetData,
+        values: [...widgetData].map(d => ({ ...d })),
         ...(this.isDate() ? {
           format: {
             parse: {

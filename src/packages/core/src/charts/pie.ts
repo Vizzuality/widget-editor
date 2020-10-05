@@ -126,7 +126,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
     return [
       {
         name: "table",
-        values: widgetData,
+        values: [...widgetData].map(d => ({ ...d })),
       },
       {
         name: "color",

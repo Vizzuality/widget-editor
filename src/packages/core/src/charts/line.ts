@@ -205,7 +205,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
+        values: [...widgetData].map(d => ({ ...d })),
         name: "table",
         ...(this.isDate() ? {
           format: {

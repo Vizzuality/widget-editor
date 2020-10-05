@@ -181,7 +181,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
+        values: [...widgetData].map(d => ({ ...d })),
         name: "table",
         ...(this.isDate() ? {
           format: {

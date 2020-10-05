@@ -168,7 +168,7 @@ export default class BarsStacked extends ChartsCommon implements Charts.Bars {
     const { editor: { widgetData } } = this.store;
     return [
       {
-        values: widgetData,
+        values: [...widgetData].map(d => ({ ...d })),
         name: "table",
         ...(this.isDate() ? {
           format: {
