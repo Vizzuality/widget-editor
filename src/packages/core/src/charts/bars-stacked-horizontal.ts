@@ -97,12 +97,10 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
                   : "truncate(datum.value, 12)",
               },
               align: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+                value: "right",
               },
               baseline: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'middle' : 'top'",
+                value: "top",
               }
             },
           },
@@ -223,6 +221,7 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   async getChart() {
     await this.generateSchema();
     this.setGenericSettings();
+    console.log(this.schema);
     return this.schema;
   }
 }
