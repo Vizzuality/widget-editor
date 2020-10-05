@@ -67,9 +67,22 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   }
 
   setScales() {
-    const { configuration: { color } } = this.store;
+    const { configuration: { color }, editor: { widgetData: data } } = this.store;
     const colorField = color?.identifier;
     const scheme = selectScheme(this.store);
+
+    // In v1, if the chart would display points that have all the same y value, we would modify the
+    // Y domain so it looks nicer
+    let yDomain: any = { "data": "filtered", "field": "y" };
+    const oneYValue = !!data.length
+      && data.every(d => d.y === data[0].y);
+    if (data.length === 1 || oneYValue) {
+      // The step is 20% of the value
+      const step = data[0].y * 0.2;
+
+      // We fix the domain around the value
+      yDomain = [data[0].y - step, data[0].y + step];
+    }
 
     const scale: any = [
       {
@@ -91,7 +104,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         round: true,
         nice: true,
         zero: true,
-        domain: { "data": "filtered", "field": "y" },
+        domain: yDomain,
         range: "height",
       },
     ];

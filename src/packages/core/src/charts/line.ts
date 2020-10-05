@@ -84,6 +84,21 @@ export default class Line extends ChartsCommon implements Charts.Line {
   }
 
   setScales() {
+    const { editor: { widgetData: data } } = this.store;
+
+    // In v1, if the chart would display points that have all the same y value, we would modify the
+    // Y domain so it looks nicer
+    let yDomain: any = { data: "table", field: sqlFields.category };
+    const oneYValue = !!data.length
+      && data.every(d => d[sqlFields.category] === data[0][sqlFields.category]);
+    if (data.length === 1 || oneYValue) {
+      // The step is 20% of the value
+      const step = data[0].y * 0.2;
+
+      // We fix the domain around the value
+      yDomain = [data[0].y - step, data[0].y + step];
+    }
+
     return [
       {
         name: "x",
@@ -101,7 +116,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
         range: "height",
         nice: true,
         zero: true,
-        domain: { data: "table", field: sqlFields.category },
+        domain: yDomain,
       },
     ];
   }
