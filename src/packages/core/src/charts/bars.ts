@@ -155,7 +155,7 @@ export default class Bars extends ChartsCommon implements Charts.Bars {
     return [
       {
         name: "table",
-        values: widgetData,
+        values: [...widgetData].map(d => ({ ...d })),
         ...(this.isDate() ? {
           format: {
             parse: {
