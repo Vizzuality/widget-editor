@@ -221,7 +221,6 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
   async getChart() {
     await this.generateSchema();
     this.setGenericSettings();
-    console.log(this.schema);
     return this.schema;
   }
 }
