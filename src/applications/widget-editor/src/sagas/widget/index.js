@@ -112,7 +112,7 @@ function* initializeVega(props) {
  * @triggers <void>
  */
 function* syncEditor() {
-  const { widgetEditor } = yield select();
+  let { widgetEditor } = yield select();
 
   if (stateProxy.ShouldUpdateData(widgetEditor)) {
     yield call(initializeData);
@@ -124,6 +124,9 @@ function* syncEditor() {
    * a valid vega configuration.
    * When in advanced mode we save the advanced input into the widgets config.
    */
+
+  // We re-assign the widgetEditor variable because initializeData may modify it
+  ({ widgetEditor } = yield select());
 
   if (stateProxy.ShouldUpdateVega(widgetEditor)) {
     yield call(initializeVega);
