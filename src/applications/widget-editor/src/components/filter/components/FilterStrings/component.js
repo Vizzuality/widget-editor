@@ -24,7 +24,9 @@ const FilterStrings = ({ filter, onChange, ...rest }) => {
         name={`filter-string-values-${filter.id}`}
         value={(filter.value ?? []).map(value => options.find(option => option.value === value))}
         options={options}
-        onChange={selectedOptions => onChange(selectedOptions.map(({ value }) => value))}
+        onChange={selectedOptions => onChange(
+          selectedOptions === null ? [] : selectedOptions.map(({ value }) => value)
+        )}
         {...rest}
       />
     </Wrapper>
