@@ -28,7 +28,7 @@ const SliceCount = ({
 
   const debounceOnChange = debounce(q => {
     onChange(q.value, q.key);
-  }, 1000);
+  }, 300);
 
   return (
     <InputGroup>

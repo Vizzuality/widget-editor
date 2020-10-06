@@ -33,7 +33,7 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
   const isFloatingPoint = filter.type === 'number'
     && (isFloat(filter.config.min) || isFloat(filter.config.max));
 
-  const onChangeDebounced = useCallback(debounce(onChange, 500), [onChange]);
+  const onChangeDebounced = useCallback(debounce(onChange, 300), [onChange]);
 
   const onChangeValue = useCallback(({ target }) => {
     let newValue = target.value;

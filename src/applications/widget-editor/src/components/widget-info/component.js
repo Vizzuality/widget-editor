@@ -86,7 +86,7 @@ class WidgetInfo extends React.Component {
       category: { ...configuration.category },
       value: { ...configuration.value, format: format?.value || "s" },
     });
-  }, 1000);
+  }, 300);
 
   setTitle(title) {
     this.setState({ title });

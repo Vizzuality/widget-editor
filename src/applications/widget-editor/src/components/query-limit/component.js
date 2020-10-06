@@ -52,7 +52,7 @@ const QueryLimit = ({
     [isDouble, minValue, maxValue]
   );
 
-  const onChangeDebounced = useCallback(debounce(onChange, 1000), [onChange]);
+  const onChangeDebounced = useCallback(debounce(onChange, 300), [onChange]);
 
   const onChangeValue = useCallback((value) => {
     setLocalValue(value);

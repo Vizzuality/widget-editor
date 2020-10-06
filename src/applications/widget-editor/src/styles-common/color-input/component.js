@@ -8,7 +8,7 @@ import StyledColorInput from "./style";
 const ColorInput = ({ pickerLabel, inputLabel, value, onChange }) => {
   const [color, setColor] = useState(value);
 
-  const onChangeDebounced = useCallback(debounce(onChange, 500), [onChange]);
+  const onChangeDebounced = useCallback(debounce(onChange, 300), [onChange]);
 
   const onChangeColor = useCallback(({ target }) => {
     const value = target.value.trim();
