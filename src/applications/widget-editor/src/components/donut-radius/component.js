@@ -1,6 +1,5 @@
 // TODO: Rename this filter!
 import React, { useState } from "react";
-import debounce from 'lodash/debounce';
 
 import useDebounce from "hooks/use-debounce";
 
@@ -26,9 +25,9 @@ const DonutRadius = ({
     debounceOnChange(data);
   }
 
-  const debounceOnChange = debounce(q => {
+  const debounceOnChange = useDebounce(q => {
     onChange(q.value, q.key);
-  }, 300);
+  });
 
 
   return (

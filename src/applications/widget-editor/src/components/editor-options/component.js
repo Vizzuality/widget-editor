@@ -1,6 +1,7 @@
-import React, { Suspense, useCallback } from "react";
+import React, { Suspense } from "react";
 import styled, { css } from "styled-components";
-import debounce from 'lodash/debounce';
+
+import useDebounce from "hooks/use-debounce";
 
 import { Accordion, AccordionSection } from "components/accordion";
 import { Tabs, Tab } from "components/tabs";
@@ -90,13 +91,13 @@ const EditorOptions = ({
   isMap,
 }) => {
 
-  const handleSliceCount = debounce((value) => {
+  const handleSliceCount = useDebounce((value) => {
     patchConfiguration({ sliceCount: parseInt(value) });
-  }, 300);
+  });
 
-  const handleDonutRadius = debounce((value) => {
+  const handleDonutRadius = useDebounce((value) => {
     patchConfiguration({ donutRadius: parseInt(value) });
-  }, 300);
+  });
 
   const handleOrderBy = (value) => {
     patchConfiguration({ orderBy: value });
@@ -106,9 +107,9 @@ const EditorOptions = ({
     patchConfiguration({ groupBy: value });
   }
 
-  const handleLimit = debounce((value) => {
+  const handleLimit = useDebounce((value) => {
     patchConfiguration({ limit: value });
-  }, 300);
+  });
 
   if (!initialized || restoring) {
     return (

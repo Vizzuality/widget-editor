@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import debounce from 'lodash/debounce';
+
+import useDebounce from "hooks/use-debounce";
 
 import FlexContainer from "styles-common/flex";
 import FlexController from "styles-common/flex-controller";
@@ -26,9 +27,9 @@ const SliceCount = ({
     }
   }
 
-  const debounceOnChange = debounce(q => {
+  const debounceOnChange = useDebounce(q => {
     onChange(q.value, q.key);
-  }, 300);
+  });
 
   return (
     <InputGroup>
