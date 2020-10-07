@@ -233,7 +233,7 @@ class Map extends React.Component {
     this.addLayers(layers);
 
     this.setLabels(this.labels);
-    this.setBoundaries(this.props.mapConfiguration?.basemap?.boundries || false);
+    this.setBoundaries(this.props.mapConfiguration?.basemap?.boundaries || false);
 
     // In version2 of the editor we are storing the bbox
     // This is so in the future we can migrate to for example mapbox
