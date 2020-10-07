@@ -14,7 +14,6 @@ import { SerializedScheme } from "./types";
 
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
-  dataEndpoint = "https://api.resourcewatch.org/v1/query";
 
   config = null;
   datasetService = null;
@@ -233,11 +232,7 @@ export default class RwAdapter implements Adapter.Service {
   }
 
   getDataUrl() {
-    return tags.oneLineTrim`
-      https://api.resourcewatch.org/v1/query/
-      ${this.datasetId}?
-      sql=${this.SQL_STRING}
-    `
+    return `${this.endpoint}/query/${this.datasetId}?sql=${this.SQL_STRING}`
   }
 
   async requestData(store: any) {

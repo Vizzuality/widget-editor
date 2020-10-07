@@ -1,8 +1,6 @@
 import * as Dataset from "./dataset";
 import * as Widget from "./widget";
 import * as Config from "./config";
-import * as Generic from "./generic";
-import * as Filters from "./filters";
 
 type Id = string | number;
 type WidgetId = Id;
@@ -13,7 +11,6 @@ export type datasetId = Id;
 export interface Service {
   config: Config.Payload;
   endpoint: Endpoint;
-  dataEndpoint: Endpoint;
   datasetId: datasetId;
   requestQue: any;
   isAborting: boolean;
