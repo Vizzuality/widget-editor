@@ -17,6 +17,7 @@ const Map = React.lazy(() => import("@widget-editor/map"));
 
 // -- If a widget config is suplied, we are consuming the renderer outside of the editor
 const Renderer = ({
+  adapter,
   widget,
   editor,
   widgetConfig = null,
@@ -34,6 +35,10 @@ const Renderer = ({
     initialized && !restoring && widget && Object.keys(widget).length === 0;
 
   const isMap = configuration.visualizationType === "map";
+
+  if (typeof adapter !== "function") {
+    throw new Error("Renderer: Missing prop adapter and adapter needs to be of type Adapter");
+  }
 
   if (restoring) {
     return (
@@ -55,6 +60,7 @@ const Renderer = ({
         }
       >
         <Standalone
+          adapter={adapter}
           thumbnail={thumbnail}
           widgetConfig={widgetConfig}
           widgetName={widgetName}

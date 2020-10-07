@@ -1,5 +1,6 @@
 import React from "react";
 
+import RwAdapter from "@widget-editor/rw-adapter";
 import Renderer from "@widget-editor/renderer";
 
 // eslint-disable-next-line
@@ -14,6 +15,7 @@ const PlaygroundRenderer = ({ activeWidget }) => {
       <div className="c-widget-block">
         <div className="renderer-wrapper">
           <Renderer
+            adapter={RwAdapter}
             thumbnail={false}
             // widgetConfig={widgetTest.data.attributes.widgetConfig}
             // widgetName={widgetTest.data.attributes.name}

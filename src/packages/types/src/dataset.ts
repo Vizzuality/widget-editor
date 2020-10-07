@@ -1,7 +1,7 @@
 import * as Dataset from './dataset';
 import * as Widget from './widget';
 
-type Id = string | null;
+export type Id = string | null;
 type Url = string;
 type Query = string;
 type ColumnName = string;

@@ -16,7 +16,7 @@ class Editor extends React.Component {
     const {
       datasetId,
       widgetId,
-      adapter,
+      adapterInstance,
       setEditor,
       dispatch,
       userPassedTheme,
@@ -28,7 +28,7 @@ class Editor extends React.Component {
     this.dataService = new DataService(
       datasetId,
       widgetId,
-      adapter,
+      adapterInstance,
       setEditor,
       dispatch
     );
@@ -40,12 +40,12 @@ class Editor extends React.Component {
 
     props.dispatch({
       type: constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
-      payload: adapter,
+      payload: adapterInstance,
     });
 
     // XXX: Initialize editor hooks apis
     setReduxCache(dispatch)
-    localGetEditorState({ adapter, dataService: this.dataService });
+    localGetEditorState({ adapter: adapterInstance, dataService: this.dataService });
   }
 
   UNSAFE_componentWillMount() {
@@ -152,9 +152,9 @@ class Editor extends React.Component {
   }, 1000);
 
   onSave() {
-    const { onSave, dispatch, editorState, adapter } = this.props;
+    const { onSave, dispatch, editorState, adapterInstance } = this.props;
     if (typeof onSave === "function") {
-      const outputPayload = getOutputPayload(editorState, adapter);
+      const outputPayload = getOutputPayload(editorState, adapterInstance);
       onSave(outputPayload);
     }
     dispatch({ type: constants.sagaEvents.EDITOR_SAVE });
@@ -163,13 +163,14 @@ class Editor extends React.Component {
   render() {
     const {
       adapter,
+      adapterInstance,
       theme: { compact },
     } = this.props;
     return (
       <StyledContainer {...compact}>
         <StyleEditorContainer>
-          <Renderer standalone={false} />
-          <EditorOptions adapter={adapter} dataService={this.dataService} />
+          <Renderer adapter={adapter} standalone={false} />
+          <EditorOptions adapter={adapterInstance} dataService={this.dataService} />
         </StyleEditorContainer>
         <Footer onSave={this.onSave} />
       </StyledContainer>

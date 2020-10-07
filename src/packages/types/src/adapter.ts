@@ -1,5 +1,6 @@
 import * as Dataset from "./dataset";
 import * as Widget from "./widget";
+import * as Layer from "./layer";
 import * as Config from "./config";
 
 type Id = string | number;
@@ -29,6 +30,7 @@ export interface Service {
   getFields(): Promise<[object]>;
   getDataUrl(): string;
   getLayers(): Promise<[object]>;
+  getLayer(layerId: Layer.Id): Promise<Layer.Payload>;
   setDatasetId(datasetId: datasetId): void;
   getSerializedScheme(config: Widget.Scheme): any;
   getDeserializedScheme(config: any): Widget.Scheme;

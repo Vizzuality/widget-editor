@@ -231,6 +231,13 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
+  async getLayer(layerId) {
+    const url = `${this.endpoint}/layer/${layerId}`;
+    const { data: { data } } = await this.prepareRequest(url);
+
+    return data;
+  }
+
   getDataUrl() {
     return `${this.endpoint}/query/${this.datasetId}?sql=${this.SQL_STRING}`
   }
