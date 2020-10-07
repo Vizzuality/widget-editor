@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useCallback, useMemo } from "react";
 import styled from "styled-components";
-import debounce from 'lodash/debounce';
+
+import useDebounce from "hooks/use-debounce";
 
 import FlexContainer from "styles-common/flex";
 import FlexController from "styles-common/flex-controller";
@@ -52,7 +53,7 @@ const QueryLimit = ({
     [isDouble, minValue, maxValue]
   );
 
-  const onChangeDebounced = useCallback(debounce(onChange, 1000), [onChange]);
+  const onChangeDebounced = useDebounce(onChange);
 
   const onChangeValue = useCallback((value) => {
     setLocalValue(value);

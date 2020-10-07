@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import debounce from "lodash/debounce";
+
+import useDebounce from "hooks/use-debounce";
 
 import Input from "styles-common/input";
 import StyledColorInput from "./style";
@@ -8,7 +9,7 @@ import StyledColorInput from "./style";
 const ColorInput = ({ pickerLabel, inputLabel, value, onChange }) => {
   const [color, setColor] = useState(value);
 
-  const onChangeDebounced = useCallback(debounce(onChange, 500), [onChange]);
+  const onChangeDebounced = useDebounce(onChange);
 
   const onChangeColor = useCallback(({ target }) => {
     const value = target.value.trim();

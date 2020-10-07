@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from "react";
-import debounce from 'lodash/debounce';
 import styled from "styled-components";
 import PropTypes from 'prop-types';
+
+import useDebounce from "hooks/use-debounce";
 
 import Input from "styles-common/input";
 
@@ -33,7 +34,7 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
   const isFloatingPoint = filter.type === 'number'
     && (isFloat(filter.config.min) || isFloat(filter.config.max));
 
-  const onChangeDebounced = useCallback(debounce(onChange, 500), [onChange]);
+  const onChangeDebounced = useDebounce(onChange);
 
   const onChangeValue = useCallback(({ target }) => {
     let newValue = target.value;
