@@ -30,10 +30,10 @@ const ChartList = ({ list, setData, title }) => {
  * @param {options} - the array of available charts
  */
 const ChartMenu = ({ options, getValue, setValue, innerRef, innerProps }) => {
-  const data = getValue()[0];
+  const data = getValue()[0]; // Data may be null if all the visualization types are disabled
   const menu = MENU_DATA.map(menu => ({
     ...menu,
-    active: menu.type === data.chartType,
+    active: data ? menu.type === data.chartType : null,
     disabled: !options.find(o => o.chartType === menu.type),
   }));
 
