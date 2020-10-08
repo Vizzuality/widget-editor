@@ -32,6 +32,7 @@ export interface Service {
   getFields(): Promise<[object]>;
   getLayers(): Promise<[object]>;
   getLayer(layerId: Layer.Id): Promise<Layer.Payload>;
+  getLayerTileUrl(layerId: Layer.Id, provider: Layer.Provider): string;
   setDatasetId(datasetId: datasetId): void;
   getSerializedScheme(config: Widget.Scheme): any;
   getDeserializedScheme(config: any): Widget.Scheme;

@@ -243,6 +243,16 @@ export default class RwAdapter implements Adapter.Service {
   }
 
   /**
+   * Return the URL of the tiles of the layer
+   * @param layerId ID of the layer
+   * @param provider Provider of the layer
+   */
+  getLayerTileUrl(layerId, provider) {
+    // NOTE: this is only implemented for the providers nexgddp and gee
+    return `${this.endpoint}/layer/${layerId}/tile/${provider}/{z}/{x}/{y}`;
+  }
+
+  /**
    * Return the result of the SQL query run against the dataset
    * @param sql SQL query
    */

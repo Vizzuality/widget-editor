@@ -9,6 +9,7 @@ export default class LayerManager {
     this.mapLayers = {};
     this.layersLoading = {};
     this.rejectLayersLoading = false;
+    this.adapter = options.adapter;
     this.onLayerAddedSuccess = options.onLayerAddedSuccess;
     this.onLayerAddedError = options.onLayerAddedError;
   }
@@ -86,13 +87,13 @@ export default class LayerManager {
   }
 
   addNexGDDPLayer(layerData) {
-    const tileUrl = `https://api.resourcewatch.org/v1/layer/${layerData.id}/tile/nexgddp/{z}/{x}/{y}`;
+    const tileUrl = this.adapter.getLayerTileUrl(layerData.id, 'nexgddp');
     const tileLayer = L.tileLayer(tileUrl).addTo(this.map);
     this.mapLayers[layerData.id] = tileLayer;
   }
 
   addGeeLayer(layerData) {
-    const tileUrl = `https://api.resourcewatch.org/v1/layer/${layerData.id}/tile/gee/{z}/{x}/{y}`;
+    const tileUrl = this.adapter.getLayerTileUrl(layerData.id, 'gee');
     const tileLayer = L.tileLayer(tileUrl).addTo(this.map);
     this.mapLayers[layerData.id] = tileLayer;
   }

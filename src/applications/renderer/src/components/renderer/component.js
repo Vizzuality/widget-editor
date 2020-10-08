@@ -101,6 +101,7 @@ const Renderer = ({
         <Suspense fallback={<div>Loading...</div>}>
           {!!editor.layers && (
             <Map
+              adapter={new adapter()}
               mapConfiguration={configuration.map}
               caption={configuration.title}
               layerId={configuration.layer}

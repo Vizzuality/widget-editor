@@ -62,6 +62,7 @@ const Standalone = ({
       {isMap && (
         <Suspense>
           <Map
+            adapter={new adapter()}
             layerId={widgetConfig?.paramsConfig?.layer}
             thumbnail={thumbnail}
             widget={{
