@@ -109,15 +109,17 @@ export default class ChartCommon {
 
     const fieldService = new FieldsService(dataset, fields);
 
-    const promises = await endUserFilters.map(async (fieldName) => {
+    const promises = await endUserFilters.map(async (fieldName, index) => {
       const field = fields.find(f => f.columnName === fieldName);
       const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
         ?? 'string';
 
       const signal = {
-        name: field.metadata && field.metadata.alias ? field.metadata.alias : field.columnName,
+        name: `endUserFilter${index}`,
         value: null,
-        bind: {},
+        bind: {
+          name: field.metadata && field.metadata.alias ? field.metadata.alias : field.columnName,
+        } as { [key: string]: any },
       };
 
       switch (type) {
@@ -125,6 +127,7 @@ export default class ChartCommon {
           const options = await fieldService.getColumnValues(field);
           signal.value = options.length ? options[0] : null;
           signal.bind = {
+            ...signal.bind,
             input: 'select',
             options,
           };
@@ -135,6 +138,7 @@ export default class ChartCommon {
           const { min, max } = await fieldService.getColumnMinAndMax(field);
           signal.value = min;
           signal.bind = {
+            ...signal.bind,
             input: 'range',
             min,
             max,
@@ -147,6 +151,7 @@ export default class ChartCommon {
           const { min, max } = await fieldService.getColumnMinAndMax(field);
           signal.value = new Date(min).toISOString().split('T')[0];
           signal.bind = {
+            ...signal.bind,
             input: 'date',
             min: new Date(min).toISOString().split('T')[0],
             max: new Date(max).toISOString().split('T')[0],
@@ -174,9 +179,7 @@ export default class ChartCommon {
         type: 'filter',
         expr: endUserFilters.reduce((res, fieldName, index) => {
           const field = fields.find(f => f.columnName === fieldName);
-          const signal = field.metadata && field.metadata.alias
-            ? field.metadata.alias
-            : field.columnName;
+          const signal = `endUserFilter${index}`;
           const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
             ?? 'string';
 

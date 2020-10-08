@@ -27,8 +27,8 @@ const EndUserFilters = ({
   );
 
   const value = useMemo(
-    () => endUserFilters.map(str => ({ label: str, value: str})),
-    [endUserFilters],
+    () => endUserFilters.map(endUserFilter => fields.find(f => f.value === endUserFilter)),
+    [fields, endUserFilters],
   );
 
   const onChangeColumns = useCallback((options) => {
