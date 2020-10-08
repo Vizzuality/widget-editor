@@ -1,9 +1,6 @@
 import isObjectLike from "lodash/isObjectLike";
 
-import { Dataset, Widget, Adapter, Generic, Filters } from "@widget-editor/types";
-
-import FiltersService from "./filters";
-import VegaService from "./vega";
+import { Dataset, Widget, Adapter, Generic } from "@widget-editor/types";
 
 import { setAdapter } from "../helpers/adapter";
 
@@ -105,6 +102,7 @@ export default class DataService {
       }
 
       const deserializedFilters = await getDeserializedFilters(
+        this.adapter,
         filters,
         this.allowedFields,
         this.dataset
@@ -172,10 +170,10 @@ export default class DataService {
   async requestWithFilters(store: any) {
     const request = await this.adapter.requestData(store);
 
-    if (!request.data || "errors" in request) {
+    if ("errors" in request) {
       this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
     } else {
-      this.setEditor({ widgetData: request.data });
+      this.setEditor({ widgetData: request });
     }
   }
 

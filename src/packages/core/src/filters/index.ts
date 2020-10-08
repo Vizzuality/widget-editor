@@ -2,6 +2,7 @@ import * as Generic from '@widget-editor/types/build/generic';
 import * as Filters from '@widget-editor/types/build/filters';
 import * as Dataset from '@widget-editor/types/build/dataset';
 import FiltersService from '../services/filters';
+import { Adapter } from '@widget-editor/types';
 
 /**
  * Serialize the editor's filters for the widgetConfig
@@ -33,11 +34,13 @@ export const getSerializedFilters = (filters: Filters.Filter[]): Filters.Seriali
 
 /**
  * Deserialize the filters for for the widget-editor's application
+ * @param adapter Adapter
  * @param filters Serialized filters
  * @param fields Dataset's fields
  * @param dataset Dataset object
  */
 export const getDeserializedFilters = async (
+  adapter: Adapter.Service,
   filters: Filters.SerializedFilter[],
   fields: Generic.Array,
   dataset: Dataset.Payload
@@ -46,5 +49,5 @@ export const getDeserializedFilters = async (
     return [];
   }
 
-  return await FiltersService.getDeserializedFilters(filters, fields, dataset);
+  return await FiltersService.getDeserializedFilters(adapter, filters, fields, dataset);
 };

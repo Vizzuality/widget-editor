@@ -20,6 +20,8 @@ export interface Service {
   // This will be grabbed and put into onSave on any request
   prepareRequest(url: string): Promise<any>;
   payload(): object;
+  getDatasetData(sql: string): Promise<Dataset.Data['data']>;
+  getDataUrl(): string;
   requestData(store: any): Promise<any>;
   getDataset(): Promise<Dataset.Payload>;
   extendProperties(prop: any): void;
@@ -28,7 +30,6 @@ export interface Service {
     widget: Widget.Id
   ): Promise<Widget.Payload>;
   getFields(): Promise<[object]>;
-  getDataUrl(): string;
   getLayers(): Promise<[object]>;
   getLayer(layerId: Layer.Id): Promise<Layer.Payload>;
   setDatasetId(datasetId: datasetId): void;

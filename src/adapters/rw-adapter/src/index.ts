@@ -15,13 +15,17 @@ import { SerializedScheme } from "./types";
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
 
+  /**
+   * URL of the widget's raw data
+   */
+  private dataUrl: string = null;
+
   config = null;
   datasetService = null;
   widgetService = null;
   datasetId = null;
   tableName = null;
   AUTH_TOKEN = null;
-  SQL_STRING = null;
   // Some generic setup for
   applications = ["rw"];
   env = "production";
@@ -238,16 +242,33 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
+  /**
+   * Return the result of the SQL query run against the dataset
+   * @param sql SQL query
+   */
+  async getDatasetData(sql) {
+    const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;
+    const { data: { data } } = await this.prepareRequest(url);
+
+    return data;
+  }
+
+  /**
+   * Return the URL of the widget's raw data
+   */
   getDataUrl() {
-    return `${this.endpoint}/query/${this.datasetId}?sql=${this.SQL_STRING}`
+    return this.dataUrl;
   }
 
   async requestData(store: any) {
-    const adapterInstance = this;
-    const filtersService = new FiltersService(store, adapterInstance);
-    this.SQL_STRING = filtersService.getQuery();
-    const response = await this.prepareRequest(this.getDataUrl())
-    return response.data;
+    const filtersService = new FiltersService(store, this);
+
+    // We save the URL of the data so it is exposed by the public method getDataUrl
+    // This is the reason why we don't use getDatasetData to fetch the data
+    this.dataUrl = `${this.endpoint}/query/${this.datasetId}?sql=${filtersService.getQuery()}`;
+    const { data: { data } } = await this.prepareRequest(this.dataUrl);
+
+    return data
   }
 
   /**

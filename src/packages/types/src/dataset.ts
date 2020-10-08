@@ -18,6 +18,10 @@ export interface Payload {
   id: Id;
 }
 
+export interface Data {
+  data: { [key: string]: any }[];
+}
+
 export interface Service {
   fetchData(url: Url): Promise<[Dataset.Payload]>;
   fetchFilteredData?(query: Query): [object];
