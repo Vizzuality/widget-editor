@@ -301,18 +301,6 @@ export default class FiltersService implements Filters.Service {
     this.sql = `${this.sql} LIMIT ${limit}`;
   }
 
-  async requestWidgetData() {
-    if (!this.dataset.id) {
-      throw new Error("Error, datasetId not present in Filters service.");
-    }
-
-    const response = await this.adapter.prepareRequest(
-      `https://api.resourcewatch.org/v1/query/${this.dataset.id}?sql=${this.sql}`
-    );
-
-    return response.data;
-  }
-
   getQuery() {
     return encodeURIComponent(this.sql.replace(/ +(?= )/g, ""));
   }
