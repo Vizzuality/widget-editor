@@ -38,8 +38,7 @@ export default class FieldsService {
 
     const query = `SELECT MIN(${columnName}) AS min, MAX(${columnName}) AS max FROM ${tableName}`;
 
-    return <Promise<{ min: number, max: number }>>this.query(query)
-      .then((data) => (data?.length ? data[0] : {}));
+    return this.query(query).then((data) => (data?.length ? data[0] : {})) as Promise<{ min: number, max: number }>;
   }
 
   /**
