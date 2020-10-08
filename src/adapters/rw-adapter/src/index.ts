@@ -14,7 +14,11 @@ import { SerializedScheme } from "./types";
 
 export default class RwAdapter implements Adapter.Service {
   endpoint = "https://api.resourcewatch.org/v1";
-  dataEndpoint = "https://api.resourcewatch.org/v1/query";
+
+  /**
+   * URL of the widget's raw data
+   */
+  private dataUrl: string = null;
 
   config = null;
   datasetService = null;
@@ -22,7 +26,6 @@ export default class RwAdapter implements Adapter.Service {
   datasetId = null;
   tableName = null;
   AUTH_TOKEN = null;
-  SQL_STRING = null;
   // Some generic setup for
   applications = ["rw"];
   env = "production";
@@ -232,20 +235,50 @@ export default class RwAdapter implements Adapter.Service {
     return data;
   }
 
+  async getLayer(layerId) {
+    const url = `${this.endpoint}/layer/${layerId}`;
+    const { data: { data } } = await this.prepareRequest(url);
+
+    return data;
+  }
+
+  /**
+   * Return the URL of the tiles of the layer
+   * @param layerId ID of the layer
+   * @param provider Provider of the layer
+   */
+  getLayerTileUrl(layerId, provider) {
+    // NOTE: this is only implemented for the providers nexgddp and gee
+    return `${this.endpoint}/layer/${layerId}/tile/${provider}/{z}/{x}/{y}`;
+  }
+
+  /**
+   * Return the result of the SQL query run against the dataset
+   * @param sql SQL query
+   */
+  async getDatasetData(sql) {
+    const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;
+    const { data: { data } } = await this.prepareRequest(url);
+
+    return data;
+  }
+
+  /**
+   * Return the URL of the widget's raw data
+   */
   getDataUrl() {
-    return tags.oneLineTrim`
-      https://api.resourcewatch.org/v1/query/
-      ${this.datasetId}?
-      sql=${this.SQL_STRING}
-    `
+    return this.dataUrl;
   }
 
   async requestData(store: any) {
-    const adapterInstance = this;
-    const filtersService = new FiltersService(store, adapterInstance);
-    this.SQL_STRING = filtersService.getQuery();
-    const response = await this.prepareRequest(this.getDataUrl())
-    return response.data;
+    const filtersService = new FiltersService(store, this);
+
+    // We save the URL of the data so it is exposed by the public method getDataUrl
+    // This is the reason why we don't use getDatasetData to fetch the data
+    this.dataUrl = `${this.endpoint}/query/${this.datasetId}?sql=${filtersService.getQuery()}`;
+    const { data: { data } } = await this.prepareRequest(this.dataUrl);
+
+    return data
   }
 
   /**

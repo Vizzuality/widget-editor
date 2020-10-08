@@ -8,7 +8,8 @@ import Legend from './legend';
 const Chart = React.lazy(() => import("../chart"));
 const Map = React.lazy(() => import("@widget-editor/map"));
 
-const Standalone = ({ 
+const Standalone = ({
+  adapter,
   thumbnail,
   widgetConfig,
   changeBbox,
@@ -16,7 +17,8 @@ const Standalone = ({
   widgetName
 }) => {
   const isMap = widgetConfig?.paramsConfig?.visualizationType === "map";
-  const [{ layerData, isLoadingLayers, isErrorLayers }] = useLayerData(
+  const { layerData, isLoadingLayers, isErrorLayers } = useLayerData(
+    adapter,
     widgetConfig?.paramsConfig?.layer,
     isMap
   );
@@ -60,6 +62,7 @@ const Standalone = ({
       {isMap && (
         <Suspense>
           <Map
+            adapter={new adapter()}
             layerId={widgetConfig?.paramsConfig?.layer}
             thumbnail={thumbnail}
             widget={{

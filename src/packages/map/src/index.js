@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import { redux } from "@widget-editor/shared";
 import isEqual from "lodash/isEqual";
@@ -262,6 +263,7 @@ class Map extends React.Component {
     };
 
     this.layerManager = new LayerManager(this.map, {
+      adapter: this.props.adapter,
       onLayerAddedSuccess: stopLoading,
       onLayerAddedError: stopLoading,
     });
@@ -401,6 +403,10 @@ class Map extends React.Component {
     );
   }
 }
+
+Map.propTypes = {
+  adapter: PropTypes.object.isRequired,
+};
 
 export default redux.connectState(
   state => ({

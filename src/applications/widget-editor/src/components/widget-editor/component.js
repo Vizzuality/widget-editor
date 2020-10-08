@@ -34,7 +34,8 @@ class WidgetEditor extends React.Component {
         enableSave={enableSave}
         datasetId={datasetId}
         widgetId={widgetId}
-        adapter={new adapter()}
+        adapter={adapter}
+        adapterInstance={new adapter()}
         schemes={schemes}
         userPassedCompact={compact}
         userPassedTheme={theme}

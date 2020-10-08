@@ -1,31 +1,23 @@
-import { Generic } from "@widget-editor/types";
+import { Generic, Adapter } from "@widget-editor/types";
 import { ALLOWED_FIELD_TYPES } from "../constants";
 
 export default class FieldsService {
-  dataset: any;
-  fields: Generic.Array;
+  private static NUMERIC_TYPE = "number";
+  private static COLUMN_TYPE = "string";
+  private static DATE_TYPE = "date";
 
-  NUMERIC_TYPE = "number";
-  COLUMN_TYPE = "string";
-  DATE_TYPE = "date";
-
-  constructor(dataset: any, fields: Generic.Array) {
-    this.dataset = dataset;
-    this.fields = fields;
-  }
+  constructor(
+    private adapter: Adapter.Service,
+    private dataset: any,
+    private fields: Generic.Array
+  ) { }
 
   /**
    * Return the result of the SQL query performed against the dataset
    * @param sql SQL to execute
    */
-  private query(sql: string) {
-    // FIXME: This url should come from adapter
-    return fetch(`https://api.resourcewatch.org/v1/query/${this.dataset.id}?sql=${sql}`)
-      .then((response) => {
-        if (response.status >= 400) throw new Error(response.statusText);
-        return response.json();
-      })
-      .then((jsonData) => jsonData.data);
+  private async query(sql: string) {
+    return await this.adapter.getDatasetData(sql);
   }
 
   /**
@@ -46,8 +38,7 @@ export default class FieldsService {
 
     const query = `SELECT MIN(${columnName}) AS min, MAX(${columnName}) AS max FROM ${tableName}`;
 
-    return this.query(query)
-      .then((data) => (data?.length ? data[0] : {}));
+    return this.query(query).then((data) => (data?.length ? data[0] : {})) as Promise<{ min: number, max: number }>;
   }
 
   /**
@@ -81,12 +72,12 @@ export default class FieldsService {
 
     const fieldType = ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type ?? 'string';
 
-    if (fieldType === this.NUMERIC_TYPE || fieldType === this.DATE_TYPE) {
+    if (fieldType === FieldsService.NUMERIC_TYPE || fieldType === FieldsService.DATE_TYPE) {
       const res = await this.getColumnMinAndMax(field);
       return res;
     }
 
-    if (fieldType === this.COLUMN_TYPE) {
+    if (fieldType === FieldsService.COLUMN_TYPE) {
       return {
         values: await this.getColumnValues(field)
       };

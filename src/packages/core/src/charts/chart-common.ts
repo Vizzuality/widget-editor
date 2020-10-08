@@ -103,11 +103,12 @@ export default class ChartCommon {
 
   async resolveSignals(): Promise<any[]> {
     const { editor: { dataset } } = this.store;
+    const { adapter } = getLocalCache();
 
     const endUserFilters: string[] = selectEndUserFilters(this.store);
     const fields: any[] = selectFields(this.store);
 
-    const fieldService = new FieldsService(dataset, fields);
+    const fieldService = new FieldsService(adapter, dataset, fields);
 
     const promises = await endUserFilters.map(async (fieldName, index) => {
       const field = fields.find(f => f.columnName === fieldName);

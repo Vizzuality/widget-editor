@@ -1,8 +1,7 @@
 import * as Dataset from "./dataset";
 import * as Widget from "./widget";
+import * as Layer from "./layer";
 import * as Config from "./config";
-import * as Generic from "./generic";
-import * as Filters from "./filters";
 
 type Id = string | number;
 type WidgetId = Id;
@@ -13,7 +12,6 @@ export type datasetId = Id;
 export interface Service {
   config: Config.Payload;
   endpoint: Endpoint;
-  dataEndpoint: Endpoint;
   datasetId: datasetId;
   requestQue: any;
   isAborting: boolean;
@@ -22,6 +20,8 @@ export interface Service {
   // This will be grabbed and put into onSave on any request
   prepareRequest(url: string): Promise<any>;
   payload(): object;
+  getDatasetData(sql: string): Promise<Dataset.Data['data']>;
+  getDataUrl(): string;
   requestData(store: any): Promise<any>;
   getDataset(): Promise<Dataset.Payload>;
   extendProperties(prop: any): void;
@@ -30,8 +30,9 @@ export interface Service {
     widget: Widget.Id
   ): Promise<Widget.Payload>;
   getFields(): Promise<[object]>;
-  getDataUrl(): string;
   getLayers(): Promise<[object]>;
+  getLayer(layerId: Layer.Id): Promise<Layer.Payload>;
+  getLayerTileUrl(layerId: Layer.Id, provider: Layer.Provider): string;
   setDatasetId(datasetId: datasetId): void;
   getSerializedScheme(config: Widget.Scheme): any;
   getDeserializedScheme(config: any): Widget.Scheme;

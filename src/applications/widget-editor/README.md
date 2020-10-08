@@ -70,12 +70,12 @@ import WidgetEditor, { RwAdapter } from "widget-editor";
 
 # Using the renderer
 
-The renderer allows you to render a chart based on a widget configuration. It takes one parameter, which is a widget configuration.
+The renderer allows you to render a chart based on a widget configuration.
 
 ```jsx
-import { Renderer } from "widget-editor";
+import { Renderer, RwAdapter } from "widget-editor";
 
 const App = () => {
-  return <Renderer widgetConfig={...} />;
+  return <Renderer adapter={RwAdapter} widgetConfig={...} />;
 };
 ```

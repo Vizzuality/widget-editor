@@ -301,18 +301,6 @@ export default class FiltersService implements Filters.Service {
     this.sql = `${this.sql} LIMIT ${limit}`;
   }
 
-  async requestWidgetData() {
-    if (!this.dataset.id) {
-      throw new Error("Error, datasetId not present in Filters service.");
-    }
-
-    const response = await this.adapter.prepareRequest(
-      `https://api.resourcewatch.org/v1/query/${this.dataset.id}?sql=${this.sql}`
-    );
-
-    return response.data;
-  }
-
   getQuery() {
     return encodeURIComponent(this.sql.replace(/ +(?= )/g, ""));
   }
@@ -320,11 +308,17 @@ export default class FiltersService implements Filters.Service {
   /**
    * Return the deserialized filters allow with their configuration (values and/or minimum and
    * maximum)
+   * @param adapter Adapter
    * @param filters Serialized filters
    * @param fields Dataset's fields
    * @param dataset Dataset object
    */
-  static async getDeserializedFilters(filters: Filters.SerializedFilter[], fields: Generic.Array, dataset: any): Promise<Filters.Filter[]> {
+  static async getDeserializedFilters(
+    adapter: Adapter.Service,
+    filters: Filters.SerializedFilter[],
+    fields: Generic.Array,
+    dataset: any
+  ): Promise<Filters.Filter[]> {
     const res = [];
 
     await asyncForEach(filters, async (filter, index) => {
@@ -340,7 +334,7 @@ export default class FiltersService implements Filters.Service {
       }
 
       // Resolve metadata for current field
-      const fieldService = new FieldsService(dataset, fields);
+      const fieldService = new FieldsService(adapter, dataset, fields);
 
       let deserializedValue = value;
       if (type === 'date') {
@@ -363,12 +357,17 @@ export default class FiltersService implements Filters.Service {
 
   /**
    * Fetch the configuration of a filter i.e. it's possible values, min value, max value, etc.
+   * @param adapter Adapter
    * @param dataset Dataset object
    * @param fields The fields of the dataset
    * @param fieldName Name of the column attached to the filter
    */
-  static async fetchConfiguration(dataset: any, fields: any[], fieldName: string) {
-    const fieldService = new FieldsService(dataset, fields);
+  static async fetchConfiguration(
+    adapter: Adapter.Service,
+    dataset: any, fields: any[],
+    fieldName: string
+  ) {
+    const fieldService = new FieldsService(adapter, dataset, fields);
     const configuration = await fieldService.getFieldInfo(fieldName);
     return configuration;
   }

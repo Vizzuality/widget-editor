@@ -42,7 +42,7 @@ function* initializeData(props) {
   const widgetData = yield call(getWidgetDataWithAdapter, widgetEditor)
 
   if (widgetData) {
-    yield put(setEditor({ widgetData: widgetData.data }));
+    yield put(setEditor({ widgetData: widgetData }));
   }
 
   yield put(dataInitialized());

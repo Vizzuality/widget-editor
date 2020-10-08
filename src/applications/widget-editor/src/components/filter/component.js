@@ -5,6 +5,8 @@ import uniqueId from "lodash/uniqueId";
 import { FiltersService, constants } from "@widget-editor/core";
 import { Button } from "@widget-editor/shared";
 
+import { getLocalCache } from "exposed-hooks";
+
 import InputGroup from "styles-common/input-group";
 import { DEFAULT_FILTER_VALUE } from "./const";
 import NotNullInput from "./components/NotNullInput";
@@ -58,6 +60,8 @@ const Filter = ({
   }), [filters, setFilters]);
 
   const updateFilter = useCallback(async (filterId, change) => {
+    const { adapter } = getLocalCache();
+
     const patch = await Promise.all(filters.map(async filter => {
       if (filter.id !== filterId) {
         return filter;
@@ -67,7 +71,7 @@ const Filter = ({
         ...filter,
         ...change,
         config: !filter.column
-          ? await FiltersService.fetchConfiguration(dataset, fields, change.column)
+          ? await FiltersService.fetchConfiguration(adapter, dataset, fields, change.column)
           : filter.config,
       };
     }));

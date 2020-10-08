@@ -7,7 +7,6 @@ export interface Service {
   prepareGroupBy(): void;
   prepareOrderBy(): void;
   prepareLimit(): void;
-  requestWidgetData(): Promise<Generic.ObjectPayload>;
 }
 
 type GenericFilter<T> = {
