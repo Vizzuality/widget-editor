@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const StyledContainer = styled.div`
   padding-top: 10px;
   position: absolute;
-  top: 30px;
+  top: 40px;
   right: -115px;
   width: 262px;
   z-index: 11;
