@@ -68,7 +68,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
 
   setScales() {
     const { configuration: { color }, editor: { widgetData: data } } = this.store;
-    const colorField = color?.identifier;
+    const colorField = color?.name;
     const scheme = selectScheme(this.store);
 
     // In v1, if the chart would display points that have all the same y value, we would modify the
@@ -123,7 +123,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
 
   setMarks() {
     const { configuration: { color } } = this.store;
-    const colorField = color?.identifier;
+    const colorField = color?.name;
 
     return [
       {
@@ -215,7 +215,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
   setLegend() {
     const scheme = this.resolveScheme();
     const { editor: { widgetData }, configuration: { color } } = this.store;
-    const colorField = color?.identifier;
+    const colorField = color?.name;
 
     if (!colorField || !widgetData) {
       return null;

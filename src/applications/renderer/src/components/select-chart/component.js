@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import find from "lodash/find";
-import { Button } from "@widget-editor/shared";
-import Select from "react-select";
+
+import { Button, Select } from "@widget-editor/shared";
+
 import ChartMenu from "./components/ChartMenu";
-import { StyledContainer, StyledSelectBox, InputStyles } from "./style";
+import { StyledContainer, StyledSelectBox } from "./style";
 
 /**
  * FIXME
@@ -57,15 +58,16 @@ const SelectChart = ({
       {advanced && (
         <StyledSelectBox isCompact={isCompact || forceCompact}>
           <Select
-            isDisabled={true}
+            id="renderer-visualization-type"
+            aria-label="Select a visualization type"
+            options={[{ value: "custom", label: "Custom chart" }]}
+            value={{ value: "custom", label: "Custom chart" }}
             onChange={handleChange}
+            menuIsOpen={isOpenMenu}
+            components={{ Menu: ChartMenu }}
+            disabled={true}
             onMenuOpen={() => setIsOpenMenu(true)}
             onMenuClose={() => setIsOpenMenu(false)}
-            value={{ value: "custom", label: "Custom chart" }}
-            options={[{ value: "custom", label: "Custom chart" }]}
-            styles={InputStyles}
-            components={{ Menu: ChartMenu }}
-            menuIsOpen={isOpenMenu}
           />
         </StyledSelectBox>
       )}
@@ -73,14 +75,15 @@ const SelectChart = ({
       {!advanced && (
         <StyledSelectBox isCompact={isCompact || forceCompact}>
           <Select
+            id="renderer-visualization-type"
+            aria-label="Select a visualization type"
+            options={options}
+            value={selected}
             onChange={handleChange}
+            menuIsOpen={isOpenMenu}
+            components={{ Menu: ChartMenu }}
             onMenuOpen={() => setIsOpenMenu(true)}
             onMenuClose={() => setIsOpenMenu(false)}
-            value={selected}
-            options={options}
-            styles={InputStyles}
-            components={{ Menu: ChartMenu }}
-            menuIsOpen={isOpenMenu}
           />
         </StyledSelectBox>
       )}

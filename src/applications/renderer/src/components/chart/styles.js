@@ -9,30 +9,23 @@ export const ChartNeedsOptions = styled.h4`
 `;
 
 export const StyledContainer = styled.div`
-  ${(props) =>
-    !props.standalone &&
-    css`
-      position: relative;
-      flex-grow: 1;
-      flex: 1;
-      padding: 20px 20px 55px 50px;
-      width: 100%;
-      box-sizing: border-box;
-    `}
+  ${(props) => !props.standalone && css`
+    position: relative;
+    flex: 1;
+    flex-grow: 1;
+    width: 100%;
+    padding: 15px 20px 65px ${props.hasYAxis ? '65px' : '20px'};
+    box-sizing: border-box;
+  `}
 
-  ${(props) =>
-    (props.standalone || props.thumbnail) &&
-    css`
-      width: 100%;
-      height: auto;
-    `}
+  ${(props) => (props.standalone || props.thumbnail) && css`
+    width: 100%;
+    height: auto;
+  `}
 
-
-  ${(props) =>
-    props.compact &&
-    css`
-      padding-bottom: 50px;
-    `}
+  ${(props) => props.compact && css`
+    padding-bottom: 50px;
+  `}
 
   .c-chart {
     display: flex;
@@ -71,16 +64,12 @@ export const StyledContainer = styled.div`
       }
     }
 
-    ${(props) =>
-      !props.standalone &&
-      css`
-        max-height: 400px;
-      `}
+    ${(props) => !props.standalone && css`
+      max-height: 400px;
+    `}
 
-    ${(props) =>
-      props.compact &&
-      css`
-        height: 400px;
-      `}
+    ${(props) => props.compact && css`
+      height: 400px;
+    `}
   }
 `;

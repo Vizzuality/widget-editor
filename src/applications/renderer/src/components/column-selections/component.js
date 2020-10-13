@@ -1,7 +1,11 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { Select } from "@widget-editor/shared";
+import React, { Fragment, useMemo } from "react";
+import PropTypes from "prop-types";
 
-import { resolveLabel } from "./utils";
+import { Select } from "@widget-editor/shared";
+import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
+
+import { formatOptionLabel } from "./utils";
+import { StyledBottomSelect, StyledLeftSelect, SelectStyles } from "./style";
 
 const ColumnSelections = ({
   compact,
@@ -9,91 +13,58 @@ const ColumnSelections = ({
   configuration,
   patchConfiguration,
 }) => {
-  const { chartType, xAxisTitle, yAxisTitle } = configuration;
+  const { chartType, xAxisTitle, yAxisTitle, aggregateFunction } = configuration;
 
-  const categoryName = configuration?.category?.name || null;
-  const valueName = configuration?.value?.name || null;
-
-  const selectedValue = valueName
-    ? columns.find((col) => col.identifier === valueName)
-    : null;
-  const selectedCategory = categoryName
-    ? columns.find((col) => col.identifier === categoryName)
-    : null;
-
-  const [xTitle, setXTitle] = useState(xAxisTitle);
-  const [yTitle, setYTitle] = useState(yAxisTitle);
-
-  const [chartOptions, setChartOptions] = useState({
-    chartValue: selectedValue,
-    chartCategory: selectedCategory,
-  });
-
-  useEffect(() => {
-    if (xAxisTitle !== xTitle) {
-      setXTitle(xAxisTitle);
-    }
-    if (yAxisTitle !== yTitle) {
-      setYTitle(yAxisTitle);
-    }
-  }, [xAxisTitle, yAxisTitle, xTitle, yTitle]);
-
-  useEffect(() => {
-    const valueIdentifier = configuration?.value?.name;
-    const categoryIdentifier = configuration?.category?.name;
-    const selectedValue = valueIdentifier
-      ? [...columns].find((col) => col.name === valueIdentifier)
-      : null;
-    const selectedCategory = categoryIdentifier
-      ? [...columns].find((col) => col.name === categoryIdentifier)
-      : null;
-
-    setChartOptions({
-      chartValue: selectedValue,
-      chartCategory: selectedCategory,
-    });
+  const selectedCategory = useMemo(() => {
+    const columnName = configuration?.category?.name;
+    return columns.find(column => column.value === columnName);
   }, [configuration, columns]);
 
-  const handleChangeCategory = (selectedOption) => {
-    // TODO: Wee need to set type here
-    patchConfiguration({
-      category: {
-        ...configuration.category,
-        ...selectedOption,
-      },
-    });
-  };
-  const handleChangeValue = (selectedOption) => {
-    // TODO: Wee need to set type here
-    patchConfiguration({
-      value: {
-        ...configuration.value,
-        ...selectedOption,
-      },
-    });
-  };
+  const selectedValue = useMemo(() => {
+    const columnName = configuration?.value?.name;
+    return columns.find(column => column.value === columnName);
+  }, [configuration, columns]);
 
-  const reverse =
-    ["bar", "line", "scatter", "stacked-bar"].indexOf(chartType) > -1;
+  const onChangeCategory = option => patchConfiguration({
+    category: {
+      ...configuration.category,
+      name: option.value,
+      type: option.type,
+      alias: option.label !== option.value ? option.label : undefined,
+    },
+  });
+
+  const onChangeValue = option => patchConfiguration({
+    value: {
+      ...configuration.value,
+      name: option.value,
+      type: option.type,
+      alias: option.label !== option.value ? option.label : undefined,
+    },
+  });
+
+  const reverse = ["bar", "line", "scatter", "stacked-bar"].indexOf(chartType) > -1;
   const isPieOrDonut = chartType === "pie" || chartType === "donut";
+  const aggregation = aggregateFunction
+    ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
+    : null;
 
   return (
     <Fragment>
       {isPieOrDonut && (
-        <Select
-          align="horizontal"
-          menuPlacement="top"
-          placeholder="Value"
-          compact={compact}
-          value={chartOptions.chartValue}
-          onChange={handleChangeValue}
-          getOptionLabel={(option) => resolveLabel(yTitle, option)}
-          getOptionValue={(option) => option.identifier}
-          options={columns}
-          configuration={configuration}
-          isCustom
-          isPopup
-        />
+        <StyledBottomSelect hasYAxis={false}>
+          <Select
+            id="renderer-value-column-1"
+            aria-label="Select value"
+            value={selectedValue}
+            options={columns}
+            onChange={onChangeValue}
+            formatOptionLabel={(...props) => formatOptionLabel(yAxisTitle, null, ...props)}
+            placeholder="Value"
+            position="bottom"
+            styles={SelectStyles}
+          />
+        </StyledBottomSelect>
       )}
 
       {/* -- Vertical select column */}
@@ -101,35 +72,37 @@ const ColumnSelections = ({
       {!isPieOrDonut && (
         <Fragment>
           {!reverse && (
-            <Select
-              align="vertical"
-              menuPlacement="top"
-              placeholder="Category"
-              value={chartOptions.chartCategory}
-              onChange={handleChangeCategory}
-              getOptionLabel={(option) => resolveLabel(xTitle, option)}
-              getOptionValue={(option) => option.identifier}
-              options={columns}
-              configuration={configuration}
-              isCustom
-              isPopup
-            />
+            <StyledLeftSelect>
+              <Select
+                id="renderer-category-column"
+                aria-label="Select category"
+                value={selectedCategory}
+                options={columns}
+                onChange={onChangeCategory}
+                formatOptionLabel={(...props) => formatOptionLabel(xAxisTitle, null, ...props)}
+                placeholder="Category"
+                position="left"
+                styles={SelectStyles}
+              />
+            </StyledLeftSelect>
           )}
 
           {reverse && (
-            <Select
-              align="vertical"
-              menuPlacement="top"
-              placeholder="Value"
-              value={chartOptions.chartValue}
-              onChange={handleChangeValue}
-              getOptionLabel={(option) => resolveLabel(yTitle, option)}
-              getOptionValue={(option) => option.identifier}
-              options={columns}
-              configuration={configuration}
-              isCustom
-              isPopup
-            />
+            <StyledLeftSelect>
+              <Select
+                id="renderer-value-column"
+                aria-label="Select value"
+                value={selectedValue}
+                options={columns}
+                onChange={onChangeValue}
+                formatOptionLabel={
+                  (...props) => formatOptionLabel(yAxisTitle, aggregation, ...props)
+                }
+                placeholder="Value"
+                position="left"
+                styles={SelectStyles}
+              />
+            </StyledLeftSelect>
           )}
 
           {/* -- END Vertical select column */}
@@ -137,37 +110,37 @@ const ColumnSelections = ({
           {/* -- Horizontal select column */}
 
           {!reverse && (
-            <Select
-              align="horizontal"
-              compact={compact}
-              menuPlacement="top"
-              placeholder="Value"
-              value={chartOptions.chartValue}
-              onChange={handleChangeValue}
-              getOptionLabel={(option) => resolveLabel(yTitle, option)}
-              getOptionValue={(option) => option.identifier}
-              options={columns}
-              configuration={configuration}
-              isCustom
-              isPopup
-            />
+            <StyledBottomSelect hasYAxis>
+              <Select
+                id="renderer-value-column"
+                aria-label="Select value"
+                value={selectedValue}
+                options={columns}
+                onChange={onChangeValue}
+                formatOptionLabel={
+                  (...props) => formatOptionLabel(yAxisTitle, aggregation, ...props)
+                }
+                placeholder="Value"
+                position="bottom"
+                styles={SelectStyles}
+              />
+            </StyledBottomSelect>
           )}
 
           {reverse && (
-            <Select
-              align="horizontal"
-              compact={compact}
-              menuPlacement="top"
-              placeholder="Category"
-              value={chartOptions.chartCategory}
-              onChange={handleChangeCategory}
-              getOptionLabel={(option) => resolveLabel(xTitle, option)}
-              getOptionValue={(option) => option.identifier}
-              options={columns}
-              configuration={configuration}
-              isCustom
-              isPopup
-            />
+            <StyledBottomSelect hasYAxis>
+              <Select
+                id="renderer-category-column"
+                aria-label="Select category"
+                value={selectedCategory}
+                options={columns}
+                onChange={onChangeCategory}
+                formatOptionLabel={(...props) => formatOptionLabel(xAxisTitle, null, ...props)}
+                placeholder="Category"
+                position="bottom"
+                styles={SelectStyles}
+              />
+            </StyledBottomSelect>
           )}
 
           {/* -- END Horizontal select column */}
@@ -176,5 +149,13 @@ const ColumnSelections = ({
     </Fragment>
   );
 };
+
+ColumnSelections.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    value: PropTypes.any.isRequired,
+    type: PropTypes.string,
+  })).isRequired,
+}
 
 export default ColumnSelections;

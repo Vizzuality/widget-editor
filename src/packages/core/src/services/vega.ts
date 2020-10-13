@@ -31,23 +31,23 @@ export default class VegaService implements Charts.Service {
         break;
 
       case "bar-horizontal":
-        Chart = configuration.color?.identifier ? GroupedBarsHorizontal : BarsHorizontal;
+        Chart = configuration.color?.name ? GroupedBarsHorizontal : BarsHorizontal;
         break;
 
       case "stacked-bar-horizontal":
-        Chart = configuration.color?.identifier ? BarsStackedHorizontal : BarsHorizontal;
+        Chart = configuration.color?.name ? BarsStackedHorizontal : BarsHorizontal;
         break;
 
       case "bar":
-        Chart = configuration.color?.identifier ? GroupedBars : Bars;
+        Chart = configuration.color?.name ? GroupedBars : Bars;
         break;
 
       case "stacked-bar":
-        Chart = configuration.color?.identifier ? BarsStacked : Bars;
+        Chart = configuration.color?.name ? BarsStacked : Bars;
         break;
 
       case "line":
-        Chart = configuration.color?.identifier ? MultiLine : Line;
+        Chart = configuration.color?.name ? MultiLine : Line;
         break;
 
       case "scatter":
