@@ -8,7 +8,6 @@ export const StyledBottomSelect = styled.div`
   position: absolute;
   bottom: 10px;
   left: ${props => props.hasYAxis ? 'calc((100% - 65px - 20px) / 2 + 65px)' : '50%'};
-  // left: ${props => props.hasYAxis ? 'calc((100% + 65px) / 2)' : '50%'};
   transform: translateX(-50%);
   width: ${SELECT_WIDTH}px;
 `;
