@@ -19,9 +19,6 @@ export const StyledAddSection = styled.div`
 export const StyledFilterSection = styled.div`
   padding: 10px 0;
   position: relative;
-  label {
-    text-transform: capitalize;
-  }
 `;
 
 export const StyledFilter = styled.div`

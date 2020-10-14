@@ -6,6 +6,7 @@ import { BASEMAPS, LABELS, BOUNDARIES } from '@widget-editor/map/lib/constants';
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
+import Checkbox from "styles-common/checkbox";
 
 const generateOptions = (layers) => {
   if (!layers) {
@@ -121,16 +122,11 @@ const MapInfo = ({ editor, configuration, patchConfiguration, editorSyncMap }) =
         />
       </InputGroup>
       <InputGroup>
-        <FormLabel htmlFor="map-options-boundaries">Boundaries</FormLabel>
-        <Select
+        <Checkbox
           id="map-options-boundaries"
-          value={configuration?.map?.basemap?.boundaries === true ? BOUNDARIES['dark'] : null}
-          options={Object.keys(BOUNDARIES).map(boundaries => ({
-            label: BOUNDARIES[boundaries].label,
-            value: BOUNDARIES[boundaries].id,
-          }))}
-          onChange={boundaries => setBoundaries(boundaries ? true : false)}
-          isClearable={true}
+          label={BOUNDARIES.dark.label}
+          checked={configuration?.map?.basemap?.boundaries === true}
+          onChange={setBoundaries}
         />
       </InputGroup>
     </FlexContainer>

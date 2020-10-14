@@ -1,19 +1,14 @@
 import React from "react";
 
-import { StyledCheckbox } from "./style";
+import Checkbox from "styles-common/checkbox";
 
 const NotNullInput = ({ filter, onChange }) => (
-  <StyledCheckbox>
-    <input
-      type="checkbox"
-      id={`filter-no-null-${filter.id}`}
-      checked={filter.notNull}
-      onChange={e => onChange(e.target.checked)}
-    />
-    <label htmlFor={`filter-no-null-${filter.id}`}>
-      Remove "null" values
-    </label>
-  </StyledCheckbox>
+  <Checkbox
+    id={`filter-no-null-${filter.id}`}
+    label={`Remove "null" values`}
+    checked={filter.notNull}
+    onChange={onChange}
+  />
 );
 
 export default NotNullInput;
