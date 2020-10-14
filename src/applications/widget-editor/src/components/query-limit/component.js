@@ -72,6 +72,7 @@ const QueryLimit = ({
               step={isFloatingPoint ? 0.1 : 1}
               value={maxValue}
               type={dateType ? "date" : "number"}
+              id="options-limit-max"
               name="options-limit-max"
               onChange={e => onChangeValue(isDouble ? [min, +e.target.value] : +e.target.value)}
             />

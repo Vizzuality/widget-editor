@@ -152,8 +152,8 @@ class WidgetInfo extends React.Component {
           <FormLabel htmlFor="options-description">Description</FormLabel>
           <Input
             type="text"
+            id="options-description"
             placeholder="Add description"
-            id="options-decription"
             name="options-decription"
             value={description}
             onChange={(e) => this.setDescription(e.target.value)}

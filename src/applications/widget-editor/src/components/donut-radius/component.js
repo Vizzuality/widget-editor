@@ -38,6 +38,7 @@ const DonutRadius = ({
           <Input
             value={localValue.value}
             type="number"
+            id="options-donut-radius"
             name="options-donut-radius"
             onChange={(e) =>
               changeValue({ value: e.target.value, key: "donut-radius" })
