@@ -39,13 +39,11 @@ const SliceCount = ({
       <FlexContainer row={true}>
         <FlexController contain={20}>
           <Input
-            value={localValue.value}
+            value={`${localValue.value}`}
             type="number"
             id="options-slice-count"
             name="options-slice-count"
-            onChange={(e) =>
-              changeValue({ value: e.target.value, key: "slice-count" })
-            }
+            onChange={value => changeValue({ value, key: "slice-count" })}
           />
         </FlexController>
         <FlexController contain={80}>

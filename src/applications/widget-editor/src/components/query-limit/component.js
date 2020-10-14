@@ -70,11 +70,11 @@ const QueryLimit = ({
             <Input
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
-              value={maxValue}
+              value={`${maxValue}`}
               type={dateType ? "date" : "number"}
               id="options-limit-max"
               name="options-limit-max"
-              onChange={e => onChangeValue(isDouble ? [min, +e.target.value] : +e.target.value)}
+              onChange={value => onChangeValue(isDouble ? [min, +value] : +value)}
             />
           </FlexController>
           <FlexController contain={80}>
@@ -110,10 +110,11 @@ const QueryLimit = ({
                 <Input
                   {...minMaxProps}
                   step={isFloatingPoint ? 0.1 : 1}
-                  value={minValue}
+                  value={`${minValue}`}
                   type={dateType ? "date" : "number"}
                   name="options-limit-min"
-                  onChange={e => onChangeValue([+e.target.value, maxValue])}
+                  id="options-limit-min"
+                  onChange={value => onChangeValue([+value, maxValue])}
                 />
             )}
             </FlexController>
@@ -125,12 +126,11 @@ const QueryLimit = ({
               <Input
                 {...minMaxProps}
                 step={isFloatingPoint ? 0.1 : 1}
-                value={maxValue}
+                value={`${maxValue}`}
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
-                onChange={e =>
-                  onChangeValue(isDouble ? [minValue, +e.target.value] : +e.target.value)
-                }
+                id="options-limit-max"
+                onChange={value => onChangeValue(isDouble ? [minValue, +value] : +value)}
               />
             </FlexController>
           </FlexContainer>

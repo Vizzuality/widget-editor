@@ -36,13 +36,11 @@ const DonutRadius = ({
       <FlexContainer row={true}>
         <FlexController contain={20}>
           <Input
-            value={localValue.value}
+            value={`${localValue.value}`}
             type="number"
             id="options-donut-radius"
             name="options-donut-radius"
-            onChange={(e) =>
-              changeValue({ value: e.target.value, key: "donut-radius" })
-            }
+            onChange={value => changeValue({ value, key: "donut-radius" })}
           />
         </FlexController>
         <FlexController contain={80}>

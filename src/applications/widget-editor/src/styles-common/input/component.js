@@ -1,7 +1,30 @@
+import React from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 
-// TODO: Move configuration to global config file.
-const Input = styled.input`
+const Input = ({ id, type, value, onChange, ...rest }) => (
+  <input
+    type={type}
+    id={id}
+    value={value}
+    onChange={e => onChange(e.target.value)}
+    {...rest}
+  />
+);
+
+Input.propTypes = {
+  id: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(["text", "number", "date", "color"]),
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};
+
+Input.defaultProps = {
+  value: "",
+  onChange: () => null,
+};
+
+export default styled(Input)`
   box-sizing: border-box;
   width: 100%;
   height: 45px;
@@ -30,5 +53,3 @@ const Input = styled.input`
     border-color: rgba(202,204,208,0.34);
   }
 `;
-
-export default Input;

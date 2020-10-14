@@ -44,7 +44,7 @@ const Typography = ({ theme, setTheme }) => {
               name="typography-title-size" 
               value={titleSize === "auto" ? '' : titleSize}
               type="text"
-              onChange={e => handleChangeSize('titleSize', e.target.value)}
+              onChange={value => handleChangeSize('titleSize', value)}
               placeholder="Auto"
             />
           </InputGroup>
@@ -54,7 +54,7 @@ const Typography = ({ theme, setTheme }) => {
               name="typography-caption-size" 
               value={captionSize === "auto" ? '' : captionSize}
               type="text"
-              onChange={e => handleChangeSize('captionSize', e.target.value)}
+              onChange={value => handleChangeSize('captionSize', value)}
               placeholder="Auto"
             />
           </InputGroup>
@@ -64,7 +64,7 @@ const Typography = ({ theme, setTheme }) => {
               name="typography-axis-title-size" 
               value={axisTitleSize === "auto" ? '' : axisTitleSize}
               type="text"
-              onChange={e => handleChangeSize('axisTitleSize', e.target.value)}
+              onChange={value => handleChangeSize('axisTitleSize', value)}
               placeholder="Auto"
             />
           </InputGroup>

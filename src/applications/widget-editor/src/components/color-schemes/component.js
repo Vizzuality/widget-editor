@@ -148,6 +148,7 @@ const ColorSchemes = ({
             {scheme.category.map((color, index) => (
               <ColorInput
                 key={index}
+                id={index + 1}
                 pickerLabel={`Color ${index + 1}`}
                 inputLabel={`Hexadecimal color ${index + 1}`}
                 value={color}
