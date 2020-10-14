@@ -215,15 +215,15 @@ class WidgetInfo extends React.Component {
               value={format}
               options={VALUE_FORMAT_OPTIONS}
               onChange={this.setValueFormat}
+              aria-describedby="options-value-format-info"
             />
-            <InputInfo>
-              We are using d3-format for formating values, you can input your
-              own format or select a predefined one from the list. Read more
-              about formats:{" "}
-              <a href="https://github.com/d3/d3-format" target="__BLANK">
-                here
-              </a>
-              .
+            <InputInfo id="options-value-format-info">
+              You can select a predefined format from the list or write your own format based on the
+              {" "}
+              <a href="https://github.com/d3/d3-format" target="_blank" rel="noopener noreferrer">
+                d3-format
+              </a>{" "}
+              specification.
             </InputInfo>
           </InputGroup>
         )}
