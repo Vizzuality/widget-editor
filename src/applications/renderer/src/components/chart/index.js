@@ -6,4 +6,5 @@ import ChartComponent from "./component";
 export default redux.connectState((state) => ({
   editor: state.editor,
   widget: state.widgetConfig,
+  configuration: state.configuration,
 }))(ChartComponent);

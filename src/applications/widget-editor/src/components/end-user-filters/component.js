@@ -1,34 +1,20 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
 
-import { constants } from '@widget-editor/core';
+import { Select, columnLabelFormatter } from '@widget-editor/shared';
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import { InfoCallout } from './style';
 
 const EndUserFilters = ({
-  fields: serializedFields,
+  columnOptions,
   endUserFilters,
   setEndUserFilters,
   patchConfiguration,
 }) => {
-  const fields = useMemo(
-    () => serializedFields
-      .map(field => ({
-        label:
-          field.metadata && field.metadata.alias ? field.metadata.alias : field.columnName,
-          value: field.columnName,
-          type:
-            constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type ?? 'string',
-        }))
-      .sort((option1, option2) => option1.label.localeCompare(option2.label)),
-    [serializedFields],
-  );
-
   const value = useMemo(
-    () => endUserFilters.map(endUserFilter => fields.find(f => f.value === endUserFilter)),
-    [fields, endUserFilters],
+    () => endUserFilters.map(endUserFilter => columnOptions.find(f => f.value === endUserFilter)),
+    [columnOptions, endUserFilters],
   );
 
   const onChangeColumns = useCallback((options) => {
@@ -46,11 +32,12 @@ const EndUserFilters = ({
         <FormLabel htmlFor="end-user-filter-columns">Columns with filter</FormLabel>
         <Select
           isMulti
+          formatOptionLabel={columnLabelFormatter}
           id="end-user-filter-columns"
           name="end-user-filter-columns"
           placeholder="Select columns"
           value={value}
-          options={fields}
+          options={columnOptions}
           onChange={onChangeColumns}
         />
       </InputGroup>
@@ -59,7 +46,7 @@ const EndUserFilters = ({
 };
 
 EndUserFilters.propTypes = {
-  fields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  columnOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
   endUserFilters: PropTypes.arrayOf(PropTypes.string).isRequired,
   setEndUserFilters: PropTypes.func.isRequired,
   patchConfiguration: PropTypes.func.isRequired,

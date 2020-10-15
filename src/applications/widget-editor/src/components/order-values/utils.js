@@ -1,21 +1,14 @@
 import { columnLabelFormatter } from "@widget-editor/shared";
 
 /**
- * Return the option label formatter for the column selects
- * @param {string} label Label to display instead of the column name
+ * Return the option label formatter for the order by select
  * @param {string} aggregation Name of the aggregation applied to the column
  * @param  {...any} rest 
  */
-export const formatOptionLabel = (label, aggregation, ...rest) => {
+export const formatOptionLabel = (aggregation, ...rest) => {
   const [, { context }] = rest;
-
-  // We display a custom label when the select is collapsed
-  if (label && context === "value") {
-    return label;
-  }
-
-  // When not using a custom label, we want to add the column aggregation in the same, if there is
-  // any
+  
+  // We want to add the column aggregation in the name, if there is any
   if (aggregation && context === "value") {
     const [option, ...otherParams] = rest;
     const newOption = {

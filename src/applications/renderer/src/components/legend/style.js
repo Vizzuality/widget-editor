@@ -1,11 +1,15 @@
 import styled, { css } from "styled-components";
 
+import { SelectStyles as DefaultSelectStyles } from "@widget-editor/shared";
+
 export const StyledDropdownBox = styled.div`
-  flex: 0 0 30%;
+  flex-basis: 30%;
+  flex-shrink: 0;
+  margin-left: 20px;
 `;
 
 export const StyledColorsBoxContainer = styled.div`
-  flex: 0 0 70%;
+  flex-grow: 1;
 
   ${(props) =>
     props.alignCenter &&
@@ -67,9 +71,62 @@ export const StyledContainer = styled.div`
   width: 100%;
   min-height: 55px;
   padding: 15px 36px;
-
-  * {
-    box-sizing: border-box;
-    outline: 0;
-  }
 `;
+
+export const SelectStyles = {
+  ...DefaultSelectStyles,
+  container: (_, state) => {
+    const defaultStyles = DefaultSelectStyles.container?.(_, state) ?? {};
+    
+    if (state.isFocused) {
+      return defaultStyles;
+    }
+
+    return {
+      ...defaultStyles,
+      border: "1px solid transparent",
+    };
+  },
+  menu: (_, state) => {
+    const defaultStyles = DefaultSelectStyles.menu?.(_, state) ?? {};
+
+    return {
+      ...defaultStyles,
+      position: "absolute",
+      right: "0",
+      bottom: "100%",
+      width: "100%",
+      minWidth: "300px",
+      marginTop: "8px",
+      marginBottom: "8px",
+      padding: "4px 0px",
+      backgroundColor: "white",
+      border: "1px solid #D7D7D7",
+      borderRadius: "4px",
+      boxShadow: "0 20px 30px 0 rgba(0,0,0,0.1)",
+      transform: state.selectProps.position === "left" ? "rotate(90deg) translateX(100%)" : "null",
+      transformOrigin: state.selectProps.position === "left" ? "top right" : "null",
+      boxSizing: "border-box",
+      zIndex: 1,
+      ':before': {
+        content: "''",
+        position: "absolute",
+        bottom: "-10px",
+        right: "-5px",
+        border: "10px solid transparent",
+        borderTopColor: "#D7D7D7",
+        zIndex: "-1",
+        transform: "translate(-50%, 50%)",
+      },
+      ':after': {
+        content: "''",
+        position: "absolute",
+        bottom: "-9px",
+        right: "-5px",
+        border: "10px solid transparent",
+        borderTopColor: "#FFFFFF",
+        transform: "translate(-50%, 50%)",
+      },
+    };
+  },
+};

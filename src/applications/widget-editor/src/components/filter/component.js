@@ -1,9 +1,8 @@
 import React, { useMemo, useCallback } from "react";
-import Select from "react-select";
 import uniqueId from "lodash/uniqueId";
 
-import { FiltersService, constants } from "@widget-editor/core";
-import { Button } from "@widget-editor/shared";
+import { FiltersService } from "@widget-editor/core";
+import { Button, Select, columnLabelFormatter } from "@widget-editor/shared";
 
 import { getLocalCache } from "exposed-hooks";
 
@@ -28,28 +27,12 @@ const Filter = ({
   patchConfiguration,
   filters = [],
   fields = [],
+  columnOptions,
   dataset,
 }) => {
-  const columnOptions = useMemo(() => {
-    const usedColumns = filters.map(filter => filter.column).filter(column => !!column);
-
-    return fields
-      .map(field => ({
-        label:
-          field.metadata && field.metadata.alias
-            ? field.metadata.alias
-            : field.columnName,
-          value: field.columnName,
-          type:
-            constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type ?? 'string',
-          isDisabled: usedColumns.indexOf(field.columnName) !== -1,
-        }))
-      .sort((option1, option2) => option1.label.localeCompare(option2.label))
-  }, [filters, fields]);
-
   const canAddFilter = useMemo(
-    () => filters.length < fields.length && filters.every(filter => filter.column),
-    [filters, fields]
+    () => filters.length < columnOptions.length && filters.every(filter => filter.column),
+    [filters, columnOptions]
   );
 
   const addFilter = useCallback(() => setFilters({
@@ -107,13 +90,16 @@ const Filter = ({
         <StyledFilterSection key={filter.id}>
           <InputGroup noMargins={true}>
             <Select
-              placeholder="Select column"
+              formatOptionLabel={columnLabelFormatter}
+              id={`filter-column-${filter.id}`}
+              aria-label="Select a column"
+              placeholder="Select a column"
               value={columnOptions.find(({ value }) => value === filter.column)}
               options={columnOptions}
               onChange={
                 ({ value, type }) => updateFilter(filter.id, { column: value, type })
               }
-              isDisabled={!!filter.column}
+              disabled={!!filter.column}
             />
 
             <StyledDeleteBox>

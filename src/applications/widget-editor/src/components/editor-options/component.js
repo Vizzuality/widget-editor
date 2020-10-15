@@ -99,10 +99,6 @@ const EditorOptions = ({
     patchConfiguration({ donutRadius: parseInt(value) });
   });
 
-  const handleOrderBy = (value) => {
-    patchConfiguration({ orderBy: value });
-  }
-
   const handleGroupBy = (value) => {
     patchConfiguration({ groupBy: value });
   }
@@ -152,9 +148,7 @@ const EditorOptions = ({
             )}
             {!isMap && !advanced && (
               <AccordionSection title="Order">
-                <OrderValues
-                  onChange={(value) => handleOrderBy(value)}
-                />
+                <OrderValues />
                 {limit !== undefined && limit !== null && (
                   <QueryLimit
                     min={0}

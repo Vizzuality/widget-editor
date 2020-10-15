@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-import { selectDisabledFeatures } from "../editor/selectors";
+import { selectDisabledFeatures, selectColumnOptions } from "../editor/selectors";
 
 const selectAvailableCharts = state => state.configuration.availableCharts;
 const selectRasterOnly = state => state.configuration.rasterOnly;
@@ -43,4 +43,27 @@ export const selectChartOptions = createSelector(
 export const isMap = createSelector(
   [selectChartType],
   chartType => chartType === 'map',
+);
+
+
+export const selectSelectedColorOption = createSelector(
+  [selectChartType, selectCategory, selectColor, selectColumnOptions],
+  (chartType, category, color, columnOptions) => {
+    if (chartType === "pie") {
+      const colorColumn = category?.name
+        ? columnOptions.find(column => column.value === category.name)
+        : null;
+
+      return colorColumn;
+    }
+
+    const colorColumn = color?.name
+      ? columnOptions.find(column => column.value === color.name)
+      : null;
+
+    return  colorColumn ?? {
+      label: "Single color",
+      value: "_single_color",
+    };
+  }
 );

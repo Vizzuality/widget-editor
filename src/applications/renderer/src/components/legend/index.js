@@ -1,20 +1,33 @@
 import { redux } from "@widget-editor/shared";
 
-import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import { patchConfiguration,  } from "@widget-editor/shared/lib/modules/configuration/actions";
+import {
+  selectSelectedColorOption,
+  selectAggregateFunction,
+  selectValue,
+} from "@widget-editor/shared/lib/modules/configuration/selectors";
+import { selectColumnOptions } from "@widget-editor/shared/lib/modules/editor/selectors";
+import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selectors";
 
 // Components
 import ChartColorFilter from "./component";
 
-import * as widgetSelectors from "@widget-editor/shared/lib/modules/widget-config/selectors";
-import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selectors";
 
 export default redux.connectState(
   (state) => ({
     advanced: state.editor.advanced,
     widget: state.widgetConfig,
     configuration: state.configuration,
-    selectedColor: widgetSelectors.getSelectedColor(state),
-    columns: widgetSelectors.getWidgetColumns(state, { colorDimention: true }),
+    selectedColumn: selectSelectedColorOption(state),
+    aggregateFunction: selectAggregateFunction(state),
+    valueColumn: selectValue(state),
+    columns: [
+      {
+        label: "Single color",
+        value: "_single_color",
+      },
+      ...selectColumnOptions(state),
+    ],
     scheme: themeSelectors.selectScheme(state),
   }),
   { patchConfiguration }

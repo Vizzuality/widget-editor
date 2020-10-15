@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 
+import { constants } from '@widget-editor/core';
 import { getLocalCache } from '@widget-editor/widget-editor/lib/exposed-hooks';
 
 export const selectDisabledFeatures = state => state.editor.disabledFeatures;
@@ -18,6 +19,27 @@ export const selectBasemap = state => state.editor.map?.basemap
   }
   : null;
 export const selectFields = state => state.editor.fields;
+
+export const selectColumnOptions = createSelector(
+  [selectFields],
+  (fields) => {
+    if (!fields?.length) {
+      return [];
+    }
+
+    return fields.map(field => {
+      const alias = field.metadata?.alias;
+      const description = field.metadata?.description;
+
+      const label = alias || field.columnName;
+      const value = field.columnName;
+      const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
+        ?? 'unknown';
+
+      return { label, value, type, description };
+    }).sort((option1, option2) => option1.label.localeCompare(option2.label));
+  }
+);
 
 export const selectWidgetConfig = createSelector(
   [selectWidget],
