@@ -31,12 +31,10 @@ export const StyledDeleteBox = styled.div`
   position: absolute;
   right: 0;
   top: 50%;
-  transform: translate(-50px, -50%);
+  transform: translate(-40px, -50%);
 
   button {
-    font-size: 12px;
-    padding: 7px 10px;
-    border: none;
-    font-weight: 500;
+    font-size: 14px;
+    border-color: transparent;
   }
 `;

@@ -104,7 +104,7 @@ const ColorSchemes = ({
     <StyledSchemesContainer>
       {!isCustomScheme && !schemesContainCustomScheme && !isWidgetSchemeCustom && (
         <StyledCustomSchemeButtonWrapper>
-          <Button size="small" onClick={onCreateCustomScheme}>
+          <Button btnType="highlight" size="small" onClick={onCreateCustomScheme}>
             Create custom scheme
           </Button>
         </StyledCustomSchemeButtonWrapper>

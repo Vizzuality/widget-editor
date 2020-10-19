@@ -24,7 +24,7 @@ const Footer = ({ enableSave, onSave }) => {
   return (
     <StyledFooter disabled={!enableSave}>
       {enableSave && (
-        <Button role="button" type="button" btnType="cta" onClick={onSave}>
+        <Button type="button" btnType="cta" onClick={onSave}>
           Save widget
         </Button>
       )}
