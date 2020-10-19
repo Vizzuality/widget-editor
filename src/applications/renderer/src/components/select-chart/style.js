@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
 export const StyledContainer = styled.div`
+  flex-shrink: 0;
   margin: 10px;
   ${(props) =>
     (props.isCompact || props.forceCompact) &&

@@ -4,8 +4,8 @@ import styled, { css } from "styled-components";
 import { AccordionArrowIcon, CloseIcon } from "components/icons";
 
 export const StyledDropdownIndicator = styled(props => <AccordionArrowIcon {...props} />)`
-  width: 16px;
-  height: 16px;
+  width: 32px;
+  height: 32px;
   padding: 8px;
   stroke: #c32d7b;
 `;

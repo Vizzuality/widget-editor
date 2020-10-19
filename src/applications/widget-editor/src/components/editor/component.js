@@ -6,7 +6,12 @@ import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 import { DataService, getOutputPayload } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
-import { StyledContainer, StyleEditorContainer } from "./style";
+import {
+  StyledContainer,
+  StyleEditorContainer,
+  StyledRendererContainer,
+  StyledOptionsContainer,
+} from "./style";
 
 import { localGetEditorState, setReduxCache } from "exposed-hooks";
 
@@ -169,8 +174,12 @@ class Editor extends React.Component {
     return (
       <StyledContainer {...compact}>
         <StyleEditorContainer>
-          <Renderer adapter={adapter} standalone={false} />
-          <EditorOptions adapter={adapterInstance} dataService={this.dataService} />
+          <StyledRendererContainer>
+            <Renderer adapter={adapter} standalone={false} />
+          </StyledRendererContainer>
+          <StyledOptionsContainer>
+            <EditorOptions adapter={adapterInstance} dataService={this.dataService} />
+          </StyledOptionsContainer>
         </StyleEditorContainer>
         <Footer onSave={this.onSave} />
       </StyledContainer>

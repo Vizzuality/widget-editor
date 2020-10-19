@@ -42,11 +42,12 @@ const StyleEditorOptionsInfo = styled.div`
 const StyledContainer = styled.div`
   position: relative;
   flex: 1;
-  padding: 0 0 0 30px;
+  padding: 0 0 0 20px;
   margin: 10px 0;
   height: calc(100% - 20px);
   overflow-y: hidden;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
+
   ${(props) =>
     (props.compact.isCompact || props.compact.forceCompact) &&
     css`

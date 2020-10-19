@@ -3,8 +3,12 @@ import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants"
 
 export const StyledContainer = styled.div`
   width: 100%;
-  height: 100%;
-  min-height: 740px;
+  max-width: 1060px;
+
+  * {
+    box-sizing: border-box;
+  }
+
   ${(props) =>
     props.isCompact || props.forceCompact
       ? css`
@@ -27,5 +31,18 @@ export const StyledContainer = styled.div`
 export const StyleEditorContainer = styled.div`
   display: flex;
   width: 100%;
-  height: 660px;
+  height: 500px;
+`;
+
+export const StyledRendererContainer = styled.div`
+  flex-basis: 520px;
+  max-width: 520px;
+  flex-shrink: 1;
+  height: 100%;
+`;
+
+export const StyledOptionsContainer = styled.div`
+  flex-basis: 540px;
+  max-width: 540px;
+  height: 100%;
 `;

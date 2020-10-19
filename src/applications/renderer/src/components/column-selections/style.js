@@ -6,15 +6,15 @@ const SELECT_WIDTH = 250;
 
 export const StyledBottomSelect = styled.div`
   position: absolute;
-  bottom: 10px;
-  left: ${props => props.hasYAxis ? 'calc((100% - 65px - 20px) / 2 + 65px)' : '50%'};
+  bottom: 5px;
+  left: ${props => props.hasYAxis ? 'calc((100% - 60px - 20px) / 2 + 60px)' : '50%'};
   transform: translateX(-50%);
   width: ${SELECT_WIDTH}px;
 `;
 
 export const StyledLeftSelect = styled.div`
   position: absolute;
-  bottom: calc((100% - 65px - 15px) / 2 + 65px);
+  bottom: calc((100% - 55px - 15px) / 2 + 55px);
   left: 10px;
   transform: translateY(50%) rotate(-90deg) translateY(calc(-${SELECT_WIDTH / 2}px + (45px / 2)));
   transform-origin: center;
@@ -56,7 +56,6 @@ export const SelectStyles = {
       boxShadow: "0 20px 30px 0 rgba(0,0,0,0.1)",
       transform: state.selectProps.position === "left" ? "rotate(90deg) translateX(100%)" : "null",
       transformOrigin: state.selectProps.position === "left" ? "top right" : "null",
-      boxSizing: "border-box",
       zIndex: 1,
       ':before': {
         content: "''",
