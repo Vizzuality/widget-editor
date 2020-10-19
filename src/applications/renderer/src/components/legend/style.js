@@ -64,13 +64,12 @@ export const StyledColorDot = styled.span`
 `;
 
 export const StyledContainer = styled.div`
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  box-sizing: border-box;
-  border-top: 1px solid #d7d7d7;
   width: 100%;
-  min-height: 55px;
-  padding: 15px 36px;
+  padding: 10px;
+  border-top: 1px solid #d7d7d7;
 `;
 
 export const SelectStyles = {
@@ -106,7 +105,6 @@ export const SelectStyles = {
       boxShadow: "0 20px 30px 0 rgba(0,0,0,0.1)",
       transform: state.selectProps.position === "left" ? "rotate(90deg) translateX(100%)" : "null",
       transformOrigin: state.selectProps.position === "left" ? "top right" : "null",
-      boxSizing: "border-box",
       zIndex: 1,
       ':before': {
         content: "''",

@@ -11,11 +11,11 @@ export const ChartNeedsOptions = styled.h4`
 export const StyledContainer = styled.div`
   ${(props) => !props.standalone && css`
     position: relative;
-    flex: 1;
+    overflow: hidden;
     flex-grow: 1;
+    flex-shrink: 1;
     width: 100%;
-    padding: 15px 20px 65px ${props.hasYAxis ? '65px' : '20px'};
-    box-sizing: border-box;
+    padding: 15px 10px 55px ${props.hasYAxis ? '60px' : '20px'};
   `}
 
   ${(props) => (props.standalone || props.thumbnail) && css`

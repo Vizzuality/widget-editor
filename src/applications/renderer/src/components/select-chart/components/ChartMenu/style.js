@@ -15,7 +15,6 @@ export const StyledContainer = styled.div`
 `;
 
 export const StyledMenu = styled.div`
-  box-sizing: border-box;
   height: auto;
   max-height: 460px;
   width: 100%;
