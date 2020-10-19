@@ -18,35 +18,40 @@ export default css`
   }
   .rc-slider-rail {
     position: absolute;
+    top: 50%;
     width: 100%;
+    height: 3px;
+    transform: translateY(-50%);
     background-color: #caccd0;
-    height: 5px;
     border-radius: 6px;
   }
   .rc-slider-track {
     position: absolute;
+    top: 50%;
     left: 0;
-    height: 5px;
+    height: 3px;
+    transform: translateY(-50%);
     border-radius: 6px;
     background-color: #c32d7b;
   }
   .rc-slider-handle {
     position: absolute;
+    top: 0 !important;
     width: 20px;
     height: 20px;
+    margin-top: 0;
+    margin-left: 0;
     cursor: pointer;
     cursor: -webkit-grab;
-    margin-top: -2.5px;
     cursor: grab;
     border-radius: 50%;
     border: solid 2px #f1f1f1;
     background-color: #c32d7b;
-    -ms-touch-action: pan-x;
     touch-action: pan-x;
+    z-index: auto;
   }
   .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
-    border-color: #57c5f7;
-    box-shadow: 0 0 0 5px #c32d7b;
+    box-shadow: 0 0 0px 3px rgba(195, 45, 123, 0.3);
   }
   .rc-slider-handle:focus {
     outline: none;
@@ -55,11 +60,10 @@ export default css`
     box-shadow: unset;
   }
   .rc-slider-handle:hover {
-    border-color: #57c5f7;
+    box-shadow: 0 0 0px 3px rgba(195, 45, 123, 0.3);
   }
   .rc-slider-handle:active {
-    border-color: #57c5f7;
-    box-shadow: 0 0 5px #57c5f7;
+    box-shadow: 0 0 0px 3px rgba(195, 45, 123, 0.3);
     cursor: -webkit-grabbing;
     cursor: grabbing;
   }
@@ -84,7 +88,7 @@ export default css`
   .rc-slider-step {
     position: absolute;
     width: 100%;
-    height: 5px;
+    height: 3px;
     background: transparent;
   }
   .rc-slider-dot {

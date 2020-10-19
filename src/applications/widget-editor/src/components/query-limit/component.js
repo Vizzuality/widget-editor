@@ -15,9 +15,6 @@ import isFloat from "@widget-editor/shared/lib/helpers/isFloat";
 const RangeWrapper = styled.div`
   padding: 10px 10px;
   box-sizing: border-box;
-  .rc-slider-handle {
-    margin-top: -7px;
-  }
 `;
 
 const QueryLimit = ({
