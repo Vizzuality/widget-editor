@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
-import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants";
 
 export const StyledContainer = styled.div`
+  position: relative;
   width: 100%;
   max-width: 1060px;
 
@@ -9,23 +9,12 @@ export const StyledContainer = styled.div`
     box-sizing: border-box;
   }
 
-  ${(props) =>
-    props.isCompact || props.forceCompact
-      ? css`
-          box-sizing: border-box;
-          position: relative;
-          margin: 0 auto;
-          height: calc(100% - ${FOOTER_HEIGHT});
-        `
-      : css`
-          display: flex;
-          flex-flow: wrap;
-          justify-content: space-between;
-          flex-flow: column;
-          @media only screen and (min-width: 768px) {
-            flex-flow: wrap;
-          }
-        `}
+  ${props => props.isCompact || props.forceCompact
+    ? css`
+        max-width: 520px;
+      `
+    : null
+  }
 `;
 
 export const StyleEditorContainer = styled.div`
@@ -45,4 +34,22 @@ export const StyledOptionsContainer = styled.div`
   flex-basis: 540px;
   max-width: 540px;
   height: 100%;
+
+  ${props => props.isCompact  || props.forceCompact
+    ? css`
+        position: absolute;
+        top: 65px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(500px - 66px);
+        visibility: hidden;
+        background: white;
+
+        ${props => props.isOpen && css`
+          z-index: 2;
+          visibility: visible;
+        `}
+      `
+    : null
+  }
 `;

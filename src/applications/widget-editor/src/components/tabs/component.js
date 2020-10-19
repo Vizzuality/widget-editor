@@ -12,13 +12,13 @@ const TabButton = (props) => {
   return <Button style={{ height: "100%" }} {...props} />;
 };
 
-export const Tabs = ({ children }) => {
+export const Tabs = ({ theme, children }) => {
   const validChildren = useMemo(() => children.filter(c => !!c), [children]);
   const [activeId, setActiveId] = useState(validChildren[0].props.id);
 
   return (
     <StyledTabsContainer>
-      <StyledList>
+      <StyledList {...theme}>
         {validChildren.map(({ props: { id, label } }) => label
           ? (
             <StyledListLabel key={id}>
@@ -30,7 +30,7 @@ export const Tabs = ({ children }) => {
           : null
         )}
       </StyledList>
-      <StyledTabsContentBox>
+      <StyledTabsContentBox {...theme}>
         {validChildren.map(({ props: { id, children: content } }) => (
           <StyledTabsContent key={id} active={id === activeId}>
             {content}

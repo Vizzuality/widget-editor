@@ -11,10 +11,7 @@ import QueryLimit from "components/query-limit";
 import Filter from "components/filter";
 import EndUserFilters from "components/end-user-filters";
 
-import {
-  FOOTER_HEIGHT,
-  DEFAULT_BORDER,
-} from "@widget-editor/shared/lib/styles/style-constants";
+import { DEFAULT_BORDER } from "@widget-editor/shared/lib/styles/style-constants";
 
 const AdvancedEditor = React.lazy(() => import("../advanced-editor"));
 const TableView = React.lazy(() => import("../table-view"));
@@ -48,30 +45,13 @@ const StyledContainer = styled.div`
   overflow-y: hidden;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
 
-  ${(props) =>
-    (props.compact.isCompact || props.compact.forceCompact) &&
-    css`
-      visibility: hidden;
-      /* z-index: -1; */
-      max-height: 0;
-      position: absolute;
-      top: 65px;
-      left: 0;
-      margin: 0;
-      width: 100%;
-      background: #fff;
-      transition: all 0.3s ease-in-out;
-    `}
-  ${(props) =>
-    (props.compact.isCompact || props.compact.forceCompact) &&
-    props.compact.isOpen &&
-    css`
-      box-sizing: border-box;
-      display: block;
-      z-index: 2;
-      visibility: visible;
-      max-height: calc(100% - ${FOOTER_HEIGHT} - 65px);
-    `}
+  ${(props) => (props.compact.isCompact || props.compact.forceCompact) && css`
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    ${DEFAULT_BORDER(1, 0, 0, 0)}
+    box-shadow: none;
+  `}
 `;
 
 const EditorOptions = ({
