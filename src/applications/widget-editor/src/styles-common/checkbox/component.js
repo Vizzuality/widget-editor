@@ -92,8 +92,8 @@ export default styled(Checkbox)`
     left: 5px;
     height: 3px;
     width: 6px;
-    border-left: 2px solid #2C75B0;
-    border-bottom: 2px solid #2C75B0;
+    border-left: 2px solid #c32d7b;
+    border-bottom: 2px solid #c32d7b;
     transform: rotate(-45deg);
   }
 `;
