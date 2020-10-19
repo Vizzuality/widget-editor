@@ -104,7 +104,7 @@ const ColorSchemes = ({
     <StyledSchemesContainer>
       {!isCustomScheme && !schemesContainCustomScheme && !isWidgetSchemeCustom && (
         <StyledCustomSchemeButtonWrapper>
-          <Button size="small" onClick={onCreateCustomScheme}>
+          <Button btnType="highlight" size="small" onClick={onCreateCustomScheme}>
             Create custom scheme
           </Button>
         </StyledCustomSchemeButtonWrapper>
@@ -148,6 +148,7 @@ const ColorSchemes = ({
             {scheme.category.map((color, index) => (
               <ColorInput
                 key={index}
+                id={index + 1}
                 pickerLabel={`Color ${index + 1}`}
                 inputLabel={`Hexadecimal color ${index + 1}`}
                 value={color}

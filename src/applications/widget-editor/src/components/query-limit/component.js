@@ -15,9 +15,6 @@ import isFloat from "@widget-editor/shared/lib/helpers/isFloat";
 const RangeWrapper = styled.div`
   padding: 10px 10px;
   box-sizing: border-box;
-  .rc-slider-handle {
-    margin-top: -7px;
-  }
 `;
 
 const QueryLimit = ({
@@ -70,10 +67,11 @@ const QueryLimit = ({
             <Input
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
-              value={maxValue}
+              value={`${maxValue}`}
               type={dateType ? "date" : "number"}
+              id="options-limit-max"
               name="options-limit-max"
-              onChange={e => onChangeValue(isDouble ? [min, +e.target.value] : +e.target.value)}
+              onChange={value => onChangeValue(isDouble ? [min, +value] : +value)}
             />
           </FlexController>
           <FlexController contain={80}>
@@ -109,10 +107,11 @@ const QueryLimit = ({
                 <Input
                   {...minMaxProps}
                   step={isFloatingPoint ? 0.1 : 1}
-                  value={minValue}
+                  value={`${minValue}`}
                   type={dateType ? "date" : "number"}
                   name="options-limit-min"
-                  onChange={e => onChangeValue([+e.target.value, maxValue])}
+                  id="options-limit-min"
+                  onChange={value => onChangeValue([+value, maxValue])}
                 />
             )}
             </FlexController>
@@ -124,12 +123,11 @@ const QueryLimit = ({
               <Input
                 {...minMaxProps}
                 step={isFloatingPoint ? 0.1 : 1}
-                value={maxValue}
+                value={`${maxValue}`}
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
-                onChange={e =>
-                  onChangeValue(isDouble ? [minValue, +e.target.value] : +e.target.value)
-                }
+                id="options-limit-max"
+                onChange={value => onChangeValue(isDouble ? [minValue, +value] : +value)}
               />
             </FlexController>
           </FlexContainer>

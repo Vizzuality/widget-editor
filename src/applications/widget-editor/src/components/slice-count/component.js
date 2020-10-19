@@ -8,7 +8,7 @@ import Slider from "components/slider";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 import Input from "styles-common/input";
-import { StyledNote } from './style';
+import InputInfo from "styles-common/input-info";
 
 const SliceCount = ({
   min = 1,
@@ -39,12 +39,12 @@ const SliceCount = ({
       <FlexContainer row={true}>
         <FlexController contain={20}>
           <Input
-            value={localValue.value}
+            value={`${localValue.value}`}
             type="number"
+            id="options-slice-count"
             name="options-slice-count"
-            onChange={(e) =>
-              changeValue({ value: e.target.value, key: "slice-count" })
-            }
+            onChange={value => changeValue({ value, key: "slice-count" })}
+            aria-describedby="options-slice-count-info"
           />
         </FlexController>
         <FlexController contain={80}>
@@ -57,9 +57,9 @@ const SliceCount = ({
         </FlexController>
       </FlexContainer>
       {disabledFeatures.indexOf("end-user-filters") === -1 && (
-        <StyledNote>
+        <InputInfo id="options-slice-count-info">
           This setting is ignored when end-user filters are defined.
-        </StyledNote>
+        </InputInfo>
       )}
     </InputGroup>
   );

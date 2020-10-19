@@ -75,7 +75,7 @@ const Filter = ({
   return (
     <StyledFilterBox>
       <StyledAddSection>
-        <Button size="small" onClick={addFilter} disabled={!canAddFilter}>
+        <Button btnType="highlight" size="small" onClick={addFilter} disabled={!canAddFilter}>
           Add filter
         </Button>
       </StyledAddSection>
@@ -103,7 +103,7 @@ const Filter = ({
             />
 
             <StyledDeleteBox>
-              <Button type="highlight" onClick={() => removeFilter(filter.id)}>
+              <Button btnType="highlight" size="small" onClick={() => removeFilter(filter.id)}>
                 Delete
               </Button>
             </StyledDeleteBox>

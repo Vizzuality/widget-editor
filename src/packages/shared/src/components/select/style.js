@@ -117,4 +117,10 @@ export default {
     ...provided,
     backgroundColor: "rgba(44, 117, 176, 0.1)",
   }),
+
+  placeholder: provided => ({
+    ...provided,
+    color: "#c5c7c8",
+    fontFamily: "'Lato', 'Helvetica Neue', Helvetica, Arial, sans",
+  }),
 };

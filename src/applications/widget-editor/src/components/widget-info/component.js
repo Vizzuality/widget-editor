@@ -9,8 +9,6 @@ import Input from "styles-common/input";
 import debounce from "lodash/debounce";
 import { Select } from "@widget-editor/shared";
 
-import { InputStyles } from "./style";
-
 import VALUE_FORMAT_OPTIONS from "@widget-editor/shared/lib/constants/value-formats";
 import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
@@ -87,37 +85,37 @@ class WidgetInfo extends React.Component {
     });
   }, 300);
 
-  setTitle(title) {
+  setTitle = (title) => {
     this.setState({ title });
     this.handleUpdate();
   }
 
-  setDescription(description) {
+  setDescription = (description) => {
     this.setState({ description });
     this.handleUpdate();
   }
 
-  setCaption(caption) {
+  setCaption = (caption) => {
     this.setState({ caption });
     this.handleUpdate();
   }
 
-  setYAxis(yAxisTitle) {
+  setYAxis = (yAxisTitle) => {
     this.setState({ yAxisTitle });
     this.handleUpdate();
   }
 
-  setXAxis(xAxisTitle) {
+  setXAxis = (xAxisTitle) => {
     this.setState({ xAxisTitle });
     this.handleUpdate();
   }
 
-  setValueFormat(format) {
+  setValueFormat = (format) => {
     this.setState({ format });
     this.handleUpdate();
   }
 
-  setAggregation(agg) {
+  setAggregation = (agg) => {
     this.setState({
       aggregateFunction: agg ? agg.value : null,
     });
@@ -145,18 +143,18 @@ class WidgetInfo extends React.Component {
             id="options-title"
             name="options-title"
             value={title}
-            onChange={(e) => this.setTitle(e.target.value)}
+            onChange={this.setTitle}
           />
         </InputGroup>
         <InputGroup>
           <FormLabel htmlFor="options-description">Description</FormLabel>
           <Input
             type="text"
+            id="options-description"
             placeholder="Add description"
-            id="options-decription"
             name="options-decription"
             value={description}
-            onChange={(e) => this.setDescription(e.target.value)}
+            onChange={this.setDescription}
           />
         </InputGroup>
         <InputGroup>
@@ -167,7 +165,7 @@ class WidgetInfo extends React.Component {
             id="options-caption"
             name="options-caption"
             value={caption}
-            onChange={(e) => this.setCaption(e.target.value)}
+            onChange={this.setCaption}
           />
         </InputGroup>
         {!isMap && !advanced && (
@@ -180,7 +178,7 @@ class WidgetInfo extends React.Component {
                 id="options-value"
                 name="options-value"
                 value={yAxisTitle}
-                onChange={(e) => this.setYAxis(e.target.value)}
+                onChange={this.setYAxis}
               />
             </InputGroup>
             <InputGroup>
@@ -191,7 +189,7 @@ class WidgetInfo extends React.Component {
                 id="options-category"
                 name="options-category"
                 value={xAxisTitle}
-                onChange={(e) => this.setXAxis(e.target.value)}
+                onChange={this.setXAxis}
               />
             </InputGroup>
           </FlexContainer>
@@ -217,15 +215,15 @@ class WidgetInfo extends React.Component {
               value={format}
               options={VALUE_FORMAT_OPTIONS}
               onChange={this.setValueFormat}
+              aria-describedby="options-value-format-info"
             />
-            <InputInfo>
-              We are using d3-format for formating values, you can input your
-              own format or select a predefined one from the list. Read more
-              about formats:{" "}
-              <a href="https://github.com/d3/d3-format" target="__BLANK">
-                here
-              </a>
-              .
+            <InputInfo id="options-value-format-info">
+              You can select a predefined format from the list or write your own format based on the
+              {" "}
+              <a href="https://github.com/d3/d3-format" target="_blank" rel="noopener noreferrer">
+                d3-format
+              </a>{" "}
+              specification.
             </InputInfo>
           </InputGroup>
         )}
