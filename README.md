@@ -21,7 +21,7 @@ Happy coding!
 
 ## Monorepo Structure
 
-<img src="https://github.com/Vizzuality/widget-editor/blob/master/assets/widget-editor-packages.png" />
+<img src="https://github.com/Vizzuality/widget-editor/blob/main/assets/widget-editor-packages.png" />
 
 #### Managing packages
 
@@ -41,7 +41,7 @@ We recommend not adding packages globally (unless it's for building or dev depen
 
 We are using Redux sagas for side effects. We are handling what should be updated with `@core/services/state-proxy` that will make sure we have changes. (more to be added)
 
-<img src="https://github.com/Vizzuality/widget-editor/blob/master/assets/data-flow.png" />
+<img src="https://github.com/Vizzuality/widget-editor/blob/main/assets/data-flow.png" />
 
 #### Referencing packages within an application
 
@@ -57,20 +57,20 @@ import package from "@widget-editor/{package}";
 
 Our main package that gets distributed to NPM is under `packages/widget-editor`.
 
-Here we are exposing the editor, renderer, and redux related logic to the consumer. More documentation for the main package can be found [widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
+Here we are exposing the editor, renderer, and redux related logic to the consumer. More documentation for the main package can be found [widget-editor](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/widget-editor)
 
 #### Applications
 
-- [widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/applications/widget-editor)
+- [widget-editor](https://github.com/Vizzuality/widget-editor/blob/main/src/applications/widget-editor)
 
 #### Packages
 
-- [widget-editor](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/widget-editor)
-- [@widget-editor/core](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/core)
-- [@widget-editor/shared](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/shared)
-- [@widget-editor/renderer](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/renderer)
-- [@widget-editor/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/rw-adapter)
-- [@widget-editor/types](https://github.com/Vizzuality/widget-editor/blob/master/src/packages/types)
+- [widget-editor](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/widget-editor)
+- [@widget-editor/core](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/core)
+- [@widget-editor/shared](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/shared)
+- [@widget-editor/renderer](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/renderer)
+- [@widget-editor/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/rw-adapter)
+- [@widget-editor/types](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/types)
 
 ### Components
 
@@ -78,7 +78,7 @@ For our components we are using `styled-components` [documentation](https://www.
 
 ## Migrating widgets
 
-![Initial screen of the migration tool](https://github.com/Vizzuality/widget-editor/blob/develop/assets/migration-tool.png)
+![Initial screen of the migration tool](https://github.com/Vizzuality/widget-editor/blob/main/assets/migration-tool.png)
 
 The widget-editor includes an easy-to-use CLI that runs migrations for you. Once you've selected the version you want to migrate to, the CLI gives you 3 choices:
 - Get the list of the widgets that need migration
