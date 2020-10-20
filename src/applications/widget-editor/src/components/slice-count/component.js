@@ -37,7 +37,7 @@ const SliceCount = ({
         Slice count (donut and pie charts)
       </FormLabel>
       <FlexContainer row={true}>
-        <FlexController contain={20}>
+        <FlexController shrink="0">
           <Input
             value={`${localValue.value}`}
             type="number"
@@ -45,12 +45,13 @@ const SliceCount = ({
             name="options-slice-count"
             onChange={value => changeValue({ value, key: "slice-count" })}
             aria-describedby="options-slice-count-info"
+            size="3"
           />
         </FlexController>
-        <FlexController contain={80}>
+        <FlexController grow="1">
           <Slider
             min={min}
-            max={10} // TODO: Can we be dynamic with this?
+            max={10}
             value={localValue.value}
             onChange={(v) => changeValue({ value: v, key: null })}
           />

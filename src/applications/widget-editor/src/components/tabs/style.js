@@ -43,7 +43,7 @@ export const StyledTabsContent = styled.div`
 export const StyledList = styled.ul`
   display: flex;
   justify-content: flex-start;
-  padding: 20px 30px 20px 0;
+  padding: 20px 30px 10px 0;
   list-style: none;
 
   ${(props) => (props.compact.isCompact || props.compact.forceCompact) && css`

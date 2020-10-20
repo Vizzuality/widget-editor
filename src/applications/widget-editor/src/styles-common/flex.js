@@ -8,10 +8,10 @@ const FlexContainer = styled.div`
   flex-flow: ${props => (props.row ? "row" : "column")};
   width: 100%;
 
-  ${props =>
-    props.row
-      ? `> * { padding-right: 20px; &:last-child { padding-right: 0; } } `
-      : ""}
+  ${props => props.row
+    ? `> * { margin-right: 20px; &:last-child { margin-right: 0; } }`
+    : ""
+  }
 
   label {
     flex-basis: 100%;

@@ -21,14 +21,10 @@ export const StyledSchemesCardWrapper = styled.div`
 `;
 
 export const StyledSchemesCard = styled.div`
-  flex-basis: calc((100% / 3) - (20px / 3));
-  margin: 0 5px 10px;
+  flex-basis: calc((100% / 2) - (10px / 2));
+  margin: 0 10px 10px 0;
 
-  &:nth-of-type(3n + 1) {
-    margin-left: 0;
-  }
-
-  &:nth-of-type(3n + 3) {
+  &:nth-of-type(2n + 2) {
     margin-right: 0;
   }
 
@@ -52,7 +48,7 @@ export const StyledCardBox = styled.div`
   padding: 15px 18px;
 
   &:hover {
-    border: 2px solid #c32d7b;
+    border-color: #c32d7b;
     cursor: pointer;
   }
 `;
@@ -95,15 +91,10 @@ export const StyledCustomSchemeWrapper = styled.fieldset`
     justify-content: space-between;
 
     ${StyledColorInput} {
-      margin: 0 5px 10px;
-      margin-bottom: 10px;
-      flex-basis: calc((100% / 3) - (20px / 3));
+      margin: 0 10px 10px 0;
+      flex-basis: calc((100% / 2) - (10px / 2));
 
-      &:nth-of-type(3n + 1) {
-        margin-left: 0;
-      }
-
-      &:nth-of-type(3n + 3) {
+      &:nth-of-type(2n + 2) {
         margin-right: 0;
       }
 
