@@ -68,6 +68,7 @@ export default {
       border: `1px solid ${borderColor}`,
       borderRadius: "4px",
       backgroundColor: "rgba(255,255,255,1)",
+      pointerEvents: state.isDisabled ? 'none' : null,
     }
   },
 
