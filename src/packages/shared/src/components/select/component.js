@@ -28,6 +28,7 @@ const Select = ({
       onChange={onChange}
       isDisabled={disabled}
       styles={styles || SelectStyles}
+      captureMenuScroll={false}
       components={{
         DropdownIndicator: () => <StyledDropdownIndicator />,
         ClearIndicator: props => <StyledCloseIndicator {...props} />,
