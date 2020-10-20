@@ -5,7 +5,6 @@ import { AccordionArrowIcon } from "@widget-editor/shared"
 
 export const StyledAccordion = styled.div`
   width: 100%;
-  padding-top: 24px;
   padding-bottom: 24px;
 `;
 
