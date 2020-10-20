@@ -1,16 +1,17 @@
-import React, { Fragment } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 
 import { ArrowIcon } from "@widget-editor/shared";
 
 const StyledButton = styled.button`
-  border: 1px solid rgba(202, 204, 208, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 50px;
   padding: 13px 0;
-  cursor: pointer;
   border-radius: 5px;
+  border: 1px solid rgba(202, 204, 208, 0.85);
+  cursor: pointer;
   outline: none;
 
   &:focus {

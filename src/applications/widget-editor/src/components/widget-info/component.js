@@ -2,6 +2,7 @@ import React from "react";
 import isEqual from "lodash/isEqual";
 
 import FlexContainer from "styles-common/flex";
+import FlexController from "styles-common/flex-controller";
 import InputInfo from "styles-common/input-info";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
@@ -170,28 +171,32 @@ class WidgetInfo extends React.Component {
         </InputGroup>
         {!isMap && !advanced && (
           <FlexContainer row={true}>
-            <InputGroup>
-              <FormLabel htmlFor="options-value">Value</FormLabel>
-              <Input
-                type="text"
-                placeholder="Overwrite value axis name"
-                id="options-value"
-                name="options-value"
-                value={yAxisTitle}
-                onChange={this.setYAxis}
-              />
-            </InputGroup>
-            <InputGroup>
-              <FormLabel htmlFor="options-category">Category</FormLabel>
-              <Input
-                type="text"
-                placeholder="Overwrite category axis name"
-                id="options-category"
-                name="options-category"
-                value={xAxisTitle}
-                onChange={this.setXAxis}
-              />
-            </InputGroup>
+            <FlexController contain={50} shrink={1}>
+              <InputGroup>
+                <FormLabel htmlFor="options-value">Value</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Overwrite value axis name"
+                  id="options-value"
+                  name="options-value"
+                  value={yAxisTitle}
+                  onChange={this.setYAxis}
+                />
+              </InputGroup>
+            </FlexController>
+            <FlexController contain={50} shrink={1}>
+              <InputGroup>
+                <FormLabel htmlFor="options-category">Category</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Overwrite category axis name"
+                  id="options-category"
+                  name="options-category"
+                  value={xAxisTitle}
+                  onChange={this.setXAxis}
+                />
+              </InputGroup>
+            </FlexController>
           </FlexContainer>
         )}
         {!isMap && !advanced && (

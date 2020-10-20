@@ -85,7 +85,7 @@ const OrderValues = ({
       <InputGroup>
         <FormLabel htmlFor="options-order-title">Order by</FormLabel>
         <FlexContainer row={true}>
-          <FlexController contain={90}>
+          <FlexController grow="1" constrainElement="100">
             <Select
               formatOptionLabel={(...props) => formatOptionLabel(
                 // The aggregation is only applied to the value column
@@ -98,7 +98,7 @@ const OrderValues = ({
               isClearable
             />
           </FlexController>
-          <FlexController contain={10}>
+          <FlexController shrink="0">
             <ToggleOrder
               options={ORDER_TYPES}
               order={selectedOrder}

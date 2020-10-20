@@ -63,7 +63,7 @@ const QueryLimit = ({
 
       {!isFilter && (
         <FlexContainer row={true}>
-          <FlexController contain={20}>
+          <FlexController shrink="0">
             <Input
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
@@ -71,10 +71,11 @@ const QueryLimit = ({
               type={dateType ? "date" : "number"}
               id="options-limit-max"
               name="options-limit-max"
+              size="4"
               onChange={value => onChangeValue(isDouble ? [min, +value] : +value)}
             />
           </FlexController>
-          <FlexController contain={80}>
+          <FlexController  grow="1">
             <Slider
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
@@ -89,7 +90,7 @@ const QueryLimit = ({
       {isFilter && (
         <Fragment>
           <FlexContainer row={true}>
-            <FlexController contain={100}>
+            <FlexController contain={100} constrainElement={100}>
               <RangeWrapper>
                 <Slider
                   {...minMaxProps}
@@ -102,7 +103,7 @@ const QueryLimit = ({
             </FlexController>
           </FlexContainer>
           <FlexContainer row={true}>
-            <FlexController contain={50} constrainElement={40}>
+            <FlexController>
               {isDouble && (
                 <Input
                   {...minMaxProps}
@@ -111,15 +112,12 @@ const QueryLimit = ({
                   type={dateType ? "date" : "number"}
                   name="options-limit-min"
                   id="options-limit-min"
+                  size={dateType ? undefined : `${Math.max(minMaxProps.min, minMaxProps.max)}`.length + 1}
                   onChange={value => onChangeValue([+value, maxValue])}
                 />
             )}
             </FlexController>
-            <FlexController
-              contain={50}
-              constrainElement={40}
-              alignment="right"
-            >
+            <FlexController alignment="right">
               <Input
                 {...minMaxProps}
                 step={isFloatingPoint ? 0.1 : 1}
@@ -127,6 +125,7 @@ const QueryLimit = ({
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
                 id="options-limit-max"
+                size={dateType ? undefined : `${Math.max(minMaxProps.min, minMaxProps.max)}`.length + 1}
                 onChange={value => onChangeValue(isDouble ? [minValue, +value] : +value)}
               />
             </FlexController>
