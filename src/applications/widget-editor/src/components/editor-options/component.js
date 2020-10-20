@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useMemo } from "react";
 import styled, { css } from "styled-components";
 
 import useDebounce from "hooks/use-debounce";
@@ -71,6 +71,13 @@ const EditorOptions = ({
   dataService,
   isMap,
 }) => {
+  const tabsVisibility = useMemo(() => ({
+    general: true,
+    map: isMap,
+    style: !isMap && !advanced,
+    advanced: disabledFeatures.indexOf("advanced-editor") === -1 && !isMap,
+    table: disabledFeatures.indexOf("table-view") === -1 && !isMap && !advanced,
+  }), [isMap, advanced, disabledFeatures]);
 
   const handleSliceCount = useDebounce((value) => {
     patchConfiguration({ sliceCount: parseInt(value) });
@@ -111,7 +118,7 @@ const EditorOptions = ({
 
   return (
     <StyledContainer compact={compact}>
-      <Tabs>
+      <Tabs visible={tabsVisibility}>
         <Tab id="general" label="General">
           <Accordion>
             <AccordionSection title="Description and labels" openDefault>
@@ -165,58 +172,50 @@ const EditorOptions = ({
           </Accordion>
         </Tab>
         
-        {isMap && (
-          <Tab id="map" label="Map">
-            <Accordion>
-              <AccordionSection title="Configuration" openDefault>
+        <Tab id="map" label="Map">
+          <Accordion>
+            <AccordionSection title="Configuration" openDefault>
+              <Suspense fallback={<div>Loading...</div>}>
+                <MapInfo />
+              </Suspense>
+            </AccordionSection>
+          </Accordion>
+        </Tab>
+
+        <Tab id="style" label="Visual style">
+          <Accordion>
+            {disabledFeatures.indexOf("typography") === -1 && (
+              <AccordionSection title="Typography">
                 <Suspense fallback={<div>Loading...</div>}>
-                  <MapInfo />
+                  <Typography />
                 </Suspense>
               </AccordionSection>
-            </Accordion>
-          </Tab>
-        )}
+            )}
 
-        {!isMap && !advanced && (
-          <Tab id="style" label="Visual style">
-            <Accordion>
-              {disabledFeatures.indexOf("typography") === -1 && (
-                <AccordionSection title="Typography">
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <Typography />
-                  </Suspense>
-                </AccordionSection>
-              )}
+            {disabledFeatures.indexOf("theme-selection") === -1 && (
+              <AccordionSection
+                title="Color scheme"
+                openDefault={disabledFeatures.indexOf("typography") !== -1}
+              >
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ColorSchemes />
+                </Suspense>
+              </AccordionSection>
+            )}
+          </Accordion>
+        </Tab>
 
-              {disabledFeatures.indexOf("theme-selection") === -1 && (
-                <AccordionSection
-                  title="Color scheme"
-                  openDefault={disabledFeatures.indexOf("typography") !== -1}
-                >
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <ColorSchemes />
-                  </Suspense>
-                </AccordionSection>
-              )}
-            </Accordion>
-          </Tab>
-        )}
+        <Tab id="advanced" label="Advanced">
+          <Suspense fallback={<div>Loading...</div>}>
+            <AdvancedEditor />
+          </Suspense>
+        </Tab>
 
-        {disabledFeatures.indexOf("advanced-editor") === -1 && !isMap && (
-          <Tab id="advanced" label="Advanced">
-            <Suspense fallback={<div>Loading...</div>}>
-              <AdvancedEditor />
-            </Suspense>
-          </Tab>
-        )}
-
-        {disabledFeatures.indexOf("table-view") === -1 && !isMap && !advanced && (
-          <Tab id="table" label="Table view">
-            <Suspense fallback={<div>Loading...</div>}>
-              <TableView />
-            </Suspense>
-          </Tab>
-        )}
+        <Tab id="table" label="Table view">
+          <Suspense fallback={<div>Loading...</div>}>
+            <TableView />
+          </Suspense>
+        </Tab>
       </Tabs>
     </StyledContainer>
   );
