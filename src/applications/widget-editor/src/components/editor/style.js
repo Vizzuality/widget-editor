@@ -25,14 +25,14 @@ export const StyleEditorContainer = styled.div`
 
 export const StyledRendererContainer = styled.div`
   flex-basis: 520px;
-  max-width: calc((100% - 20px) / 2);
+  max-width: ${props => props.isCompact || props.forceCompact ?'100%' : 'calc((100% - 20px) / 2)'};
   flex-shrink: 1;
   height: 100%;
 `;
 
 export const StyledOptionsContainer = styled.div`
-  flex-basis: calc((100% - 20px) / 2 + 20px);
-  max-width: calc((100% - 20px) / 2 + 20px);
+  flex-basis: ${props => props.isCompact || props.forceCompact ? '100%' : 'calc((100% - 20px) / 2 + 20px)'};
+  max-width: ${props => props.isCompact || props.forceCompact ? '100%' : 'calc((100% - 20px) / 2 + 20px)'};
   height: 100%;
 
   ${props => props.isCompact  || props.forceCompact
