@@ -36,12 +36,12 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
 
   const onChangeDebounced = useDebounce(onChange);
 
-  const onChangeValue = useCallback(({ target }) => {
-    let newValue = target.value;
+  const onChangeValue = useCallback((value) => {
+    let newValue = value;
     if (filter.type === 'number') {
-      newValue = +target.value;
+      newValue = +value;
     } else if (filter.type === 'date') {
-      newValue = new Date(target.value);
+      newValue = new Date(value);
     }
 
     setValue(getInputValue(filter.type, newValue));

@@ -15,9 +15,6 @@ import isFloat from "@widget-editor/shared/lib/helpers/isFloat";
 const RangeWrapper = styled.div`
   padding: 10px 10px;
   box-sizing: border-box;
-  .rc-slider-handle {
-    margin-top: -7px;
-  }
 `;
 
 const QueryLimit = ({
@@ -66,17 +63,19 @@ const QueryLimit = ({
 
       {!isFilter && (
         <FlexContainer row={true}>
-          <FlexController contain={20}>
+          <FlexController shrink="0">
             <Input
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
-              value={maxValue}
+              value={`${maxValue}`}
               type={dateType ? "date" : "number"}
+              id="options-limit-max"
               name="options-limit-max"
-              onChange={e => onChangeValue(isDouble ? [min, +e.target.value] : +e.target.value)}
+              size="4"
+              onChange={value => onChangeValue(isDouble ? [min, +value] : +value)}
             />
           </FlexController>
-          <FlexController contain={80}>
+          <FlexController  grow="1">
             <Slider
               {...minMaxProps}
               step={isFloatingPoint ? 0.1 : 1}
@@ -91,7 +90,7 @@ const QueryLimit = ({
       {isFilter && (
         <Fragment>
           <FlexContainer row={true}>
-            <FlexController contain={100}>
+            <FlexController contain={100} constrainElement={100}>
               <RangeWrapper>
                 <Slider
                   {...minMaxProps}
@@ -104,32 +103,30 @@ const QueryLimit = ({
             </FlexController>
           </FlexContainer>
           <FlexContainer row={true}>
-            <FlexController contain={50} constrainElement={40}>
+            <FlexController>
               {isDouble && (
                 <Input
                   {...minMaxProps}
                   step={isFloatingPoint ? 0.1 : 1}
-                  value={minValue}
+                  value={`${minValue}`}
                   type={dateType ? "date" : "number"}
                   name="options-limit-min"
-                  onChange={e => onChangeValue([+e.target.value, maxValue])}
+                  id="options-limit-min"
+                  size={dateType ? undefined : `${Math.max(minMaxProps.min, minMaxProps.max)}`.length + 1}
+                  onChange={value => onChangeValue([+value, maxValue])}
                 />
             )}
             </FlexController>
-            <FlexController
-              contain={50}
-              constrainElement={40}
-              alignment="right"
-            >
+            <FlexController alignment="right">
               <Input
                 {...minMaxProps}
                 step={isFloatingPoint ? 0.1 : 1}
-                value={maxValue}
+                value={`${maxValue}`}
                 type={dateType ? "date" : "number"}
                 name="options-limit-max"
-                onChange={e =>
-                  onChangeValue(isDouble ? [minValue, +e.target.value] : +e.target.value)
-                }
+                id="options-limit-max"
+                size={dateType ? undefined : `${Math.max(minMaxProps.min, minMaxProps.max)}`.length + 1}
+                onChange={value => onChangeValue(isDouble ? [minValue, +value] : +value)}
               />
             </FlexController>
           </FlexContainer>

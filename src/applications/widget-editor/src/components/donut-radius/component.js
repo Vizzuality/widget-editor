@@ -34,17 +34,17 @@ const DonutRadius = ({
     <InputGroup>
       <FormLabel htmlFor="options-donut-radius">Donut radius</FormLabel>
       <FlexContainer row={true}>
-        <FlexController contain={20}>
+        <FlexController shrink="0">
           <Input
-            value={localValue.value}
+            value={`${localValue.value}`}
             type="number"
+            id="options-donut-radius"
             name="options-donut-radius"
-            onChange={(e) =>
-              changeValue({ value: e.target.value, key: "donut-radius" })
-            }
+            size="4"
+            onChange={value => changeValue({ value, key: "donut-radius" })}
           />
         </FlexController>
-        <FlexController contain={80}>
+        <FlexController grow="1">
           <Slider
             min={min}
             max={max}

@@ -1,24 +1,17 @@
 import styled, { css } from "styled-components";
 
 const FlexController = styled.div`
-  flex: 0 0 auto;
-  width: ${(props) =>
-    props.contain &&
-    css`
-      ${props.contain}%;
-    `}};
+  flex: ${props => props.grow || 0} ${props => props.shrink || 0} ${props => props.contain ? `${props.contain}%` : 'auto'}};
   display: flex;
-  box-sizing: border-box;
-  > * {
-    width: ${(props) =>
-      props.constrainElement ? `${props.constrainElement}%` : "100%"};
 
-    ${(props) =>
-      props.alignment &&
-      props.alignment === "right" &&
-      css`
-        margin-left: auto;
-      `}
+  > * {
+    ${(props) => props.constrainElement && css`
+      width: ${props.constrainElement}%;
+    `}
+
+    ${(props) => props.alignment && props.alignment === "right" && css`
+      margin-left: auto;
+    `}
   }
 `;
 

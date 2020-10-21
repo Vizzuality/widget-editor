@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
 import PropTypes from 'prop-types';
-import Select from "react-select";
 import styled from "styled-components";
+
+import { Select } from "@widget-editor/shared";
 
 const Wrapper = styled.div`
   margin-top: 15px;
@@ -20,8 +21,10 @@ const FilterStrings = ({ filter, onChange, ...rest }) => {
     <Wrapper>
       <Select
         isMulti
-        placeholder="Select values"
+        id={`filter-string-values-${filter.id}`}
         name={`filter-string-values-${filter.id}`}
+        aria-label="Select values"
+        placeholder="Select values"
         value={(filter.value ?? []).map(value => options.find(option => option.value === value))}
         options={options}
         onChange={selectedOptions => onChange(

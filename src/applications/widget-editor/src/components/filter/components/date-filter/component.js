@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from "react-select";
+
+import { Select } from "@widget-editor/shared";
 
 import InputGroup from "styles-common/input-group";
 import { FILTER_DATE_OPERATIONS } from '../../const';
@@ -14,7 +15,9 @@ const DateFilter = ({ filter, onChange }) => {
     <>
       <InputGroup noMargins={displayRange}>
         <Select
-          name={`filter-operation-${filter.id}`}
+          id={`filter-date-operation-${filter.id}`}
+          name={`filter-date-operation-${filter.id}`}
+          aria-label="Select an operation"
           placeholder="Select an operation"
           value={FILTER_DATE_OPERATIONS.find(op => op.value === filter.operation)}
           options={FILTER_DATE_OPERATIONS}

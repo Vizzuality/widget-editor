@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const StyledTabsContainer = styled.div`
   position: relative;
@@ -9,6 +9,11 @@ export const StyledTabsContentBox = styled.div`
   overflow-y: auto;
   height: calc(100% - 80px);
   padding-right: 30px;
+
+  ${(props) => (props.compact.isCompact || props.compact.forceCompact) && css`
+    height: calc(100% - 65px);
+    padding: 0 10px;
+  `}
 
 
   ::-webkit-scrollbar {
@@ -38,8 +43,12 @@ export const StyledTabsContent = styled.div`
 export const StyledList = styled.ul`
   display: flex;
   justify-content: flex-start;
-  padding: 20px 30px 20px 0;
+  padding: 20px 30px 10px 0;
   list-style: none;
+
+  ${(props) => (props.compact.isCompact || props.compact.forceCompact) && css`
+    padding: 10px;
+  `}
 `;
 
 export const StyledListLabel = styled.li`

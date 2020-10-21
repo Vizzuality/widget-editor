@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useCallback } from "react";
 
-import Select from "react-select";
+import { Select } from "@widget-editor/shared";
+import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
 import ToggleOrder from "components/toggle-order";
 
@@ -9,33 +10,23 @@ import FlexController from "styles-common/flex-controller";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
 
-const InputStyles = {
-  control: () => ({
-    // none of react-select's styles are passed to <Control />
-    display: "flex",
-    border: "1px solid rgba(202,204,208,0.85)",
-    background: "#FFF",
-    borderRadius: "4px",
-    padding: "3px 0",
-  }),
-  option: (base) => ({
-    ...base,
-  }),
-};
+import { formatOptionLabel } from "./utils";
 
 const ORDER_TYPES = [
   { label: "Asc", value: "asc" },
   { label: "Desc", value: "desc" },
 ];
 
-const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
-  const options = columns.map((c) => ({
-    value: c.name,
-    label: c.alias || c.name || c.identifier,
-  }));
-
-  const selectedOption = orderBy
-    ? options.find(option => option.value === orderBy.name)
+const OrderValues = ({
+  orderBy,
+  columns,
+  aggregateFunction,
+  valueColumn,
+  setFilters,
+  patchConfiguration,
+}) => {
+  const selectedOrderByOption = orderBy
+    ? columns.find(option => option.value === orderBy.name)
     : null;
 
   let selectedOrder;
@@ -45,42 +36,73 @@ const OrderValues = ({ orderBy, columns, setFilters, onChange }) => {
     selectedOrder = ORDER_TYPES[0];
   }
 
-  const handleChange = (option, changeOrder = 'asc') => {
-    const findSelected = option
-      ? columns.find((c) => c.name === option.value)
-      : {};
-    setFilters({
-      orderBy: {
-        ...findSelected,
-        orderType: changeOrder || selectedOrder.value,
-      },
-    });
-    onChange({
-      ...findSelected,
-      orderType: changeOrder || findSelected.orderType,
-    });
-  };
+  const aggregation = aggregateFunction
+    ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
+    : null;
+
+  const onChangeOrderBy = useCallback(option => {
+    let data;
+    if (!option) {
+      data = { orderBy: null };
+    } else {
+      data = {
+        orderBy: {
+          name: option.value,
+          type: option.type,
+          alias: option.label !== option.value ? option.label : undefined,
+          orderType: ORDER_TYPES[0].value,
+        },
+      };
+    }
+
+    setFilters(data);
+    patchConfiguration(data);
+  }, [setFilters, patchConfiguration]);
+
+  const onChangeOrderType = useCallback(option => {
+    let data;
+    if (!selectedOrderByOption) {
+      data = { orderBy: null };
+    } else {
+      data = {
+        orderBy: {
+          name: selectedOrderByOption.value,
+          type: selectedOrderByOption.type,
+          alias: selectedOrderByOption.label !== selectedOrderByOption.value
+            ? selectedOrderByOption.label
+            : undefined,
+          orderType: option.value,
+        }
+      };
+    }
+
+    setFilters(data);
+    patchConfiguration(data);
+  }, [selectedOrderByOption, setFilters, patchConfiguration]);
 
   return (
     <FlexContainer>
       <InputGroup>
         <FormLabel htmlFor="options-order-title">Order by</FormLabel>
         <FlexContainer row={true}>
-          <FlexController contain={90}>
+          <FlexController grow="1" constrainElement="100">
             <Select
-              onChange={(option) => handleChange(option)}
-              value={selectedOption}
-              options={options}
-              styles={InputStyles}
+              formatOptionLabel={(...props) => formatOptionLabel(
+                // The aggregation is only applied to the value column
+                valueColumn?.name === selectedOrderByOption?.value ? aggregation : null, ...props
+              )}
+              id="options-order-title"
+              value={selectedOrderByOption}
+              options={columns}
+              onChange={onChangeOrderBy}
+              isClearable
             />
           </FlexController>
-          <FlexController contain={10}>
+          <FlexController shrink="0">
             <ToggleOrder
               options={ORDER_TYPES}
               order={selectedOrder}
-              onChange={(option) => {
-                handleChange(selectedOption, option.value);
-              }}
+              onChange={onChangeOrderType}
             />
           </FlexController>
         </FlexContainer>

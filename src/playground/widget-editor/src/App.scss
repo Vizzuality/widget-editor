@@ -82,9 +82,15 @@
 }
 
 .widget-editor-wrapper {
-  width: calc(100vw - 40px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  min-height: 600px;
   padding: 20px;
   background-color: #f1f1f1;
+  box-sizing: border-box;
 }
 
 .renderer-wrapper {

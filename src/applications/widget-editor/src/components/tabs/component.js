@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Button } from "@widget-editor/shared";
 import {
   StyledTabsContainer,
@@ -12,14 +12,25 @@ const TabButton = (props) => {
   return <Button style={{ height: "100%" }} {...props} />;
 };
 
-export const Tabs = ({ children }) => {
-  const validChildren = useMemo(() => children.filter(c => !!c), [children]);
-  const [activeId, setActiveId] = useState(validChildren[0].props.id);
+export const Tabs = ({ visible, theme, children }) => {
+  const visibleChildren = useMemo(
+    () => children.filter(child => !!child && visible[child.props.id]),
+    [children, visible]
+  );
+  const [activeId, setActiveId] = useState(visibleChildren[0].props.id);
+
+  // When the user switched between map and chart, some tabs disappear
+  // Here we make sure that we always have a tab active
+  useEffect(() => {
+    if (!visible[activeId]) {
+      setActiveId(visibleChildren[0].props.id);
+    }
+  }, [visible, visibleChildren, activeId, setActiveId]);
 
   return (
     <StyledTabsContainer>
-      <StyledList>
-        {validChildren.map(({ props: { id, label } }) => label
+      <StyledList {...theme}>
+        {visibleChildren.map(({ props: { id, label } }) => label
           ? (
             <StyledListLabel key={id}>
               <TabButton onClick={() => setActiveId(id)} active={id === activeId}>
@@ -30,8 +41,8 @@ export const Tabs = ({ children }) => {
           : null
         )}
       </StyledList>
-      <StyledTabsContentBox>
-        {validChildren.map(({ props: { id, children: content } }) => (
+      <StyledTabsContentBox {...theme}>
+        {visibleChildren.map(({ props: { id, children: content } }) => (
           <StyledTabsContent key={id} active={id === activeId}>
             {content}
           </StyledTabsContent>

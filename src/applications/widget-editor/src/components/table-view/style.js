@@ -2,10 +2,8 @@ import styled from "styled-components";
 
 export const StyledTableBox = styled.div`
   width: 100%;
-  max-height: 540px;
-  overflow: auto;
+  margin: 11px 0 20px;
   border: 1px solid rgba(26, 28, 34, 0.1);
-  margin-bottom: 20px;
 `;
 
 export const StyledTable = styled.table`

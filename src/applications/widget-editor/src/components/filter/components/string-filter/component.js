@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from "react-select";
+
+import { Select } from "@widget-editor/shared";
 
 import InputGroup from "styles-common/input-group";
 import { FILTER_STRING_OPERATIONS } from '../../const';
@@ -14,7 +15,9 @@ const StringFilter = ({ filter, onChange }) => {
     <>
       <InputGroup noMargins={displaySelect}>
         <Select
-          name={`filter-operation-${filter.id}`}
+          id={`filter-string-operation-${filter.id}`}
+          name={`filter-string-operation-${filter.id}`}
+          aria-label="Select an operation"
           placeholder="Select an operation"
           value={FILTER_STRING_OPERATIONS.find(op => op.value === filter.operation)}
           options={FILTER_STRING_OPERATIONS}

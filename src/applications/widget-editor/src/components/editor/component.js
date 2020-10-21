@@ -6,7 +6,12 @@ import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 import { DataService, getOutputPayload } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
-import { StyledContainer, StyleEditorContainer } from "./style";
+import {
+  StyledContainer,
+  StyleEditorContainer,
+  StyledRendererContainer,
+  StyledOptionsContainer,
+} from "./style";
 
 import { localGetEditorState, setReduxCache } from "exposed-hooks";
 
@@ -133,7 +138,7 @@ class Editor extends React.Component {
 
   // We debounce all properties here
   // Then we dont have to care if debouncing is set on the client
-  resolveTheme = debounce((userPassedTheme) => {
+  resolveTheme = (userPassedTheme) => {
     const { setTheme, userPassedCompact } = this.props;
     setTheme({
       ...userPassedTheme,
@@ -142,7 +147,7 @@ class Editor extends React.Component {
         forceCompact: userPassedCompact || false,
       },
     });
-  }, 1000);
+  };
 
   resolveSchemes = debounce((schemes) => {
     const { setSchemes } = this.props;
@@ -169,8 +174,12 @@ class Editor extends React.Component {
     return (
       <StyledContainer {...compact}>
         <StyleEditorContainer>
-          <Renderer adapter={adapter} standalone={false} />
-          <EditorOptions adapter={adapterInstance} dataService={this.dataService} />
+          <StyledRendererContainer {...compact}>
+            <Renderer adapter={adapter} standalone={false} />
+          </StyledRendererContainer>
+          <StyledOptionsContainer {...compact}>
+            <EditorOptions adapter={adapterInstance} dataService={this.dataService} />
+          </StyledOptionsContainer>
         </StyleEditorContainer>
         <Footer onSave={this.onSave} />
       </StyledContainer>

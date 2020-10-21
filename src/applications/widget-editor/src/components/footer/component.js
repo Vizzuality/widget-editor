@@ -1,30 +1,22 @@
-import React, { useState, Fragment } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 
 import { Button } from "@widget-editor/shared";
 
-import { FOOTER_HEIGHT } from "@widget-editor/shared/lib/styles/style-constants";
-
 const StyledFooter = styled.footer`
-  ${(props) =>
-    props.disabled &&
-    css`
-      display: none;
-    `}
   width: 100%;
-  height: ${FOOTER_HEIGHT};
-  align-self: flex-end;
+  margin-top: 20px;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  ${(props) => props.disabled && css`
+    display: none;
+  `}
 `;
 
 const Footer = ({ enableSave, onSave }) => {
   return (
     <StyledFooter disabled={!enableSave}>
       {enableSave && (
-        <Button role="button" type="button" btnType="cta" onClick={onSave}>
+        <Button type="button" btnType="cta" onClick={onSave}>
           Save widget
         </Button>
       )}

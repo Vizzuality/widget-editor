@@ -3,9 +3,8 @@ import FlexContainer from 'styles-common/flex';
 import FormLabel from 'styles-common/form-label';
 import InputGroup from 'styles-common/input-group';
 import Input from 'styles-common/input';
-import Select from 'react-select';
+import { Select } from '@widget-editor/shared';
 import { FONTS } from './const';
-import { InputStyles } from './style';
 
 const Typography = ({ theme, setTheme }) => {
 
@@ -30,12 +29,12 @@ const Typography = ({ theme, setTheme }) => {
 
   return (
     <div>
-        <FormLabel htmlFor="options-title">Font</FormLabel>
+        <FormLabel htmlFor="typography-font">Font</FormLabel>
         <Select
+          id="typography-font"
           value={selectedFont}
           onChange={handleChangeFont}
           options={FONTS}
-          styles={InputStyles}
         />
         <br />
         <FlexContainer row={true}>
@@ -45,28 +44,28 @@ const Typography = ({ theme, setTheme }) => {
               name="typography-title-size" 
               value={titleSize === "auto" ? '' : titleSize}
               type="text"
-              onChange={e => handleChangeSize('titleSize', e.target.value)}
+              onChange={value => handleChangeSize('titleSize', value)}
               placeholder="Auto"
             />
           </InputGroup>
           <InputGroup>
-            <FormLabel htmlF  or="typography-caption-size">Caption size</FormLabel>
+            <FormLabel htmlFor="typography-caption-size">Caption size</FormLabel>
             <Input 
               name="typography-caption-size" 
               value={captionSize === "auto" ? '' : captionSize}
               type="text"
-              onChange={e => handleChangeSize('captionSize', e.target.value)}
+              onChange={value => handleChangeSize('captionSize', value)}
               placeholder="Auto"
             />
           </InputGroup>
           <InputGroup>
-            <FormLabel htmlFor="typography-axisTitleSize">Axis title size</FormLabel>
+            <FormLabel htmlFor="typography-axis-title-size">Axis title size</FormLabel>
             <Input 
-               name="typography-axisTitleSize" 
-               value={axisTitleSize === "auto" ? '' : axisTitleSize}
-               type="text"
-               onChange={e => handleChangeSize('axisTitleSize', e.target.value)}
-               placeholder="Auto"
+              name="typography-axis-title-size" 
+              value={axisTitleSize === "auto" ? '' : axisTitleSize}
+              type="text"
+              onChange={value => handleChangeSize('axisTitleSize', value)}
+              placeholder="Auto"
             />
           </InputGroup>
         </FlexContainer>      

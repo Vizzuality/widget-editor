@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
+
 import { utils } from '@widget-editor/core';
 import { Select } from "@widget-editor/shared";
+import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
 import {
   StyledContainer,
@@ -8,7 +10,10 @@ import {
   StyledColorsBox,
   StyledColorDot,
   StyledDropdownBox,
+  SelectStyles,
 } from "./style";
+
+import { formatOptionLabel } from './utils';
 
 // XXX: Move me
 function resolveLabel(label, type) {
@@ -24,21 +29,32 @@ const Legend = ({
   advanced,
   configuration,
   scheme,
-  selectedColor,
+  selectedColumn,
   columns,
+  aggregateFunction,
+  valueColumn,
   patchConfiguration,
   compact,
 }) => {
   const isPie = configuration.chartType === "pie";
   const multipleItems = widget?.legend?.[0]?.values.length > 0;
+  const aggregation = aggregateFunction
+    ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
+    : null;
 
   const handleChange = useCallback((option) => {
-    const color = option.identifier === "___single_color" ? null : option;
+    const newOption = option.value === "_single_color"
+      ? null
+      : {
+        name: option.value,
+        type: option.type,
+        alias: option.label !== option.value ? option.label : undefined,
+      };
 
     if (isPie) {
-      patchConfiguration({ category: color });
+      patchConfiguration({ category: newOption });
     } else {
-      patchConfiguration({ color });
+      patchConfiguration({ color: newOption });
     }
   }, [isPie, patchConfiguration]);
 
@@ -61,17 +77,15 @@ const Legend = ({
       {!advanced && (
         <StyledDropdownBox>
           <Select
-            align="horizontal"
-            relative={true}
-            menuPlacement="top"
-            value={selectedColor}
-            onChange={handleChange}
-            getOptionLabel={(option) => option.alias || option.name}
-            getOptionValue={(option) => option.identifier}
+            id="legend"
+            value={selectedColumn}
             options={columns}
-            configuration={configuration}
-            isCustom
-            isPopup
+            onChange={handleChange}
+            formatOptionLabel={(...props) => formatOptionLabel(
+              // The aggregation is only applied to the value column
+              valueColumn?.name === selectedColumn?.value ? aggregation : null, ...props
+            )}
+            styles={SelectStyles}
           />
         </StyledDropdownBox>
       )}

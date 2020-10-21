@@ -1,118 +1,127 @@
+import React from 'react';
 import styled, { css } from "styled-components";
 
-export const StyledSelectBox = styled.div`
-  width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
+import { AccordionArrowIcon, CloseIcon } from "components/icons";
 
-  ${(props) =>
-    !props.relative &&
-    css`
-      position: absolute;
-      bottom: 10px;
-      left: calc(50% - 150px);
-    `}
-
-  ${(props) =>
-    props.align === "vertical" &&
-    css`
-      bottom: 0;
-      left: -10px;
-      max-width: 60px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `}
+export const StyledDropdownIndicator = styled(props => <AccordionArrowIcon {...props} />)`
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  stroke: #c32d7b;
 `;
 
-export const StyledOverflow = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  z-index: 10;
+export const StyledCloseIndicator = styled(({ innerProps, className }) => {
+  const Icon = styled(CloseIcon)`
+    display: block;
+  `;
+  
+  return (
+    <div {...innerProps} className={className}>
+      <Icon width="10" height="10" />
+    </div>
+  );
+})`
+  padding: 8px;
 `;
 
-export const InputStyles = {
-  control: () => ({
-    display: "flex",
-    border: "1px solid rgba(202,204,208,0.85)",
-    background: "#FFF",
-    borderRadius: "4px",
-    padding: "3px 0",
-  }),
-};
+export const StyledColumnOption = styled(({ overflow, ...rest }) => <div {...rest} />)`
+  ${
+    props => !props.overflow 
+      ? css`
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      `
+      : ''
+  }
 
-export const CustomStyles = {
-  container: () => ({
-    position: "relative",
-    boxSizing: "border-box",
-    cursor: "pointer",
-  }),
+  svg {
+    margin-right: 5px;
+
+    path {
+      fill: currentColor;
+    }
+  }
+`;
+
+export const StyledColumnOptionDescription = styled.div`
+  margin-top: 5px;
+  font-size: 14px;
+  font-style: italic;
+  white-space: initial;
+  color: #717171;
+`;
+
+export default {
+  container: (_, state) => {
+    let borderColor = "rgba(202,204,208,0.85)";
+    if (state.isDisabled) {
+      borderColor = "rgba(202,204,208,0.34)";
+    } else if (state.isFocused) {
+      borderColor = "#c32d7b";
+    }
+
+    return {
+      position: "relative",
+      boxSizing: "border-box",
+      cursor: "pointer",
+      border: `1px solid ${borderColor}`,
+      borderRadius: "4px",
+      backgroundColor: "rgba(255,255,255,1)",
+      pointerEvents: state.isDisabled ? 'none' : null,
+    }
+  },
 
   indicatorSeparator: () => ({
     display: "none",
   }),
 
   dropdownIndicator: (provided, state) => {
-    const { menuIsOpen, align } = state.selectProps;
     return {
       color: "#c32d7b",
-      transform:
-        menuIsOpen && align === "horizontal" ? "rotate(180deg)" : "none",
       transition: "all 0.2s ease-out",
     };
   },
 
   indicatorsContainer: () => ({
-    color: "#c32d7b",
-    display: "flex",
-    padding: "8px",
-    transition: "color 150ms",
-    boxSizing: "border-box",
     position: "relative",
-    top: "5px",
+    top: "2px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#c32d7b",
   }),
 
-  control: (provided, state) => {
-    const { align } = state.selectProps;
-    const wordPixel = 10;
-    const additionalProps =
-      align === "vertical"
-        ? {
-            transform: "rotate(-90deg)",
-          }
-        : null;
+  control: () => ({
+    display: "flex",
+    minHeight: "43px",
+    border: "none",
+    borderRadius: "4px",
+  }),
+
+  option: (provided, state) => {
+    let backgroundColor = "white";
+    if (state.isFocused) {
+      backgroundColor = "rgba(44, 117, 176, 0.1)";
+    }
+
+    const color = state.isSelected ? "#2C75B0" : "#393f44";
+
     return {
-      margin: "0 auto",
-      display: "flex",
-      border: "none",
-      minWidth: "90px",
-      borderRadius: "4px",
-      maxWidth: "210px",
-      padding: "3px 0",
-      ...additionalProps,
+      ...provided,
+      color,
+      backgroundColor,
     };
   },
 
-  menu: (provided, state) => {
-    const { align } = state.selectProps;
-    const additionalProps =
-      align === "vertical"
-        ? {
-            position: "absolute",
-            left: "100px",
-            top: "-50px",
-            bottom: "auto",
-            width: "300px",
-          }
-        : null;
-    return {
-      ...provided,
-      ...additionalProps,
-    };
-  },
+  multiValue: provided => ({
+    ...provided,
+    backgroundColor: "rgba(44, 117, 176, 0.1)",
+  }),
+
+  placeholder: provided => ({
+    ...provided,
+    color: "#c5c7c8",
+    fontFamily: "'Lato', 'Helvetica Neue', Helvetica, Arial, sans",
+  }),
 };

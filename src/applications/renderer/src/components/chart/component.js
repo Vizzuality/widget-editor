@@ -224,7 +224,7 @@ class Chart extends React.Component {
   }
 
   render() {
-    const { thumbnail, standalone, advanced = false } = this.props;
+    const { thumbnail, standalone, advanced = false, configuration: { chartType } } = this.props;
     const { chartReady, invalidData } = this.state;
 
     return (
@@ -232,25 +232,32 @@ class Chart extends React.Component {
         standalone={standalone}
         thumbnail={thumbnail}
         compact={this.props.compact}
+        hasYAxis={chartType !== "pie" && chartType !== "donut"}
         ref={(c) => {
           this.view = c;
         }}
       >
-        {!this.noDataAvailable() && <div
-          className="c-chart"
-          ref={(c) => {
-            this.chart = c;
-          }}
-        ></div>}
+        {!this.noDataAvailable() && (
+          <div
+            className="c-chart"
+            ref={(c) => {
+              this.chart = c;
+            }}
+          />
+        )}
+
         {this.noDataAvailable() && (
           <Fragment>
-            {chartReady && <ChartNeedsOptions>
-              Select value & category to visualize data
-            </ChartNeedsOptions>}
-            {invalidData && <ChartNeedsOptions>
-              No data available
-            </ChartNeedsOptions>}
-            {this.columnSelection()}
+            {chartReady && (
+              <ChartNeedsOptions>
+                Select value & category to visualize data
+              </ChartNeedsOptions>
+            )}
+            {invalidData && (
+              <ChartNeedsOptions>
+                No data available
+              </ChartNeedsOptions>
+            )}
           </Fragment>
         )}
 

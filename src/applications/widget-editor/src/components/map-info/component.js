@@ -1,31 +1,12 @@
 import React, { useEffect } from "react";
 
-import Select from "react-select";
-
+import { Select } from "@widget-editor/shared";
 import { BASEMAPS, LABELS, BOUNDARIES } from '@widget-editor/map/lib/constants';
 
 import FlexContainer from "styles-common/flex";
 import FormLabel from "styles-common/form-label";
 import InputGroup from "styles-common/input-group";
-import Input from "styles-common/input";
-
-import BasemapSelection from "./basemaps";
-import LabelSelection from "./labels";
-import BoundariesSelection from "./boundaries";
-
-const InputStyles = {
-  control: () => ({
-    // none of react-select's styles are passed to <Control />
-    display: "flex",
-    border: "1px solid rgba(202,204,208,0.85)",
-    borderRadius: "4px",
-    background: "#FFF",
-    padding: "3px 0",
-  }),
-  option: (base) => ({
-    ...base,
-  }),
-};
+import Checkbox from "styles-common/checkbox";
 
 const generateOptions = (layers) => {
   if (!layers) {
@@ -102,36 +83,50 @@ const MapInfo = ({ editor, configuration, patchConfiguration, editorSyncMap }) =
   return (
     <FlexContainer>
       <InputGroup>
-        <FormLabel htmlFor="options-title">Layers</FormLabel>
+        <FormLabel htmlFor="map-options-title">Layers</FormLabel>
         <Select
-          onChange={(option) => handleChange(option)}
+          id="map-options-title"
           value={selectedOption}
           options={options}
-          styles={InputStyles}
+          onChange={(option) => handleChange(option)}
         />
       </InputGroup>
       <InputGroup>
-        <FormLabel htmlFor="options-basemap">Basemap</FormLabel>
-        <BasemapSelection
-          configuration={configuration}
-          basemaps={BASEMAPS}
-          onSetBasemap={(basemap) => setBasemap(basemap)}
+        <FormLabel htmlFor="map-options-basemap">Basemap</FormLabel>
+        <Select
+          id="map-options-basemap"
+          value={{
+            label: BASEMAPS[configuration.map.basemap.basemap].label,
+            value: BASEMAPS[configuration.map.basemap.basemap].id,
+          }}
+          options={Object.keys(BASEMAPS).map(basemap => ({
+            label: BASEMAPS[basemap].label,
+            value: BASEMAPS[basemap].id,
+          }))}
+          onChange={option => setBasemap(option.value)}
         />
       </InputGroup>
       <InputGroup>
-        <FormLabel htmlFor="options-labels">Labels</FormLabel>
-        <LabelSelection
-          configuration={configuration}
-          labels={LABELS}
-          onSetLabel={(label) => setLabels(label)}
+        <FormLabel htmlFor="map-options-labels">Labels</FormLabel>
+        <Select
+          id="map-options-labels"
+          value={{
+            label: LABELS[configuration.map.basemap.labels].label,
+            value: LABELS[configuration.map.basemap.labels].id,
+          }}
+          options={Object.keys(LABELS).map(labels => ({
+            label: LABELS[labels].label,
+            value: LABELS[labels].id,
+          }))}
+          onChange={label => setLabels(label.value)}
         />
       </InputGroup>
       <InputGroup>
-        <FormLabel htmlFor="options-boundaries">Boundaries</FormLabel>
-        <BoundariesSelection
-          configuration={configuration}
-          boundaries={BOUNDARIES}
-          onSetBoundry={(active) => setBoundaries(active)}
+        <Checkbox
+          id="map-options-boundaries"
+          label={BOUNDARIES.dark.label}
+          checked={configuration?.map?.basemap?.boundaries === true}
+          onChange={setBoundaries}
         />
       </InputGroup>
     </FlexContainer>

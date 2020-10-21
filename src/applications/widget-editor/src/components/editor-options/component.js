@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useMemo } from "react";
 import styled, { css } from "styled-components";
 
 import useDebounce from "hooks/use-debounce";
@@ -11,10 +11,7 @@ import QueryLimit from "components/query-limit";
 import Filter from "components/filter";
 import EndUserFilters from "components/end-user-filters";
 
-import {
-  FOOTER_HEIGHT,
-  DEFAULT_BORDER,
-} from "@widget-editor/shared/lib/styles/style-constants";
+import { DEFAULT_BORDER } from "@widget-editor/shared/lib/styles/style-constants";
 
 const AdvancedEditor = React.lazy(() => import("../advanced-editor"));
 const TableView = React.lazy(() => import("../table-view"));
@@ -42,35 +39,19 @@ const StyleEditorOptionsInfo = styled.div`
 const StyledContainer = styled.div`
   position: relative;
   flex: 1;
-  padding: 0 0 0 30px;
+  padding: 0 0 0 20px;
   margin: 10px 0;
   height: calc(100% - 20px);
   overflow-y: hidden;
   ${DEFAULT_BORDER(1, 1, 1, 0)}
-  ${(props) =>
-    (props.compact.isCompact || props.compact.forceCompact) &&
-    css`
-      visibility: hidden;
-      /* z-index: -1; */
-      max-height: 0;
-      position: absolute;
-      top: 65px;
-      left: 0;
-      margin: 0;
-      width: 100%;
-      background: #fff;
-      transition: all 0.3s ease-in-out;
-    `}
-  ${(props) =>
-    (props.compact.isCompact || props.compact.forceCompact) &&
-    props.compact.isOpen &&
-    css`
-      box-sizing: border-box;
-      display: block;
-      z-index: 2;
-      visibility: visible;
-      max-height: calc(100% - ${FOOTER_HEIGHT} - 65px);
-    `}
+
+  ${(props) => (props.compact.isCompact || props.compact.forceCompact) && css`
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    ${DEFAULT_BORDER(1, 0, 0, 0)}
+    box-shadow: none;
+  `}
 `;
 
 const EditorOptions = ({
@@ -90,6 +71,13 @@ const EditorOptions = ({
   dataService,
   isMap,
 }) => {
+  const tabsVisibility = useMemo(() => ({
+    general: true,
+    map: isMap,
+    style: !isMap && !advanced,
+    advanced: disabledFeatures.indexOf("advanced-editor") === -1 && !isMap,
+    table: disabledFeatures.indexOf("table-view") === -1 && !isMap && !advanced,
+  }), [isMap, advanced, disabledFeatures]);
 
   const handleSliceCount = useDebounce((value) => {
     patchConfiguration({ sliceCount: parseInt(value) });
@@ -98,10 +86,6 @@ const EditorOptions = ({
   const handleDonutRadius = useDebounce((value) => {
     patchConfiguration({ donutRadius: parseInt(value) });
   });
-
-  const handleOrderBy = (value) => {
-    patchConfiguration({ orderBy: value });
-  }
 
   const handleGroupBy = (value) => {
     patchConfiguration({ groupBy: value });
@@ -134,7 +118,7 @@ const EditorOptions = ({
 
   return (
     <StyledContainer compact={compact}>
-      <Tabs>
+      <Tabs visible={tabsVisibility}>
         <Tab id="general" label="General">
           <Accordion>
             <AccordionSection title="Description and labels" openDefault>
@@ -152,9 +136,7 @@ const EditorOptions = ({
             )}
             {!isMap && !advanced && (
               <AccordionSection title="Order">
-                <OrderValues
-                  onChange={(value) => handleOrderBy(value)}
-                />
+                <OrderValues />
                 {limit !== undefined && limit !== null && (
                   <QueryLimit
                     min={0}
@@ -190,58 +172,50 @@ const EditorOptions = ({
           </Accordion>
         </Tab>
         
-        {isMap && (
-          <Tab id="map" label="Map">
-            <Accordion>
-              <AccordionSection title="Configuration" openDefault>
+        <Tab id="map" label="Map">
+          <Accordion>
+            <AccordionSection title="Configuration" openDefault>
+              <Suspense fallback={<div>Loading...</div>}>
+                <MapInfo />
+              </Suspense>
+            </AccordionSection>
+          </Accordion>
+        </Tab>
+
+        <Tab id="style" label="Visual style">
+          <Accordion>
+            {disabledFeatures.indexOf("typography") === -1 && (
+              <AccordionSection title="Typography">
                 <Suspense fallback={<div>Loading...</div>}>
-                  <MapInfo />
+                  <Typography />
                 </Suspense>
               </AccordionSection>
-            </Accordion>
-          </Tab>
-        )}
+            )}
 
-        {!isMap && !advanced && (
-          <Tab id="style" label="Visual style">
-            <Accordion>
-              {disabledFeatures.indexOf("typography") === -1 && (
-                <AccordionSection title="Typography">
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <Typography />
-                  </Suspense>
-                </AccordionSection>
-              )}
+            {disabledFeatures.indexOf("theme-selection") === -1 && (
+              <AccordionSection
+                title="Color scheme"
+                openDefault={disabledFeatures.indexOf("typography") !== -1}
+              >
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ColorSchemes />
+                </Suspense>
+              </AccordionSection>
+            )}
+          </Accordion>
+        </Tab>
 
-              {disabledFeatures.indexOf("theme-selection") === -1 && (
-                <AccordionSection
-                  title="Color scheme"
-                  openDefault={disabledFeatures.indexOf("typography") !== -1}
-                >
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <ColorSchemes />
-                  </Suspense>
-                </AccordionSection>
-              )}
-            </Accordion>
-          </Tab>
-        )}
+        <Tab id="advanced" label="Advanced">
+          <Suspense fallback={<div>Loading...</div>}>
+            <AdvancedEditor />
+          </Suspense>
+        </Tab>
 
-        {disabledFeatures.indexOf("advanced-editor") === -1 && !isMap && (
-          <Tab id="advanced" label="Advanced">
-            <Suspense fallback={<div>Loading...</div>}>
-              <AdvancedEditor />
-            </Suspense>
-          </Tab>
-        )}
-
-        {disabledFeatures.indexOf("table-view") === -1 && !isMap && !advanced && (
-          <Tab id="table" label="Table view">
-            <Suspense fallback={<div>Loading...</div>}>
-              <TableView />
-            </Suspense>
-          </Tab>
-        )}
+        <Tab id="table" label="Table view">
+          <Suspense fallback={<div>Loading...</div>}>
+            <TableView />
+          </Suspense>
+        </Tab>
       </Tabs>
     </StyledContainer>
   );
