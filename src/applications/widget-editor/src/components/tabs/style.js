@@ -42,7 +42,7 @@ export const StyledTabsContent = styled.div`
 
 export const StyledList = styled.ul`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 20px 30px 10px 0;
   list-style: none;
 
@@ -52,11 +52,17 @@ export const StyledList = styled.ul`
 `;
 
 export const StyledListLabel = styled.li`
+  flex-grow: 1;
   color: red;
   margin: 0 5px 0 0;
 
   &:last-child {
     margin-right: 0;
+  }
+
+  button {
+    width: 100%;
+    text-align: center;
   }
 
   button[aria-pressed = "true"] {
@@ -66,5 +72,6 @@ export const StyledListLabel = styled.li`
   button[aria-pressed = "false"] {
     // Prevent the change from a 1px width to a 2px width to cause a jump
     margin: 0 1px;
+    width: calc(100% - 2px);
   }
 `;
