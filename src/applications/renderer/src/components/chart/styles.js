@@ -11,7 +11,6 @@ export const ChartNeedsOptions = styled.h4`
 export const StyledContainer = styled.div`
   ${(props) => !props.standalone && css`
     position: relative;
-    overflow: hidden;
     flex-grow: 1;
     flex-shrink: 1;
     width: 100%;
@@ -63,13 +62,5 @@ export const StyledContainer = styled.div`
         }
       }
     }
-
-    ${(props) => !props.standalone && css`
-      max-height: 400px;
-    `}
-
-    ${(props) => props.compact && css`
-      height: 400px;
-    `}
   }
 `;
