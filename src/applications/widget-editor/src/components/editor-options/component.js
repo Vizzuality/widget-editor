@@ -74,7 +74,10 @@ const EditorOptions = ({
   const tabsVisibility = useMemo(() => ({
     general: true,
     map: isMap,
-    style: !isMap && !advanced,
+    style: !isMap && !advanced && (
+      disabledFeatures.indexOf("typography") === -1
+        || disabledFeatures.indexOf("theme-selection") === -1
+    ),
     advanced: disabledFeatures.indexOf("advanced-editor") === -1 && !isMap,
     table: disabledFeatures.indexOf("table-view") === -1 && !isMap && !advanced,
   }), [isMap, advanced, disabledFeatures]);
