@@ -22,10 +22,6 @@ export const StyledContainer = styled.div`
     height: auto;
   `}
 
-  ${(props) => props.compact && css`
-    padding-bottom: 50px;
-  `}
-
   .c-chart {
     display: flex;
     flex-direction: column;
