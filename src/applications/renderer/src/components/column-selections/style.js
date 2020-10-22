@@ -7,7 +7,7 @@ const SELECT_WIDTH = 250;
 export const StyledBottomSelect = styled.div`
   position: absolute;
   bottom: 5px;
-  left: ${props => props.hasYAxis ? 'calc((100% - 60px - 20px) / 2 + 60px)' : '50%'};
+  left: ${props => props.hasYAxis ? 'calc((100% - 60px - 10px) / 2 + 60px)' : '50%'};
   transform: translateX(-50%);
   width: ${SELECT_WIDTH}px;
 `;

@@ -60,7 +60,7 @@ const Legend = ({
 
   return (
     <StyledContainer compact={compact}>
-      <StyledColorsBoxContainer overflowIsHidden={multipleItems} alignCenter={!multipleItems}>
+      <StyledColorsBoxContainer alignCenter={!multipleItems}>
           {!multipleItems && !advanced && (
             <StyledColorsBox alignCenter={false}>
               <StyledColorDot color={scheme.mainColor} />
@@ -68,7 +68,11 @@ const Legend = ({
             </StyledColorsBox>
           )}
           {multipleItems && widget.legend[0].values.map((item, index) => (
-            <StyledColorsBox alignCenter={true} key={`${item.label}-${index}`}>
+            <StyledColorsBox
+              title={resolveLabel(item.label, item.type) || '−'}
+              alignCenter={true}
+              key={`${item.label}-${index}`}
+            >
               <StyledColorDot color={item.value} />
               {resolveLabel(item.label, item.type) || '−'}
             </StyledColorsBox>
