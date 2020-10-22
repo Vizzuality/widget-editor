@@ -10,11 +10,13 @@ export const ChartNeedsOptions = styled.h4`
 
 export const StyledContainer = styled.div`
   ${(props) => !props.standalone && css`
-    position: relative;
     flex-grow: 1;
     flex-shrink: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    padding: 15px 10px 55px ${props.hasYAxis ? '60px' : '20px'};
+    padding: 15px 10px 55px ${props.hasYAxis ? '60px' : '10px'};
   `}
 
   ${(props) => (props.standalone || props.thumbnail) && css`
@@ -23,10 +25,13 @@ export const StyledContainer = styled.div`
   `}
 
   .c-chart {
+    flex-basis: 0;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     background-position: 50%;
     background-size: cover;
 
