@@ -1,20 +1,20 @@
 import styled, { css } from 'styled-components';
 
 export const StyledTabsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
   height: 100%;
 `;
 
 export const StyledTabsContentBox = styled.div`
+  flex-grow: 1;
+  padding: 10px 30px 0 0;
   overflow-y: auto;
-  height: calc(100% - 80px);
-  padding-right: 30px;
 
   ${(props) => (props.compact.isCompact || props.compact.forceCompact) && css`
-    height: calc(100% - 65px);
-    padding: 0 10px;
+    padding: 10px;
   `}
-
 
   ::-webkit-scrollbar {
     width: 7px;
@@ -38,6 +38,20 @@ export const StyledTabsContentBox = styled.div`
 
 export const StyledTabsContent = styled.div`
   display: ${props => props.active ? 'block' : 'none'};
+
+  // This property is only useful for the table view where the children is 100% the height of this
+  // div
+  // The 20px comes from the :after pseudo-element
+  height: calc(100% - 20px);
+
+  // Used for the bottom padding
+  // The padding-bottom of StyledTabsContentBox doesn't work with overflow-y: auto
+  &:after {
+    display: block;
+    width: 100%;
+    height: 20px;
+    content: '';
+  }
 `;
 
 export const StyledList = styled.ul`

@@ -5,8 +5,6 @@ import { Button } from "@widget-editor/shared";
 import { StyledCallout } from "components/callout/style";
 
 export const Container = styled.div`
-  margin-top: 11px;
-
   label {
     margin-top: 20px;
   }
