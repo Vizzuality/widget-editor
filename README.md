@@ -65,11 +65,11 @@ Here we are exposing the editor, renderer, and redux related logic to the consum
 
 #### Packages
 
-- [widget-editor](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/widget-editor)
+- [widget-editor](https://github.com/Vizzuality/widget-editor/tree/main/src/applications/widget-editor)
 - [@widget-editor/core](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/core)
 - [@widget-editor/shared](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/shared)
-- [@widget-editor/renderer](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/renderer)
-- [@widget-editor/rw-adapter](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/rw-adapter)
+- [@widget-editor/renderer](https://github.com/Vizzuality/widget-editor/tree/main/src/applications/renderer)
+- [@widget-editor/rw-adapter](https://github.com/Vizzuality/widget-editor/tree/main/src/adapters/rw-adapter)
 - [@widget-editor/types](https://github.com/Vizzuality/widget-editor/blob/main/src/packages/types)
 
 ### Components
