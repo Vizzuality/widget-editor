@@ -105,7 +105,7 @@ class Chart extends React.Component {
 
   instantiateTooltip(widget) {
     const fields = getTooltipConfigFields(widget);
-    vegaTooltip(this.vega, {
+    this.tooltip = vegaTooltip(this.vega, {
       showAllFields: false,
       fields: fields.map(({ column, property, type, format }) => ({
         field: column,
@@ -121,6 +121,11 @@ class Chart extends React.Component {
     this.setSize();
     if (chart) {
       try {
+        // To avoid memory leaks, the view is destroyed when a new one is created
+        if (this.vega) {
+          this.vega.finalize();
+        }
+
         const runtime = vega.parse(configuration, configuration.config);
 
         this.vega = new vega.View(runtime)
@@ -131,6 +136,27 @@ class Chart extends React.Component {
           .height(this.height)
           .hover()
           .run();
+
+        // The version of vega-tooltip we're using doesn't remove the tooltip when the view is
+        // destroyed
+        // Here we overwrite Vega's finalize function to destroy the tooltip when the view does so
+        const vegaFinalize = this.vega.finalize.bind(this.vega);
+        this.vega.finalize = () => {
+          if (this.tooltip) {
+            // destroy only removes the event handlers:
+            // https://github.com/vega/vega-tooltip/blob/262e723c5270cee105fcf1d79135750b3028269a/src/index.ts#L20-L27
+            this.tooltip.destroy();
+
+            // The ID of the tooltip is hard-coded in vega-tooltip so we're fine hard-coding it
+            // here too
+            const tooltip = document.getElementById('vis-tooltip');
+            if (tooltip) {
+              tooltip.remove();
+            }
+          }
+
+          vegaFinalize();
+        };
 
         if (
           configuration.interaction_config &&
