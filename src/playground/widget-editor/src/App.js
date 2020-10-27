@@ -6,7 +6,6 @@ import configureStore from "store";
 
 import Editor from "./components/editor";
 import DebugOption from "components/debug-options";
-import EditorOptions from "components/editor-options";
 import PlaygroundRenderer from "components/playground-renderer";
 import EditorForm from "components/editor-form";
 
@@ -44,7 +43,6 @@ function App() {
         {!isRenderer && !isUnmounted && (
           <Fragment>
             <Editor />
-            <EditorOptions />
           </Fragment>
         )}
         {!isRenderer && isUnmounted && <div className="c-unmounted">

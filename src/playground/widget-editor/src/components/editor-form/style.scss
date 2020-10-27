@@ -38,15 +38,16 @@
     display: block;
   }
 
-  > div {
-    z-index: 9999999; // just make sure to be on top
-  }
-
   .input {
     opacity: .3;
     flex: 1;
     margin: 0 10px;
     margin-bottom: 20px;
     transition: all .4s;
+    .error {
+      color: #e80000;
+      font-size: 13px;
+      padding: 5px 0 0 0;
+    }
   }
 }
