@@ -33,7 +33,7 @@ export default class StateProxy {
    * In a few cases we need to force vega to update, as these properties are already
    * applied to the local state when checking @ShouldUpdateVega
    * @propsForceVegaUpdate
-   * 1. Any column: value,category,color
+   * 1. Any column: value, category, color
    * 2. When limit changes in the UI
    * 3. When aggregateFunction changes in the UI
    * @param state
@@ -58,6 +58,9 @@ export default class StateProxy {
   ShouldUpdateData(state: any) {
     const { prev, next } = this.getStateDiff(state);
     let shouldUpdate = false;
+
+    // If we don't have a previous state present, simply exit as another one is incoming
+    if (!prev) return false;
 
     // If limit changes, we need to fetch new data
     shouldUpdate = prev.configuration.limit !== next.configuration.limit;
@@ -91,6 +94,9 @@ export default class StateProxy {
     if (this.forceVegaUpdate) {
       return true;
     }
+
+    // If we don't have a previous state present, simply exit as another one is incoming
+    if (!prev) return false;
 
     let shouldUpdate = false;
 

@@ -140,7 +140,6 @@ function* syncEditor() {
 
 function* handleRestore() {
   yield call(initializeData);
-
   const { widgetEditor } = yield select();
   const { editor } = widgetEditor;
   const { widget } = editor;

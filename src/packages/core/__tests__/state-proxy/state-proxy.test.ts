@@ -10,6 +10,15 @@ describe('State proxy tests', () => {
     expect(instance.forceVegaUpdate).toBe(false);
   });
 
+  test('If previous instance is empty we should exit state proxy', () => {
+    const instance = genInstance({ empty: true });
+    let patch = patchConfiguration({ limit: 100 });
+    let shouldUpdateData = instance.ShouldUpdateData(patch);
+    let shouldUpdateVega = instance.ShouldUpdateData(patch);
+    expect(shouldUpdateData).toBe(false);
+    expect(shouldUpdateData).toBe(false);
+  });
+
   test("State proxy should update data and force vega update", () => {
     const instance = genInstance();
     let patch = patchConfiguration({ limit: 100 });
