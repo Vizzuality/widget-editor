@@ -74,7 +74,7 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
         }
         : {}
       )}
-      value={value}
+      value={`${value}`}
       onChange={onChangeValue}
       {...rest}
     />
