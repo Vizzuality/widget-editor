@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from 'react-redux'
 
 import RwAdapter from "@widget-editor/rw-adapter";
 import WidgetEditor from "@widget-editor/widget-editor";
@@ -69,8 +70,9 @@ const SCHEMES = [
   },
 ];
 
-class Editor extends React.Component {
-  handleOnSave(diff) {
+const Editor = () => {
+  const { compactMode, dataset, widget, theme } = useSelector(state => state.editorOptions);
+  const handleOnSave = diff => {
     const formatSavedJson = JSON.stringify(diff, null, 2);
     const x = window.open();
     x.document.open();
@@ -80,27 +82,27 @@ class Editor extends React.Component {
     x.document.close();
   }
 
-  render() {
-    const {
-      editorOptions: { compactMode, dataset, widget, theme },
-    } = this.props;
-    return (
-      <div className="widget-editor-wrapper">
-        <WidgetEditor
-          schemes={SCHEMES}
-          compact={compactMode}
-          datasetId={dataset}
-          widgetId={widget}
-          onSave={this.handleOnSave}
-          authenticated={true}
-          application="rw"
-          adapter={RwAdapter}
-          theme={theme}
-          disable={['typography']}
-        />
-      </div>
-    );
+  if (!dataset) {
+    return <p className="generic-playground-errror">Please select a dataset</p>;
   }
-}
+
+  return (
+    <div className="widget-editor-wrapper">
+      <WidgetEditor
+        schemes={SCHEMES}
+        compact={compactMode}
+        datasetId={dataset}
+        widgetId={widget}
+        onSave={handleOnSave}
+        authenticated={true}
+        application="rw"
+        adapter={RwAdapter}
+        theme={theme}
+        disable={['typography']}
+      />
+    </div>
+  );
+
+};
 
 export default Editor;

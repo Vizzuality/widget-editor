@@ -1,14 +1,14 @@
 import React, { Fragment, useState } from "react";
 import { Provider } from "react-redux";
-import { RiLoginBoxLine, RiMistLine, RiEye2Line, RiPaletteLine } from 'react-icons/ri';
+import { RiLoginBoxLine, RiMistLine, RiPaletteLine } from 'react-icons/ri';
 
 import configureStore from "store";
 
 import Editor from "./components/editor";
 import DebugOption from "components/debug-options";
 import EditorOptions from "components/editor-options";
-import ToggleOptions from "components/toggle-options";
 import PlaygroundRenderer from "components/playground-renderer";
+import EditorForm from "components/editor-form";
 
 import "./App.scss";
 
@@ -17,7 +17,6 @@ function App() {
   const [isUnmounted, setIsUnmounted] = useState(false);
   const [isRenderer, setIsRenderer] = useState(false);
   const [activeWidget, setActiveWidget] = useState(null);
-  const [editorState, setEditorState] = useState(null);
 
   const handleSetRenderer = () => {
     if (!isRenderer) {
@@ -39,9 +38,9 @@ function App() {
             </button>
             <button type="button" onClick={() => setIsUnmounted(!isUnmounted)}><RiLoginBoxLine /> Toggle un-mounting</button>
             <DebugOption />
-            <ToggleOptions />
           </div>
         </header>
+        <EditorForm />
         {!isRenderer && !isUnmounted && (
           <Fragment>
             <Editor />

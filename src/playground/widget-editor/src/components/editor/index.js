@@ -1,10 +1,3 @@
-import { connect } from "react-redux";
+import Component from "./component";
 
-import EditorComponent from "./component";
-
-export default connect(
-  state => ({
-    editorOptions: state.editorOptions
-  }),
-  {}
-)(EditorComponent);
+export default Component;
