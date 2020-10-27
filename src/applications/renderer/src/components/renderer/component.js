@@ -27,7 +27,7 @@ const Renderer = ({
   configuration,
   compact,
   changeBbox,
-  interactionEnabled,
+  interactionEnabled = true,
   widgetName
 }) => {
   const { restoring, initialized } = editor;
@@ -105,7 +105,7 @@ const Renderer = ({
               mapConfiguration={configuration.map}
               caption={configuration.title}
               layerId={configuration.layer}
-              interactionEnabled={!standalone}
+              interactionEnabled={interactionEnabled}
               layers={editor.layers}
               changeBbox={changeBbox}
             />
