@@ -30,7 +30,17 @@ const getTypeIcon = (type) => {
   return Icon;
 }
 
-const TableView = ({ widgetData, value, category, color, aggregateFunction }) => {
+const TableView = ({
+  widgetData,
+  tableData,
+  columnOptions,
+  value,
+  category,
+  color,
+  aggregateFunction
+}) => {
+  const showFullTable = useMemo(() => !category || !value, [value, category]);
+
   const aggregation = useMemo(() => aggregateFunction
     ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
     : null,
@@ -38,6 +48,19 @@ const TableView = ({ widgetData, value, category, color, aggregateFunction }) =>
 
   // These are the colunms we want to show in the table
   const relevantColumns = useMemo(() => {
+    // If the user has not set the colunms required to build a chart, we want to show a full table
+    if (showFullTable) {
+      const columns = columnOptions.reduce((res, option) => ({
+        ...res,
+        [option.value]: {
+          name: option.label,
+          Icon: getTypeIcon(option.type),
+        },
+      }), {});
+
+      return columns;
+    }
+
     const columns = {
       x: category ? { ...category, Icon: getTypeIcon(category.type) } : null,
       y: value ? { ...value, Icon: getTypeIcon(value.type), aggregation } : null,
@@ -66,7 +89,7 @@ const TableView = ({ widgetData, value, category, color, aggregateFunction }) =>
     }
 
     return columns;
-  }, [category, value, color, aggregation]);
+  }, [category, value, color, aggregation, showFullTable, columnOptions]);
 
   return (
     <StyledTableBox>
@@ -90,7 +113,7 @@ const TableView = ({ widgetData, value, category, color, aggregateFunction }) =>
           </StyledTr>
         </thead>
         <tbody>
-          {widgetData.map((row, index) => (
+          {(showFullTable ? tableData : widgetData).map((row, index) => (
             <StyledTr key={index}>
               {Object.keys(relevantColumns).map(
                 column => <StyledTd key={column}>{row[column]}</StyledTd>
@@ -111,6 +134,8 @@ const ColumnType = PropTypes.shape({
 
 TableView.propTypes = {
   widgetData: PropTypes.array.isRequired,
+  tableData: PropTypes.array.isRequired,
+  columnOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
   value: ColumnType,
   category: ColumnType,
   color: ColumnType,

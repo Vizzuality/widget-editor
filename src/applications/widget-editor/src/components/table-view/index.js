@@ -1,5 +1,9 @@
 import { connectState } from "@widget-editor/shared/lib/helpers/redux";
-import { selectWidgetData } from "@widget-editor/shared/lib/modules/editor/selectors";
+import {
+  selectWidgetData,
+  selectTableData,
+  selectColumnOptions,
+} from "@widget-editor/shared/lib/modules/editor/selectors";
 import {
   selectValue,
   selectCategory,
@@ -11,6 +15,8 @@ import TableView from "./component";
 
 export default connectState((state) => ({
   widgetData: selectWidgetData(state),
+  tableData: selectTableData(state),
+  columnOptions: selectColumnOptions(state),
   value: selectValue(state),
   category: selectCategory(state),
   color: selectColor(state),
