@@ -36,17 +36,24 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
 
   const onChangeDebounced = useDebounce(onChange);
 
-  const onChangeValue = useCallback((value) => {
-    let newValue = value;
+  const onChangeValue = useCallback((rawValue) => {
+    let newValue = rawValue;
     if (filter.type === 'number') {
-      newValue = +value;
+      newValue = +rawValue;
     } else if (filter.type === 'date') {
-      newValue = new Date(value);
+      newValue = new Date(rawValue);
+
+      // If the user empties the input we just keep the previous value
+      // We can't easily save the filter as null for dates
+      // If the user wants to remove the filter, they can do so instead of removing the value
+      if (isNaN(+newValue)) {
+        newValue = new Date(value);
+      }
     }
 
     setValue(getInputValue(filter.type, newValue));
     onChangeDebounced(newValue);
-  }, [filter, onChangeDebounced]);
+  }, [value, filter, onChangeDebounced]);
 
   // When the filter changes, we make sure to update the UI as well
   // This case occurs when the user changes the filter's operation: the value is set to null so we
