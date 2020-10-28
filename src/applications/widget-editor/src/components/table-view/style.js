@@ -38,4 +38,12 @@ export const StyledTh = styled.th`
   font-weight: 700;
   white-space: nowrap;
   border-bottom: 1px solid #d2d3d6;
+
+  svg {
+    margin-right: 5px;
+
+    path {
+      fill: currentColor;
+    }
+  }
 `;
