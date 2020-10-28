@@ -46,6 +46,19 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
+  /**
+   * Fetch the dataset's 50 first rows and set it as the table's data
+   */
+  async getTableData() {
+    const { tableName } = this.dataset.attributes;
+    try {
+      const tableData = await this.adapter.getDatasetData(`SELECT * FROM ${tableName} LIMIT 50`);
+      this.setEditor({ tableData });
+    } catch (e) {
+      console.error("Unable to fetch the dataset's data", e);
+    }
+  }
+
   async restoreEditor(datasetId, widgetId, cb = null) {
     this.setEditor({
       restoring: true
@@ -181,6 +194,7 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
+    this.getTableData();
     this.handleEndUserFilters();
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
     // If this dispatch is not executed, the local state is not set on init

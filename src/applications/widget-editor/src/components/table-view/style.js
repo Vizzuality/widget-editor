@@ -34,7 +34,7 @@ export const StyledTd = styled.td`
 `;
 
 export const StyledTh = styled.th`
-  padding: 7px 0;
+  padding: 7px 20px 7px 0;
   font-weight: 700;
   white-space: nowrap;
   border-bottom: 1px solid #d2d3d6;
