@@ -92,9 +92,9 @@ const TableView = ({ widgetData, value, category, color, aggregateFunction }) =>
         <tbody>
           {widgetData.map((row, index) => (
             <StyledTr key={index}>
-              <StyledTd>{row.x}</StyledTd>
-              <StyledTd>{row.y}</StyledTd>
-              {!!row.color && <StyledTd>{row.color}</StyledTd>}
+              {Object.keys(relevantColumns).map(
+                column => <StyledTd key={column}>{row[column]}</StyledTd>
+              )}
             </StyledTr>
           ))}
         </tbody>
