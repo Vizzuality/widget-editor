@@ -11,63 +11,79 @@ import {
   StyledTd,
 } from "./style";
 
+const getTypeIcon = (type) => {
+  let Icon;
+  switch (type) {
+    case 'string':
+      Icon = CategoryIcon;
+      break;
+    case 'number':
+      Icon = NumberIcon;
+      break;
+    case 'date':
+      Icon = DateIcon;
+      break;
+    default:
+      Icon = UnknownIcon;
+  }
+
+  return Icon;
+}
+
 const TableView = ({ widgetData, value, category, color, aggregateFunction }) => {
   const aggregation = useMemo(() => aggregateFunction
     ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
     : null,
   [aggregateFunction]);
 
-  const columns = useMemo(() => (
-    [category, value, color]
-      .map((column, index) => column ? { ...column, isValue: index === 1 } : null)
-      .filter(column => !!column)
-      .reduce((res, column) => {
-        let Icon;
-        switch (column.type) {
-          case 'string':
-            Icon = CategoryIcon;
-            break;
-          case 'number':
-            Icon = NumberIcon;
-            break;
-          case 'date':
-            Icon = DateIcon;
-            break;
-          default:
-            Icon = UnknownIcon;
-        }
+  // These are the colunms we want to show in the table
+  const relevantColumns = useMemo(() => {
+    const columns = {
+      x: category ? { ...category, Icon: getTypeIcon(category.type) } : null,
+      y: value ? { ...value, Icon: getTypeIcon(value.type), aggregation } : null,
+      color: color ? { ...color, Icon: getTypeIcon(color.type) } : null,
+    };
 
-        const name = column.alias || column.name;
+    // We remove the columns that are not set by the user
+    Object.keys(columns).forEach(key => {
+      if (!columns[key]) {
+        delete columns[key];
+      }
+    });
 
-        return {
-          ...res,
-          [
-            // The user may use the same column for the X and Y axis, but applying an aggregation
-            // on the Y
-            // In that case, we want to have a different key so both column headers effectively
-            // appear 
-            column.isValue && aggregation
-              ? `${column.name}_${aggregation}`
-              : column.name
-          ]: {
-            name: column.isValue && aggregation ? `${name} (${aggregation})` : name,
-            Icon,
-          }
-        };
-      }, {})
-  ), [value, category, color, aggregation]);
+    // If the user has chosen the same column for the X and Y axis, and there is not an aggregation,
+    // we avoid displaying the column twice in the table
+    if (columns.x?.name && columns.x?.name === columns.y?.name && !aggregation) {
+      delete columns.y;
+    }
+
+    // If the user has chosen the same column for the X axis and color, or the user has chosen the
+    // same column for the Y axis and color and there is not an aggregation, we also remove the
+    // color column to avoid displaying it twice in the table
+    if ((columns.x?.name && columns.x?.name === columns.color?.name)
+      || (columns.y?.name && columns.y?.name === columns.color?.name && !aggregation)) {
+      delete columns.color;
+    }
+
+    return columns;
+  }, [category, value, color, aggregation]);
 
   return (
     <StyledTableBox>
       <StyledTable>
         <thead>
           <StyledTr>
-            {Object.keys(columns).map(column => {
-              const Icon = columns[column].Icon;
+            {Object.keys(relevantColumns).map(key => {
+              const column = relevantColumns[key];
+              const Icon = column.Icon;
+              const name = `
+                ${column.alias || column.name}
+                ${column.aggregation ? ` (${column.aggregation})`: ''}
+              `;
               
               return (
-                <StyledTh key={column}>
-                  <Icon /> {columns[column].name}
+                <StyledTh key={key}>
+                  <Icon /> {name}
                 </StyledTh>
               );
             })}
