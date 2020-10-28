@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 
 import { CategoryIcon, NumberIcon, DateIcon, UnknownIcon } from '@widget-editor/shared';
+import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 import {
   StyledTableBox,
   StyledTable,
@@ -11,8 +12,14 @@ import {
 } from "./style";
 
 const TableView = ({ widgetData, value, category, color, aggregateFunction }) => {
+  const aggregation = useMemo(() => aggregateFunction
+    ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
+    : null,
+  [aggregateFunction]);
+
   const columns = useMemo(() => (
     [category, value, color]
+      .map((column, index) => column ? { ...column, isValue: index === 1 } : null)
       .filter(column => !!column)
       .reduce((res, column) => {
         let Icon;
@@ -30,15 +37,25 @@ const TableView = ({ widgetData, value, category, color, aggregateFunction }) =>
             Icon = UnknownIcon;
         }
 
+        const name = column.alias || column.name;
+
         return {
           ...res,
-          [column.name]: {
-            name: column.alias || column.name,
+          [
+            // The user may use the same column for the X and Y axis, but applying an aggregation
+            // on the Y
+            // In that case, we want to have a different key so both column headers effectively
+            // appear 
+            column.isValue && aggregation
+              ? `${column.name}_${aggregation}`
+              : column.name
+          ]: {
+            name: column.isValue && aggregation ? `${name} (${aggregation})` : name,
             Icon,
           }
         };
       }, {})
-  ), [value, category, color]);
+  ), [value, category, color, aggregation]);
 
   return (
     <StyledTableBox>
