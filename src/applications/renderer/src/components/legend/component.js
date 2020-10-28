@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 
 import { utils } from '@widget-editor/core';
 import { Select } from "@widget-editor/shared";
+import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
 import {
   StyledContainer,
@@ -11,6 +12,8 @@ import {
   StyledDropdownBox,
   SelectStyles,
 } from "./style";
+
+import { formatOptionLabel } from './utils';
 
 // XXX: Move me
 function resolveLabel(label, type) {
@@ -28,11 +31,16 @@ const Legend = ({
   scheme,
   selectedColumn,
   columns,
+  aggregateFunction,
+  valueColumn,
   patchConfiguration,
   compact,
 }) => {
   const isPie = configuration.chartType === "pie";
   const multipleItems = widget?.legend?.[0]?.values.length > 0;
+  const aggregation = aggregateFunction
+    ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
+    : null;
 
   const handleChange = useCallback((option) => {
     const newOption = option.value === "_single_color"
@@ -77,6 +85,10 @@ const Legend = ({
             value={selectedColumn}
             options={columns}
             onChange={handleChange}
+            formatOptionLabel={(...props) => formatOptionLabel(
+              // The aggregation is only applied to the value column
+              valueColumn?.name === selectedColumn?.value ? aggregation : null, ...props
+            )}
             styles={SelectStyles}
           />
         </StyledDropdownBox>
