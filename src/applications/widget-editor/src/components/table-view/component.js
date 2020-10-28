@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 
+import { CategoryIcon, NumberIcon, DateIcon, UnknownIcon } from '@widget-editor/shared';
 import {
   StyledTableBox,
   StyledTable,
@@ -13,8 +14,30 @@ const TableView = ({ widgetData, value, category, color, aggregateFunction }) =>
   const columns = useMemo(() => (
     [category, value, color]
       .filter(column => !!column)
-      .map(column => [column.name, column.alias || column.name])
-      .reduce((res, column) => ({ ...res, [column[0]]: column[1] }), {})
+      .reduce((res, column) => {
+        let Icon;
+        switch (column.type) {
+          case 'string':
+            Icon = CategoryIcon;
+            break;
+          case 'number':
+            Icon = NumberIcon;
+            break;
+          case 'date':
+            Icon = DateIcon;
+            break;
+          default:
+            Icon = UnknownIcon;
+        }
+
+        return {
+          ...res,
+          [column.name]: {
+            name: column.alias || column.name,
+            Icon,
+          }
+        };
+      }, {})
   ), [value, category, color]);
 
   return (
@@ -22,11 +45,15 @@ const TableView = ({ widgetData, value, category, color, aggregateFunction }) =>
       <StyledTable>
         <thead>
           <StyledTr>
-            {
-              Object.keys(columns).map(
-                column => <StyledTh key={column}>{columns[column]}</StyledTh>
-              )
-            }
+            {Object.keys(columns).map(column => {
+              const Icon = columns[column].Icon;
+              
+              return (
+                <StyledTh key={column}>
+                  <Icon /> {columns[column].name}
+                </StyledTh>
+              );
+            })}
           </StyledTr>
         </thead>
         <tbody>
