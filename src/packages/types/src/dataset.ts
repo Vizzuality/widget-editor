@@ -14,6 +14,7 @@ export interface Payload {
     tableName: string;
     metadata: any;
     widget: Widget.Payload[] | null;
+    widgetRelevantProps: string[];
   };
   id: Id;
 }
