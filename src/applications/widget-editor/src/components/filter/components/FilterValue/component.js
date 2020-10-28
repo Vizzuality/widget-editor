@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from 'prop-types';
 
@@ -48,6 +48,13 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
     onChangeDebounced(newValue);
   }, [filter, onChangeDebounced]);
 
+  // When the filter changes, we make sure to update the UI as well
+  // This case occurs when the user changes the filter's operation: the value is set to null so we
+  // need to make sure the input is also empty
+  useEffect(() => {
+    setValue(getInputValue(filter.type, filter.value));
+  }, [filter, setValue]);
+
   return (
     <StyledInput
       type={filter.type === 'string' ? 'text' : filter.type}
@@ -67,7 +74,7 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
         }
         : {}
       )}
-      value={value}
+      value={`${value}`}
       onChange={onChangeValue}
       {...rest}
     />

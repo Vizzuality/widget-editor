@@ -50,15 +50,9 @@ const Filter = ({
         return filter;
       }
 
-      // If we change operation, keep old value from filter state
-      const keepValue = change.hasOwnProperty('operation');
-
       return {
         ...filter,
         ...change,
-        ...(keepValue && {
-          value: filter.value
-        }),
         config: !filter.column
           ? await FiltersService.fetchConfiguration(adapter, dataset, fields, change.column)
           : filter.config,
