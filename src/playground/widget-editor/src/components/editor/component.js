@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import RwAdapter from "@widget-editor/rw-adapter";
 import WidgetEditor from "@widget-editor/widget-editor";
 
+import PlaygroundRenderer from 'components/playground-renderer';
+
 const SCHEMES = [
   {
     name: "default",
@@ -72,6 +74,9 @@ const SCHEMES = [
 
 const Editor = () => {
   const { compactMode, dataset, widget, theme } = useSelector(state => state.editorOptions);
+  const renderer = useSelector(state => state.editorOptions.renderer);
+  const unmounted = useSelector(state => state.editorOptions.unmounted);
+
   const handleOnSave = diff => {
     const formatSavedJson = JSON.stringify(diff, null, 2);
     const x = window.open();
@@ -86,21 +91,33 @@ const Editor = () => {
     return <p className="generic-playground-errror">Please select a dataset</p>;
   }
 
+  if (unmounted) {
+    return (
+      <div className="c-unmounted">
+        <p>Editor is unmounted.</p>
+        <span>Redux dev tools wont show updates, so if you need to debug redux you need to refresh your browser. But in this context you can make sure that the editor does not crash and cancels all necessary events when un-mounting the editor.</span>
+      </div>
+    )
+  }
+
   return (
-    <div className="widget-editor-wrapper">
-      <WidgetEditor
-        schemes={SCHEMES}
-        compact={compactMode}
-        datasetId={dataset}
-        widgetId={widget}
-        onSave={handleOnSave}
-        authenticated={true}
-        application="rw"
-        adapter={RwAdapter}
-        theme={theme}
-        disable={['typography']}
-      />
-    </div>
+    <>
+      {renderer && <PlaygroundRenderer />}
+      <div className={`widget-editor-wrapper ${renderer ? '-hidden' : ''}`}>
+        <WidgetEditor
+          schemes={SCHEMES}
+          compact={compactMode}
+          datasetId={dataset}
+          widgetId={widget}
+          onSave={handleOnSave}
+          authenticated={true}
+          application="rw"
+          adapter={RwAdapter}
+          theme={theme}
+          disable={['typography']}
+        />
+      </div>
+    </>
   );
 
 };

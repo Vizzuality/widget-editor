@@ -10,6 +10,10 @@
   width: 100vw;
 }
 
+.-hidden {
+  display: none!important;
+}
+
 .generic-playground-errror {
   display: flex;
   height: 100%;
@@ -111,6 +115,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   flex-grow: 1;
+  width: calc(100vw - 100px);
   box-sizing: border-box;
 }
 

@@ -1,5 +1,7 @@
 export default {
   authToken: "",
+  unmounted: false,
+  renderer: false,
   optionsOpen: false,
   compactMode: false,
   // widget: "c1d7cb83-5f50-43eb-8ea0-6f7ecd4e1b69",
