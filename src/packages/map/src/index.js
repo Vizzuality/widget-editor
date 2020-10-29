@@ -243,8 +243,8 @@ class Map extends React.Component {
     if (mapOptions.bbox && Array.isArray(mapOptions.bbox)) {
       const [b0, b1, b2, b3] = mapOptions.bbox;
       this.map.fitBounds([
-        [b1, b0],
-        [b3, b2]
+        [b0, b1],
+        [b2, b3]
       ], { animate: false });
     } else if (this.props?.mapConfig?.bounds) {
       // Legacy editor stores "bounds"

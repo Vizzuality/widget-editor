@@ -146,22 +146,20 @@ export default class DataService {
     const fields = await this.adapter.getFields();
     const layers = await this.adapter.getLayers();
 
-    // Get field aliases from Dataset
-    const columns = this.dataset?.attributes?.metadata[0]?.attributes?.columns;
-    // Filter on allowed field types
-    this.allowedFields = [];
-    if (fields && Object.keys(fields).length > 0) {
-      Object.keys(fields).forEach((field) => {
-        const f = {
+    const fieldsMetadata = this.dataset?.attributes?.metadata[0]?.attributes?.columns;
+    const relevantFields = this.dataset?.attributes?.widgetRelevantProps ?? [];
+    this.allowedFields = fields && Object.keys(fields).length > 0
+      ? Object.keys(fields)
+        .map(field => ({
           ...fields[field],
           columnName: field,
-          metadata: columns?.[field] ?? {},
-        };
-        if (this.isFieldAllowed(f)) {
-          this.allowedFields.push(f);
-        }
-      });
-    }
+          metadata: fieldsMetadata?.[field] ?? {},
+        }))
+        .filter(field => (
+          this.isFieldAllowed(field)
+          && (!relevantFields.length || relevantFields.indexOf(field.columnName) !== -1)
+        ))
+      : [];
 
     this.dispatch({ type: sagaEvents.DATA_FLOW_FIELDS_AND_LAYERS_READY });
     this.setEditor({ layers, fields: this.allowedFields });
