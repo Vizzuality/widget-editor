@@ -34,7 +34,7 @@ const SliceCount = ({
   return (
     <InputGroup>
       <FormLabel htmlFor="options-slice-count">
-        Slice count (donut and pie charts)
+        Slice count
       </FormLabel>
       <FlexContainer row={true}>
         <FlexController shrink="0">
