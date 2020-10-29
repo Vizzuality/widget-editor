@@ -70,6 +70,7 @@ const EditorOptions = ({
   compact,
   dataService,
   isMap,
+  chartType,
 }) => {
   const tabsVisibility = useMemo(() => ({
     general: true,
@@ -151,16 +152,19 @@ const EditorOptions = ({
                 )}
               </AccordionSection>
             )}
-            {!isMap && !rasterOnly && !advanced && (
+            {!isMap && !rasterOnly && !advanced
+              && (chartType === 'pie' || chartType === 'donut') && (
               <AccordionSection title="Chart specific">
-                <Suspense fallback={<div>Loading...</div>}>
-                  {donutRadius && (
-                    <DonutRadius
-                      value={donutRadius}
-                      onChange={(value) => handleDonutRadius(value)}
-                    />
-                  )}
-                </Suspense>
+                {chartType === 'donut' && (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    {donutRadius && (
+                      <DonutRadius
+                        value={donutRadius}
+                        onChange={(value) => handleDonutRadius(value)}
+                      />
+                    )}
+                  </Suspense>
+                )}
                 <Suspense fallback={<div>Loading...</div>}>
                   {sliceCount && data && (
                     <SliceCount

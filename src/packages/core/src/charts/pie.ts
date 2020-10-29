@@ -144,7 +144,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
             // not dynamically updated when the filters change)
             "expr": endUserFilters.length
               ? 'datum.x'
-              : `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
+              : `datum.rank < ${configuration.sliceCount + 1} ? datum.x : 'Others'`
           },
           {
             "type": "aggregate",
@@ -176,7 +176,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
             // not dynamically updated when the filters change)
             "expr": endUserFilters.length
               ? 'datum.x'
-              : `datum.rank < ${configuration.sliceCount} ? datum.x : 'Others'`
+              : `datum.rank < ${configuration.sliceCount + 1} ? datum.x : 'Others'`
           },
           {
             "type": "aggregate",
@@ -219,14 +219,16 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
           type: 'string'
         }));
     } else {
-      values = uniqBy(
-        widgetData.map((d: { x: any }, i) => ({ ...d, x: i + 1 < configuration.sliceCount ? d.x : 'Others' })),
-        'x'
-      )
-        .slice(0, configuration.sliceCount)
+      values = uniqBy(widgetData.map(
+        (d: { x: any }, i) => ({
+          ...d,
+          x: i < configuration.sliceCount ? d.x : 'Others'
+        })
+      ), 'x')
+        .slice(0, configuration.sliceCount + 1)
         .map((d: { [key: string]: any }, i) => ({
           label: d.x,
-          value: scheme.range.category20[i % configuration.sliceCount],
+          value: scheme.range.category20[i % (configuration.sliceCount + 1)],
           type: 'string'
         }));
     }

@@ -1,6 +1,6 @@
 import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
-import { isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
+import { selectChartType, isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
 import {
   selectDisabledFeatures,
   selectAdvanced,
@@ -23,6 +23,7 @@ export default connectState(
     donutRadius: state.configuration.donutRadius,
     sliceCount: state.configuration.sliceCount,
     isMap: isMap(state),
+    chartType: selectChartType(state),
     data: state.editor.widgetData,
     orderBy: state.configuration.orderBy,
     compact: state.theme.compact,
