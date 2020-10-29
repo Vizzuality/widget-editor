@@ -9,5 +9,6 @@ export default {
   enableSave: true,
   widget: null,
   widgetData: [],
+  tableData: [],
   errors: null,
 };
