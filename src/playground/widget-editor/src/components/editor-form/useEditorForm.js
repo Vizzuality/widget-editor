@@ -114,11 +114,19 @@ export default function useEditorForm(autoFillValue) {
 
   // Event handlers for select inputs
   const handleChangeDataset = async (item, { action }) => {
-    const allWidgets = await getAllWidgetsForDataset(item.value);
-    dispatch(modifyOptions({
-      dataset: item.value,
-      widgets: allWidgets
-    }))
+    if (item?.value) {
+      const allWidgets = await getAllWidgetsForDataset(item.value);
+      dispatch(modifyOptions({
+        dataset: item.value,
+        widgets: allWidgets
+      }))
+    } else {
+      dispatch(modifyOptions({
+        dataset: null,
+        widgets: null,
+        widget: null
+      }))
+    }
   }
 
   const handleChangeWidget = async (item, { action }) => {

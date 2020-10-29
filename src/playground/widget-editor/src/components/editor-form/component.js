@@ -26,6 +26,23 @@ const EditorForm = () => {
     setAutoFillValue(value);
   }
 
+  const datasetValue = () => {
+    if (!dataset) {
+      return null;
+    }
+    if (isCustomDataset) {
+      return { label: 'Custom dataset', value: dataset ? dataset.value : '' };
+    }
+    return dataset || '';
+  }
+
+  const datasetOptions = () => {
+    return [
+      ...datasets,
+      (isCustomDataset && dataset && { label: 'Custom dataset', value: dataset.value })
+    ]
+  }
+
   return (
     <div
       className={`c-editor-form ${active ? '-active' : ''}`}
@@ -47,16 +64,10 @@ const EditorForm = () => {
       <div className="input">
         <label htmlFor="dataset">Dataset</label>
         <CreatableSelect
-          value={isCustomDataset ?
-            { label: 'Custom dataset', value: dataset ? dataset.value : '' } :
-            (dataset || '')
-          }
+          value={datasetValue()}
           onChange={handleChangeDataset}
           name="dataset"
-          options={[
-            ...datasets,
-            (isCustomDataset && { label: 'Custom dataset', value: dataset.value })
-          ]}
+          options={datasetOptions()}
           isClearable
         />
       </div>
