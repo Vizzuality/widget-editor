@@ -29,6 +29,7 @@ const Filter = ({
   fields = [],
   columnOptions,
   dataset,
+  loading
 }) => {
   const canAddFilter = useMemo(
     () => filters.length < columnOptions.length && filters.every(filter => filter.column),
@@ -94,6 +95,7 @@ const Filter = ({
               id={`filter-column-${filter.id}`}
               aria-label="Select a column"
               placeholder="Select a column"
+              loading={loading}
               value={columnOptions.find(({ value }) => value === filter.column)}
               options={columnOptions}
               onChange={

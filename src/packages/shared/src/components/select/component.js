@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import ReactSelect from "react-select";
 import ReactSelectCreatable from "react-select/creatable";
@@ -7,6 +7,7 @@ import SelectStyles, { StyledDropdownIndicator, StyledCloseIndicator } from "./s
 
 const Select = ({
   id,
+  loading = false,
   options,
   value,
   styles,
@@ -18,6 +19,7 @@ const Select = ({
   ...rest
 }) => {
   const Component = creatable ? ReactSelectCreatable : ReactSelect;
+  const [isDisabled, setIsDisabled] = useState(disabled || loading);
 
   return (
     <Component
@@ -25,8 +27,11 @@ const Select = ({
       aria-label={ariaLabel}
       options={options}
       value={value}
-      onChange={onChange}
-      isDisabled={disabled}
+      onChange={value => {
+        setIsDisabled(true);
+        onChange(value);
+      }}
+      isDisabled={isDisabled}
       styles={styles || SelectStyles}
       captureMenuScroll={false}
       components={{

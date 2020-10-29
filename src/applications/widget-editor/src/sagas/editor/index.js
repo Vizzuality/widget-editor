@@ -1,4 +1,4 @@
-import { takeLatest, put, select, all, fork, call, take, cancel } from "redux-saga/effects";
+import { takeLatest, put, select, all, fork, call, take, delay, race, cancel } from "redux-saga/effects";
 import { constants } from "@widget-editor/core";
 
 import { LABELS, BASEMAPS } from "@widget-editor/map/lib/constants";
@@ -138,10 +138,23 @@ export default function* baseSaga() {
   yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORE, restoreEditor);
   yield takeLatest(constants.sagaEvents.DATA_FLOW_VISUALIZATION_READY, setEditorInitialized);
 
-
   yield takeLatest(
     constants.sagaEvents.DATA_FLOW_UNMOUNT,
     cancelAll
   )
 
+  /*
+    When we patch configuration, set filters as loading
+    race makes it possible to IF dataInitialized is never called,
+    after 5 seconds we will still resolve loading: false for filters.
+    This is so we don't block the interface if something unrelated went wrong.
+  */
+  while(yield take("widgetEditor/CONFIGURATION/patchConfiguration")) {
+    yield put(setFilters({ loading: true }));
+    yield race({
+      token: take('widgetEditor/EDITOR/dataInitialized'),
+      timeout: delay(5000)
+    })
+    yield put(setFilters({ loading: false }));
+  }
 }
