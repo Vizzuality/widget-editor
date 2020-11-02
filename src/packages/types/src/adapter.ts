@@ -36,4 +36,5 @@ export interface Service {
   setDatasetId(datasetId: datasetId): void;
   getSerializedScheme(config: Widget.Scheme): any;
   getDeserializedScheme(config: any): Widget.Scheme;
+  getPredefinedAreas(): Promise<{ id: Id, name: string }[]>;
 }

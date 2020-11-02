@@ -24,7 +24,7 @@ export default class StateProxy {
     const { prev, next } = this.getStateDiff(state);
     return !isEqual(
       prev.configuration.aggregateFunction, next.configuration.aggregateFunction ||
-      !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
+    !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
     );
   }
 
@@ -72,6 +72,8 @@ export default class StateProxy {
 
     // If filters change
     shouldUpdate = shouldUpdate || !isEqual(prev.filters.list, next.filters.list);
+    shouldUpdate = shouldUpdate
+      || !isEqual(prev.filters.areaIntersection, next.filters.areaIntersection);
 
     // If the end-user filters change
     shouldUpdate = shouldUpdate || !isEqual(prev.endUserFilters, next.endUserFilters);

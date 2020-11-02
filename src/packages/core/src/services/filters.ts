@@ -12,17 +12,18 @@ import FieldsService from "./fields";
 
 export default class FiltersService implements Filters.Service {
   sql: string;
+  additionalParams: string[] = [];
   dataset: any;
   configuration: Config.Payload;
   adapter: Adapter.Service;
-  filters: Filters.Filter[];
+  filters: { list: Filters.Filter[], areaIntersection: string };
   endUserFilters: Filters.EndUserFilter[];
 
   constructor(store: any, adapter: Adapter.Service) {
     const { configuration, filters, editor: { dataset }, endUserFilters } = store;
 
     this.configuration = configuration;
-    this.filters = filters.list;
+    this.filters = filters;
     this.sql = "";
     this.adapter = adapter;
     this.endUserFilters = endUserFilters;
@@ -35,6 +36,7 @@ export default class FiltersService implements Filters.Service {
       this.prepareGroupBy();
       this.prepareOrderBy();
       this.prepareLimit();
+      this.prepareGeostore();
     }
   }
 
@@ -219,7 +221,7 @@ export default class FiltersService implements Filters.Service {
 
   prepareFilters() {
     let sql = this.sql;
-    const validFilters = (this.filters ?? [])
+    const validFilters = (this.filters.list ?? [])
       .filter(filter => filter.value !== undefined && filter.value !== null
         && (!Array.isArray(filter.value) || filter.value.length > 0));
 
@@ -301,8 +303,23 @@ export default class FiltersService implements Filters.Service {
     this.sql = `${this.sql} LIMIT ${limit}`;
   }
 
+  prepareGeostore() {
+    const { areaIntersection } = this.filters;
+    if (areaIntersection) {
+      this.additionalParams.push(`geostore=${areaIntersection}`);
+    }
+  }
+
   getQuery() {
     return encodeURIComponent(this.sql.replace(/ +(?= )/g, ""));
+  }
+
+  getAdditionalParams() {
+    if (this.additionalParams.length === 0) {
+      return '';
+    }
+
+    return `&${this.additionalParams.map(p => encodeURIComponent(p)).join('&')}`;
   }
 
   /**

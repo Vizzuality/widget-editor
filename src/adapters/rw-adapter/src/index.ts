@@ -275,7 +275,7 @@ export default class RwAdapter implements Adapter.Service {
 
     // We save the URL of the data so it is exposed by the public method getDataUrl
     // This is the reason why we don't use getDatasetData to fetch the data
-    this.dataUrl = `${this.endpoint}/query/${this.datasetId}?sql=${filtersService.getQuery()}`;
+    this.dataUrl = `${this.endpoint}/query/${this.datasetId}?sql=${filtersService.getQuery()}${filtersService.getAdditionalParams()}`;
     const { data: { data } } = await this.prepareRequest(this.dataUrl);
 
     return data
@@ -321,5 +321,18 @@ export default class RwAdapter implements Adapter.Service {
       mainColor: config.range.category20[0],
       category: config.range.category20,
     };
+  }
+
+  async getPredefinedAreas(): Promise<{ id: string, name: string }[]> {
+    const url = `${this.endpoint}/geostore/admin/list`;
+    const { data: { data } } = await this.prepareRequest(url);
+
+    return data
+      .filter(({ name }) => !!name)
+      .map(({ geostoreId: id, name }) => ({
+        id,
+        name,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 }
