@@ -4,6 +4,7 @@ import { selectChartType, isMap } from "@widget-editor/shared/lib/modules/config
 import {
   selectDisabledFeatures,
   selectAdvanced,
+  selectHasGeoInfo,
 } from "@widget-editor/shared/lib/modules/editor/selectors";
 
 import EditorOptionsComponent from "./component";
@@ -27,6 +28,7 @@ export default connectState(
     data: state.editor.widgetData,
     orderBy: state.configuration.orderBy,
     compact: state.theme.compact,
+    hasGeoInfo: selectHasGeoInfo(state),
   }),
   { patchConfiguration }
 )(EditorOptionsComponent);

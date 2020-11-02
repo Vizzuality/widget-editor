@@ -12,7 +12,6 @@ import {
   selectOrderBy,
   selectAggregateFunction,
   selectChartType,
-  selectAreaIntersection,
   selectBand,
   selectDonutRadius,
   selectSliceCount,
@@ -29,7 +28,10 @@ import {
   selectBbox,
   selectBasemap,
 } from '@widget-editor/shared/lib/modules/editor/selectors';
-import { selectFiltersList } from '@widget-editor/shared/lib/modules/filters/selectors';
+import {
+  selectFiltersList,
+  selectAreaIntersection,
+} from '@widget-editor/shared/lib/modules/filters/selectors';
 import { selectEndUserFilters } from '@widget-editor/shared/lib/modules/end-user-filters/selectors';
 import { getSerializedFilters } from '../filters';
 

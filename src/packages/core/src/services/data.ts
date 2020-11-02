@@ -198,4 +198,16 @@ export default class DataService {
     // If this dispatch is not executed, the local state is not set on init
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
   }
+
+  /**
+   * Return the list of predefined areas the user can filter with
+   */
+  async getPredefinedAreas(): Promise<{ id: string | number, name: string }[]> {
+    try {
+      return await this.adapter.getPredefinedAreas();
+    } catch (e) {
+      console.error("Unable to fetch the predefined areas", e);
+      return [];
+    }
+  }
 }

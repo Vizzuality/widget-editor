@@ -9,6 +9,7 @@ import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import QueryLimit from "components/query-limit";
 import Filter from "components/filter";
+import GeoFilter from "components/geo-filter";
 import EndUserFilters from "components/end-user-filters";
 
 import { DEFAULT_BORDER } from "@widget-editor/shared/lib/styles/style-constants";
@@ -71,6 +72,7 @@ const EditorOptions = ({
   dataService,
   isMap,
   chartType,
+  hasGeoInfo,
 }) => {
   const tabsVisibility = useMemo(() => ({
     general: true,
@@ -131,6 +133,11 @@ const EditorOptions = ({
             {!isMap && !advanced && (
               <AccordionSection title="Filters">
                 <Filter dataService={dataService} />
+              </AccordionSection>
+            )}
+            {!isMap && !advanced && hasGeoInfo && disabledFeatures.indexOf("geo-filter") === -1 && (
+              <AccordionSection title="Geographic filter">
+                <GeoFilter dataService={dataService} />
               </AccordionSection>
             )}
             {!isMap && !advanced && disabledFeatures.indexOf("end-user-filters") === -1 && (
