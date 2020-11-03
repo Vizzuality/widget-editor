@@ -6,9 +6,7 @@ import Renderer from "@widget-editor/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
 
-
-import { theme as TypesTheme } from '@widget-editor/types/js-types';
-
+import { JSTypes } from "@widget-editor/types";
 import { DataService, getOutputPayload } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
 
@@ -200,7 +198,7 @@ Editor.propTypes = {
   setSchemes: PropTypes.func,
   onSave: PropTypes.func,
   editorState: PropTypes.object,
-  adapter: PropTypes.object,
+  adapter: PropTypes.func.isRequired,
   resetEditor: PropTypes.func,
   resetConfiguration: PropTypes.func,
   resetWidgetConfig: PropTypes.func,
@@ -215,7 +213,7 @@ Editor.propTypes = {
   dispatch: PropTypes.func,
   userPassedTheme: PropTypes.object,
   schemes: PropTypes.arrayOf(PropTypes.object),
-  theme: TypesTheme
+  theme: JSTypes.theme
 }
 
 export default Editor;

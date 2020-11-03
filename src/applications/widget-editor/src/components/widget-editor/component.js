@@ -14,7 +14,7 @@ class WidgetEditor extends React.Component {
       disable,
       enableSave,
       schemes,
-      compact = false,
+      compact,
     } = this.props;
 
     if (typeof adapter !== "function") {
@@ -50,12 +50,12 @@ WidgetEditor.propTypes = {
   onSave: PropTypes.func,
   datasetId: PropTypes.string,
   widgetId: PropTypes.string,
-  adapter: PropTypes.object,
+  adapter: PropTypes.func.isRequired,
   theme: PropTypes.object,
-  disable: PropTypes.bool,
+  disable: PropTypes.array,
   enableSave: PropTypes.bool,
   schemes: PropTypes.arrayOf(PropTypes.object),
-  compact: PropTypes.bool
+  compact: PropTypes.any
 }
 
 export default WidgetEditor;

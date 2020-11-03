@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { configuration as ConfigurationType } from '@widget-editor/types/js-types';
+import { JSTypes } from "@widget-editor/types";
 
 import { StyledTitle } from './style';
 
@@ -9,7 +9,7 @@ const ChartTitle = ({ configuration }) => {
 }
 
 ChartTitle.propTypes = {
-  configuration: ConfigurationType
+  configuration: JSTypes.configuration
 }
 
 export default ChartTitle;

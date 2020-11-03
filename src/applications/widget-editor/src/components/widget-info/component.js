@@ -11,8 +11,7 @@ import Input from "styles-common/input";
 import debounce from "lodash/debounce";
 import { Select } from "@widget-editor/shared";
 
-import { configuration as ConfigurationType } from "@widget-editor/types/js-types";
-
+import { JSTypes } from "@widget-editor/types";
 import VALUE_FORMAT_OPTIONS from "@widget-editor/shared/lib/constants/value-formats";
 import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
@@ -244,7 +243,7 @@ WidgetInfo.propTypes = {
   patchConfiguration: PropTypes.func,
   isMap: PropTypes.bool,
   advanced: PropTypes.bool,
-  configuration: ConfigurationType
+  configuration: JSTypes.configuration
 }
 
 export default WidgetInfo;

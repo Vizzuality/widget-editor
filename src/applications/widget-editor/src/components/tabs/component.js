@@ -57,7 +57,7 @@ export const Tabs = ({ visible, theme, children }) => {
 };
 
 Tabs.propTypes = {
-  visible: PropTypes.bool,
+  visible: PropTypes.object,
   theme: PropTypes.object,
   children: PropTypes.any
 }

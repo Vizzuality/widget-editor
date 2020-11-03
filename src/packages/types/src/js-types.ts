@@ -40,7 +40,7 @@ export const widget = PropTypes.shape({
 
 export const configuration = PropTypes.shape({
   title: PropTypes.string,
-  map: PropTypes.bool,
+  map: PropTypes.object,
   chartType: PropTypes.string,
   xAxisTitle: PropTypes.string,
   yAxisTitle: PropTypes.string,
@@ -57,7 +57,7 @@ export const configuration = PropTypes.shape({
 
 export const editor = PropTypes.shape({
   advanced: PropTypes.bool,
-  widgetData: PropTypes.object,
+  widgetData: PropTypes.array,
   layers: PropTypes.arrayOf(PropTypes.object)
 });
 

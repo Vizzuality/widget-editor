@@ -131,7 +131,7 @@ class Map extends React.Component {
       this.onMapChange();
     }
   }
-
+w
   shouldComponentUpdate(nextProps, nextState) {
     const loadingChanged = this.state.loading !== nextState.loading;
     const captionChanged = this.props.caption !== nextProps.caption;
@@ -407,7 +407,7 @@ class Map extends React.Component {
 Map.propTypes = {
   patchConfiguration: PropTypes.func,
   editorSyncMap: PropTypes.func,
-  adapter: PropTypes.object.isRequired,
+  adapter: PropTypes.func.isRequired,
   interactionEnabled: PropTypes.bool,
   thumbnail: PropTypes.bool,
   layerId: PropTypes.string,

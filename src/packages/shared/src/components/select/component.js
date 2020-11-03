@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ReactSelect from "react-select";
 import ReactSelectCreatable from "react-select/creatable";
 
-import { select as SelectTypes } from '@widget-editor/types/js-types';
+import { JSTypes } from "@widget-editor/types";
 
 import SelectStyles, { StyledDropdownIndicator, StyledCloseIndicator } from "./style";
 
@@ -49,8 +49,8 @@ const Select = ({
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
-  options: SelectTypes.options,
-  value: SelectTypes.value,
+  options: JSTypes.select.options,
+  value: JSTypes.select.value,
   onChange: PropTypes.func,
   styles: PropTypes.object,
   disabled: PropTypes.bool,

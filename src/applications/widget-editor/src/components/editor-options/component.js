@@ -232,7 +232,7 @@ const EditorOptions = ({
 EditorOptions.propTypes = {
   patchConfiguration: PropTypes.func,
   dataService: PropTypes.object,
-  compact: PropTypes.bool,
+  compact: PropTypes.object,
   isMap: PropTypes.bool,
   chartType: PropTypes.string,
   handleGroupBy: PropTypes.func,

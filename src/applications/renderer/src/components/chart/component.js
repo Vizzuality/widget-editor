@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as vega from "vega";
 import { vega as vegaTooltip }  from "vega-tooltip";
 
-import { configuration as ConfigurationType } from '@widget-editor/types/js-types';
+import { JSTypes } from "@widget-editor/types";
 
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
@@ -299,12 +299,12 @@ class Chart extends React.Component {
 
 Chart.propTypes = {
   editor: PropTypes.shape({
-    widgetData: PropTypes.object
+    widgetData: PropTypes.array
   }),
-  configuration: ConfigurationType,
+  configuration: JSTypes.configuration,
   standalone: PropTypes.bool,
   thumbnail: PropTypes.bool,
-  compact: PropTypes.bool,
+  compact: PropTypes.any,
   widget: PropTypes.object,
   standaloneConfiguration: PropTypes.object,
   advanced: PropTypes.bool

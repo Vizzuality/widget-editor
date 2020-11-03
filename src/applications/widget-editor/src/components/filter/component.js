@@ -156,7 +156,7 @@ Filter.propTypes = {
   })),
   fields: PropTypes.arrayOf(PropTypes.object),
   columnOptions: PropTypes.arrayOf(PropTypes.object),
-  dataset: PropTypes.string,
+  dataset: PropTypes.object,
   loading: PropTypes.bool
 }
 

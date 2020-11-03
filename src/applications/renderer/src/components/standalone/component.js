@@ -92,7 +92,7 @@ const Standalone = ({
 };
 
 Standalone.propTypes = {
-  adapter: PropTypes.object,
+  adapter: PropTypes.func.isRequired,
   thumbnail: PropTypes.bool,
   changeBbox: PropTypes.bool,
   interactionEnabled: PropTypes.bool,
