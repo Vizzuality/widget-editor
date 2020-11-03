@@ -25,11 +25,11 @@ export default class RwAdapter implements Adapter.Service {
   widgetService = null;
   datasetId = null;
   tableName = null;
-  AUTH_TOKEN = null;
   // Some generic setup for
   applications = ["rw"];
   env = "production";
   locale = "en";
+  userToken = null;
   requestHandler = null;
   requestQue = [];
   isAborting = false;
@@ -39,6 +39,7 @@ export default class RwAdapter implements Adapter.Service {
       applications: this.applications,
       env: this.env,
       locale: this.locale,
+      userToken: this.userToken,
     };
 
     this.requestHandler = axios.create();
@@ -55,16 +56,17 @@ export default class RwAdapter implements Adapter.Service {
       if (this.hasOwnProperty(prop)) {
         this[prop] = props[prop];
       } else {
-        throw new Error(
-          `Adapter modifier, error ${prop} does not exsist on adapter`
-        );
+        throw new Error(`Adapter modifier: property ${prop} does not exist on adapter`);
       }
     });
+
     const asConfig: Config.Payload = {
       applications: this.applications,
       env: this.env,
       locale: this.locale,
+      userToken: this.userToken,
     };
+
     this.config = ConfigHelper(asConfig);
   }
 
@@ -172,7 +174,7 @@ export default class RwAdapter implements Adapter.Service {
     })
   }
 
-  async prepareRequest(url: string) {
+  async prepareRequest(url: string, options = {}) {
     const self = this;
     if (this.isAborting) {
       return null;
@@ -186,7 +188,8 @@ export default class RwAdapter implements Adapter.Service {
     });
 
     const response = await this.requestHandler.get(url, {
-      cancelToken
+      cancelToken,
+      ...options,
     });
 
     this.requestQue = this.requestQue.filter(q => q.id !== url);
@@ -323,13 +326,36 @@ export default class RwAdapter implements Adapter.Service {
     };
   }
 
-  async getPredefinedAreas(): Promise<{ id: string, name: string }[]> {
+  async getPredefinedAreas() {
     const url = `${this.endpoint}/geostore/admin/list`;
     const { data: { data } } = await this.prepareRequest(url);
 
     return data
       .filter(({ name }) => !!name)
       .map(({ geostoreId: id, name }) => ({
+        id,
+        name,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async getUserAreas() {
+    const { env, applications, userToken } = this.config.getConfig();
+
+    if (!userToken) {
+      return [];
+    }
+
+    const url = `${this.endpoint}/area?application=${applications.join(",")}&env=${env}`;
+    const options = {
+      headers: {
+        Authorization: `Bearer ${userToken}`
+      }
+    };
+    const { data: { data } } = await this.prepareRequest(url, options);
+
+    return data
+      .map(({ attributes: { geostore: id, name } }) => ({
         id,
         name,
       }))
