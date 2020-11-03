@@ -46,7 +46,7 @@ const Filter = ({
 
   const updateFilter = useCallback(async (filterId, change) => {
     const { adapter } = getLocalCache();
-
+    setFilters({ loading: true });
     const patch = await Promise.all(filters.map(async filter => {
       if (filter.id !== filterId) {
         return filter;
@@ -60,7 +60,6 @@ const Filter = ({
           : filter.config,
       };
     }));
-
     // We update the filter with its new values
     setFilters({ list: patch });
     // Let the state proxy know that this update occurred

@@ -1,5 +1,5 @@
 /* eslint react/display-name: 0 */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import ReactSelect from "react-select";
 import ReactSelectCreatable from "react-select/creatable";
@@ -24,16 +24,17 @@ const Select = ({
   const Component = creatable ? ReactSelectCreatable : ReactSelect;
   const [isDisabled, setIsDisabled] = useState(disabled || loading);
 
+  useEffect(() => {
+    setIsDisabled(disabled || loading);
+  }, [disabled, loading, setIsDisabled]);
+
   return (
     <Component
       inputId={id}
       aria-label={ariaLabel}
       options={options}
       value={value}
-      onChange={value => {
-        setIsDisabled(true);
-        onChange(value);
-      }}
+      onChange={onChange}
       isDisabled={isDisabled}
       styles={styles || SelectStyles}
       captureMenuScroll={false}

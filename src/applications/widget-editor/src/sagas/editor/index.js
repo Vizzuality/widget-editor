@@ -154,7 +154,7 @@ export default function* baseSaga() {
     yield put(setFilters({ loading: true }));
     yield race({
       token: take('widgetEditor/EDITOR/dataInitialized'),
-      timeout: delay(5000)
+      timeout: delay(3000)
     })
     yield put(setFilters({ loading: false }));
   }
