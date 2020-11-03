@@ -29,7 +29,8 @@
     "test:widget-editor": "cd src/playground/widget-editor && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
     "test": "jest --verbose ./src/packages/",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint:js": "eslint ./src -c .eslintrc.json --ext js,jsx",
+    "lint:ts": "tslint -c tslint.json src/**/*.ts",
     "migrate": "node ./migrations/cli/index.js"
   },
   "devDependencies": {
@@ -47,6 +48,8 @@
     "clear": "^0.1.0",
     "clui": "^0.3.6",
     "dotenv-cli": "^3.1.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-jest": "^24.1.0",
     "esm": "^3.2.22",
     "jest": "^24.9.0",
     "lerna": "latest",
