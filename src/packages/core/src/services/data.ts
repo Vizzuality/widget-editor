@@ -72,6 +72,7 @@ export default class DataService {
     await this.getFieldsAndLayers();
     await this.handleFilters();
     this.handleEndUserFilters();
+    this.handleGeoFilter();
 
     this.setEditor({
       widgetData: [],
@@ -142,6 +143,20 @@ export default class DataService {
       this.dispatch({
         type: reduxActions.EDITOR_SET_END_USER_FILTERS,
         payload: endUserFilters,
+      })
+    }
+  }
+
+  handleGeoFilter(): void {
+    if (!this.widget) {
+      return;
+    }
+
+    const areaIntersection = this.widget.attributes?.widgetConfig?.paramsConfig?.areaIntersection;
+    if (areaIntersection) {
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_FILTERS,
+        payload: { areaIntersection },
       })
     }
   }
