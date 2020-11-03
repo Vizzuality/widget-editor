@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from "react";
+import PropTypes from "prop-types";
 import uniqueId from "lodash/uniqueId";
 
 import { FiltersService } from "@widget-editor/core";
@@ -83,7 +84,7 @@ const Filter = ({
 
       {!filters.length && (
         <StyledEmpty>
-          Click "Add filter" to start filtering the data.
+          Click &quot;Add filter&quot; to start filtering the data.
         </StyledEmpty>
       )}
 
@@ -145,5 +146,18 @@ const Filter = ({
     </StyledFilterBox>
   );
 };
+
+Filter.propTypes = {
+  setFilters: PropTypes.func,
+  patchConfiguration: PropTypes.func,
+  filters: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    type: PropTypes.string
+  })),
+  fields: PropTypes.arrayOf(PropTypes.object),
+  columnOptions: PropTypes.arrayOf(PropTypes.object),
+  dataset: PropTypes.string,
+  loading: PropTypes.bool
+}
 
 export default Filter;

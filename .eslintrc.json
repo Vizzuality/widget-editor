@@ -8,6 +8,9 @@
     "eslint:recommended",
     "plugin:react/recommended"
   ],
+  "globals": {
+    "L": true
+  },
   "plugins": ["babel", "jest", "react", "react-hooks"],
   "parser": "babel-eslint",
   "parserOptions": {

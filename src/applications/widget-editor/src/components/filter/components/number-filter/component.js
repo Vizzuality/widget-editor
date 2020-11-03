@@ -50,6 +50,7 @@ const NumberFilter = ({ filter, onChange }) => {
 
 NumberFilter.propTypes = {
   filter: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     column: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     operation: PropTypes.string,

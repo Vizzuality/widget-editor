@@ -1,3 +1,4 @@
+/* eslint react/display-name: 0 */
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import ReactSelect from "react-select";
@@ -9,7 +10,7 @@ import SelectStyles, { StyledDropdownIndicator, StyledCloseIndicator } from "./s
 
 const Select = ({
   id,
-  loading = false,
+  loading,
   options,
   value,
   styles,
@@ -55,10 +56,13 @@ Select.propTypes = {
   disabled: PropTypes.bool,
   'aria-label': PropTypes.string,
   creatable: PropTypes.bool,
+  loading: PropTypes.bool,
+  components: PropTypes.any
 };
 
 Select.defaultProps = {
   value: undefined,
+  loading: false,
   onChange: () => null,
   styles: null,
   disabled: false,

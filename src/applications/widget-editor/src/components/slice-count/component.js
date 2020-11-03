@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import PropTypes from 'prop-types';
 import useDebounce from "hooks/use-debounce";
 
 import FlexContainer from "styles-common/flex";
@@ -65,5 +65,14 @@ const SliceCount = ({
     </InputGroup>
   );
 };
+
+SliceCount.propTypes = {
+  min: PropTypes.number,
+  value: PropTypes.number,
+  data: PropTypes.any,
+  minDistance: PropTypes.number,
+  onChange: PropTypes.func,
+  disabledFeatures: PropTypes.arrayOf(PropTypes.string)
+}
 
 export default SliceCount;

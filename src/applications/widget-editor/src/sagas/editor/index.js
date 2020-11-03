@@ -1,4 +1,5 @@
 import { takeLatest, put, select, all, fork, call, take, delay, race, cancel } from "redux-saga/effects";
+import has from "lodash/has";
 import { constants } from "@widget-editor/core";
 
 import { LABELS, BASEMAPS } from "@widget-editor/map/lib/constants";
@@ -36,12 +37,12 @@ function* preloadData() {
 
     const mapSpecifics = {
       ...storeConfiguration.map,
-      ...(widgetConfig.hasOwnProperty("lat") ? { lat: widgetConfig.lat } : {}),
-      ...(widgetConfig.hasOwnProperty("lng") ? { lat: widgetConfig.lng } : {}),
-      ...(widgetConfig.hasOwnProperty("bbox")
+      ...(has(widgetConfig, "lat") ? { lat: widgetConfig.lat } : {}),
+      ...(has(widgetConfig, "lng") ? { lat: widgetConfig.lng } : {}),
+      ...(has(widgetConfig, "bbox")
         ? { bbox: widgetConfig.bbox }
         : {}),
-      ...(widgetConfig.hasOwnProperty("basemapLayers")
+      ...(has(widgetConfig, "basemapLayers")
         ? {
           basemap: {
             basemap: Object.keys(BASEMAPS).indexOf(widgetConfig.basemapLayers.basemap) !== -1
@@ -62,7 +63,7 @@ function* preloadData() {
               boundaries: false,
             }
         }),
-      ...(widgetConfig.hasOwnProperty("zoom")
+      ...(has(widgetConfig, "zoom")
         ? { zoom: widgetConfig.zoom }
         : {}),
     };
@@ -77,7 +78,7 @@ function* preloadData() {
     const isMap = rasterOnly
       || editor?.widget?.attributes?.widgetConfig?.paramsConfig?.visualizationType === "map";
 
-    const paramsConfig = widgetConfig.hasOwnProperty("paramsConfig")
+    const paramsConfig = has(widgetConfig, "paramsConfig")
       ? widgetConfig.paramsConfig
       : null;
 

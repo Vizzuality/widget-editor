@@ -1,4 +1,10 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+
+import {
+  editor as EditorType,
+  configuration as ConfigurationType
+} from '@widget-editor/types/js-types';
 
 import { Select } from "@widget-editor/shared";
 import { BASEMAPS, LABELS, BOUNDARIES } from '@widget-editor/map/lib/constants';
@@ -132,5 +138,12 @@ const MapInfo = ({ editor, configuration, patchConfiguration, editorSyncMap }) =
     </FlexContainer>
   );
 };
+
+MapInfo.propTypes = {
+  patchConfiguration: PropTypes.func,
+  editorSyncMap: PropTypes.func,
+  configuration: ConfigurationType,
+  editor: EditorType
+}
 
 export default MapInfo;

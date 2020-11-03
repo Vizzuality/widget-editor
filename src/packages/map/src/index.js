@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 import { redux } from "@widget-editor/shared";
 import isEqual from "lodash/isEqual";
+import has from "lodash/has";
 import styled from "styled-components";
 
-// vizzuality-components icons
 import { Icons } from 'vizzuality-components';
 
 import { editorSyncMap } from "@widget-editor/shared/lib/modules/editor/actions";
@@ -127,7 +127,7 @@ class Map extends React.Component {
     const mapOptions = this.getMapOptions();
 
     // If the bounds are not defined, we set them in the store
-    if (!this.props?.mapConfig?.bounds || !mapOptions.hasOwnProperty("bbox")) {
+    if (!this.props?.mapConfig?.bounds || !has(mapOptions, "bbox")) {
       this.onMapChange();
     }
   }
@@ -405,7 +405,28 @@ class Map extends React.Component {
 }
 
 Map.propTypes = {
+  patchConfiguration: PropTypes.func,
+  editorSyncMap: PropTypes.func,
   adapter: PropTypes.object.isRequired,
+  interactionEnabled: PropTypes.bool,
+  thumbnail: PropTypes.bool,
+  layerId: PropTypes.string,
+  caption: PropTypes.string,
+  changeBbox: PropTypes.arrayOf(PropTypes.number),
+  mapConfig: PropTypes.shape({
+    bounds: PropTypes.any
+  }),
+  labels: PropTypes.any,
+  layers: PropTypes.any,
+  mapConfiguration: PropTypes.shape({
+    labels: PropTypes.any,
+    bbox: PropTypes.arrayOf(PropTypes.number),
+    basemap: PropTypes.shape({
+      labels: PropTypes.string,
+      boundaries: PropTypes.any,
+      basemap: PropTypes.string
+    })
+  })
 };
 
 export default redux.connectState(
