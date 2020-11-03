@@ -12,7 +12,7 @@ import FieldsService from "./fields";
 
 export default class FiltersService implements Filters.Service {
   sql: string;
-  additionalParams: string[] = [];
+  additionalParams: [string, string][] = [];
   dataset: any;
   configuration: Config.Payload;
   adapter: Adapter.Service;
@@ -306,7 +306,7 @@ export default class FiltersService implements Filters.Service {
   prepareGeostore() {
     const { areaIntersection } = this.filters;
     if (areaIntersection) {
-      this.additionalParams.push(`geostore=${areaIntersection}`);
+      this.additionalParams.push(['geostore', areaIntersection]);
     }
   }
 
@@ -319,7 +319,7 @@ export default class FiltersService implements Filters.Service {
       return '';
     }
 
-    return `&${this.additionalParams.map(p => encodeURIComponent(p)).join('&')}`;
+    return `&${this.additionalParams.map(param => `${param[0]}=${encodeURIComponent(param[1])}`).join('&')}`;
   }
 
   /**
