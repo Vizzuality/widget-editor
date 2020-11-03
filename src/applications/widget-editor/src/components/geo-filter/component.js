@@ -1,11 +1,23 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Select } from "@widget-editor/shared";
 
 const GeoFilter = ({ dataService, areaIntersection, setFilters, patchConfiguration }) => {
   const [predefinedAreasOptions, setPredefinedAreasOptions] = useState([]);
+  const [userAreasOptions, setUserAreasOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+
+  const options = useMemo(() => [
+    {
+      label: 'Custom areas',
+      options: userAreasOptions,
+    },
+    {
+      label: 'Predefined areas',
+      options: predefinedAreasOptions,
+    },
+  ], [predefinedAreasOptions, userAreasOptions]);
 
   const onChangeArea = useCallback((option) => {
     setFilters({ areaIntersection: option?.value ?? null });
@@ -23,16 +35,31 @@ const GeoFilter = ({ dataService, areaIntersection, setFilters, patchConfigurati
       setPredefinedAreasOptions(options);
     };
 
+    const fetchUserAreas = async () => {
+      const options = (await dataService.getUserAreas())
+        .map(({ id, name }) => ({
+          label: name,
+          value: id,
+        }));
+
+        setUserAreasOptions(options);
+    };
+
     fetchAreas();
-  }, [dataService, setPredefinedAreasOptions]);
+    fetchUserAreas();
+  }, [dataService, setPredefinedAreasOptions, setUserAreasOptions]);
 
   useEffect(() => {
     if (!areaIntersection) {
       setSelectedOption(null);
     } else {
-      setSelectedOption(predefinedAreasOptions.find(option => option.value === areaIntersection));
+      const option = [
+        ...predefinedAreasOptions,
+        ...userAreasOptions,
+      ].find(option => option.value === areaIntersection);
+      setSelectedOption(option);
     }
-  }, [areaIntersection, predefinedAreasOptions, setSelectedOption]);
+  }, [areaIntersection, predefinedAreasOptions, userAreasOptions, setSelectedOption]);
   
   return (
     <Select
@@ -41,7 +68,7 @@ const GeoFilter = ({ dataService, areaIntersection, setFilters, patchConfigurati
       aria-label="Select an area"
       placeholder="Select an area"
       value={selectedOption}
-      options={predefinedAreasOptions}
+      options={options}
       onChange={onChangeArea}
       isClearable
     />

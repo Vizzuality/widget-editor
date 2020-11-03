@@ -210,4 +210,16 @@ export default class DataService {
       return [];
     }
   }
+
+  /**
+   * Return the list of the user's areas
+   */
+  async getUserAreas(): Promise<{ id: string | number, name: string }[]> {
+    try {
+      return await this.adapter.getUserAreas();
+    } catch (e) {
+      console.error("Unable to fetch the user's areas", e);
+      return [];
+    }
+  }
 }

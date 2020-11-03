@@ -6,6 +6,7 @@ import * as Config from "./config";
 type Id = string | number;
 type WidgetId = Id;
 type Endpoint = string;
+export type Area = { id: Id, name: string };
 
 export type datasetId = Id;
 
@@ -36,5 +37,6 @@ export interface Service {
   setDatasetId(datasetId: datasetId): void;
   getSerializedScheme(config: Widget.Scheme): any;
   getDeserializedScheme(config: any): Widget.Scheme;
-  getPredefinedAreas(): Promise<{ id: Id, name: string }[]>;
+  getPredefinedAreas(): Promise<Area[]>;
+  getUserAreas(): Promise<Area[]>;
 }
