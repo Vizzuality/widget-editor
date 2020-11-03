@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import find from "lodash/find";
 
+import {
+  theme as ThemeType,
+} from '@widget-editor/types/js-types';
+
 import { Button, Select } from "@widget-editor/shared";
 
 import ChartMenu from "./components/ChartMenu";
@@ -97,6 +101,11 @@ const SelectChart = ({
 };
 
 SelectChart.propTypes = {
+  patchConfiguration: PropTypes.func,
+  setTheme: PropTypes.func,
+  chartType: PropTypes.string,
+  theme: ThemeType,
+  advanced: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,

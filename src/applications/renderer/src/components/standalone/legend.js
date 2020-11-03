@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from "styled-components";
 
 import SvgClose from './legend-close';
@@ -102,6 +103,12 @@ const Legend = ({ widgetConfig }) => {
       </StyledLegendItem>
     ))}
   </StyledLegend>);
+}
+
+Legend.propTypes = {
+  widgetConfig: PropTypes.shape({
+    legend: PropTypes.arrayOf(PropTypes.object)
+  })
 }
 
 export default Legend;

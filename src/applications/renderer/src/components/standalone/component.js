@@ -1,6 +1,9 @@
 import React, { Fragment, Suspense } from "react";
+import PropTypes from 'prop-types';
+import has from 'lodash/has';
 
 import { getDefaultTheme } from "@widget-editor/core";
+
 import useLayerData from "./fetch-layers-hook";
 
 import Legend from './legend';
@@ -50,7 +53,7 @@ const Standalone = ({
     <Fragment>
       {!isMap && (
         <Suspense>
-          {widgetConfig.hasOwnProperty('legend') && widgetConfig?.legend?.length > 0 && !thumbnail
+          {has(widgetConfig, 'legend') && widgetConfig?.legend?.length > 0 && !thumbnail
             && <Legend widgetConfig={widgetConfig}/>}
           <Chart
             thumbnail={thumbnail}
@@ -87,5 +90,23 @@ const Standalone = ({
     </Fragment>
   );
 };
+
+Standalone.propTypes = {
+  adapter: PropTypes.object,
+  thumbnail: PropTypes.bool,
+  changeBbox: PropTypes.bool,
+  interactionEnabled: PropTypes.bool,
+  widgetName: PropTypes.string,
+  widgetConfig: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+    zoom: PropTypes.number,
+    bbox: PropTypes.arrayOf(PropTypes.number),
+    basemapLayers: PropTypes.arrayOf(PropTypes.object),
+    paramsConfig: PropTypes.object,
+    legend: PropTypes.arrayOf(PropTypes.object)
+  }),
+
+}
 
 export default Standalone;

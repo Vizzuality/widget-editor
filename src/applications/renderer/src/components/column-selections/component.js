@@ -1,6 +1,8 @@
 import React, { Fragment, useMemo } from "react";
 import PropTypes from "prop-types";
 
+import { configuration as ConfigurationType } from '@widget-editor/types/js-types';
+
 import { Select } from "@widget-editor/shared";
 import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
@@ -151,6 +153,9 @@ const ColumnSelections = ({
 };
 
 ColumnSelections.propTypes = {
+  compact: PropTypes.bool,
+  patchConfiguration: PropTypes.func,
+  configuration: ConfigurationType,
   columns: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string.isRequired,
     value: PropTypes.any.isRequired,

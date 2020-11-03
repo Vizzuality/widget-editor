@@ -1,9 +1,13 @@
 import React, { Fragment, Suspense } from "react";
+import PropTypes from 'prop-types';
 import * as vega from "vega";
 import { vega as vegaTooltip }  from "vega-tooltip";
 
+import { configuration as ConfigurationType } from '@widget-editor/types/js-types';
+
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
+import has from "lodash/has";
 
 import { StyledContainer, ChartNeedsOptions } from "./styles";
 
@@ -114,7 +118,7 @@ class Chart extends React.Component {
         format,
       })),
     });
-  };
+  }
 
   generateRuntime(configuration) {
     const { chart } = this;
@@ -187,7 +191,7 @@ class Chart extends React.Component {
     const axisY = conf?.config?.axisY || {};
     delete axisY.labelAlign;
     delete axisY.labelBaseline;
-    const config = conf.hasOwnProperty('config') ? {
+    const config = has(conf, "config") ? {
       ...conf.config,
         axisY: {
           ...axisY,
@@ -292,6 +296,19 @@ class Chart extends React.Component {
     );
   }
 }
+
+Chart.propTypes = {
+  editor: PropTypes.shape({
+    widgetData: PropTypes.object
+  }),
+  configuration: ConfigurationType,
+  standalone: PropTypes.bool,
+  thumbnail: PropTypes.bool,
+  compact: PropTypes.bool,
+  widget: PropTypes.object,
+  standaloneConfiguration: PropTypes.object,
+  advanced: PropTypes.bool
+};
 
 Chart.defaultProps = {
   width: 0,

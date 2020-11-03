@@ -1,4 +1,11 @@
 import React, { useCallback } from "react";
+import PropTypes from 'prop-types';
+
+import {
+  select as SelectTypes,
+  widget as WidgetType,
+  configuration as ConfigurationType
+} from '@widget-editor/types/js-types';
 
 import { utils } from '@widget-editor/core';
 import { Select } from "@widget-editor/shared";
@@ -84,5 +91,18 @@ const Legend = ({
     </StyledContainer>
   );
 };
+
+Legend.propTypes = {
+  patchConfiguration: PropTypes.func,
+  configuration: ConfigurationType,
+  advanced: PropTypes.bool,
+  compact: PropTypes.bool,
+  scheme: PropTypes.shape({
+    mainColor: PropTypes.string
+  }),
+  selectedColumn: SelectTypes.value,
+  columns: SelectTypes.options,
+  widget: WidgetType
+}
 
 export default Legend;

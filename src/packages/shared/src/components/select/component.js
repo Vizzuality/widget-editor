@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import ReactSelect from "react-select";
 import ReactSelectCreatable from "react-select/creatable";
 
+import { select as SelectTypes } from '@widget-editor/types/js-types';
+
 import SelectStyles, { StyledDropdownIndicator, StyledCloseIndicator } from "./style";
 
 const Select = ({
@@ -46,32 +48,8 @@ const Select = ({
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string,
-      options: PropTypes.arrayOf(
-        PropTypes.shape({
-          label: PropTypes.string.isRequired,
-          value: PropTypes.string.isRequired,
-          isDisabled: PropTypes.bool,
-        })
-      ),
-      isDisabled: PropTypes.bool,
-    })
-  ).isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-      isDisabled: PropTypes.bool,
-    }),
-    PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-      isDisabled: PropTypes.bool,
-    })),
-  ]),
+  options: SelectTypes.options,
+  value: SelectTypes.value,
   onChange: PropTypes.func,
   styles: PropTypes.object,
   disabled: PropTypes.bool,
