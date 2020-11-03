@@ -53,10 +53,22 @@ const GeoFilter = ({ dataService, areaIntersection, setFilters, patchConfigurati
     if (!areaIntersection) {
       setSelectedOption(null);
     } else {
-      const option = [
+      let option = [
         ...predefinedAreasOptions,
         ...userAreasOptions,
       ].find(option => option.value === areaIntersection);
+
+      if (!option) {
+        // This case happens when we restore a widget that was created with a user's area and the
+        // editor doesn't receive the user's token
+        // We can still use the area to filter, but we don't have its name so we create this new
+        // option
+        option = {
+          label: 'Custom area',
+          value: areaIntersection,
+        };
+      }
+
       setSelectedOption(option);
     }
   }, [areaIntersection, predefinedAreasOptions, userAreasOptions, setSelectedOption]);
