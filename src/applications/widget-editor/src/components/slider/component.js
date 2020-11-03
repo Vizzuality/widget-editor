@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from "styled-components";
 import RcSlider, { Range } from "rc-slider";
 
@@ -64,5 +65,16 @@ const Slider = ({
     </ThemeProvider>
   );
 };
+
+Slider.propTypes = {
+  min: PropTypes.number,
+  max: PropTypes.number,
+  step: PropTypes.number,
+  value: PropTypes.number,
+  defaultValue: PropTypes.number,
+  theme: PropTypes.object,
+  onChange: PropTypes.func,
+  onDone: PropTypes.func,
+}
 
 export default Slider;

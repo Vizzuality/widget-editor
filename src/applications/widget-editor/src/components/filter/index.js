@@ -9,6 +9,7 @@ import FilterComponent from "./component";
 export default connectState(
   (state) => ({
     dataset: state.editor.dataset,
+    loading: state.filters.loading,
     filters: state.filters.list,
     fields: state.editor.fields,
     columnOptions: selectColumnOptions(state),

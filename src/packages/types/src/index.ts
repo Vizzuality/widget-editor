@@ -7,3 +7,4 @@ export * as Widget from "./widget";
 export * as Generic from "./generic";
 export * as Filters from "./filters";
 
+export * as JSTypes from "./js-types";

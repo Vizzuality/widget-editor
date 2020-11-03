@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import styled, { css } from "styled-components";
 
 import { ArrowIcon } from "@widget-editor/shared";
@@ -54,5 +55,15 @@ const ToggleOrder = ({ order, options, onChange }) => {
     </StyledButton>
   );
 };
+
+ToggleOrder.propTypes = {
+  onChange: PropTypes.func,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string
+  })),
+  order: PropTypes.shape({
+    value: PropTypes.string
+  })
+}
 
 export default ToggleOrder;

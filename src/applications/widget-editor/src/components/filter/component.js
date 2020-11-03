@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from "react";
+import PropTypes from "prop-types";
 import uniqueId from "lodash/uniqueId";
 
 import { FiltersService } from "@widget-editor/core";
@@ -29,6 +30,7 @@ const Filter = ({
   fields = [],
   columnOptions,
   dataset,
+  loading
 }) => {
   const canAddFilter = useMemo(
     () => filters.length < columnOptions.length && filters.every(filter => filter.column),
@@ -44,7 +46,7 @@ const Filter = ({
 
   const updateFilter = useCallback(async (filterId, change) => {
     const { adapter } = getLocalCache();
-
+    setFilters({ loading: true });
     const patch = await Promise.all(filters.map(async filter => {
       if (filter.id !== filterId) {
         return filter;
@@ -58,7 +60,6 @@ const Filter = ({
           : filter.config,
       };
     }));
-
     // We update the filter with its new values
     setFilters({ list: patch });
     // Let the state proxy know that this update occurred
@@ -82,7 +83,7 @@ const Filter = ({
 
       {!filters.length && (
         <StyledEmpty>
-          Click "Add filter" to start filtering the data.
+          Click &quot;Add filter&quot; to start filtering the data.
         </StyledEmpty>
       )}
 
@@ -94,6 +95,7 @@ const Filter = ({
               id={`filter-column-${filter.id}`}
               aria-label="Select a column"
               placeholder="Select a column"
+              loading={loading}
               value={columnOptions.find(({ value }) => value === filter.column)}
               options={columnOptions}
               onChange={
@@ -143,5 +145,18 @@ const Filter = ({
     </StyledFilterBox>
   );
 };
+
+Filter.propTypes = {
+  setFilters: PropTypes.func,
+  patchConfiguration: PropTypes.func,
+  filters: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    type: PropTypes.string
+  })),
+  fields: PropTypes.arrayOf(PropTypes.object),
+  columnOptions: PropTypes.arrayOf(PropTypes.object),
+  dataset: PropTypes.object,
+  loading: PropTypes.bool
+}
 
 export default Filter;

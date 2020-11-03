@@ -20,6 +20,7 @@ Checkbox.propTypes = {
   label: PropTypes.string.isRequired,
   checked: PropTypes.bool,
   onChange: PropTypes.func,
+  className: PropTypes.func
 };
 
 Checkbox.defaultProps = {
@@ -60,7 +61,7 @@ export default styled(Checkbox)`
       content: "";
     }
   }
-  
+
   label {
     position: relative;
     display: inline-block;
