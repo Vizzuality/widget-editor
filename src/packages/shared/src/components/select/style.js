@@ -116,6 +116,7 @@ export default {
       ...provided,
       color,
       backgroundColor,
+      opacity: state.isDisabled ? 0.4 : 1,
     };
   },
 
