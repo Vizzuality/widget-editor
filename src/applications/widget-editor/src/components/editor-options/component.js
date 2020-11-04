@@ -253,7 +253,8 @@ EditorOptions.propTypes = {
   donutRadius: PropTypes.number,
   sliceCount: PropTypes.number,
   data: PropTypes.any,
-  orderBy: PropTypes.string
-}
+  orderBy: PropTypes.string,
+  hasGeoInfo: PropTypes.bool.isRequired,
+};
 
 export default EditorOptions;
