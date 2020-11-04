@@ -16,15 +16,15 @@ const getInputValue = (type, value) => {
   if (value === null || value === undefined) {
     return '';
   }
-  
+
   if (type === 'number') {
     return +value;
   }
-  
+
   if (type === 'date') {
     return new Date(value).toISOString().split('T')[0];
   }
-  
+
   return value;
 };
 
@@ -90,6 +90,7 @@ const FilterValue = ({ filter, onChange, ...rest }) => {
 
 FilterValue.propTypes = {
   filter: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     column: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     operation: PropTypes.string,

@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo } from "react";
+import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 import useDebounce from "hooks/use-debounce";
@@ -93,9 +94,9 @@ const EditorOptions = ({
     patchConfiguration({ donutRadius: parseInt(value) });
   });
 
-  const handleGroupBy = (value) => {
-    patchConfiguration({ groupBy: value });
-  }
+  // const handleGroupBy = (value) => {
+  //   patchConfiguration({ groupBy: value });
+  // }
 
   const handleLimit = useDebounce((value) => {
     patchConfiguration({ limit: value });
@@ -185,7 +186,7 @@ const EditorOptions = ({
             )}
           </Accordion>
         </Tab>
-        
+
         <Tab id="map" label="Map">
           <Accordion>
             <AccordionSection title="Configuration" openDefault>
@@ -233,6 +234,27 @@ const EditorOptions = ({
       </Tabs>
     </StyledContainer>
   );
+};
+
+EditorOptions.propTypes = {
+  patchConfiguration: PropTypes.func,
+  dataService: PropTypes.object,
+  compact: PropTypes.object,
+  isMap: PropTypes.bool,
+  chartType: PropTypes.string,
+  handleGroupBy: PropTypes.func,
+  initialized: PropTypes.bool,
+  restoring: PropTypes.bool,
+  advanced: PropTypes.bool,
+  rasterOnly: PropTypes.bool,
+  disabledFeatures: PropTypes.arrayOf(PropTypes.string),
+  datasetId: PropTypes.string,
+  limit: PropTypes.number,
+  donutRadius: PropTypes.number,
+  sliceCount: PropTypes.number,
+  data: PropTypes.any,
+  orderBy: PropTypes.string,
+  hasGeoInfo: PropTypes.bool.isRequired,
 };
 
 export default EditorOptions;

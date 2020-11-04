@@ -13,8 +13,10 @@ jobs:
         run: |
           yarn policies set-version
           yarn install
-      - name: Lint 📖
-        run: yarn lint
+      - name: Lint ts 📖
+        run: yarn lint:ts
+      - name: Lint js 📖
+        run: yarn lint:js
   test:
     needs: [lint]
     runs-on: ubuntu-latest

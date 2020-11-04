@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Editor from "components/editor";
 
 class WidgetEditor extends React.Component {
@@ -44,6 +45,19 @@ class WidgetEditor extends React.Component {
       />
     );
   }
+}
+
+WidgetEditor.propTypes = {
+  application: PropTypes.string,
+  onSave: PropTypes.func,
+  datasetId: PropTypes.string,
+  widgetId: PropTypes.string,
+  adapter: PropTypes.func.isRequired,
+  theme: PropTypes.object,
+  disable: PropTypes.array,
+  enableSave: PropTypes.bool,
+  schemes: PropTypes.arrayOf(PropTypes.object),
+  compact: PropTypes.any
 }
 
 export default WidgetEditor;

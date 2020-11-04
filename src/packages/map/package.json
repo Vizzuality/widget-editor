@@ -12,6 +12,7 @@
   ],
   "private": false,
   "dependencies": {
+    "prop-types": "15.7.2",
     "axios": "^0.18.0",
     "chroma-js": "^2.1.0",
     "deck.gl": "^7.1.10",

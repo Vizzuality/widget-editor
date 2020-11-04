@@ -1,4 +1,7 @@
 import React, { Suspense } from "react";
+import PropTypes from 'prop-types';
+
+import { JSTypes } from "@widget-editor/types";
 
 import {
   StyledContainer,
@@ -133,5 +136,20 @@ const Renderer = ({
     </StyledContainer>
   );
 };
+
+Renderer.propTypes = {
+  widgetConfig: PropTypes.object,
+  widgetName: PropTypes.string,
+  interactionEnabled: PropTypes.bool,
+  changeBbox: PropTypes.bool,
+  compact: PropTypes.any,
+  standalone: PropTypes.bool,
+  thumbnail: PropTypes.bool,
+  theme: PropTypes.object,
+  adapter: PropTypes.func.isRequired,
+  widget: JSTypes.widget,
+  editor: JSTypes.editor,
+  configuration: JSTypes.configuration
+}
 
 export default Renderer;

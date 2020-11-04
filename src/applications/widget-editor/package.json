@@ -32,7 +32,8 @@
     "tinycolor2": "^1.4.1",
     "vega": "^5.9.0",
     "vega-tooltip": "0.8.0",
-    "vizzuality-redux-tools": "^4.1.1"
+    "vizzuality-redux-tools": "^4.1.1",
+    "prop-types": "15.7.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

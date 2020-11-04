@@ -14,7 +14,7 @@ export const StyledCloseIndicator = styled(({ innerProps, className }) => {
   const Icon = styled(CloseIcon)`
     display: block;
   `;
-  
+
   return (
     <div {...innerProps} className={className}>
       <Icon width="10" height="10" />
@@ -26,7 +26,7 @@ export const StyledCloseIndicator = styled(({ innerProps, className }) => {
 
 export const StyledColumnOption = styled(({ overflow, ...rest }) => <div {...rest} />)`
   ${
-    props => !props.overflow 
+    props => !props.overflow
       ? css`
         overflow: hidden;
         white-space: nowrap;
@@ -70,6 +70,11 @@ export default {
       backgroundColor: "rgba(255,255,255,1)",
       pointerEvents: state.isDisabled ? 'none' : null,
     }
+  },
+
+  singleValue: (provided, state) => {
+    const maxWidth = 'calc(100% - 90px)';
+    return { ...provided, maxWidth };
   },
 
   indicatorSeparator: () => ({

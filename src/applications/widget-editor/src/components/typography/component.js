@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import FlexContainer from 'styles-common/flex';
 import FormLabel from 'styles-common/form-label';
 import InputGroup from 'styles-common/input-group';
@@ -40,8 +41,8 @@ const Typography = ({ theme, setTheme }) => {
         <FlexContainer row={true}>
           <InputGroup>
             <FormLabel htmlFor="typography-title-size">Title size</FormLabel>
-            <Input 
-              name="typography-title-size" 
+            <Input
+              name="typography-title-size"
               value={titleSize === "auto" ? '' : titleSize}
               type="text"
               onChange={value => handleChangeSize('titleSize', value)}
@@ -50,8 +51,8 @@ const Typography = ({ theme, setTheme }) => {
           </InputGroup>
           <InputGroup>
             <FormLabel htmlFor="typography-caption-size">Caption size</FormLabel>
-            <Input 
-              name="typography-caption-size" 
+            <Input
+              name="typography-caption-size"
               value={captionSize === "auto" ? '' : captionSize}
               type="text"
               onChange={value => handleChangeSize('captionSize', value)}
@@ -60,19 +61,27 @@ const Typography = ({ theme, setTheme }) => {
           </InputGroup>
           <InputGroup>
             <FormLabel htmlFor="typography-axis-title-size">Axis title size</FormLabel>
-            <Input 
-              name="typography-axis-title-size" 
+            <Input
+              name="typography-axis-title-size"
               value={axisTitleSize === "auto" ? '' : axisTitleSize}
               type="text"
               onChange={value => handleChangeSize('axisTitleSize', value)}
               placeholder="Auto"
             />
           </InputGroup>
-        </FlexContainer>      
+        </FlexContainer>
     </div>
   );
 }
 
-
+Typography.propTypes = {
+  setTheme: PropTypes.func,
+  theme: PropTypes.shape({
+    font: PropTypes.string,
+    titleSize: PropTypes.number,
+    captionSize: PropTypes.number,
+    axisTitleSize: PropTypes.number
+  })
+}
 
 export default Typography;

@@ -21,7 +21,7 @@ const useWidgetData = (widgetConfig, theme, isMap) => {
     if (!isMap) {
       fetchData();
     }
-  }, []);
+  }, []); // eslint-disable-line
   return [{ data, isLoading, isError }, setDataURL];
 };
 

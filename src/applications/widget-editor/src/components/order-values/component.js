@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import PropTypes from 'prop-types';
 
 import { Select } from "@widget-editor/shared";
 import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
@@ -110,5 +111,14 @@ const OrderValues = ({
     </FlexContainer>
   );
 };
+
+OrderValues.propTypes = {
+  patchConfiguration: PropTypes.func,
+  setFilters: PropTypes.func,
+  orderBy: PropTypes.string,
+  aggregateFunction: PropTypes.string,
+  valueColumn: PropTypes.string,
+  columns: PropTypes.arrayOf(PropTypes.object)
+}
 
 export default OrderValues;

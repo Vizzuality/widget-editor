@@ -1,4 +1,6 @@
 import React, { Fragment } from "react";
+import PropTypes from 'prop-types';
+
 import {
   MENU_DATA,
   TYPE_BAR,
@@ -62,5 +64,21 @@ const ChartMenu = ({ options, getValue, setValue, innerRef, innerProps }) => {
     </StyledContainer>
   );
 };
+
+ChartList.propTypes = {
+  list: PropTypes.arrayOf(PropTypes.object),
+  setData: PropTypes.func,
+  title: PropTypes.string
+}
+
+ChartMenu.propTypes = {
+  getValue: PropTypes.func,
+  setValue: PropTypes.func,
+  innerRef: PropTypes.object,
+  innerProps: PropTypes.object,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    chartType: PropTypes.string
+  }))
+}
 
 export default ChartMenu;

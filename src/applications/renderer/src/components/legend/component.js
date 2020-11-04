@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
+import PropTypes from 'prop-types';
 
+import { JSTypes } from "@widget-editor/types";
 import { utils } from '@widget-editor/core';
 import { Select } from "@widget-editor/shared";
 
@@ -84,5 +86,18 @@ const Legend = ({
     </StyledContainer>
   );
 };
+
+Legend.propTypes = {
+  patchConfiguration: PropTypes.func,
+  configuration: JSTypes.configuration,
+  advanced: PropTypes.bool,
+  compact: PropTypes.any,
+  scheme: PropTypes.shape({
+    mainColor: PropTypes.string
+  }),
+  selectedColumn: JSTypes.select.value,
+  columns: JSTypes.select.options,
+  widget: JSTypes.widget
+}
 
 export default Legend;

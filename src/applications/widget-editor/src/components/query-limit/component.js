@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useCallback, useMemo } from "react";
+import PropTypes from 'prop-types';
 import styled from "styled-components";
 
 import useDebounce from "hooks/use-debounce";
@@ -135,5 +136,15 @@ const QueryLimit = ({
     </InputGroup>
   );
 };
+
+QueryLimit.propTypes = {
+  label: PropTypes.string,
+  dateType: PropTypes.bool,
+  isFilter: PropTypes.bool,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  value: PropTypes.number,
+  onChange: PropTypes.func
+}
 
 export default QueryLimit;

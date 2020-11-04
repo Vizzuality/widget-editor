@@ -1,11 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
 import Renderer from "@widget-editor/renderer";
 import EditorOptions from "components/editor-options";
 import Footer from "components/footer";
+
+import { JSTypes } from "@widget-editor/types";
 import { DataService, getOutputPayload } from "@widget-editor/core";
 import { constants } from "@widget-editor/core";
+
 import {
   StyledContainer,
   StyleEditorContainer,
@@ -198,6 +202,31 @@ class Editor extends React.Component {
       </StyledContainer>
     );
   }
+}
+
+Editor.propTypes = {
+  userPassedCompact: PropTypes.bool,
+  authenticated: PropTypes.bool,
+  enableSave: PropTypes.bool,
+  setSchemes: PropTypes.func,
+  onSave: PropTypes.func,
+  editorState: PropTypes.object,
+  adapter: PropTypes.func.isRequired,
+  resetEditor: PropTypes.func,
+  resetConfiguration: PropTypes.func,
+  resetWidgetConfig: PropTypes.func,
+  setTheme: PropTypes.func,
+  resetFilters: PropTypes.func,
+  resetTheme: PropTypes.func,
+  datasetId: PropTypes.string,
+  disable: PropTypes.arrayOf(PropTypes.string),
+  widgetId: PropTypes.string,
+  adapterInstance: PropTypes.object,
+  setEditor: PropTypes.func,
+  dispatch: PropTypes.func,
+  userPassedTheme: PropTypes.object,
+  schemes: PropTypes.arrayOf(PropTypes.object),
+  theme: JSTypes.theme
 }
 
 export default Editor;

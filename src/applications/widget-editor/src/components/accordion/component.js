@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import PropTypes from 'prop-types';
 
 import {
   StyledAccordionSection,
@@ -7,6 +8,8 @@ import {
   StyledIcon,
   StyledAccordion,
 } from "./style";
+
+// TODO: Make these two components, not sure why we export two of them?
 
 export const AccordionSection = ({ title, openDefault, themeColor, children }) => {
   const [isOpen, setOpen] = useState(openDefault);
@@ -30,6 +33,17 @@ export const AccordionSection = ({ title, openDefault, themeColor, children }) =
   );
 };
 
+AccordionSection.propTypes = {
+  title: PropTypes.string,
+  openDefault: PropTypes.bool,
+  themeColor: PropTypes.string,
+  children: PropTypes.any
+}
+
 export const Accordion = ({ children }) => {
   return <StyledAccordion>{children}</StyledAccordion>;
 };
+
+Accordion.propTypes = {
+  children: PropTypes.any
+}
