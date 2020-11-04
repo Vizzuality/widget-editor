@@ -1,0 +1,17 @@
+{
+  "name": "@widget-editor/eslint-config",
+  "version": "0.0.0",
+  "description": "Shareable ESLint configuration",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "main": "index.js",
+  "devDependencies": {
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-jest": "^24.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}

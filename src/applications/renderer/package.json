@@ -43,7 +43,8 @@
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
-    "babel-plugin-module-resolver": "^4.0.0"
+    "babel-plugin-module-resolver": "^4.0.0",
+    "@widget-editor/eslint-config": "^0.0.0"
   },
   "scripts": {
     "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
