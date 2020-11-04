@@ -10,7 +10,6 @@ import { formatOptionLabel } from "./utils";
 import { StyledBottomSelect, StyledLeftSelect, SelectStyles } from "./style";
 
 const ColumnSelections = ({
-  compact,
   columns,
   configuration,
   patchConfiguration,

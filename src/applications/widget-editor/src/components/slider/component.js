@@ -21,7 +21,6 @@ const Slider = ({
   max = 500,
   step = 1,
   value,
-  defaultValue,
   theme,
   onChange = () => {},
   onDone = () => {},

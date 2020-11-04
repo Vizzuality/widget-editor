@@ -13,9 +13,7 @@ import InputInfo from "styles-common/input-info";
 const SliceCount = ({
   min = 1,
   value = null,
-  data = null,
-  minDistance = 1,
-  onChange = (data) => {},
+  onChange = () => {},
   disabledFeatures,
 }) => {
   const [localValue, setLocalValue] = useState({ value: value, key: null });

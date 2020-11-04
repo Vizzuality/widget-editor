@@ -57,7 +57,7 @@ function* initializeData(props) {
  * Generates a vega configuration that is displayed within the renderer
  * @triggers <void>
  */
-function* initializeVega(props) {
+function* initializeVega() {
   const { widgetEditor: store } = yield select();
   const { editor, widgetConfig } = store;
   const { advanced } = editor;
@@ -76,7 +76,7 @@ function* initializeVega(props) {
    * Traditional widgets
    * Using: @core VegaService
    * DataService has figured out how a widget will be configured
-   * VegaService utilizes store properties and generates a vega config for us
+   * VegaService utilises store properties and generates a vega config for us
    */
   if (!advanced && !isMap(store)) {
     const vega = new VegaService(store);
@@ -172,7 +172,7 @@ export default function* baseSaga() {
   /**
    * Trigger initial data request
    * @sagaEvents DATA_FLOW_VISUALIZATION_READY
-   * Will resolve sql query and any editor state requried for rendering a widget
+   * Will resolve sql query and any editor state required for rendering a widget
    * @triggers > EDITOR/dataInitialized
    */
   yield takeLatest(

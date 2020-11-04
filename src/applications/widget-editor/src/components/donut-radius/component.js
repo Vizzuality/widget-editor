@@ -16,8 +16,7 @@ const DonutRadius = ({
   min = 1,
   max = 150,
   value = 40,
-  minDistance = 1,
-  onChange = (data) => {},
+  onChange = () => {},
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
 
