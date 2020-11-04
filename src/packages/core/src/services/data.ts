@@ -73,6 +73,8 @@ export default class DataService {
     await this.handleFilters();
     this.handleEndUserFilters();
 
+    this.getTableData();
+
     this.setEditor({
       widgetData: [],
       advanced: !this.widget?.attributes?.widgetConfig
