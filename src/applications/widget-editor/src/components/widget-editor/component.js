@@ -57,7 +57,12 @@ WidgetEditor.propTypes = {
   disable: PropTypes.array,
   enableSave: PropTypes.bool,
   schemes: PropTypes.arrayOf(PropTypes.object),
-  compact: PropTypes.any
-}
+  compact: PropTypes.any,
+  areaIntersection: PropTypes.string,
+};
+
+WidgetEditor.defaultProps = {
+  areaIntersection: null,
+};
 
 export default WidgetEditor;

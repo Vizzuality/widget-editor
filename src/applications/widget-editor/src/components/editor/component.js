@@ -226,7 +226,14 @@ Editor.propTypes = {
   dispatch: PropTypes.func,
   userPassedTheme: PropTypes.object,
   schemes: PropTypes.arrayOf(PropTypes.object),
-  theme: JSTypes.theme
-}
+  theme: JSTypes.theme,
+  areaIntersection: PropTypes.string,
+  setFilters: PropTypes.func.isRequired,
+  hasGeoInfo: PropTypes.bool.isRequired,
+};
+
+Editor.defaultProps = {
+  areaIntersection: null,
+};
 
 export default Editor;
