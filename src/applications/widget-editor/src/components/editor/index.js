@@ -3,7 +3,8 @@ import { connectState } from "@widget-editor/shared/lib/helpers/redux";
 import { setEditor, resetEditor } from "@widget-editor/shared/lib/modules/editor/actions";
 import { resetConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
 import { resetWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
-import { resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
+import { setFilters, resetFilters } from "@widget-editor/shared/lib/modules/filters/actions";
+import { selectHasGeoInfo } from "@widget-editor/shared/lib/modules/editor/selectors";
 
 import {
   setTheme,
@@ -21,6 +22,7 @@ export default connectState(
     configuration: state.configuration,
     widget: state.widgetConfig,
     editorState: state,
+    hasGeoInfo: selectHasGeoInfo(state),
   }),
   (dispatch) => {
     return {
@@ -29,6 +31,7 @@ export default connectState(
       resetTheme: () => dispatch(resetTheme()),
       resetEditor: () => dispatch(resetEditor()),
       resetWidgetConfig: () => dispatch(resetWidgetConfig()),
+      setFilters: data => dispatch(setFilters(data)),
       resetFilters: () => dispatch(resetFilters()),
       setEditor: (data) => dispatch(setEditor(data)),
       setTheme: (data) => dispatch(setTheme(data)),

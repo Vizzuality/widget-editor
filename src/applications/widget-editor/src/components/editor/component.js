@@ -26,6 +26,7 @@ class Editor extends React.Component {
       dispatch,
       userPassedTheme,
       schemes,
+      areaIntersection,
     } = this.props;
 
     this.onSave = this.onSave.bind(this);
@@ -38,7 +39,11 @@ class Editor extends React.Component {
       dispatch
     );
 
-    this.dataService.resolveInitialState();
+    this.dataService.resolveInitialState()
+      .then(() => {
+        // We wait for the filters to be restored before setting the default geo filter
+        this.resolveAreaIntersection(areaIntersection);
+      });
 
     this.resolveTheme(userPassedTheme);
     this.resolveSchemes(schemes);
@@ -129,9 +134,10 @@ class Editor extends React.Component {
   }
 
   initializeRestoration = debounce((datasetId, widgetId) => {
-    const { resetFilters, dispatch } = this.props;
+    const { areaIntersection, resetFilters, dispatch } = this.props;
     resetFilters();
     this.dataService.restoreEditor(datasetId, widgetId, () => {
+      this.resolveAreaIntersection(areaIntersection);
       dispatch({ type: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE });
     });
   }, 1000);
@@ -155,6 +161,13 @@ class Editor extends React.Component {
       setSchemes(schemes);
     }
   }, 1000);
+
+  resolveAreaIntersection(areaIntersection) {
+    const { setFilters, hasGeoInfo } = this.props;
+    if (areaIntersection && hasGeoInfo) {
+      setFilters({ areaIntersection });
+    }
+  }
 
   onSave() {
     const { onSave, dispatch, editorState, adapterInstance } = this.props;
