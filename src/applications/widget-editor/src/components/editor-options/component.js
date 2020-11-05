@@ -67,7 +67,6 @@ const EditorOptions = ({
   donutRadius,
   sliceCount,
   data,
-  orderBy,
   patchConfiguration,
   compact,
   dataService,

@@ -113,7 +113,7 @@ export default function useEditorForm(autoFillValue) {
   const isCustomDataset = !datasets.find(d => d.value === dataset.value);
 
   // Event handlers for select inputs
-  const handleChangeDataset = async (item, { action }) => {
+  const handleChangeDataset = async (item) => {
     if (item?.value) {
       const allWidgets = await getAllWidgetsForDataset(item.value);
       dispatch(modifyOptions({
@@ -129,7 +129,7 @@ export default function useEditorForm(autoFillValue) {
     }
   }
 
-  const handleChangeWidget = async (item, { action }) => {
+  const handleChangeWidget = async (item) => {
     dispatch(modifyOptions({
       widget: item.value
     }))

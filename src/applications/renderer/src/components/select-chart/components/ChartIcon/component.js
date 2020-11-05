@@ -29,7 +29,7 @@ const ChartIcon = ({
   type = TYPE_BAR,
   active = false,
   disabled = false,
-  setData = (data) => {},
+  setData = () => {},
 }) => {
   return (
     <StyledBox>

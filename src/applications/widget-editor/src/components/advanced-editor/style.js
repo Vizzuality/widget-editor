@@ -30,7 +30,7 @@ export const ValidationCallout = styled(StyledCallout)`
   margin-top: 20px;
   border: 1px solid #ff4141;
   border-radius: 4px;
-  background-color: ${props => tinycolor('#ff4141').setAlpha(0.05).toRgbString()};
+  background-color: ${() => tinycolor('#ff4141').setAlpha(0.05).toRgbString()};
 
   ul {
     padding-left: 1em;

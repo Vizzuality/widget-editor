@@ -72,7 +72,7 @@ export default {
     }
   },
 
-  singleValue: (provided, state) => {
+  singleValue: (provided) => {
     const maxWidth = 'calc(100% - 90px)';
     return { ...provided, maxWidth };
   },
@@ -81,7 +81,7 @@ export default {
     display: "none",
   }),
 
-  dropdownIndicator: (provided, state) => {
+  dropdownIndicator: () => {
     return {
       color: "#c32d7b",
       transition: "all 0.2s ease-out",
