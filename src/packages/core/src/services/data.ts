@@ -72,7 +72,7 @@ export default class DataService {
     await this.getFieldsAndLayers();
     await this.handleFilters();
     this.handleEndUserFilters();
-
+    this.handleGeoFilter();
     this.getTableData();
 
     this.setEditor({
@@ -148,6 +148,20 @@ export default class DataService {
     }
   }
 
+  handleGeoFilter(): void {
+    if (!this.widget) {
+      return;
+    }
+
+    const areaIntersection = this.widget.attributes?.widgetConfig?.paramsConfig?.areaIntersection;
+    if (areaIntersection) {
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_FILTERS,
+        payload: { areaIntersection },
+      })
+    }
+  }
+
   isFieldAllowed(field) {
     const fieldTypeAllowed = ALLOWED_FIELD_TYPES.find(
       (val) => val.name.toLowerCase() === field.type.toLowerCase()
@@ -199,5 +213,29 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
     // If this dispatch is not executed, the local state is not set on init
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
+  }
+
+  /**
+   * Return the list of predefined areas the user can filter with
+   */
+  async getPredefinedAreas(): Promise<{ id: string | number, name: string }[]> {
+    try {
+      return await this.adapter.getPredefinedAreas();
+    } catch (e) {
+      console.error("Unable to fetch the predefined areas", e);
+      return [];
+    }
+  }
+
+  /**
+   * Return the list of the user's areas
+   */
+  async getUserAreas(): Promise<{ id: string | number, name: string }[]> {
+    try {
+      return await this.adapter.getUserAreas();
+    } catch (e) {
+      console.error("Unable to fetch the user's areas", e);
+      return [];
+    }
   }
 }

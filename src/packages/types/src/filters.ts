@@ -7,6 +7,8 @@ export interface Service {
   prepareGroupBy(): void;
   prepareOrderBy(): void;
   prepareLimit(): void;
+  getQuery(): string;
+  getAdditionalParams(): string;
 }
 
 type GenericFilter<T> = {

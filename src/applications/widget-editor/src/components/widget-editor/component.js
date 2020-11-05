@@ -14,7 +14,8 @@ class WidgetEditor extends React.Component {
       disable,
       enableSave,
       schemes,
-      compact,
+      compact = false,
+      areaIntersection,
     } = this.props;
 
     if (typeof adapter !== "function") {
@@ -35,6 +36,7 @@ class WidgetEditor extends React.Component {
         enableSave={enableSave}
         datasetId={datasetId}
         widgetId={widgetId}
+        areaIntersection={areaIntersection}
         adapter={adapter}
         adapterInstance={new adapter()}
         schemes={schemes}
@@ -55,7 +57,12 @@ WidgetEditor.propTypes = {
   disable: PropTypes.array,
   enableSave: PropTypes.bool,
   schemes: PropTypes.arrayOf(PropTypes.object),
-  compact: PropTypes.any
-}
+  compact: PropTypes.any,
+  areaIntersection: PropTypes.string,
+};
+
+WidgetEditor.defaultProps = {
+  areaIntersection: null,
+};
 
 export default WidgetEditor;

@@ -11,14 +11,11 @@ class ConfigHelper implements Config.Service {
 
   setConfig(params: Config.Payload): void {
     const acceptedParams = pick(params, [
-      "url",
+      "endpoint",
       "env",
       "applications",
-      "authUrl",
-      "assetsPath",
-      "userToken",
-      "userEmail",
       "locale",
+      "userToken",
     ]);
     this.config = { ...this.config, ...acceptedParams };
   }
