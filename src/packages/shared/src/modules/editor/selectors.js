@@ -5,6 +5,7 @@ import { getLocalCache } from '@widget-editor/widget-editor/lib/exposed-hooks';
 
 export const selectDisabledFeatures = state => state.editor.disabledFeatures;
 export const selectAdvanced = state => state.editor.advanced;
+export const selectDataset = state => state.editor.dataset;
 export const selectWidget = state => state.editor.widget;
 export const selectZoom = state => state.editor.map?.zoom ?? null;
 export const selectLat = state => state.editor.map?.lat ?? null;
@@ -63,4 +64,9 @@ export const selectIsEditing = createSelector(
 export const selectIsWidgetAdvanced = createSelector(
   [selectWidget],
   widget => !!widget && !widget?.attributes?.widgetConfig?.paramsConfig,
+);
+
+export const selectHasGeoInfo = createSelector(
+  [selectDataset],
+  dataset => !!dataset && dataset.attributes?.geoInfo,  
 );
