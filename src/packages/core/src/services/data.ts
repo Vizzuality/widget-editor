@@ -74,6 +74,8 @@ export default class DataService {
     this.handleEndUserFilters();
     this.handleGeoFilter();
 
+    this.getTableData();
+
     this.setEditor({
       widgetData: [],
       advanced: !this.widget?.attributes?.widgetConfig
