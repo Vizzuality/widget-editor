@@ -73,6 +73,7 @@ export default class DataService {
     await this.handleFilters();
     this.handleEndUserFilters();
     this.handleGeoFilter();
+    this.getTableData();
 
     this.setEditor({
       widgetData: [],

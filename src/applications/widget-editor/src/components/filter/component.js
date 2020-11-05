@@ -32,9 +32,17 @@ const Filter = ({
   dataset,
   loading
 }) => {
+  const availableColumnOptions = useMemo(() => {
+    const usedColumns = filters.map(filter => filter.column).filter(column => !!column);
+    return columnOptions.map(option => ({
+      ...option,
+      isDisabled: usedColumns.indexOf(option.value) !== -1,
+    }))
+  }, [columnOptions, filters]);
+
   const canAddFilter = useMemo(
-    () => filters.length < columnOptions.length && filters.every(filter => filter.column),
-    [filters, columnOptions]
+    () => filters.length < availableColumnOptions.length && filters.every(filter => filter.column),
+    [filters, availableColumnOptions]
   );
 
   const addFilter = useCallback(() => setFilters({
@@ -96,8 +104,8 @@ const Filter = ({
               aria-label="Select a column"
               placeholder="Select a column"
               loading={loading}
-              value={columnOptions.find(({ value }) => value === filter.column)}
-              options={columnOptions}
+              value={availableColumnOptions.find(({ value }) => value === filter.column)}
+              options={availableColumnOptions}
               onChange={
                 ({ value, type }) => updateFilter(filter.id, { column: value, type })
               }
