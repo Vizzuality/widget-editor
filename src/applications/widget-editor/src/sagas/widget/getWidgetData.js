@@ -9,21 +9,21 @@ import { getLocalCache } from "exposed-hooks";
 function* getWidgetDataWithAdapter(editorState) {
   const { adapter } = getLocalCache();
 
-  const columnsSet = (value, category) => {
-    return (
-      value &&
-      category &&
-      typeof value === "object" &&
-      typeof category === "object" &&
-      "name" in value &&
-      "name" in category
-    );
+  const columnsSet = (value, category, color, chartType) => {
+    const hasCategory = category && typeof category === "object" && "name" in category;
+    const hasValue = value && typeof value === "object" && "name" in value;
+    const hasColor = color && typeof color === "object" && "name" in color;
+
+    if (chartType === 'donut' || chartType === 'pie') {
+      return hasValue && hasColor;
+    }
+    return hasCategory && hasValue;
   };
 
   const { configuration } = editorState;
-  const { value, category } = configuration;
+  const { value, category, color, chartType } = configuration;
 
-  if (columnsSet(value, category)) {
+  if (columnsSet(value, category, color, chartType)) {
     const { widgetEditor: store } = yield select();
     const data = yield adapter.requestData(store);
     return data;

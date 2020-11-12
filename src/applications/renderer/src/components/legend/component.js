@@ -34,6 +34,8 @@ const Legend = ({
   compact,
 }) => {
   const isPie = configuration.chartType === "pie";
+  const isDonut = configuration.chartType === "donut";
+
   const multipleItems = widget?.legend?.[0]?.values.length > 0;
 
   const handleChange = useCallback((option) => {
@@ -45,12 +47,17 @@ const Legend = ({
         alias: option.label !== option.value ? option.label : undefined,
       };
 
-    if (isPie) {
-      patchConfiguration({ category: newOption });
+    if (isPie || isDonut) {
+      patchConfiguration({
+        category: newOption,
+        color: newOption
+      });
     } else {
-      patchConfiguration({ color: newOption });
+      patchConfiguration({
+        category: newOption
+      });
     }
-  }, [isPie, patchConfiguration]);
+  }, [isPie, isDonut, patchConfiguration]);
 
   return (
     <StyledContainer compact={compact}>
