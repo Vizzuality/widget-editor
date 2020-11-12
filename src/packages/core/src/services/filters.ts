@@ -237,7 +237,7 @@ export default class FiltersService implements Filters.Service {
 
   prepareFilters() {
     let sql = this.sql;
-    const filters = this.validateFilters(this.filters.list ?? []));
+    const filters = this.validateFilters(this.filters.list ?? []);
     const validFilters = filters.filter(f => f.valid);
 
     if (validFilters.length > 0) {
