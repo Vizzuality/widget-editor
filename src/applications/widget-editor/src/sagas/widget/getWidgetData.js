@@ -3,21 +3,16 @@ import { getLocalCache } from "exposed-hooks";
 
 /**
  * @generator getWidgetDataWithAdapter
- * utilizing the specified adapter to request widget data
+ * utilising the specified adapter to request widget data
  * @triggers <void>
  */
 function* getWidgetDataWithAdapter(editorState) {
   const { adapter } = getLocalCache();
 
   const columnsSet = (value, category) => {
-    return (
-      value &&
-      category &&
-      typeof value === "object" &&
-      typeof category === "object" &&
-      "name" in value &&
-      "name" in category
-    );
+    const hasCategory = category && typeof category === "object" && "name" in category;
+    const hasValue = value && typeof value === "object" && "name" in value;
+    return hasCategory && hasValue;
   };
 
   const { configuration } = editorState;

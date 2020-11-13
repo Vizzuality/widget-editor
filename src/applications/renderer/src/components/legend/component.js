@@ -26,15 +26,16 @@ function resolveLabel(label, type) {
 const Legend = ({
   widget,
   advanced,
-  configuration,
   scheme,
   selectedColumn,
   columns,
+  configuration,
   patchConfiguration,
   compact,
 }) => {
-  const isPie = configuration.chartType === "pie";
   const multipleItems = widget?.legend?.[0]?.values.length > 0;
+  const isPie = configuration.chartType === "pie";
+  const isDonut = configuration.chartType === "donut";
 
   const handleChange = useCallback((option) => {
     const newOption = option.value === "_single_color"
@@ -44,13 +45,16 @@ const Legend = ({
         type: option.type,
         alias: option.label !== option.value ? option.label : undefined,
       };
-
-    if (isPie) {
-      patchConfiguration({ category: newOption });
+    if (isPie || isDonut) {
+      patchConfiguration({
+        category: newOption
+      });
     } else {
-      patchConfiguration({ color: newOption });
+      patchConfiguration({
+        color: newOption
+      });
     }
-  }, [isPie, patchConfiguration]);
+  }, [isPie, isDonut, patchConfiguration]);
 
   return (
     <StyledContainer compact={compact}>
