@@ -33,10 +33,9 @@ const Legend = ({
   patchConfiguration,
   compact,
 }) => {
+  const multipleItems = widget?.legend?.[0]?.values.length > 0;
   const isPie = configuration.chartType === "pie";
   const isDonut = configuration.chartType === "donut";
-
-  const multipleItems = widget?.legend?.[0]?.values.length > 0;
 
   const handleChange = useCallback((option) => {
     const newOption = option.value === "_single_color"
@@ -46,17 +45,12 @@ const Legend = ({
         type: option.type,
         alias: option.label !== option.value ? option.label : undefined,
       };
-
-    if (isPie || isDonut) {
-      patchConfiguration({
-        category: newOption,
+    patchConfiguration({
+      category: newOption,
+      ...(!isPie && !isDonut && {
         color: newOption
-      });
-    } else {
-      patchConfiguration({
-        category: newOption
-      });
-    }
+      })
+    });
   }, [isPie, isDonut, patchConfiguration]);
 
   return (

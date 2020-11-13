@@ -16,9 +16,9 @@ function* getWidgetDataWithAdapter(editorState) {
   };
 
   const { configuration } = editorState;
-  const { value, category, color, chartType } = configuration;
+  const { value, category } = configuration;
 
-  if (columnsSet(value, category, color, chartType)) {
+  if (columnsSet(value, category)) {
     const { widgetEditor: store } = yield select();
     const data = yield adapter.requestData(store);
     return data;
