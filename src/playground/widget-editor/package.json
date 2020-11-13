@@ -5,8 +5,8 @@
   "private": false,
   "homepage": "http://vizzuality.github.io/widget-editor",
   "dependencies": {
-    "@widget-editor/rw-adapter": "^2.4.1",
-    "@widget-editor/widget-editor": "^2.4.1",
+    "@widget-editor/rw-adapter": "latest",
+    "@widget-editor/widget-editor": "latest",
     "react-select": "^3.0.8",
     "gh-pages": "^2.2.0",
     "node-sass": "^4.14.1",
