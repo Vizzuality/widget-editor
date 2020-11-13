@@ -22,7 +22,10 @@ export const getSerializedFilters = (filters: Filters.Filter[]): Filters.Seriali
   }
 
   return filters
-    .filter(filter => filter.value !== undefined && filter.value !== null)
+    .filter(filter => {
+      const hasValue = filter.value !== undefined && filter.value !== null;
+      return hasValue || filter.notNull;
+    })
     .map(filter => ({
       name: filter.column,
       type: filter.type,
