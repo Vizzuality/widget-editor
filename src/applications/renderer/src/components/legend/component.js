@@ -26,10 +26,10 @@ function resolveLabel(label, type) {
 const Legend = ({
   widget,
   advanced,
-  configuration,
   scheme,
   selectedColumn,
   columns,
+  configuration,
   patchConfiguration,
   compact,
 }) => {
@@ -45,12 +45,15 @@ const Legend = ({
         type: option.type,
         alias: option.label !== option.value ? option.label : undefined,
       };
-    patchConfiguration({
-      category: newOption,
-      ...(!isPie && !isDonut && {
+    if (isPie || isDonut) {
+      patchConfiguration({
+        category: newOption
+      });
+    } else {
+      patchConfiguration({
         color: newOption
-      })
-    });
+      });
+    }
   }, [isPie, isDonut, patchConfiguration]);
 
   return (

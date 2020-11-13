@@ -48,7 +48,7 @@ export const isMap = createSelector(
 export const selectSelectedColorOption = createSelector(
   [selectChartType, selectCategory, selectColor, selectColumnOptions],
   (chartType, category, color, columnOptions) => {
-    if (chartType === "pie") {
+    if (chartType === "pie" || chartType === "donut") {
       const colorColumn = category?.name
         ? columnOptions.find(column => column.value === category.name)
         : null;
