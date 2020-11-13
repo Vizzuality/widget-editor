@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/map",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -12,12 +12,12 @@
   ],
   "private": false,
   "dependencies": {
-    "prop-types": "15.7.2",
     "axios": "^0.18.0",
     "chroma-js": "^2.1.0",
     "deck.gl": "^7.1.10",
     "layer-manager": "^2.0.9",
     "luma.gl": "^7.1.1",
+    "prop-types": "15.7.2",
     "viewport-mercator-project": "^6.1.1"
   },
   "peerDependencies": {
@@ -29,9 +29,9 @@
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
+    "@widget-editor/eslint-config": "^2.5.0",
     "babel-plugin-module-resolver": "^4.0.0",
-    "webpack-cli": "^3.3.11",
-    "@widget-editor/eslint-config": "^0.0.0"
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
