@@ -1,5 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
+import PropTypes from 'prop-types';
 import { Button } from "@widget-editor/shared";
+
+// TODO: Move each component to its own file
+
 import {
   StyledTabsContainer,
   StyledTabsContentBox,
@@ -52,6 +56,12 @@ export const Tabs = ({ visible, theme, children }) => {
   );
 };
 
+Tabs.propTypes = {
+  visible: PropTypes.object,
+  theme: PropTypes.object,
+  children: PropTypes.any
+}
+
 /**
  *
  * @param {label} label require for displaying tab
@@ -59,3 +69,8 @@ export const Tabs = ({ visible, theme, children }) => {
 export const Tab = ({ children, label }) => {
   return label ? children : null;
 };
+
+Tab.propTypes = {
+  label: PropTypes.string,
+  children: PropTypes.any
+}

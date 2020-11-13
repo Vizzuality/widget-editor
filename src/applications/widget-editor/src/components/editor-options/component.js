@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo } from "react";
+import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 import useDebounce from "hooks/use-debounce";
@@ -9,6 +10,7 @@ import WidgetInfo from "components/widget-info";
 import OrderValues from "components/order-values";
 import QueryLimit from "components/query-limit";
 import Filter from "components/filter";
+import GeoFilter from "components/geo-filter";
 import EndUserFilters from "components/end-user-filters";
 
 import { DEFAULT_BORDER } from "@widget-editor/shared/lib/styles/style-constants";
@@ -65,16 +67,20 @@ const EditorOptions = ({
   donutRadius,
   sliceCount,
   data,
-  orderBy,
   patchConfiguration,
   compact,
   dataService,
   isMap,
+  chartType,
+  hasGeoInfo,
 }) => {
   const tabsVisibility = useMemo(() => ({
     general: true,
     map: isMap,
-    style: !isMap && !advanced,
+    style: !isMap && !advanced && (
+      disabledFeatures.indexOf("typography") === -1
+        || disabledFeatures.indexOf("theme-selection") === -1
+    ),
     advanced: disabledFeatures.indexOf("advanced-editor") === -1 && !isMap,
     table: disabledFeatures.indexOf("table-view") === -1 && !isMap && !advanced,
   }), [isMap, advanced, disabledFeatures]);
@@ -87,9 +93,9 @@ const EditorOptions = ({
     patchConfiguration({ donutRadius: parseInt(value) });
   });
 
-  const handleGroupBy = (value) => {
-    patchConfiguration({ groupBy: value });
-  }
+  // const handleGroupBy = (value) => {
+  //   patchConfiguration({ groupBy: value });
+  // }
 
   const handleLimit = useDebounce((value) => {
     patchConfiguration({ limit: value });
@@ -129,6 +135,11 @@ const EditorOptions = ({
                 <Filter dataService={dataService} />
               </AccordionSection>
             )}
+            {!isMap && !advanced && hasGeoInfo && disabledFeatures.indexOf("geo-filter") === -1 && (
+              <AccordionSection title="Geographic filter">
+                <GeoFilter dataService={dataService} />
+              </AccordionSection>
+            )}
             {!isMap && !advanced && disabledFeatures.indexOf("end-user-filters") === -1 && (
               <AccordionSection title="End-user filters">
                 <EndUserFilters />
@@ -148,16 +159,19 @@ const EditorOptions = ({
                 )}
               </AccordionSection>
             )}
-            {!isMap && !rasterOnly && !advanced && (
+            {!isMap && !rasterOnly && !advanced
+              && (chartType === 'pie' || chartType === 'donut') && (
               <AccordionSection title="Chart specific">
-                <Suspense fallback={<div>Loading...</div>}>
-                  {donutRadius && (
-                    <DonutRadius
-                      value={donutRadius}
-                      onChange={(value) => handleDonutRadius(value)}
-                    />
-                  )}
-                </Suspense>
+                {chartType === 'donut' && (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    {donutRadius && (
+                      <DonutRadius
+                        value={donutRadius}
+                        onChange={(value) => handleDonutRadius(value)}
+                      />
+                    )}
+                  </Suspense>
+                )}
                 <Suspense fallback={<div>Loading...</div>}>
                   {sliceCount && data && (
                     <SliceCount
@@ -171,7 +185,7 @@ const EditorOptions = ({
             )}
           </Accordion>
         </Tab>
-        
+
         <Tab id="map" label="Map">
           <Accordion>
             <AccordionSection title="Configuration" openDefault>
@@ -219,6 +233,27 @@ const EditorOptions = ({
       </Tabs>
     </StyledContainer>
   );
+};
+
+EditorOptions.propTypes = {
+  patchConfiguration: PropTypes.func,
+  dataService: PropTypes.object,
+  compact: PropTypes.object,
+  isMap: PropTypes.bool,
+  chartType: PropTypes.string,
+  handleGroupBy: PropTypes.func,
+  initialized: PropTypes.bool,
+  restoring: PropTypes.bool,
+  advanced: PropTypes.bool,
+  rasterOnly: PropTypes.bool,
+  disabledFeatures: PropTypes.arrayOf(PropTypes.string),
+  datasetId: PropTypes.string,
+  limit: PropTypes.number,
+  donutRadius: PropTypes.number,
+  sliceCount: PropTypes.number,
+  data: PropTypes.any,
+  orderBy: PropTypes.string,
+  hasGeoInfo: PropTypes.bool.isRequired,
 };
 
 export default EditorOptions;

@@ -13,7 +13,7 @@ export const StyledContainer = styled.div`
 `;
 
 export const RestoringWidget = styled.div`
-  height: 300px;
+  flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;

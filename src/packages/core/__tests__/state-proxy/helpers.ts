@@ -2,9 +2,11 @@ import StateProxy from '../../src/services/state-proxy';
 
 import { BASE_STATE } from './mock';
 
-export const genInstance = () => {
+export const genInstance = (conf = null) => {
   const instance = new StateProxy();
-  instance.update(BASE_STATE);
+  if (!conf || !conf.empty) {
+    instance.update(BASE_STATE);
+  }
   return instance;
 }
 

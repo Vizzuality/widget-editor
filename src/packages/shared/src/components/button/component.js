@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 const StyledButton = styled.button`
@@ -75,5 +76,15 @@ const Button = ({ type, btnType = "default", theme, children, active, ...props }
     </StyledButton>
   );
 };
+
+Button.propTypes = {
+  type: PropTypes.string,
+  btnType: PropTypes.string,
+  theme: PropTypes.shape({
+    color: PropTypes.string
+  }),
+  children: PropTypes.any,
+  active: PropTypes.bool
+}
 
 export default Button;

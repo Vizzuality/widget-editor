@@ -1,6 +1,6 @@
 // Filter service is responsible for:
-// Formating SQL string based on properties
-// Request new data based on propertie configuration
+// Formatting SQL string based on properties
+// Request new data based on properties configuration
 import isPlainObject from "lodash/isPlainObject";
 import isArray from "lodash/isArray";
 
@@ -12,17 +12,18 @@ import FieldsService from "./fields";
 
 export default class FiltersService implements Filters.Service {
   sql: string;
+  additionalParams: [string, string][] = [];
   dataset: any;
   configuration: Config.Payload;
   adapter: Adapter.Service;
-  filters: Filters.Filter[];
+  filters: { list: Filters.Filter[], areaIntersection: string };
   endUserFilters: Filters.EndUserFilter[];
 
   constructor(store: any, adapter: Adapter.Service) {
     const { configuration, filters, editor: { dataset }, endUserFilters } = store;
 
     this.configuration = configuration;
-    this.filters = filters.list;
+    this.filters = filters;
     this.sql = "";
     this.adapter = adapter;
     this.endUserFilters = endUserFilters;
@@ -35,6 +36,7 @@ export default class FiltersService implements Filters.Service {
       this.prepareGroupBy();
       this.prepareOrderBy();
       this.prepareLimit();
+      this.prepareGeostore();
     }
   }
 
@@ -81,7 +83,7 @@ export default class FiltersService implements Filters.Service {
   }
 
   /**
-   * Return the serialization of the number filter as SQL (for the WHERE statement)
+   * Return the serialisation of the number filter as SQL (for the WHERE statement)
    * @param filter Number filter to serialize
    */
   private getNumberFilterQuery(filter: Filters.NumberFilter): string {
@@ -127,7 +129,7 @@ export default class FiltersService implements Filters.Service {
   }
 
   /**
-   * Return the serialization of the date filter as SQL (for the WHERE statement)
+   * Return the serialisation of the date filter as SQL (for the WHERE statement)
    * @param filter Date filter to serialize
    */
   private getDateFilterQuery(filter: Filters.DateFilter): string {
@@ -176,7 +178,7 @@ export default class FiltersService implements Filters.Service {
   }
 
   /**
-   * Return the serialization of the string filter as SQL (for the WHERE statement)
+   * Return the serialisation of the string filter as SQL (for the WHERE statement)
    * @param filter String filter to serialize
    */
   private getStringFilterQuery(filter: Filters.StringFilter): string {
@@ -217,30 +219,47 @@ export default class FiltersService implements Filters.Service {
     return sql;
   }
 
+  // We allow the filter through if "notNull" is applied to filter
+  // when calling prepareFilters, we will only apply not null operation if no value present
+  // otherwise we apply both
+  validateFilters(filters) {
+    return filters.map(filter => {
+      const hasValue = filter.value !== undefined && filter.value !== null
+        && (!Array.isArray(filter.value) || filter.value.length > 0);
+      const filterNullValues = filter.notNull;
+      return {
+        valid: hasValue || filter.notNull,
+        hasValue,
+        filter
+      }
+    });
+  }
+
   prepareFilters() {
     let sql = this.sql;
-    const validFilters = (this.filters ?? [])
-      .filter(filter => filter.value !== undefined && filter.value !== null
-        && (!Array.isArray(filter.value) || filter.value.length > 0));
+    const filters = this.validateFilters(this.filters.list ?? []);
+    const validFilters = filters.filter(f => f.valid);
 
     if (validFilters.length > 0) {
       sql = `${sql} WHERE `;
 
-      validFilters.forEach((filter, index) => {
+      validFilters.forEach(({ filter, hasValue }, index) => {
         const { column, type, notNull } = filter;
 
         sql = index > 0 ? `${sql} AND ` : sql;
 
-        if (type === 'number') {
-          sql = `${sql} ${this.getNumberFilterQuery(filter as Filters.NumberFilter)}`;
-        } else if (type === 'date') {
-          sql = `${sql} ${this.getDateFilterQuery(filter as Filters.DateFilter)}`;
-        } else if (type === 'string') {
-          sql = `${sql} ${this.getStringFilterQuery(filter as Filters.StringFilter)}`;
+        if (hasValue) {
+          if (type === 'number') {
+            sql = `${sql} ${this.getNumberFilterQuery(filter as Filters.NumberFilter)}`;
+          } else if (type === 'date') {
+            sql = `${sql} ${this.getDateFilterQuery(filter as Filters.DateFilter)}`;
+          } else if (type === 'string') {
+            sql = `${sql} ${this.getStringFilterQuery(filter as Filters.StringFilter)}`;
+          }
         }
 
         if (notNull) {
-          sql = `${sql} AND ${column} IS NOT NULL`;
+          sql = `${sql} ${hasValue ? 'AND' : ''} ${column} IS NOT NULL`;
         }
       });
     }
@@ -267,7 +286,7 @@ export default class FiltersService implements Filters.Service {
   prepareOrderBy() {
     const { orderBy, chartType, aggregateFunction } = this.configuration;
 
-    // If the user hasn't explicitely ordered the data, we still apply some default sorting
+    // If the user hasn't explicitly ordered the data, we still apply some default sorting
     // (which isn't shown in the UI) so the chart looks nice
     // The sorting depends on the type of the chart and the user can still override it manually
     let orderByField;
@@ -301,15 +320,30 @@ export default class FiltersService implements Filters.Service {
     this.sql = `${this.sql} LIMIT ${limit}`;
   }
 
+  prepareGeostore() {
+    const { areaIntersection } = this.filters;
+    if (areaIntersection) {
+      this.additionalParams.push(['geostore', areaIntersection]);
+    }
+  }
+
   getQuery() {
     return encodeURIComponent(this.sql.replace(/ +(?= )/g, ""));
   }
 
+  getAdditionalParams() {
+    if (this.additionalParams.length === 0) {
+      return '';
+    }
+
+    return `&${this.additionalParams.map(param => `${param[0]}=${encodeURIComponent(param[1])}`).join('&')}`;
+  }
+
   /**
-   * Return the deserialized filters allow with their configuration (values and/or minimum and
+   * Return the deserialised filters allow with their configuration (values and/or minimum and
    * maximum)
    * @param adapter Adapter
-   * @param filters Serialized filters
+   * @param filters Serialised filters
    * @param fields Dataset's fields
    * @param dataset Dataset object
    */

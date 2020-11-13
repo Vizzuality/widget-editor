@@ -14,7 +14,7 @@ export const StyledCloseIndicator = styled(({ innerProps, className }) => {
   const Icon = styled(CloseIcon)`
     display: block;
   `;
-  
+
   return (
     <div {...innerProps} className={className}>
       <Icon width="10" height="10" />
@@ -26,7 +26,7 @@ export const StyledCloseIndicator = styled(({ innerProps, className }) => {
 
 export const StyledColumnOption = styled(({ overflow, ...rest }) => <div {...rest} />)`
   ${
-    props => !props.overflow 
+    props => !props.overflow
       ? css`
         overflow: hidden;
         white-space: nowrap;
@@ -72,11 +72,16 @@ export default {
     }
   },
 
+  singleValue: (provided) => {
+    const maxWidth = 'calc(100% - 90px)';
+    return { ...provided, maxWidth };
+  },
+
   indicatorSeparator: () => ({
     display: "none",
   }),
 
-  dropdownIndicator: (provided, state) => {
+  dropdownIndicator: () => {
     return {
       color: "#c32d7b",
       transition: "all 0.2s ease-out",
@@ -111,6 +116,7 @@ export default {
       ...provided,
       color,
       backgroundColor,
+      opacity: state.isDisabled ? 0.4 : 1,
     };
   },
 

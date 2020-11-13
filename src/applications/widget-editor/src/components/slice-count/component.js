@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import PropTypes from 'prop-types';
 import useDebounce from "hooks/use-debounce";
 
 import FlexContainer from "styles-common/flex";
@@ -13,9 +13,7 @@ import InputInfo from "styles-common/input-info";
 const SliceCount = ({
   min = 1,
   value = null,
-  data = null,
-  minDistance = 1,
-  onChange = (data) => {},
+  onChange = () => {},
   disabledFeatures,
 }) => {
   const [localValue, setLocalValue] = useState({ value: value, key: null });
@@ -34,7 +32,7 @@ const SliceCount = ({
   return (
     <InputGroup>
       <FormLabel htmlFor="options-slice-count">
-        Slice count (donut and pie charts)
+        Slice count
       </FormLabel>
       <FlexContainer row={true}>
         <FlexController shrink="0">
@@ -65,5 +63,14 @@ const SliceCount = ({
     </InputGroup>
   );
 };
+
+SliceCount.propTypes = {
+  min: PropTypes.number,
+  value: PropTypes.number,
+  data: PropTypes.any,
+  minDistance: PropTypes.number,
+  onChange: PropTypes.func,
+  disabledFeatures: PropTypes.arrayOf(PropTypes.string)
+}
 
 export default SliceCount;

@@ -16,7 +16,6 @@ export const selectOrderBy = state => state.configuration.orderBy;
 export const selectAggregateFunction = state => state.configuration.aggregateFunction;
 export const selectChartType = state => state.configuration.chartType;
 export const selectFilters = state => state.configuration.filters;
-export const selectAreaIntersection = state => state.configuration.areaIntersection;
 export const selectBand = state => state.configuration.band;
 export const selectDonutRadius = state => state.configuration.donutRadius;
 export const selectSliceCount = state => state.configuration.sliceCount;
@@ -49,7 +48,7 @@ export const isMap = createSelector(
 export const selectSelectedColorOption = createSelector(
   [selectChartType, selectCategory, selectColor, selectColumnOptions],
   (chartType, category, color, columnOptions) => {
-    if (chartType === "pie") {
+    if (chartType === "pie" || chartType === "donut") {
       const colorColumn = category?.name
         ? columnOptions.find(column => column.value === category.name)
         : null;

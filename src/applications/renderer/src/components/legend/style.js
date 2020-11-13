@@ -3,27 +3,21 @@ import styled, { css } from "styled-components";
 import { SelectStyles as DefaultSelectStyles } from "@widget-editor/shared";
 
 export const StyledDropdownBox = styled.div`
-  flex-basis: 30%;
+  flex-basis: 40%;
   flex-shrink: 0;
   margin-left: 20px;
 `;
 
 export const StyledColorsBoxContainer = styled.div`
   flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 120px;
+  overflow-y: scroll;
 
-  ${(props) =>
-    props.alignCenter &&
-    css`
-      align-items: center;
-      display: flex;
-    `}
-
-  ${(props) =>
-    props.overflowIsHidden &&
-    css`
-      max-height: 70px;
-      overflow-y: scroll;
-    `}
+  ${(props) => props.alignCenter && css`
+    align-items: center;
+  `}
 `;
 
 export const StyledColorsBox = styled.div`
@@ -31,22 +25,27 @@ export const StyledColorsBox = styled.div`
   align-items: center;
   font-size: 14px;
   color: #717171;
-  ${(props) =>
-    props.alignCenter &&
-    css`
-      float: left;
-      width: 110px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      margin: 5px;
-      padding-left: 20px;
-      position: relative;
-      > span {
-        position: absolute;
-        left: 0;
-      }
-    `}
+
+  ${(props) => props.alignCenter && css`
+    display: block;
+    position: relative;
+    flex-basis: calc(50% - (10px / 2));
+    margin: 5px 10px 5px 0;
+    padding-left: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &:nth-of-type(2n + 2) {
+      margin-right: 0;
+    }
+
+    > span {
+      position: absolute;
+      top: 1px;
+      left: 0;
+    }
+  `}
 `;
 
 export const StyledColorDot = styled.span`

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 import { Button } from "@widget-editor/shared";
@@ -23,5 +24,10 @@ const Footer = ({ enableSave, onSave }) => {
     </StyledFooter>
   );
 };
+
+Footer.propTypes = {
+  onSave: PropTypes.func,
+  enableSave: PropTypes.bool
+}
 
 export default Footer;

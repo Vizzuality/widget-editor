@@ -46,6 +46,19 @@ export default class DataService {
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
   }
 
+  /**
+   * Fetch the dataset's 50 first rows and set it as the table's data
+   */
+  async getTableData() {
+    const { tableName } = this.dataset.attributes;
+    try {
+      const tableData = await this.adapter.getDatasetData(`SELECT * FROM ${tableName} LIMIT 50`);
+      this.setEditor({ tableData });
+    } catch (e) {
+      console.error("Unable to fetch the dataset's data", e);
+    }
+  }
+
   async restoreEditor(datasetId, widgetId, cb = null) {
     this.setEditor({
       restoring: true
@@ -59,6 +72,8 @@ export default class DataService {
     await this.getFieldsAndLayers();
     await this.handleFilters();
     this.handleEndUserFilters();
+    this.handleGeoFilter();
+    this.getTableData();
 
     this.setEditor({
       widgetData: [],
@@ -133,6 +148,20 @@ export default class DataService {
     }
   }
 
+  handleGeoFilter(): void {
+    if (!this.widget) {
+      return;
+    }
+
+    const areaIntersection = this.widget.attributes?.widgetConfig?.paramsConfig?.areaIntersection;
+    if (areaIntersection) {
+      this.dispatch({
+        type: reduxActions.EDITOR_SET_FILTERS,
+        payload: { areaIntersection },
+      })
+    }
+  }
+
   isFieldAllowed(field) {
     const fieldTypeAllowed = ALLOWED_FIELD_TYPES.find(
       (val) => val.name.toLowerCase() === field.type.toLowerCase()
@@ -146,22 +175,20 @@ export default class DataService {
     const fields = await this.adapter.getFields();
     const layers = await this.adapter.getLayers();
 
-    // Get field aliases from Dataset
-    const columns = this.dataset?.attributes?.metadata[0]?.attributes?.columns;
-    // Filter on allowed field types
-    this.allowedFields = [];
-    if (fields && Object.keys(fields).length > 0) {
-      Object.keys(fields).forEach((field) => {
-        const f = {
+    const fieldsMetadata = this.dataset?.attributes?.metadata[0]?.attributes?.columns;
+    const relevantFields = this.dataset?.attributes?.widgetRelevantProps ?? [];
+    this.allowedFields = fields && Object.keys(fields).length > 0
+      ? Object.keys(fields)
+        .map(field => ({
           ...fields[field],
           columnName: field,
-          metadata: columns?.[field] ?? {},
-        };
-        if (this.isFieldAllowed(f)) {
-          this.allowedFields.push(f);
-        }
-      });
-    }
+          metadata: fieldsMetadata?.[field] ?? {},
+        }))
+        .filter(field => (
+          this.isFieldAllowed(field)
+          && (!relevantFields.length || relevantFields.indexOf(field.columnName) !== -1)
+        ))
+      : [];
 
     this.dispatch({ type: sagaEvents.DATA_FLOW_FIELDS_AND_LAYERS_READY });
     this.setEditor({ layers, fields: this.allowedFields });
@@ -181,9 +208,34 @@ export default class DataService {
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
     await this.handleFilters();
+    this.getTableData();
     this.handleEndUserFilters();
     this.dispatch({ type: sagaEvents.DATA_FLOW_VISUALIZATION_READY });
     // If this dispatch is not executed, the local state is not set on init
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORED });
+  }
+
+  /**
+   * Return the list of predefined areas the user can filter with
+   */
+  async getPredefinedAreas(): Promise<{ id: string | number, name: string }[]> {
+    try {
+      return await this.adapter.getPredefinedAreas();
+    } catch (e) {
+      console.error("Unable to fetch the predefined areas", e);
+      return [];
+    }
+  }
+
+  /**
+   * Return the list of the user's areas
+   */
+  async getUserAreas(): Promise<{ id: string | number, name: string }[]> {
+    try {
+      return await this.adapter.getUserAreas();
+    } catch (e) {
+      console.error("Unable to fetch the user's areas", e);
+      return [];
+    }
   }
 }

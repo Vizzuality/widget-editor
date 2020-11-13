@@ -2,38 +2,48 @@ import styled from "styled-components";
 
 export const StyledTableBox = styled.div`
   width: 100%;
-  margin: 11px 0 20px;
+  height: 100%;
   border: 1px solid rgba(26, 28, 34, 0.1);
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.09);
+  overflow: auto;
 `;
 
 export const StyledTable = styled.table`
-  border-collapse: collapse;
   width: 100%;
-  padding: 0;
-  border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid rgba(26, 28, 34, 0.1);
-  font-size: 14px;
+  padding: 15px 30px;
+
+  // The two following properties are required to make the padding work
+  border-spacing: 0;
+  border-collapse: separate;
+
+  font-size: 16px;
+  color: #393f44;
+  text-align: left;
 `;
 
 export const StyledTr = styled.tr`
-  background-color: #fff;
-  border-bottom: 1px solid #d2d3d6;
-  box-sizing: border-box;
+  td {
+    // Because of border-collapse (see StyledTable) the border needs to be applied to the td
+    border-bottom: 1px solid rgba(210, 211, 214, 0.5)
+  }
 `;
 
 export const StyledTd = styled.td`
-  width: 100%;
-  padding: 11px 20px;
-  font-size: 15px;
-  color: #393f44;
+  padding: 7px 20px 7px 0;
 `;
 
-export const StyledTh = styled.td`
-  position: relative;
-  font-size: 16px;
-  color: #393f44;
+export const StyledTh = styled.th`
+  padding: 7px 20px 7px 0;
   font-weight: 700;
   white-space: nowrap;
-  padding: 11px 20px;
+  border-bottom: 1px solid #d2d3d6;
+
+  svg {
+    margin-right: 5px;
+
+    path {
+      fill: currentColor;
+    }
+  }
 `;

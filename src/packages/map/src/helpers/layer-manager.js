@@ -1,5 +1,3 @@
-/* eslint import/no-unresolved: 0 */
-/* eslint import/extensions: 0 */
 /* eslint global-require: 0 */
 
 export default class LayerManager {

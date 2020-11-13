@@ -25,6 +25,9 @@ export const selectSerializedWidgetConfig = createSelector(
             name: 'table',
             transform: data.transform ?? null,
             format: {
+              // The format property may contain instructions such as parse that tells Vega to parse
+              // a column as a date
+              ...(data.format ?? {}),
               type: 'json',
               property: 'data',
             },

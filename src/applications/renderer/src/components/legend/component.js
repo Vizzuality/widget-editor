@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
+import PropTypes from 'prop-types';
 
+import { JSTypes } from "@widget-editor/types";
 import { utils } from '@widget-editor/core';
 import { Select } from "@widget-editor/shared";
-import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
 import {
   StyledContainer,
@@ -12,8 +13,6 @@ import {
   StyledDropdownBox,
   SelectStyles,
 } from "./style";
-
-import { formatOptionLabel } from './utils';
 
 // XXX: Move me
 function resolveLabel(label, type) {
@@ -27,20 +26,16 @@ function resolveLabel(label, type) {
 const Legend = ({
   widget,
   advanced,
-  configuration,
   scheme,
   selectedColumn,
   columns,
-  aggregateFunction,
-  valueColumn,
+  configuration,
   patchConfiguration,
   compact,
 }) => {
-  const isPie = configuration.chartType === "pie";
   const multipleItems = widget?.legend?.[0]?.values.length > 0;
-  const aggregation = aggregateFunction
-    ? AGGREGATION_OPTIONS.find(o => o.value === aggregateFunction)?.label
-    : null;
+  const isPie = configuration.chartType === "pie";
+  const isDonut = configuration.chartType === "donut";
 
   const handleChange = useCallback((option) => {
     const newOption = option.value === "_single_color"
@@ -50,17 +45,20 @@ const Legend = ({
         type: option.type,
         alias: option.label !== option.value ? option.label : undefined,
       };
-
-    if (isPie) {
-      patchConfiguration({ category: newOption });
+    if (isPie || isDonut) {
+      patchConfiguration({
+        category: newOption
+      });
     } else {
-      patchConfiguration({ color: newOption });
+      patchConfiguration({
+        color: newOption
+      });
     }
-  }, [isPie, patchConfiguration]);
+  }, [isPie, isDonut, patchConfiguration]);
 
   return (
     <StyledContainer compact={compact}>
-      <StyledColorsBoxContainer overflowIsHidden={multipleItems} alignCenter={!multipleItems}>
+      <StyledColorsBoxContainer alignCenter={!multipleItems}>
           {!multipleItems && !advanced && (
             <StyledColorsBox alignCenter={false}>
               <StyledColorDot color={scheme.mainColor} />
@@ -68,7 +66,11 @@ const Legend = ({
             </StyledColorsBox>
           )}
           {multipleItems && widget.legend[0].values.map((item, index) => (
-            <StyledColorsBox alignCenter={true} key={`${item.label}-${index}`}>
+            <StyledColorsBox
+              title={resolveLabel(item.label, item.type) || '−'}
+              alignCenter={true}
+              key={`${item.label}-${index}`}
+            >
               <StyledColorDot color={item.value} />
               {resolveLabel(item.label, item.type) || '−'}
             </StyledColorsBox>
@@ -81,10 +83,6 @@ const Legend = ({
             value={selectedColumn}
             options={columns}
             onChange={handleChange}
-            formatOptionLabel={(...props) => formatOptionLabel(
-              // The aggregation is only applied to the value column
-              valueColumn?.name === selectedColumn?.value ? aggregation : null, ...props
-            )}
             styles={SelectStyles}
           />
         </StyledDropdownBox>
@@ -92,5 +90,18 @@ const Legend = ({
     </StyledContainer>
   );
 };
+
+Legend.propTypes = {
+  patchConfiguration: PropTypes.func,
+  configuration: JSTypes.configuration,
+  advanced: PropTypes.bool,
+  compact: PropTypes.any,
+  scheme: PropTypes.shape({
+    mainColor: PropTypes.string
+  }),
+  selectedColumn: JSTypes.select.value,
+  columns: JSTypes.select.options,
+  widget: JSTypes.widget
+}
 
 export default Legend;

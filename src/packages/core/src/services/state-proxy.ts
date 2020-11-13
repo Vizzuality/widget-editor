@@ -24,7 +24,7 @@ export default class StateProxy {
     const { prev, next } = this.getStateDiff(state);
     return !isEqual(
       prev.configuration.aggregateFunction, next.configuration.aggregateFunction ||
-      !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
+    !isEqual(prev.configuration.orderBy, next.configuration.orderBy)
     );
   }
 
@@ -33,7 +33,7 @@ export default class StateProxy {
    * In a few cases we need to force vega to update, as these properties are already
    * applied to the local state when checking @ShouldUpdateVega
    * @propsForceVegaUpdate
-   * 1. Any column: value,category,color
+   * 1. Any column: value, category, color
    * 2. When limit changes in the UI
    * 3. When aggregateFunction changes in the UI
    * @param state
@@ -59,6 +59,9 @@ export default class StateProxy {
     const { prev, next } = this.getStateDiff(state);
     let shouldUpdate = false;
 
+    // If we don't have a previous state present, simply exit as another one is incoming
+    if (!prev) return false;
+
     // If limit changes, we need to fetch new data
     shouldUpdate = prev.configuration.limit !== next.configuration.limit;
 
@@ -69,6 +72,8 @@ export default class StateProxy {
 
     // If filters change
     shouldUpdate = shouldUpdate || !isEqual(prev.filters.list, next.filters.list);
+    shouldUpdate = shouldUpdate
+      || !isEqual(prev.filters.areaIntersection, next.filters.areaIntersection);
 
     // If the end-user filters change
     shouldUpdate = shouldUpdate || !isEqual(prev.endUserFilters, next.endUserFilters);
@@ -91,6 +96,9 @@ export default class StateProxy {
     if (this.forceVegaUpdate) {
       return true;
     }
+
+    // If we don't have a previous state present, simply exit as another one is incoming
+    if (!prev) return false;
 
     let shouldUpdate = false;
 

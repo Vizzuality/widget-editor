@@ -50,6 +50,7 @@ const DateFilter = ({ filter, onChange }) => {
 
 DateFilter.propTypes = {
   filter: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     column: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     operation: PropTypes.string,

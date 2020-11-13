@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import isEqual from "lodash/isEqual";
 
 import FlexContainer from "styles-common/flex";
@@ -10,6 +11,7 @@ import Input from "styles-common/input";
 import debounce from "lodash/debounce";
 import { Select } from "@widget-editor/shared";
 
+import { JSTypes } from "@widget-editor/types";
 import VALUE_FORMAT_OPTIONS from "@widget-editor/shared/lib/constants/value-formats";
 import AGGREGATION_OPTIONS from "@widget-editor/shared/lib/constants/aggregations";
 
@@ -235,6 +237,13 @@ class WidgetInfo extends React.Component {
       </FlexContainer>
     );
   }
+}
+
+WidgetInfo.propTypes = {
+  patchConfiguration: PropTypes.func,
+  isMap: PropTypes.bool,
+  advanced: PropTypes.bool,
+  configuration: JSTypes.configuration
 }
 
 export default WidgetInfo;

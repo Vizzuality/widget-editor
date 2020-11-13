@@ -1,5 +1,6 @@
 // TODO: Rename this filter!
 import React, { useState } from "react";
+import PropTypes from 'prop-types';
 
 import useDebounce from "hooks/use-debounce";
 
@@ -15,8 +16,7 @@ const DonutRadius = ({
   min = 1,
   max = 150,
   value = 40,
-  minDistance = 1,
-  onChange = (data) => {},
+  onChange = () => {},
 }) => {
   const [localValue, setLocalValue] = useState({ value, key: null });
 
@@ -56,5 +56,13 @@ const DonutRadius = ({
     </InputGroup>
   );
 };
+
+DonutRadius.propTypes = {
+  min: PropTypes.number,
+  max: PropTypes.number,
+  value: PropTypes.number,
+  minDistance: PropTypes.number,
+  onChange: PropTypes.func
+}
 
 export default DonutRadius;

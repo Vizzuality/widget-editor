@@ -1,12 +1,16 @@
-import React from "react";
+/* eslint react/display-name: 0 */
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import ReactSelect from "react-select";
 import ReactSelectCreatable from "react-select/creatable";
+
+import { JSTypes } from "@widget-editor/types";
 
 import SelectStyles, { StyledDropdownIndicator, StyledCloseIndicator } from "./style";
 
 const Select = ({
   id,
+  loading,
   options,
   value,
   styles,
@@ -18,6 +22,11 @@ const Select = ({
   ...rest
 }) => {
   const Component = creatable ? ReactSelectCreatable : ReactSelect;
+  const [isDisabled, setIsDisabled] = useState(disabled || loading);
+
+  useEffect(() => {
+    setIsDisabled(disabled || loading);
+  }, [disabled, loading, setIsDisabled]);
 
   return (
     <Component
@@ -26,7 +35,7 @@ const Select = ({
       options={options}
       value={value}
       onChange={onChange}
-      isDisabled={disabled}
+      isDisabled={isDisabled}
       styles={styles || SelectStyles}
       captureMenuScroll={false}
       components={{
@@ -41,41 +50,20 @@ const Select = ({
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string,
-      options: PropTypes.arrayOf(
-        PropTypes.shape({
-          label: PropTypes.string.isRequired,
-          value: PropTypes.string.isRequired,
-          isDisabled: PropTypes.bool,
-        })
-      ),
-      isDisabled: PropTypes.bool,
-    })
-  ).isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-      isDisabled: PropTypes.bool,
-    }),
-    PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-      isDisabled: PropTypes.bool,
-    })),
-  ]),
+  options: JSTypes.select.options,
+  value: JSTypes.select.value,
   onChange: PropTypes.func,
   styles: PropTypes.object,
   disabled: PropTypes.bool,
   'aria-label': PropTypes.string,
   creatable: PropTypes.bool,
+  loading: PropTypes.bool,
+  components: PropTypes.any
 };
 
 Select.defaultProps = {
   value: undefined,
+  loading: false,
   onChange: () => null,
   styles: null,
   disabled: false,

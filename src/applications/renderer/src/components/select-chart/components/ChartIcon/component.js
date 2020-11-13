@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from 'prop-types';
+
 import {
   TYPE_BAR,
   TYPE_STACKED_BAR,
@@ -27,7 +29,7 @@ const ChartIcon = ({
   type = TYPE_BAR,
   active = false,
   disabled = false,
-  setData = (data) => {},
+  setData = () => {},
 }) => {
   return (
     <StyledBox>
@@ -51,5 +53,12 @@ const ChartIcon = ({
     </StyledBox>
   );
 };
+
+ChartIcon.propTypes = {
+  type: PropTypes.string,
+  active: PropTypes.bool,
+  disabled: PropTypes.bool,
+  setData: PropTypes.func
+}
 
 export default ChartIcon;

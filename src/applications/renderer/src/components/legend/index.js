@@ -3,8 +3,6 @@ import { redux } from "@widget-editor/shared";
 import { patchConfiguration,  } from "@widget-editor/shared/lib/modules/configuration/actions";
 import {
   selectSelectedColorOption,
-  selectAggregateFunction,
-  selectValue,
 } from "@widget-editor/shared/lib/modules/configuration/selectors";
 import { selectColumnOptions } from "@widget-editor/shared/lib/modules/editor/selectors";
 import * as themeSelectors from "@widget-editor/shared/lib/modules/theme/selectors";
@@ -19,8 +17,6 @@ export default redux.connectState(
     widget: state.widgetConfig,
     configuration: state.configuration,
     selectedColumn: selectSelectedColorOption(state),
-    aggregateFunction: selectAggregateFunction(state),
-    valueColumn: selectValue(state),
     columns: [
       {
         label: "Single color",

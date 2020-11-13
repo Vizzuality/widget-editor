@@ -58,7 +58,7 @@ const AdvancedEditor = ({
       }
 
       const config = JSON.stringify(json, null, 2);
-      
+
       setEditor({ advanced: true });
       setWidgetConfig(JSON.parse(config));
       setEditorValue(config);
@@ -71,7 +71,7 @@ const AdvancedEditor = ({
     () => {
       setEditor({ advanced: false });
       setValidationErrors([]);
-      
+
       // We need to render the visualisation again with the editor's settings
       // We introduce a slight delay so that the renderer displays the rest of the UI before we
       // render the visualisation again to avoid the visualisation being below some parts of the UI
@@ -84,7 +84,7 @@ const AdvancedEditor = ({
     try {
       const json = JSON.parse(value);
       const errors = getValidationErrors(json);
-      
+
       if (errors.length) {
         setValidationErrors(errors);
       } else {
@@ -152,7 +152,7 @@ const AdvancedEditor = ({
             . The widget editor supports any properties of Vega 5.9 and below.
           </p>
           <p>
-            Some parts of the editor's generated Vega JSON use custom formats. This applies to the
+            Some parts of the editor&apos;s generated Vega JSON use custom formats. This applies to the
             tooltip and legend. To learn more about these, please have a look at this{' '}
             <a
               href="https://github.com/Vizzuality/widget-editor/wiki/Widgets'-specification"
