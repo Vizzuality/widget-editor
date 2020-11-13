@@ -77,9 +77,9 @@ const Filter = ({
 
   const removeFilter = useCallback((id) => {
     const patch = filters.filter(filter => filter.id !== id);
-
     setFilters({ list: patch });
-  }, [filters, setFilters]);
+    patchConfiguration();
+  }, [filters, setFilters, patchConfiguration]);
 
   return (
     <StyledFilterBox>
