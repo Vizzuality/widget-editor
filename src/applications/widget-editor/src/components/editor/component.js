@@ -178,9 +178,17 @@ class Editor extends React.Component {
   }, 1000);
 
   resolveAreaIntersection(areaIntersection) {
-    const { setFilters, hasGeoInfo } = this.props;
+    const {
+      setFilters,
+      hasGeoInfo,
+    } = this.props;
+    const { areaIntersection: prevAreaIntersection } = this.props.editorState.filters;
+
     if (areaIntersection && hasGeoInfo) {
       setFilters({ areaIntersection });
+    } else if (!areaIntersection && prevAreaIntersection && prevAreaIntersection.length > 0) {
+      // If we get no intersection from parent but we have one present, reset intersection selection
+      setFilters({ areaIntersection: "" });
     }
   }
 
