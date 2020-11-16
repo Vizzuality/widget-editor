@@ -53,7 +53,7 @@ export default function useEditorForm(autoFillValue, areaIntersection) {
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    const handler = setTimeout(async => {
+    const handler = setTimeout(() => {
         dispatch(modifyOptions({
           areaIntersection
         }))
