@@ -73,7 +73,13 @@ const SCHEMES = [
 ];
 
 const Editor = () => {
-  const { compactMode, dataset, widget, theme } = useSelector(state => state.editorOptions);
+  const {
+    compactMode,
+    dataset,
+    widget,
+    theme,
+    areaIntersection
+  } = useSelector(state => state.editorOptions);
   const renderer = useSelector(state => state.editorOptions.renderer);
   const unmounted = useSelector(state => state.editorOptions.unmounted);
 
@@ -110,6 +116,7 @@ const Editor = () => {
           datasetId={dataset}
           widgetId={widget}
           onSave={handleOnSave}
+          areaIntersection={areaIntersection}
           authenticated={true}
           application="rw"
           adapter={RwAdapter}

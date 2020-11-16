@@ -19,7 +19,7 @@ const modifyOptions = payload => ({
   payload
 });
 
-export default function useEditorForm(autoFillValue) {
+export default function useEditorForm(autoFillValue, areaIntersection) {
   // Store previous auto fill value so we don't add it on first run
   const prevAutoFillValue = useRef();
 
@@ -51,6 +51,17 @@ export default function useEditorForm(autoFillValue) {
       patch();
     }
   }, []); // eslint-disable-line
+
+  useEffect(() => {
+    const handler = setTimeout(async => {
+        dispatch(modifyOptions({
+          areaIntersection
+        }))
+    }, 500);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [areaIntersection, dispatch]);
 
   // When autofill value changes apply desired dataset/widget
   // if autofill is empty apply initial state
