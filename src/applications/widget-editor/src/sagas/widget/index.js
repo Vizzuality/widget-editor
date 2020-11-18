@@ -214,6 +214,13 @@ export default function* baseSaga() {
    */
   yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORED, handleRestore);
 
+  /**
+   * When editor finds a new areaIntersection
+   * we need to trigger update flows for data/widgets
+   * Will catch setFilters and if areaIntersection has changed apply new data+widget
+   * As this filter is not directly "patched" to configuration, the state proxy wont;
+   * handle this when the areaIntersection prop changes on runtime
+   */
   yield takeLatest('widgetEditor/EDITOR/setFilters', handleAreaIntersection);
 
   /**
