@@ -8,8 +8,8 @@ import './style.scss';
 
 const EditorForm = () => {
   const [active, setActive] = useState(false);
+  const [areaIntersection, setAreaIntersection] = useState('');
   const [autoFillValue, setAutoFillValue] = useState('');
-
   const [
     datasets,
     widgets,
@@ -19,7 +19,7 @@ const EditorForm = () => {
     autoFillError,
     handleChangeDataset,
     handleChangeWidget
-  ] = useEditorForm(autoFillValue);
+  ] = useEditorForm(autoFillValue, areaIntersection);
 
   const autoFill = async e => {
     const { value } = e.target;
@@ -78,6 +78,18 @@ const EditorForm = () => {
           onChange={handleChangeWidget}
           name="widget"
           options={widgets || []}
+        />
+      </div>
+      <div className="input">
+        <label htmlFor="area-intersection">Area intersection ID</label>
+        <input
+          value={areaIntersection}
+          onChange={e => setAreaIntersection(e.target.value)}
+          autoComplete="off"
+          name="area-intersection"
+          className="text-input"
+          type="text"
+          placeholder="Paste here"
         />
       </div>
     </div>

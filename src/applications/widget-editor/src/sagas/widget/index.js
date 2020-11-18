@@ -1,23 +1,30 @@
-import { fork, take, takeLatest, put, call, cancel, select } from "redux-saga/effects";
+import {
+  fork,
+  take,
+  takeLatest,
+  put,
+  call,
+  cancel,
+  select
+} from 'redux-saga/effects';
 
 // CORE SERVICES
-import {
-  constants,
-  VegaService,
-  StateProxy,
-} from "@widget-editor/core";
+import { constants, VegaService, StateProxy } from '@widget-editor/core';
 
 // SELECTORS
-import { isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
+import { isMap } from '@widget-editor/shared/lib/modules/configuration/selectors';
 
 // ACTIONS
-import { setEditor, dataInitialized } from "@widget-editor/shared/lib/modules/editor/actions";
-import { setWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
+import {
+  setEditor,
+  dataInitialized
+} from '@widget-editor/shared/lib/modules/editor/actions';
+import { setWidgetConfig } from '@widget-editor/shared/lib/modules/widget-config/actions';
 
 import getWidgetDataWithAdapter from './getWidgetData';
 
 // EXPOSED HOOKS
-import { localOnChangeState } from "exposed-hooks";
+import { localOnChangeState } from 'exposed-hooks';
 
 // Initialize state proxy so we can store the state of the editor
 const stateProxy = new StateProxy();
@@ -27,7 +34,10 @@ const stateProxy = new StateProxy();
 // Action triggering this is: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE
 function* updateHookState() {
   const state = yield select();
-  if (state.widgetEditor.editor.initialized && state.widgetEditor.widgetConfig) {
+  if (
+    state.widgetEditor.editor.initialized &&
+    state.widgetEditor.widgetConfig
+  ) {
     localOnChangeState(state.widgetEditor);
   }
 }
@@ -39,7 +49,7 @@ function* updateHookState() {
  */
 function* initializeData(props) {
   const { widgetEditor } = yield select();
-  const widgetData = yield call(getWidgetDataWithAdapter, widgetEditor)
+  const widgetData = yield call(getWidgetDataWithAdapter, widgetEditor);
 
   if (widgetData) {
     yield put(setEditor({ widgetData: widgetData }));
@@ -93,9 +103,9 @@ function* initializeVega() {
   if (advanced) {
     const ensureVegaProperties = {
       autosize: {
-        type: "fit",
+        type: 'fit'
       },
-      ...widgetConfig,
+      ...widgetConfig
     };
     yield put(setWidgetConfig(ensureVegaProperties));
   }
@@ -113,7 +123,6 @@ function* initializeVega() {
  */
 function* syncEditor() {
   let { widgetEditor } = yield select();
-
   if (stateProxy.ShouldUpdateData(widgetEditor)) {
     yield call(initializeData);
   }
@@ -162,13 +171,30 @@ function* handleRestore() {
   yield call(updateHookState);
 }
 
+function* handleAreaIntersection({ payload }) {
+  const {
+    widgetEditor: { filters: areaIntersection }
+  } = yield select();
+
+  if (
+    'areaIntersection' in payload &&
+    areaIntersection !== payload.areaIntersection
+  ) {
+    yield call(initializeData);
+    yield call(initializeVega);
+    // Make sure our local state hooks have the latest state
+    const { widgetEditor: updatedState } = yield select();
+    stateProxy.update(updatedState);
+    yield call(updateHookState);
+  }
+}
+
 /**
  * @generator main
  * Runs on load
  * @triggers <void>
  */
 export default function* baseSaga() {
-
   /**
    * Trigger initial data request
    * @sagaEvents DATA_FLOW_VISUALIZATION_READY
@@ -189,6 +215,15 @@ export default function* baseSaga() {
   yield takeLatest(constants.sagaEvents.DATA_FLOW_RESTORED, handleRestore);
 
   /**
+   * When editor finds a new areaIntersection
+   * we need to trigger update flows for data/widgets
+   * Will catch setFilters and if areaIntersection has changed apply new data+widget
+   * As this filter is not directly "patched" to configuration, the state proxy wont;
+   * handle this when the areaIntersection prop changes on runtime
+   */
+  yield takeLatest('widgetEditor/EDITOR/setFilters', handleAreaIntersection);
+
+  /**
    * Runs when app is active, on event sync editor
    * @reduxActions EDITOR_PATCH_CONFIGURATION
    * Whenever a patch gets triggered, we will check for updates on:
@@ -196,8 +231,8 @@ export default function* baseSaga() {
    * @vegaConfiguration Do we need to update vega configuration?
    * @triggers <void>
    */
-  while(true) {
-    yield take(constants.reduxActions.EDITOR_PATCH_CONFIGURATION)
-    yield fork(syncEditor)
+  while (true) {
+    yield take(constants.reduxActions.EDITOR_PATCH_CONFIGURATION);
+    yield fork(syncEditor);
   }
 }
