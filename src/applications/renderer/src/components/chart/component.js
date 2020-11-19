@@ -235,13 +235,25 @@ class Chart extends React.Component {
         this.generateRuntime(this.verifyCustomChart(standaloneConfiguration));
       }
     } else {
+      const editedConfiguration = { ...vegaConfiguration };
+
       // XXX: Remove any nessesary information if not advanced mode
       // This is for example if:
       // 1. User deletes the entire custom configuration
       if (!advanced) {
-        delete vegaConfiguration.legends;
+        delete editedConfiguration.legends;
       }
-      this.generateRuntime(vegaConfiguration);
+
+      // If not standalone, we don't want to show the axes titles
+      editedConfiguration.axes = [...editedConfiguration.axes];
+      editedConfiguration.axes?.forEach((axis, index) => {
+        if (axis.title) {
+          editedConfiguration.axes[index] = { ...axis };
+          delete editedConfiguration.axes[index].title;
+        }
+      });
+
+      this.generateRuntime(editedConfiguration);
     }
   }
 
