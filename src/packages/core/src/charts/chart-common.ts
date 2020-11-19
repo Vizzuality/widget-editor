@@ -16,7 +16,7 @@ export default class ChartCommon {
     return configuration.category?.type === 'date';
   }
 
-  resolveName(axis: 'x' | 'y' | 'color') {
+  resolveName(axis: 'x' | 'y' | 'color'): string {
     const { configuration, editor } = this.store;
     const { xAxisTitle, yAxisTitle } = configuration;
 
@@ -49,6 +49,14 @@ export default class ChartCommon {
     }
 
     return name;
+  }
+
+  /**
+   * Return the title of an axis
+   * @param axis Type of axis
+   */
+  resolveTitle(axis: 'x' | 'y'): string {
+    return this.resolveName(axis);
   }
 
   resolveFormat(axis: 'x' | 'y') {
