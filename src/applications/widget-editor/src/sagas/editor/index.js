@@ -118,8 +118,15 @@ function* preloadData() {
     }
 
     const { axes } = widgetConfig;
-    const xAxis = axes?.find(axis => axis.scale === 'x');
-    const yAxis = axes?.find(axis => axis.scale === 'y');
+
+    // The horizontal bar charts have their axes inverted: the one named 'x' is based on the value
+    // and the one named 'y' is based on the category
+    const chartsWithInversedAxes = ['bar-horizontal', 'stacked-bar-horizontal'];
+    const xAxisName = chartsWithInversedAxes.includes(paramsConfig?.chartType) ? 'y' : 'x';
+    const yAxisName = chartsWithInversedAxes.includes(paramsConfig?.chartType) ? 'x' : 'y';
+
+    const xAxis = axes?.find(axis => axis.scale === xAxisName);
+    const yAxis = axes?.find(axis => axis.scale === yAxisName);
 
     const categoryName = paramsConfig?.category?.alias ?? paramsConfig?.category?.name;
     const valueName = paramsConfig?.value?.alias ?? paramsConfig?.value?.name;
