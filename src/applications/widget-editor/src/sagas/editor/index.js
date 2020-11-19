@@ -117,11 +117,17 @@ function* preloadData() {
       paramsConfig.aggregateFunction = null;
     }
 
+    const { axes } = widgetConfig;
+    const xAxis = axes?.find(axis => axis.scale === 'x');
+    const yAxis = axes?.find(axis => axis.scale === 'y');
+
     const configuration = {
       ...(paramsConfig ? { ...paramsConfig } : {}),
       title: name,
       description,
       caption,
+      xAxisTitle: xAxis?.title ?? null,
+      yAxisTitle: yAxis?.title ?? null,
       rasterOnly,
       visualizationType: isMap ? 'map' : 'chart',
       ...(isMap ? { chartType: 'map' } : {}),
