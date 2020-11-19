@@ -121,13 +121,31 @@ function* preloadData() {
     const xAxis = axes?.find(axis => axis.scale === 'x');
     const yAxis = axes?.find(axis => axis.scale === 'y');
 
+    const categoryName = paramsConfig?.category?.alias ?? paramsConfig?.category?.name;
+    const valueName = paramsConfig?.value?.alias ?? paramsConfig?.value?.name;
+
+    // There are two ways an axis can get a title: either the user manually give it one, or by
+    // default, the title is the alias/name of the field the axis is based on
+    // When we're restoring a widget, we want to restore the axes text fields (the “overwrite axis
+    // title” inputs), only if the user has manually entered titles
+    // If we would always restore them, when the user would change the category or value fields, the
+    // axes titles would stay with the names of the previous fields
+    // There's no easy way to detect if the titles were set manually or automatically, apart from
+    // checking if they equal the alias/name of the fields used at serialization time
+    const xAxisTitle = xAxis?.title && (!categoryName || categoryName !== xAxis.title)
+      ? xAxis.title
+      : null;
+    const yAxisTitle = yAxis?.title && (!valueName || valueName !== yAxis.title)
+      ? yAxis.title
+      : null;
+
     const configuration = {
       ...(paramsConfig ? { ...paramsConfig } : {}),
       title: name,
       description,
       caption,
-      xAxisTitle: xAxis?.title ?? null,
-      yAxisTitle: yAxis?.title ?? null,
+      xAxisTitle,
+      yAxisTitle,
       rasterOnly,
       visualizationType: isMap ? 'map' : 'chart',
       ...(isMap ? { chartType: 'map' } : {}),
