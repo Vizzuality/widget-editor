@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 const Checkbox = ({ id, label, checked, onChange, className, ...rest }) => (
   <div className={className}>
@@ -20,12 +20,12 @@ Checkbox.propTypes = {
   label: PropTypes.string.isRequired,
   checked: PropTypes.bool,
   onChange: PropTypes.func,
-  className: PropTypes.func
+  className: PropTypes.string
 };
 
 Checkbox.defaultProps = {
   checked: false,
-  onChange: () => null,
+  onChange: () => null
 };
 
 export default styled(Checkbox)`
@@ -52,13 +52,13 @@ export default styled(Checkbox)`
 
         &:before,
         &:after {
-          border-color: rgba(202,204,208,0.34);
+          border-color: rgba(202, 204, 208, 0.34);
         }
       }
     }
 
     &:checked + label:after {
-      content: "";
+      content: '';
     }
   }
 
@@ -85,7 +85,7 @@ export default styled(Checkbox)`
     border: 1px solid rgba(202, 204, 208, 0.85);
     border-radius: 4px;
     background: white;
-    content: "";
+    content: '';
   }
 
   label:after {
