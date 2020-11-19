@@ -181,6 +181,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
       {
         orient: "bottom",
         scale: "x",
+        title: this.resolveTitle('x'),
         ...(this.isDate() ? {
           encode: {
             labels: {
@@ -204,6 +205,7 @@ export default class Line extends ChartsCommon implements Charts.Line {
         // If it doesn't the chart might not be displayed at all due to this bug:
         // https://github.com/vega/vega/issues/1350
         titleLimit: { "signal": "height" },
+        title: this.resolveTitle('y'),
         encode: {
           labels: {
             update: {
