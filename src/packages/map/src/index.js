@@ -259,8 +259,8 @@ class Map extends React.Component {
       const [b0, b1, b2, b3] = mapOptions.bbox;
       this.map.fitBounds(
         [
-          [b0, b1],
-          [b2, b3]
+          [b1, b0],
+          [b3, b2]
         ],
         { animate: false }
       );
