@@ -1,36 +1,27 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import { redux } from "@widget-editor/shared";
-import isEqual from "lodash/isEqual";
-import has from "lodash/has";
-import styled from "styled-components";
+import { redux } from '@widget-editor/shared';
+import isEqual from 'lodash/isEqual';
+import has from 'lodash/has';
+import styled from 'styled-components';
 
 import { Icons } from 'vizzuality-components';
 
-import { editorSyncMap } from "@widget-editor/shared/lib/modules/editor/actions";
-import { patchConfiguration } from "@widget-editor/shared/lib/modules/configuration/actions";
+import { editorSyncMap } from '@widget-editor/shared/lib/modules/editor/actions';
+import { patchConfiguration } from '@widget-editor/shared/lib/modules/configuration/actions';
 
-import LayerManager from "helpers/layer-manager";
+import LayerManager from 'helpers/layer-manager';
 
-import { LABELS, BOUNDARIES, BASEMAPS } from "constants";
+import { LABELS, BOUNDARIES, BASEMAPS } from 'constants';
 
-import chroma from "chroma-js";
+import chroma from 'chroma-js';
 
-import {
-  COLOR_WHITE
-} from "@widget-editor/shared/lib/styles/style-constants";
+import { COLOR_WHITE } from '@widget-editor/shared/lib/styles/style-constants';
 
-import {
-  Legend,
-  LegendListItem,
-  LegendItemTypes
-} from 'vizzuality-components';
+import { Legend, LegendListItem, LegendItemTypes } from 'vizzuality-components';
 
-import {
-  StyledMapContainer,
-  StyledCaption
-} from "./styles";
+import { StyledMapContainer, StyledCaption } from './styles';
 
 const DEFAULT_MAP_PROPERTIES = {
   zoom: 2,
@@ -38,13 +29,13 @@ const DEFAULT_MAP_PROPERTIES = {
   lng: 0,
   bbox: [0, 0, 0, 0],
   basemap: {
-    basemap: "dark",
-  },
+    basemap: 'dark'
+  }
 };
 
 const MAP_CONFIG = {
   minZoom: 2,
-  zoomControl: true,
+  zoomControl: true
 };
 
 const StyledLegend = styled.div`
@@ -65,7 +56,7 @@ class Map extends React.Component {
       legendOpen: true
     };
 
-    this.labels = props.labels || LABELS["none"];
+    this.labels = props.labels || LABELS['none'];
 
     this.mapConfiguration = props?.mapConfiguration
       ? props.mapConfiguration
@@ -83,7 +74,6 @@ class Map extends React.Component {
     if (this.mapConfiguration.basemap?.labels) {
       this.labels = LABELS[this.mapConfiguration.basemap.labels];
     }
-
   }
 
   createLayerGroups(layers, layerId) {
@@ -97,9 +87,9 @@ class Map extends React.Component {
         {
           id: id || attributes.layerConfig.id,
           active: layerId ? id === layerId : attributes.default,
-          ...attributes,
-        },
-      ],
+          ...attributes
+        }
+      ]
     }));
   }
 
@@ -108,30 +98,41 @@ class Map extends React.Component {
       zoom: this.mapConfiguration.zoom || 2,
       lat: this.mapConfiguration.lat || 0,
       lng: this.mapConfiguration.lng || 0,
-      bbox: this.mapConfiguration.bbox || [0, 0, 0, 0],
+      bbox: this.mapConfiguration.bbox || [0, 0, 0, 0]
     };
 
     const mapOptions = { ...FROM_PROPS, ...MAP_CONFIG };
 
     mapOptions.center = [
       this.mapConfiguration.lat || 0,
-      this.mapConfiguration.lng || 0,
+      this.mapConfiguration.lng || 0
     ];
 
     return mapOptions;
   }
 
   componentDidMount() {
+    const { patchConfiguration, mapConfig } = this.props;
+
     this.hasBeenMounted = true;
     this.instantiateMap();
     const mapOptions = this.getMapOptions();
 
     // If the bounds are not defined, we set them in the store
-    if (!this.props?.mapConfig?.bounds || !has(mapOptions, "bbox")) {
+    if (mapConfig?.bounds || !has(mapOptions, 'bbox')) {
       this.onMapChange();
     }
+    // Ensure visualisation type is map
+    // this will be triggered fine in the editor itself
+    // but when used externally this might not be the case.
+    if (patchConfiguration) {
+      patchConfiguration({
+        visualizationType: 'map',
+        chartType: 'map'
+      });
+    }
   }
-w
+
   shouldComponentUpdate(nextProps, nextState) {
     const loadingChanged = this.state.loading !== nextState.loading;
     const captionChanged = this.props.caption !== nextProps.caption;
@@ -146,7 +147,11 @@ w
     );
 
     return (
-      loadingChanged || captionChanged || legendToggleChanged || basemapChanged || bboxChanged
+      loadingChanged ||
+      captionChanged ||
+      legendToggleChanged ||
+      basemapChanged ||
+      bboxChanged
     );
   }
 
@@ -158,31 +163,39 @@ w
       );
 
       const layers = expectedLayerGroups
-        .filter((l) => l.visible)
-        .map((l) => l.layers.find((la) => la.active))
+        .filter(l => l.visible)
+        .map(l => l.layers.find(la => la.active))
         .filter(Boolean);
 
       this.layerManager.removeLayers();
       this.addLayers(layers);
     }
 
-    if (this.props.mapConfiguration?.basemap?.labels !== nextProps.mapConfiguration?.basemap?.labels) {
+    if (
+      this.props.mapConfiguration?.basemap?.labels !==
+      nextProps.mapConfiguration?.basemap?.labels
+    ) {
       this.setLabels(LABELS[nextProps.mapConfiguration.basemap.labels]);
     }
 
-    if (this.props.mapConfiguration?.basemap?.boundaries !== nextProps.mapConfiguration?.basemap?.boundaries) {
+    if (
+      this.props.mapConfiguration?.basemap?.boundaries !==
+      nextProps.mapConfiguration?.basemap?.boundaries
+    ) {
       this.setBoundaries(nextProps.mapConfiguration.basemap.boundaries);
     }
 
     // Map bbox changed
     if (!isEqual(nextProps.changeBbox, this.props.changeBbox)) {
       const [b0, b1, b2, b3] = nextProps.changeBbox;
-      this.map.fitBounds([
-        [b1, b0],
-        [b3, b2]
-      ], { animate: false });
+      this.map.fitBounds(
+        [
+          [b1, b0],
+          [b3, b2]
+        ],
+        { animate: false }
+      );
     }
-
   }
 
   componentDidUpdate() {
@@ -217,7 +230,7 @@ w
     );
 
     if (this.map.zoomControl) {
-      this.map.zoomControl.setPosition("topright");
+      this.map.zoomControl.setPosition('topright');
     }
 
     this.setBasemap(this.basemap);
@@ -226,26 +239,31 @@ w
     this.instantiateLayerManager();
 
     const layers = this.layerGroups
-      .filter((l) => l.visible)
-      .map((l) => l.layers.find((la) => la.active))
+      .filter(l => l.visible)
+      .map(l => l.layers.find(la => la.active))
       .filter(Boolean);
 
     this.activeLayers = layers;
     this.addLayers(layers);
 
     this.setLabels(this.labels);
-    this.setBoundaries(this.props.mapConfiguration?.basemap?.boundaries || false);
+    this.setBoundaries(
+      this.props.mapConfiguration?.basemap?.boundaries || false
+    );
 
     // In version2 of the editor we are storing the bbox
     // This is so in the future we can migrate to for example mapbox
-    // If we have a bbox, this is automaticly saved in the new editor
+    // If we have a BBOX, this is automatically saved in the new editor
     // We pan to it if present
     if (mapOptions.bbox && Array.isArray(mapOptions.bbox)) {
       const [b0, b1, b2, b3] = mapOptions.bbox;
-      this.map.fitBounds([
-        [b0, b1],
-        [b2, b3]
-      ], { animate: false });
+      this.map.fitBounds(
+        [
+          [b1, b0],
+          [b3, b2]
+        ],
+        { animate: false }
+      );
     } else if (this.props?.mapConfig?.bounds) {
       // Legacy editor stores "bounds"
       // Apply them instead if present
@@ -265,10 +283,9 @@ w
     this.layerManager = new LayerManager(this.map, {
       adapter: this.props.adapter,
       onLayerAddedSuccess: stopLoading,
-      onLayerAddedError: stopLoading,
+      onLayerAddedError: stopLoading
     });
   }
-
 
   /**
    * Set the map's labels
@@ -287,9 +304,9 @@ w
     if (!layers) return;
 
     this.setState({ loading: true });
-    layers.forEach((layer) => {
+    layers.forEach(layer => {
       this.layerManager.addLayer(layer, {
-        zIndex: layer.order,
+        zIndex: layer.order
       });
     });
   }
@@ -303,8 +320,8 @@ w
       labels: this.props.mapConfiguration.labels,
       bounds: [
         [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
-        [bounds.getNorthEast().lat, bounds.getNorthEast().lng],
-      ],
+        [bounds.getNorthEast().lat, bounds.getNorthEast().lng]
+      ]
     };
     return params;
   }
@@ -325,13 +342,14 @@ w
         bounds: mapParams.bounds,
         bbox: [...bbox1, ...bbox2]
       });
+
       patchConfiguration();
     }
   }
 
   setEventListeners() {
-    this.map.on("zoomend", () => this.onMapChange());
-    this.map.on("dragend", () => this.onMapChange());
+    this.map.on('zoomend', () => this.onMapChange());
+    this.map.on('dragend', () => this.onMapChange());
   }
 
   setBoundaries(showBoundaries) {
@@ -354,17 +372,17 @@ w
   }
 
   getLegendLayerTitle(legendConfig, lc) {
-    if (legendConfig.type === "gradient") {
+    if (legendConfig.type === 'gradient') {
       return lc.unit;
     }
-    if (legendConfig.type === "choropleth") {
+    if (legendConfig.type === 'choropleth') {
       return lc.name;
     }
   }
 
   generateGradient(items) {
-    const scale = items.map((i) => i.color);
-    const domain = items.map((i) => i.value);
+    const scale = items.map(i => i.color);
+    const domain = items.map(i => i.value);
     return chroma.scale(scale).domain(domain).colors(items.length);
   }
 
@@ -374,27 +392,21 @@ w
       <StyledMapContainer>
         <Icons />
         {caption && <StyledCaption>{caption}</StyledCaption>}
-        {!thumbnail &&
+        {!thumbnail && (
           <StyledLegend>
-            <Legend
-              maxHeight={140}
-              sortable={false}
-            >
-              {this.layerGroups.filter(lg => lg.layers.find(l => l.id === layerId))
+            <Legend maxHeight={140} sortable={false}>
+              {this.layerGroups
+                .filter(lg => lg.layers.find(l => l.id === layerId))
                 .map((lg, i) => (
-                  <LegendListItem
-                    index={i}
-                    key={lg.dataset}
-                    layerGroup={lg}
-                  >
+                  <LegendListItem index={i} key={lg.dataset} layerGroup={lg}>
                     <LegendItemTypes />
                   </LegendListItem>
-              ))}
+                ))}
             </Legend>
           </StyledLegend>
-        }
+        )}
         <div
-          ref={(node) => {
+          ref={node => {
             this.mapNode = node;
           }}
           className="map-leaflet"
@@ -407,7 +419,7 @@ w
 Map.propTypes = {
   patchConfiguration: PropTypes.func,
   editorSyncMap: PropTypes.func,
-  adapter: PropTypes.func.isRequired,
+  adapter: PropTypes.object.isRequired,
   interactionEnabled: PropTypes.bool,
   thumbnail: PropTypes.bool,
   layerId: PropTypes.string,
@@ -431,10 +443,10 @@ Map.propTypes = {
 
 export default redux.connectState(
   state => ({
-    configuration: state.configuration,
+    configuration: state.configuration
   }),
   {
     editorSyncMap,
-    patchConfiguration,
+    patchConfiguration
   }
 )(Map);

@@ -159,6 +159,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         "scale": "x",
         "labelOverlap": "parity",
         "orient": "bottom",
+        title: this.resolveTitle('x'),
         "encode": {
           "labels": {
             "update": {
@@ -186,6 +187,7 @@ export default class Scatter extends ChartsCommon implements Charts.Scatter {
         // If it doesn't the chart might not be displayed at all due to this bug:
         // https://github.com/vega/vega/issues/1350
         titleLimit: { "signal": "height" },
+        title: this.resolveTitle('y'),
       }
     ]
   }

@@ -1,23 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
-import debounce from "lodash/debounce";
-import Renderer from "@widget-editor/renderer";
-import EditorOptions from "components/editor-options";
-import Footer from "components/footer";
+import React from 'react';
+import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
+import debounce from 'lodash/debounce';
+import Renderer from '@widget-editor/renderer';
+import EditorOptions from 'components/editor-options';
+import Footer from 'components/footer';
 
-import { JSTypes } from "@widget-editor/types";
-import { DataService, getOutputPayload } from "@widget-editor/core";
-import { constants } from "@widget-editor/core";
+import { JSTypes } from '@widget-editor/types';
+import { DataService, getOutputPayload } from '@widget-editor/core';
+import { constants } from '@widget-editor/core';
 
 import {
   StyledContainer,
   StyleEditorContainer,
   StyledRendererContainer,
-  StyledOptionsContainer,
-} from "./style";
+  StyledOptionsContainer
+} from './style';
 
-import { localGetEditorState, setReduxCache } from "exposed-hooks";
+import { localGetEditorState, setReduxCache } from 'exposed-hooks';
 
 class Editor extends React.Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class Editor extends React.Component {
       dispatch,
       userPassedTheme,
       schemes,
-      areaIntersection,
+      areaIntersection
     } = this.props;
 
     this.onSave = this.onSave.bind(this);
@@ -43,23 +43,25 @@ class Editor extends React.Component {
       dispatch
     );
 
-    this.dataService.resolveInitialState()
-      .then(() => {
-        // We wait for the filters to be restored before setting the default geo filter
-        this.resolveAreaIntersection(areaIntersection);
-      });
+    this.dataService.resolveInitialState().then(() => {
+      // We wait for the filters to be restored before setting the default geo filter
+      this.resolveAreaIntersection(areaIntersection);
+    });
 
     this.resolveTheme(userPassedTheme);
     this.resolveSchemes(schemes);
 
     props.dispatch({
       type: constants.sagaEvents.DATA_FLOW_STORE_ADAPTER_CONFIG,
-      payload: adapterInstance,
+      payload: adapterInstance
     });
 
     // XXX: Initialize editor hooks apis
-    setReduxCache(dispatch)
-    localGetEditorState({ adapter: adapterInstance, dataService: this.dataService });
+    setReduxCache(dispatch);
+    localGetEditorState({
+      adapter: adapterInstance,
+      dataService: this.dataService
+    });
   }
 
   UNSAFE_componentWillMount() {
@@ -79,15 +81,21 @@ class Editor extends React.Component {
     this.resetEditor();
   }
 
-
   componentDidUpdate(prevProps) {
     const {
       datasetId: prevDatasetId,
       widgetId: prevWidgetId,
       userPassedTheme: prevUserPassedTheme,
       schemes: prevSchemes,
+      areaIntersection: prevAreaIntersection
     } = prevProps;
-    const { datasetId, widgetId, userPassedTheme, schemes } = this.props;
+    const {
+      datasetId,
+      widgetId,
+      userPassedTheme,
+      schemes,
+      areaIntersection
+    } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
     if (
@@ -95,6 +103,10 @@ class Editor extends React.Component {
       !isEqual(widgetId, prevWidgetId)
     ) {
       this.initializeRestoration(datasetId, widgetId);
+    }
+
+    if (!isEqual(areaIntersection, prevAreaIntersection)) {
+      this.resolveAreaIntersection(areaIntersection);
     }
 
     if (!isEqual(userPassedTheme, prevUserPassedTheme)) {
@@ -122,18 +134,13 @@ class Editor extends React.Component {
   }
 
   resolveEditorFunctionality() {
-    const {
-      setEditor,
-      disable,
-      enableSave = true,
-    } = this.props;
+    const { setEditor, disable, enableSave = true } = this.props;
 
     setEditor({
       enableSave,
       ...(disable !== undefined && disable !== null
-        ? {disabledFeatures: disable }
-        : {}
-      ),
+        ? { disabledFeatures: disable }
+        : {})
     });
   }
 
@@ -148,18 +155,18 @@ class Editor extends React.Component {
 
   // We debounce all properties here
   // Then we dont have to care if debouncing is set on the client
-  resolveTheme = (userPassedTheme) => {
+  resolveTheme = userPassedTheme => {
     const { setTheme, userPassedCompact } = this.props;
     setTheme({
       ...userPassedTheme,
       compact: {
         ...this.props.theme.compact,
-        forceCompact: userPassedCompact || false,
-      },
+        forceCompact: userPassedCompact || false
+      }
     });
   };
 
-  resolveSchemes = debounce((schemes) => {
+  resolveSchemes = debounce(schemes => {
     const { setSchemes } = this.props;
     if (Array.isArray(schemes) && schemes.length > 0) {
       setSchemes(schemes);
@@ -168,14 +175,25 @@ class Editor extends React.Component {
 
   resolveAreaIntersection(areaIntersection) {
     const { setFilters, hasGeoInfo } = this.props;
+    const {
+      areaIntersection: prevAreaIntersection
+    } = this.props.editorState.filters;
+
     if (areaIntersection && hasGeoInfo) {
       setFilters({ areaIntersection });
+    } else if (
+      !areaIntersection &&
+      prevAreaIntersection &&
+      prevAreaIntersection.length > 0
+    ) {
+      // If we get no intersection from parent but we have one present, reset intersection selection
+      setFilters({ areaIntersection: null });
     }
   }
 
   onSave() {
     const { onSave, dispatch, editorState, adapterInstance } = this.props;
-    if (typeof onSave === "function") {
+    if (typeof onSave === 'function') {
       const outputPayload = getOutputPayload(editorState, adapterInstance);
       onSave(outputPayload);
     }
@@ -186,7 +204,7 @@ class Editor extends React.Component {
     const {
       adapter,
       adapterInstance,
-      theme: { compact },
+      theme: { compact }
     } = this.props;
     return (
       <StyledContainer {...compact}>
@@ -195,7 +213,10 @@ class Editor extends React.Component {
             <Renderer adapter={adapter} standalone={false} />
           </StyledRendererContainer>
           <StyledOptionsContainer {...compact}>
-            <EditorOptions adapter={adapterInstance} dataService={this.dataService} />
+            <EditorOptions
+              adapter={adapterInstance}
+              dataService={this.dataService}
+            />
           </StyledOptionsContainer>
         </StyleEditorContainer>
         <Footer onSave={this.onSave} />
@@ -229,11 +250,11 @@ Editor.propTypes = {
   theme: JSTypes.theme,
   areaIntersection: PropTypes.string,
   setFilters: PropTypes.func.isRequired,
-  hasGeoInfo: PropTypes.bool.isRequired,
+  hasGeoInfo: PropTypes.bool.isRequired
 };
 
 Editor.defaultProps = {
-  areaIntersection: null,
+  areaIntersection: null
 };
 
 export default Editor;

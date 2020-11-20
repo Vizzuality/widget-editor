@@ -151,6 +151,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         scale: "x",
         labelOverlap: "parity",
         ticks: false,
+        title: this.resolveTitle('x'),
         encode: {
           labels: {
             update: {
@@ -183,6 +184,7 @@ export default class GroupedBars extends ChartsCommon implements Charts.Bars {
         // If it doesn't the chart might not be displayed at all due to this bug:
         // https://github.com/vega/vega/issues/1350
         titleLimit: { "signal": "height" },
+        title: this.resolveTitle('y'),
         encode: {
           labels: {
             update: {
