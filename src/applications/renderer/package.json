@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/renderer",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -13,12 +13,13 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@widget-editor/core": "^2.4.1",
-    "@widget-editor/map": "^2.4.1",
-    "@widget-editor/shared": "^2.4.1",
-    "@widget-editor/types": "^2.4.1",
+    "@widget-editor/core": "^2.5.0",
+    "@widget-editor/map": "^2.5.0",
+    "@widget-editor/shared": "^2.5.0",
+    "@widget-editor/types": "^2.5.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
+    "prop-types": "15.7.2",
     "react-select": "^3.0.8",
     "react-slick": "^0.25.2",
     "react-slider": "^1.0.2",
@@ -29,8 +30,7 @@
     "styled-components": "^4.4.1",
     "vega": "^5.9.0",
     "vega-tooltip": "0.8.0",
-    "vizzuality-redux-tools": "^4.1.1",
-    "prop-types": "15.7.2"
+    "vizzuality-redux-tools": "^4.1.1"
   },
   "peerDependencies": {
     "react": "^16.12.0",
@@ -43,8 +43,8 @@
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
-    "babel-plugin-module-resolver": "^4.0.0",
-    "@widget-editor/eslint-config": "^0.0.0"
+    "@widget-editor/eslint-config": "^2.5.0",
+    "babel-plugin-module-resolver": "^4.0.0"
   },
   "scripts": {
     "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",

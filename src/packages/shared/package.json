@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/shared",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -14,10 +14,10 @@
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "babel-plugin-styled-components": "^1.10.6",
+    "prop-types": "15.7.2",
     "react-select": "^3.0.8",
     "react-slick": "^0.25.2",
     "react-slider": "^1.0.2",
-    "prop-types": "15.7.2",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "^1.1.3",
     "reselect": "^4.0.0",
@@ -38,9 +38,9 @@
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
+    "@widget-editor/eslint-config": "^2.5.0",
     "babel-plugin-module-resolver": "^4.0.0",
-    "webpack-cli": "^3.3.11",
-    "@widget-editor/eslint-config": "^0.0.0"
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
