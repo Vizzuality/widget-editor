@@ -29,8 +29,7 @@ class Editor extends React.Component {
       setEditor,
       dispatch,
       userPassedTheme,
-      schemes,
-      areaIntersection
+      schemes
     } = this.props;
 
     this.onSave = this.onSave.bind(this);
@@ -44,7 +43,15 @@ class Editor extends React.Component {
     );
 
     this.dataService.resolveInitialState().then(() => {
-      // We wait for the filters to be restored before setting the default geo filter
+      // Before we can set the default geo filter, we need two things:
+      // 1. We need to know if the dataset has geographic information
+      // 2. We need to restore the widget's filters to overwrite them
+
+      // Also very important, the areaIntersection prop may have been dynamically updated since the
+      // editor has been first instantiated. For this reason, we get the value of areaIntersection
+      // *inside* this callback.
+      const { areaIntersection } = this.props;
+
       this.resolveAreaIntersection(areaIntersection);
     });
 
@@ -94,7 +101,8 @@ class Editor extends React.Component {
       widgetId,
       userPassedTheme,
       schemes,
-      areaIntersection
+      areaIntersection,
+      initialized,
     } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
@@ -105,7 +113,10 @@ class Editor extends React.Component {
       this.initializeRestoration(datasetId, widgetId);
     }
 
-    if (!isEqual(areaIntersection, prevAreaIntersection)) {
+    // We need the editor to be fully initialized before we can set the default geo filter:
+    // 1. The dataset must be fetched to know if it has geographic information
+    // 2. The widget's filters must be restored to eventually overwrite them
+    if (initialized && !isEqual(areaIntersection, prevAreaIntersection)) {
       this.resolveAreaIntersection(areaIntersection);
     }
 
@@ -145,10 +156,10 @@ class Editor extends React.Component {
   }
 
   initializeRestoration = debounce((datasetId, widgetId) => {
-    const { areaIntersection, resetFilters, dispatch } = this.props;
+    const { resetFilters, dispatch } = this.props;
+
     resetFilters();
     this.dataService.restoreEditor(datasetId, widgetId, () => {
-      this.resolveAreaIntersection(areaIntersection);
       dispatch({ type: constants.sagaEvents.DATA_FLOW_UPDATE_HOOK_STATE });
     });
   }, 1000);
@@ -174,19 +185,15 @@ class Editor extends React.Component {
   }, 1000);
 
   resolveAreaIntersection(areaIntersection) {
-    const { setFilters, hasGeoInfo } = this.props;
-    const {
-      areaIntersection: prevAreaIntersection
-    } = this.props.editorState.filters;
+    const { hasGeoInfo, setFilters } = this.props;
 
     if (areaIntersection && hasGeoInfo) {
       setFilters({ areaIntersection });
-    } else if (
-      !areaIntersection &&
-      prevAreaIntersection &&
-      prevAreaIntersection.length > 0
-    ) {
-      // If we get no intersection from parent but we have one present, reset intersection selection
+    } else {
+      // Very important to note:
+      // If the editor restores a widget and a default geo filter is passed to the editor, if later
+      // this default value is removed, the geo filter will be emptied instead of restoring the
+      // widget's geo filter's  value
       setFilters({ areaIntersection: null });
     }
   }
@@ -250,7 +257,8 @@ Editor.propTypes = {
   theme: JSTypes.theme,
   areaIntersection: PropTypes.string,
   setFilters: PropTypes.func.isRequired,
-  hasGeoInfo: PropTypes.bool.isRequired
+  hasGeoInfo: PropTypes.bool.isRequired,
+  initialized: PropTypes.bool.isRequired,
 };
 
 Editor.defaultProps = {
