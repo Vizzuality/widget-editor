@@ -60,6 +60,8 @@ This property allows you to disable specific features in the editor, read more h
 
 When `areaIntersection` is set, it is used as a default geographic filter for the dataset/widget. Even if the widget already has a geographic filter, it will be overwritten by the value of `areaIntersection`. Yet, the user will still be able to change the geographic filter in the UI.
 
+If the `areaIntersection` prop is later removed, the widget-editor will remove the geographic filter instead of restoring the widget's original filter value.
+
 If the `areaIntersection` is a user's area, the widget-editor's adapter must receive the user's token as `userToken` in order to correctly display the name of the area, otherwise, it will be shown as “Custom area”.
 
 If the dataset doesn't provide geographic information, this property is ignored.

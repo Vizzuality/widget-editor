@@ -28,7 +28,8 @@ export default connectState(
     configuration: state.configuration,
     widget: state.widgetConfig,
     editorState: state,
-    hasGeoInfo: selectHasGeoInfo(state)
+    hasGeoInfo: selectHasGeoInfo(state),
+    initialized: state.editor.initialized,
   }),
   dispatch => {
     return {
