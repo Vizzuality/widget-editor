@@ -81,7 +81,7 @@ const Standalone = ({
               basemap: widgetConfig.basemapLayers || null,
             }}
             caption={widgetName}
-            layers={[layerData]}
+            layers={layerData ? [layerData] : []}
             changeBbox={changeBbox}
             interactionEnabled={interactionEnabled}
           />
