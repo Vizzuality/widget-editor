@@ -19,18 +19,19 @@ export const getSerializedFilters = (filters: Filters.Filter[]): Filters.Seriali
     }
 
     return value;
-  }
+  };
+
+  const hasValue = ({ value }) => value !== undefined && value !== null;
 
   return filters
-    .filter(filter => {
-      const hasValue = filter.value !== undefined && filter.value !== null;
-      return hasValue || filter.notNull;
-    })
+    .filter(filter => hasValue(filter) || filter.notNull)
     .map(filter => ({
       name: filter.column,
       type: filter.type,
       operation: filter.operation,
-      value: getSerializedValue(filter),
+      value: hasValue(filter)
+        ? getSerializedValue(filter)
+        : null,
       notNull: filter.notNull,
     }));
 };
