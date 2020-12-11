@@ -3,8 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 const useLayerData = (adapter, layerId, isMap) => {
   const [layerData, setData] = useState(null);
 
-  // We set the default state to loading so that this hook never returns null on initialization
-  const [isLoadingLayers, setIsLoading] = useState(true);
+  const [isLoadingLayers, setIsLoading] = useState(false);
 
   const [isErrorLayers, setIsError] = useState(false);
 
