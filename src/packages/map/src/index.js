@@ -272,6 +272,10 @@ class Map extends React.Component {
     }
 
     this.map.setZoom(mapOptions.zoom);
+
+    // We save the initial state of the map so if the user saves a restored widget without making
+    // any change, we save the correct info
+    this.onMapChange();
   }
 
   instantiateLayerManager() {
