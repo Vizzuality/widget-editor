@@ -251,16 +251,17 @@ class Map extends React.Component {
       this.props.mapConfiguration?.basemap?.boundaries || false
     );
 
-    // In version2 of the editor we are storing the bbox
+    // In version 2 of the editor we are storing the bbox
     // This is so in the future we can migrate to for example mapbox
     // If we have a BBOX, this is automatically saved in the new editor
     // We pan to it if present
+    // NOTE: the bbox format is still Leaflet's
     if (mapOptions.bbox && Array.isArray(mapOptions.bbox)) {
-      const [b0, b1, b2, b3] = mapOptions.bbox;
+      const [SWLat, SWLon, NELat, NELon] = mapOptions.bbox;
       this.map.fitBounds(
         [
-          [b1, b0],
-          [b3, b2]
+          [SWLat, SWLon],
+          [NELat, NELon]
         ],
         { animate: false }
       );
@@ -271,6 +272,10 @@ class Map extends React.Component {
     }
 
     this.map.setZoom(mapOptions.zoom);
+
+    // We save the initial state of the map so if the user saves a restored widget without making
+    // any change, we save the correct info
+    this.onMapChange();
   }
 
   instantiateLayerManager() {

@@ -61,7 +61,7 @@ function* preloadData() {
     const mapSpecifics = {
       ...storeConfiguration.map,
       ...(has(widgetConfig, 'lat') ? { lat: widgetConfig.lat } : {}),
-      ...(has(widgetConfig, 'lng') ? { lat: widgetConfig.lng } : {}),
+      ...(has(widgetConfig, 'lng') ? { lng: widgetConfig.lng } : {}),
       ...(has(widgetConfig, 'bbox') ? { bbox: widgetConfig.bbox } : {}),
       ...(has(widgetConfig, 'basemapLayers')
         ? {
