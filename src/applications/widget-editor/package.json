@@ -55,12 +55,9 @@
     "rollup-plugin-css-porter": "^1.0.2"
   },
   "scripts": {
-    "start": "NODE_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
-    "watch": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
-    "build": "BABEL_ENV=build babel src --out-dir lib --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "start": "NODE_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./.babelrc --watch",
+    "watch": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./.babelrc --watch",
+    "build": "BABEL_ENV=build babel src --out-dir lib --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./.babelrc --no-comments"
   },
   "browserslist": {
     "production": [

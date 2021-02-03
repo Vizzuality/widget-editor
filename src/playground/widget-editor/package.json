@@ -31,9 +31,6 @@
     "deploy": "gh-pages -d build",
     "publish-npm": "npm publish --access public"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",

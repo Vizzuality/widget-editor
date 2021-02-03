@@ -2,3 +2,5 @@
 **/lib
 **/build
 config-overrides.js
+src/packages/eslint-config
+src/playground
