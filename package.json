@@ -24,7 +24,7 @@
     "build": "rimraf -f dist && lerna run compile && lerna run tsc",
     "compile:ts": "lerna run tsc",
     "watch:packages": "lerna run watch --parallel",
-    "watch:widget-editor": "lerna run start --parallel --scope @widget-editor/playground --stream",
+    "watch:widget-editor": "SKIP_PREFLIGHT_CHECK=true lerna run start --parallel --scope @widget-editor/playground --stream",
     "build:widget-editor": "cd src/playground/widget-editor && npm run build",
     "test:widget-editor": "cd src/playground/widget-editor && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
