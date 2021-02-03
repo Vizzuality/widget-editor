@@ -11,7 +11,7 @@
   "globals": {
     "L": true
   },
-  "plugins": ["babel", "jest", "react", "react-hooks"],
+  "plugins": ["@babel", "jest", "react", "react-hooks"],
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
