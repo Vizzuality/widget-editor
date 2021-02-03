@@ -155,7 +155,7 @@ class Map extends React.Component {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.layerId !== this.props.layerId) {
       const expectedLayerGroups = this.createLayerGroups(
         nextProps.layers,

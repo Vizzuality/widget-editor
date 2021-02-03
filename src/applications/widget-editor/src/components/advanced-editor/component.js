@@ -80,7 +80,7 @@ const AdvancedEditor = ({
     [setEditor, patchConfiguration],
   );
 
-  const validateAndUpdateStore = useCallback(debounce((value) => {
+  const validateAndUpdateStore = useMemo(() => debounce((value) => {
     try {
       const json = JSON.parse(value);
       const errors = getValidationErrors(json);
