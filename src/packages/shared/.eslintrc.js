@@ -1,5 +1,10 @@
 module.exports = {
-  'extends': [
+  extends: [
     '@widget-editor/eslint-config',
-  ]
+  ],
+  parserOptions: {
+    babelOptions: {
+      root: './src/packages/shared'
+    }
+  }
 };

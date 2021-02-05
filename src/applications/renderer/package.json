@@ -47,14 +47,11 @@
     "babel-plugin-module-resolver": "^4.0.0"
   },
   "scripts": {
-    "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
-    "watch": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
+    "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./.babelrc --watch",
+    "watch": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./.babelrc --watch",
     "compile": "NODE_ENV=production babel src --out-dir lib --copy-files",
-    "build": "BABEL_ENV=build babel src --out-dir lib --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./babel.config.js --no-comments",
+    "build": "BABEL_ENV=build babel src --out-dir lib --source-maps --extensions .ts,.tsx,.js --delete-dir-on-start --config-file ./.babelrc --no-comments",
     "publish-npm": "npm publish --access public"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
