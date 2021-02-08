@@ -80,14 +80,14 @@ class Map extends React.Component {
     if (!layers?.length) {
       return [];
     }
-    return layers.map(({ id, attributes }) => ({
-      dataset: attributes.dataset,
+    return layers.map(({ id, dataset, ...rest }) => ({
+      dataset,
       visible: true,
       layers: [
         {
-          id: id || attributes.layerConfig.id,
-          active: layerId ? id === layerId : attributes.default,
-          ...attributes
+          id,
+          active: layerId ? id === layerId : rest.default,
+          ...rest
         }
       ]
     }));

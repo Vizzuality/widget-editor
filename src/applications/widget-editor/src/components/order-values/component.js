@@ -117,7 +117,7 @@ OrderValues.propTypes = {
   setFilters: PropTypes.func,
   orderBy: PropTypes.string,
   aggregateFunction: PropTypes.string,
-  valueColumn: PropTypes.string,
+  valueColumn: PropTypes.object,
   columns: PropTypes.arrayOf(PropTypes.object)
 }
 

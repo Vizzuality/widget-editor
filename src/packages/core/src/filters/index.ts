@@ -1,4 +1,3 @@
-import * as Generic from '@widget-editor/types/build/generic';
 import * as Filters from '@widget-editor/types/build/filters';
 import * as Dataset from '@widget-editor/types/build/dataset';
 import FiltersService from '../services/filters';
@@ -46,7 +45,7 @@ export const getSerializedFilters = (filters: Filters.Filter[]): Filters.Seriali
 export const getDeserializedFilters = async (
   adapter: Adapter.Service,
   filters: Filters.SerializedFilter[],
-  fields: Generic.Array,
+  fields: Dataset.Field[],
   dataset: Dataset.Payload
 ): Promise<Filters.Filter[]> => {
   if (!filters || !Array.isArray(filters) || filters.length === 0) {

@@ -47,35 +47,38 @@ const getSerializedWidgetConfig = (
   // reason
   const advanced = selectAdvanced(store);
 
-  const serializedWidgetConfig: { [key: string]: any } = {};
+  const serializedWidgetConfig: Partial<Widget.WidgetConfig> = {};
 
   if (selectVisualizationType(store) !== 'map') {
-    const widgetConfig = selectSerializedWidgetConfig(store);
+    const widgetConfig: Widget.ChartWidgetConfig = selectSerializedWidgetConfig(store);
     Object.keys(widgetConfig).forEach((key) => {
       serializedWidgetConfig[key] = widgetConfig[key];
     });
 
     // $schema must be removed because the RW API doesn't support keys that start with the $ symbol
-    // This should probably live in the adapter, but it's safe to remove for all of the adapters
+    // TODO: This should probably live in the adapter, but it's safe to remove for all of the
+    // adapters
     if (serializedWidgetConfig.$schema) {
       delete serializedWidgetConfig.$schema;
     }
 
     if (!advanced) {
-      serializedWidgetConfig.paramsConfig = {
+      (serializedWidgetConfig as Widget.ChartWidgetConfig).paramsConfig = {
         visualizationType: selectVisualizationType(store),
         limit: selectLimit(store),
         value: selectValue(store),
         category: selectCategory(store),
         color: selectColor(store),
-        size: selectSize(store),
+        // TODO: is the size still needed?
+        // size: selectSize(store),
         orderBy: selectOrderBy(store),
         aggregateFunction: selectAggregateFunction(store),
         chartType: selectChartType(store),
         filters: getSerializedFilters(selectFiltersList(store)),
         endUserFilters: selectEndUserFilters(store),
         areaIntersection: selectAreaIntersection(store),
-        band: selectBand(store),
+        // TODO: is the band still needed?
+        // band: selectBand(store),
         donutRadius: selectDonutRadius(store),
         sliceCount: selectSliceCount(store),
       };
@@ -93,7 +96,7 @@ const getSerializedWidgetConfig = (
       serializedWidgetConfig.basemapLayers = selectBasemap(store);
     }
 
-    serializedWidgetConfig.paramsConfig = {
+    (serializedWidgetConfig as Widget.MapWidgetConfig).paramsConfig = {
       visualizationType: selectVisualizationType(store),
       layer: selectLayer(store),
     };
@@ -101,7 +104,7 @@ const getSerializedWidgetConfig = (
 
   serializedWidgetConfig.we_meta = getEditorMeta(adapter.getName(), advanced);
 
-  return serializedWidgetConfig;
+  return serializedWidgetConfig as Widget.WidgetConfig;
 };
 
 

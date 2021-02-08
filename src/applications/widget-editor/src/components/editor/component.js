@@ -208,11 +208,7 @@ class Editor extends React.Component {
   }
 
   render() {
-    const {
-      adapter,
-      adapterInstance,
-      theme: { compact }
-    } = this.props;
+    const { adapter, theme: { compact } } = this.props;
     return (
       <StyledContainer {...compact}>
         <StyleEditorContainer>
@@ -220,10 +216,7 @@ class Editor extends React.Component {
             <Renderer adapter={adapter} standalone={false} />
           </StyledRendererContainer>
           <StyledOptionsContainer {...compact}>
-            <EditorOptions
-              adapter={adapterInstance}
-              dataService={this.dataService}
-            />
+            <EditorOptions dataService={this.dataService} />
           </StyledOptionsContainer>
         </StyleEditorContainer>
         <Footer onSave={this.onSave} />

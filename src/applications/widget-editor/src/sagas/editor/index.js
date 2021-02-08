@@ -53,9 +53,7 @@ function* preloadData() {
 
   if (editor.widget) {
     const {
-      widget: {
-        attributes: { name, metadata, description, widgetConfig }
-      }
+      widget: { name, metadata, description, widgetConfig }
     } = editor;
 
     const mapSpecifics = {
@@ -94,17 +92,14 @@ function* preloadData() {
       ...(has(widgetConfig, 'zoom') ? { zoom: widgetConfig.zoom } : {})
     };
 
-    const relevantMetadata = metadata?.[0];
-    const caption = relevantMetadata?.attributes.info?.caption ?? '';
+    const caption = metadata?.caption ?? '';
 
     const datasetType = editor?.dataset?.attributes?.type;
     const rasterOnly = !!(datasetType && datasetType.match(/raster/));
 
     // If the dataset is raster, only maps can be done right now
-    const isMap =
-      rasterOnly ||
-      editor?.widget?.attributes?.widgetConfig?.paramsConfig
-        ?.visualizationType === 'map';
+    const isMap = rasterOnly
+      || editor?.widget?.widgetConfig?.paramsConfig?.visualizationType === 'map';
 
     const paramsConfig = has(widgetConfig, 'paramsConfig')
       ? widgetConfig.paramsConfig

@@ -1,39 +1,37 @@
-import * as Dataset from './dataset';
-import * as Widget from './widget';
-
-export type Id = string | null;
-type Url = string;
-type Query = string;
-type ColumnName = string;
-type TableName = string;
-type Geostore = string;
+export type Id = string;
 
 export interface Payload {
-  attributes: {
-    provider: string;
-    tableName: string;
-    metadata: any;
-    widget: Widget.Payload[] | null;
-    widgetRelevantProps: string[];
-  };
   id: Id;
+  name: string;
+  tableName: string;
+  provider: string;
+  geoInfo: boolean;
+  relevantFields: string[];
+  metadata: {
+    columns: {
+      columnName: string;
+      alias?: string;
+      description?: string;
+    }[]
+  };
 }
 
-export interface Data {
-  data: { [key: string]: any }[];
-}
+export type Data = { [key: string]: unknown }[];
 
-export interface Service {
-  fetchData(url: Url): Promise<[Dataset.Payload]>;
-  fetchFilteredData?(query: Query): [object];
-  getFields?(): [object];
-  getLayers?(): [object];
-  getLayer?(): object;
-  getSimilarDatasets?(): [object];
-  getColumnMinAndMax?(
-    columnName: ColumnName,
-    tableName: TableName,
-    geostore: Geostore
-  ): object;
-  getColumnValues?(): [object];
-}
+export enum FieldType {
+  Number = 'number',
+  String = 'string',
+  Date = 'date',
+  Boolean = 'boolean',
+  Array = 'array',
+};
+
+export type Field = {
+  columnName: string;
+  type: FieldType;
+  metadata: {
+    alias?: string;
+    description?: string;
+  }
+};
+

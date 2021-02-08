@@ -1,5 +1,7 @@
 import { select } from "redux-saga/effects";
 import { getLocalCache } from "exposed-hooks";
+import { FiltersService } from "@widget-editor/core";
+import { selectDataset } from '@widget-editor/shared/lib/modules/editor/selectors';
 
 /**
  * @generator getWidgetDataWithAdapter
@@ -20,7 +22,16 @@ function* getWidgetDataWithAdapter(editorState) {
 
   if (columnsSet(value, category)) {
     const { widgetEditor: store } = yield select();
-    const data = yield adapter.requestData(store);
+    const filtersService = new FiltersService(store, adapter);
+
+    const data = yield adapter.getDatasetData(
+      selectDataset(store).id,
+      filtersService.getQuery(),
+      {
+        extraParams: filtersService.getAdditionalParams(),
+        saveDataUrl: true,
+      });
+
     return data;
   }
   yield [];

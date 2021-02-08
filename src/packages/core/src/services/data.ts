@@ -4,22 +4,22 @@ import { Dataset, Widget, Adapter, Generic } from "@widget-editor/types";
 
 import { setAdapter } from "../helpers/adapter";
 
-import { sagaEvents, reduxActions, ALLOWED_FIELD_TYPES } from "../constants";
+import { sagaEvents, reduxActions } from "../constants";
 import { getDeserializedFilters } from '../filters';
+import FiltersService from './filters';
 
 export default class DataService {
   adapter: Adapter.Service;
   dataset: Dataset.Payload;
+  datasetId: Dataset.Id;
   widgetId: Widget.Id;
   widget: Widget.Payload;
-  widgetData: any;
-  cachedState: object;
-  allowedFields: any;
+  fields: Dataset.Field[];
   setEditor: Generic.Dispatcher;
   dispatch: Generic.Dispatcher;
 
   constructor(
-    datasetId: Adapter.datasetId,
+    datasetId: Dataset.Id,
     widgetId: Widget.Id,
     adapter: Adapter.Service,
     setEditor: Generic.Dispatcher,
@@ -31,16 +31,14 @@ export default class DataService {
     this.setEditor = setEditor;
     this.dispatch = dispatch;
     this.dataset = null;
+    this.datasetId = datasetId;
     this.widgetId = widgetId;
     this.widget = null;
-    this.widgetData = null;
-
-    this.adapter.setDatasetId(datasetId);
   }
 
   async getDatasetAndWidgets() {
-    this.dataset = await this.adapter.getDataset();
-    this.widget = await this.adapter.getWidget(this.dataset, this.widgetId);
+    this.dataset = await this.adapter.getDataset(this.datasetId);
+    this.widget = await this.adapter.getWidget(this.widgetId);
 
     this.setEditor({ dataset: this.dataset, widget: this.widget });
     this.dispatch({ type: sagaEvents.DATA_FLOW_DATASET_WIDGET_READY });
@@ -50,9 +48,12 @@ export default class DataService {
    * Fetch the dataset's 50 first rows and set it as the table's data
    */
   async getTableData() {
-    const { tableName } = this.dataset.attributes;
+    const { tableName } = this.dataset;
     try {
-      const tableData = await this.adapter.getDatasetData(`SELECT * FROM ${tableName} LIMIT 50`);
+      const tableData = await this.adapter.getDatasetData(
+        this.datasetId,
+        `SELECT * FROM ${tableName} LIMIT 50`
+      );
       this.setEditor({ tableData });
     } catch (e) {
       console.error("Unable to fetch the dataset's data", e);
@@ -65,8 +66,8 @@ export default class DataService {
     });
     this.dispatch({ type: sagaEvents.DATA_FLOW_RESTORE });
 
+    this.datasetId = datasetId;
     this.widgetId = widgetId;
-    this.adapter.setDatasetId(datasetId);
 
     await this.getDatasetAndWidgets();
     await this.getFieldsAndLayers();
@@ -77,15 +78,15 @@ export default class DataService {
 
     this.setEditor({
       widgetData: [],
-      advanced: !this.widget?.attributes?.widgetConfig
+      advanced: !this.widget?.widgetConfig
         ? false
-        : !this.widget.attributes.widgetConfig.paramsConfig
+        : !this.widget.widgetConfig.paramsConfig
     });
 
-    if (this.widget?.attributes?.widgetConfig) {
+    if (this.widget?.widgetConfig) {
       this.dispatch({
         type: reduxActions.EDITOR_SET_WIDGETCONFIG,
-        payload: this.widget?.attributes?.widgetConfig
+        payload: this.widget?.widgetConfig
       });
     }
 
@@ -99,10 +100,18 @@ export default class DataService {
   }
 
   async handleFilters(restore: boolean = false) {
-    if (!this.widget) return null;
+    if (
+      !this.widget
+      // Case of an advanced widget
+      || !this.widget.widgetConfig.paramsConfig
+      // Case of a map widget
+      || this.widget.widgetConfig.paramsConfig.visualizationType === 'map'
+    ) {
+      return null;
+    }
 
-    const paramsConfig = this.widget.attributes?.widgetConfig?.paramsConfig;
-    const filters = paramsConfig?.filters;
+    const paramsConfig = (this.widget.widgetConfig as Widget.ChartWidgetConfig).paramsConfig;
+    const filters = paramsConfig.filters;
     let orderBy = null;
     let color = null;
 
@@ -119,7 +128,7 @@ export default class DataService {
       const deserializedFilters = await getDeserializedFilters(
         this.adapter,
         filters,
-        this.allowedFields,
+        this.fields,
         this.dataset
       );
 
@@ -135,11 +144,17 @@ export default class DataService {
   }
 
   handleEndUserFilters(): void {
-    if (!this.widget) {
-      return;
+    if (
+      !this.widget
+      // Case of an advanced widget
+      || !this.widget.widgetConfig.paramsConfig
+      // Case of a map widget
+      || this.widget.widgetConfig.paramsConfig.visualizationType === 'map'
+    ) {
+      return null;
     }
 
-    const endUserFilters = this.widget.attributes?.widgetConfig?.paramsConfig?.endUserFilters;
+    const { endUserFilters } = (this.widget.widgetConfig as Widget.ChartWidgetConfig).paramsConfig;
     if (endUserFilters) {
       this.dispatch({
         type: reduxActions.EDITOR_SET_END_USER_FILTERS,
@@ -149,11 +164,17 @@ export default class DataService {
   }
 
   handleGeoFilter(): void {
-    if (!this.widget) {
-      return;
+    if (
+      !this.widget
+      // Case of an advanced widget
+      || !this.widget.widgetConfig.paramsConfig
+      // Case of a map widget
+      || this.widget.widgetConfig.paramsConfig.visualizationType === 'map'
+    ) {
+      return null;
     }
 
-    const areaIntersection = this.widget.attributes?.widgetConfig?.paramsConfig?.areaIntersection;
+    const { areaIntersection } = (this.widget.widgetConfig as Widget.ChartWidgetConfig).paramsConfig;
     if (areaIntersection) {
       this.dispatch({
         type: reduxActions.EDITOR_SET_FILTERS,
@@ -162,45 +183,30 @@ export default class DataService {
     }
   }
 
-  isFieldAllowed(field) {
-    const fieldTypeAllowed = ALLOWED_FIELD_TYPES.find(
-      (val) => val.name.toLowerCase() === field.type.toLowerCase()
-    );
-    const isCartodbId = field.columnName === "cartodb_id";
-    const result = !isCartodbId && fieldTypeAllowed;
-    return result;
-  }
-
   async getFieldsAndLayers() {
-    const fields = await this.adapter.getFields();
-    const layers = await this.adapter.getLayers();
-
-    const fieldsMetadata = this.dataset?.attributes?.metadata[0]?.attributes?.columns;
-    const relevantFields = this.dataset?.attributes?.widgetRelevantProps ?? [];
-    this.allowedFields = fields && Object.keys(fields).length > 0
-      ? Object.keys(fields)
-        .map(field => ({
-          ...fields[field],
-          columnName: field,
-          metadata: fieldsMetadata?.[field] ?? {},
-        }))
-        .filter(field => (
-          this.isFieldAllowed(field)
-          && (!relevantFields.length || relevantFields.indexOf(field.columnName) !== -1)
-        ))
-      : [];
+    const fields = await this.adapter.getDatasetFields(this.datasetId, this.dataset);
+    const layers = await this.adapter.getDatasetLayers(this.datasetId);
+    this.fields = fields;
 
     this.dispatch({ type: sagaEvents.DATA_FLOW_FIELDS_AND_LAYERS_READY });
-    this.setEditor({ layers, fields: this.allowedFields });
+    this.setEditor({ layers, fields });
   }
 
   async requestWithFilters(store: any) {
-    const request = await this.adapter.requestData(store);
+    try {
+      const filtersService = new FiltersService(store, this.adapter);
+      const widgetData = await this.adapter.getDatasetData(
+        this.datasetId,
+        filtersService.getQuery(),
+        {
+          extraParams: filtersService.getAdditionalParams(),
+          saveDataUrl: true,
+        }
+      );
 
-    if ("errors" in request) {
+      this.setEditor({ widgetData });
+    } catch (e) {
       this.setEditor({ errors: ["WIDGET_DATA_UNAVAILABLE"] });
-    } else {
-      this.setEditor({ widgetData: request });
     }
   }
 

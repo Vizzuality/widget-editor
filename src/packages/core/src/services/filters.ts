@@ -2,9 +2,8 @@
 // Formatting SQL string based on properties
 // Request new data based on properties configuration
 import isPlainObject from "lodash/isPlainObject";
-import isArray from "lodash/isArray";
 
-import { Filters, Config, Generic, Adapter } from "@widget-editor/types";
+import { Filters, Config, Dataset, Adapter } from "@widget-editor/types";
 import asyncForEach from "@widget-editor/shared/lib/helpers/async-foreach";
 
 import { sqlFields } from "../helpers/wiget-helper/constants";
@@ -13,7 +12,7 @@ import FieldsService from "./fields";
 export default class FiltersService implements Filters.Service {
   sql: string;
   additionalParams: [string, string][] = [];
-  dataset: any;
+  dataset: Dataset.Payload;
   configuration: Config.Payload;
   adapter: Adapter.Service;
   filters: { list: Filters.Filter[], areaIntersection: string };
@@ -45,7 +44,7 @@ export default class FiltersService implements Filters.Service {
   }
 
   private resolveTableName() {
-    return this.dataset.attributes.tableName;
+    return this.dataset.tableName;
   }
 
   prepareColor() {
@@ -134,7 +133,7 @@ export default class FiltersService implements Filters.Service {
    */
   private getDateFilterQuery(filter: Filters.DateFilter): string {
     const { column, operation, value } = filter;
-    const getSerializedValue = date => this.dataset.attributes.provider === 'featureservice'
+    const getSerializedValue = date => this.dataset.provider === 'featureservice'
       ? `date '${date.toISOString().split('T')[0]}'`
       : `'${date.toISOString()}'`;
 
@@ -226,7 +225,6 @@ export default class FiltersService implements Filters.Service {
     return filters.map(filter => {
       const hasValue = filter.value !== undefined && filter.value !== null
         && (!Array.isArray(filter.value) || filter.value.length > 0);
-      const filterNullValues = filter.notNull;
       return {
         valid: hasValue || filter.notNull,
         hasValue,
@@ -333,10 +331,10 @@ export default class FiltersService implements Filters.Service {
 
   getAdditionalParams() {
     if (this.additionalParams.length === 0) {
-      return '';
+      return undefined;
     }
 
-    return `&${this.additionalParams.map(param => `${param[0]}=${encodeURIComponent(param[1])}`).join('&')}`;
+    return this.additionalParams.reduce((res, param) => ({ ...res, [param[0]]: param[1] }), {})
   }
 
   /**
@@ -350,8 +348,8 @@ export default class FiltersService implements Filters.Service {
   static async getDeserializedFilters(
     adapter: Adapter.Service,
     filters: Filters.SerializedFilter[],
-    fields: Generic.Array,
-    dataset: any
+    fields: Dataset.Field[],
+    dataset: Dataset.Payload
   ): Promise<Filters.Filter[]> {
     const res = [];
 
@@ -398,7 +396,8 @@ export default class FiltersService implements Filters.Service {
    */
   static async fetchConfiguration(
     adapter: Adapter.Service,
-    dataset: any, fields: any[],
+    dataset: Dataset.Payload,
+    fields: Dataset.Field[],
     fieldName: string
   ) {
     const fieldService = new FieldsService(adapter, dataset, fields);
