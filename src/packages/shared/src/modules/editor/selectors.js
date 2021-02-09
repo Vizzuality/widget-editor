@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { constants } from '@widget-editor/core';
-import { getLocalCache } from '@widget-editor/widget-editor/lib/exposed-hooks';
+import { getDeserializedScheme } from '@widget-editor/core';
 
 export const selectDisabledFeatures = state => state.editor.disabledFeatures;
 export const selectAdvanced = state => state.editor.advanced;
@@ -36,8 +35,7 @@ export const selectColumnOptions = createSelector(
 
       const label = alias || field.columnName;
       const value = field.columnName;
-      const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
-        ?? 'unknown';
+      const type = field.type;
 
       return { label, value, type, description };
     }).sort((option1, option2) => option1.label.localeCompare(option2.label));
@@ -46,13 +44,13 @@ export const selectColumnOptions = createSelector(
 
 export const selectWidgetConfig = createSelector(
   [selectWidget],
-  widget => widget ? widget.attributes.widgetConfig : null
+  widget => widget ? widget.widgetConfig : null
 );
 
 export const selectWidgetScheme = createSelector(
   [selectWidgetConfig],
   widgetConfig => widgetConfig?.config
-    ? getLocalCache().adapter.getDeserializedScheme(widgetConfig.config)
+    ? getDeserializedScheme(widgetConfig.config)
     : null
 );
 
@@ -63,10 +61,10 @@ export const selectIsEditing = createSelector(
 
 export const selectIsWidgetAdvanced = createSelector(
   [selectWidget],
-  widget => !!widget && !widget?.attributes?.widgetConfig?.paramsConfig,
+  widget => !!widget && !widget?.widgetConfig?.paramsConfig,
 );
 
 export const selectHasGeoInfo = createSelector(
   [selectDataset],
-  dataset => !!dataset && dataset.attributes?.geoInfo,  
+  dataset => !!dataset && dataset.geoInfo,  
 );

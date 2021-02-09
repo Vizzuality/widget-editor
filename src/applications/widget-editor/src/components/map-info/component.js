@@ -16,7 +16,7 @@ const generateOptions = (layers) => {
     return [];
   }
   return layers.map((l) => ({
-    label: l.attributes.name,
+    label: l.name,
     value: l.id,
   }));
 };

@@ -1,110 +1,133 @@
-import axios from 'axios';
-import { Adapter, Dataset, Widget, Config, Filters, Generic } from "@widget-editor/types";
+import axios, { AxiosResponse } from 'axios';
+import { Adapter, Dataset, Widget, Layer } from "@widget-editor/types";
 import { tags } from "@widget-editor/shared";
+import { APIDatasetPayload, APILayerPayload, APILayersPayload, APILayerDef, APIFieldsPayload, APIGeostorePayload, APIAreaPayload, APIQueryPayload, APIWidgetPayload } from './types';
+import { ALLOWED_FIELD_TYPES } from './constants';
 
-import {
-  DatasetService,
-  WidgetService,
-  FiltersService,
-  getDefaultTheme,
-} from "@widget-editor/core";
+export default class RWAdapter implements Adapter.Service {
+  private config = {
+    endpoint: "https://api.resourcewatch.org/v1",
+    env: "production",
+    applications: ["rw"],
+    locale: "en",
+    userToken: undefined,
+  };
+  private requestsQueue: { id: string, cancel: () => void }[] = [];
+  private isAbortingRequests = false;
+  private dataUrl: string;
 
-import ConfigHelper from "./helpers/config";
-import { SerializedScheme } from "./types";
+  private async fetch<T>(url: string, options?: { [key: string]: unknown }): Promise<AxiosResponse<T>> {
+    if (this.isAbortingRequests) {
+      return null;
+    }
 
-export default class RwAdapter implements Adapter.Service {
-  endpoint = "https://api.resourcewatch.org/v1";
-
-  /**
-   * URL of the widget's raw data
-   */
-  private dataUrl: string = null;
-
-  config = null;
-  datasetService = null;
-  widgetService = null;
-  datasetId = null;
-  tableName = null;
-  // Some generic setup for
-  applications = ["rw"];
-  env = "production";
-  locale = "en";
-  userToken = null;
-  requestHandler = null;
-  requestQue = [];
-  isAborting = false;
-
-  constructor() {
-    const asConfig: Config.Payload = {
-      applications: this.applications,
-      env: this.env,
-      locale: this.locale,
-      userToken: this.userToken,
-    };
-
-    this.requestHandler = axios.create();
-
-    this.config = ConfigHelper(asConfig);
-    this.datasetService = new DatasetService(this);
-    this.widgetService = new WidgetService(this);
-  }
-
-  // XXX: If we are using the AdapterModifier hook
-  // We need to re-initialize our services with any passed properties
-  extendProperties(props: any) {
-    Object.keys(props).forEach((prop) => {
-      if (this.hasOwnProperty(prop)) {
-        this[prop] = props[prop];
-      } else {
-        throw new Error(`Adapter modifier: property ${prop} does not exist on adapter`);
-      }
+    const cancelToken = new axios.CancelToken(source => {
+      this.requestsQueue.push({
+        id: url,
+        cancel: source
+      });
     });
 
-    const asConfig: Config.Payload = {
-      applications: this.applications,
-      env: this.env,
-      locale: this.locale,
-      userToken: this.userToken,
-    };
+    const response = await axios.create().get(url, {
+      cancelToken,
+      ...options,
+    });
 
-    this.config = ConfigHelper(asConfig);
+    this.requestsQueue = this.requestsQueue.filter(requests => requests.id !== url);
+
+    return response;
   }
 
-  // Used when saving data
-  // This will be grabbed and put into onSave on any request
-  payload() {
+  private parseDatasetPayload(dataset: APIDatasetPayload['data']): Dataset.Payload {
+    const columnsMetadata = dataset.attributes.metadata.length > 0
+      && !!dataset.attributes.metadata[0].attributes.columns
+      ? dataset.attributes.metadata[0].attributes.columns
+      : null;
+
     return {
-      applications: this.applications,
-      env: this.env,
+      id: dataset.id,
+      name: dataset.attributes.name,
+      tableName: dataset.attributes.tableName,
+      provider: dataset.attributes.provider,
+      geoInfo: dataset.attributes.geoInfo,
+      relevantFields: dataset.attributes.widgetRelevantProps,
+      metadata: {
+        columns: columnsMetadata
+          ? Object.keys(columnsMetadata).map(columnName => ({
+            columnName,
+            alias: columnsMetadata[columnName].alias,
+            description: columnsMetadata[columnName].description,
+          }))
+          : [],
+      },
     };
   }
 
-  setDatasetId(datasetId: Adapter.datasetId) {
-    if (!datasetId) {
-      console.error("Error: datasetId is required");
-    }
-    this.datasetId = datasetId;
+  private parseWidgetPayload(widget: APIWidgetPayload['data']): Widget.Payload {
+    return {
+      id: widget.id,
+      name: widget.attributes.name,
+      description: widget.attributes.description,
+      datasetId: widget.attributes.dataset,
+      widgetConfig: widget.attributes.widgetConfig,
+      metadata: {
+        caption: widget.attributes.metadata.length > 0
+          ? widget.attributes.metadata[0].attributes.info?.caption
+          : undefined,
+      },
+    };
   }
 
-  setTableName(tableName: string) {
-    if (!tableName) {
-      console.error("Error: datasetId is required");
-    }
-    this.tableName = tableName;
+  private parseLayerPayload(layer: APILayerDef): Layer.Payload {
+    return {
+      id: layer.id,
+      name: layer.attributes.name,
+      description: layer.attributes.name,
+      datasetId: layer.attributes.dataset,
+      provider: layer.attributes.provider,
+      default: layer.attributes.default,
+      tileUrl: `${this.config.endpoint}/layer/${layer.id}/tile/${layer.attributes.provider}/{z}/{x}/{y}`,
+      layerConfig: layer.attributes.layerConfig,
+      legendConfig: layer.attributes.legendConfig,
+      interactionConfig: layer.attributes.interactionConfig,
+    };
+  }
+
+  private parseFieldPayload(fields: APIFieldsPayload['fields'], dataset: Dataset.Payload): Dataset.Field[] {
+    const isAllowed = (field: string, fieldType: string) => ALLOWED_FIELD_TYPES.findIndex(type => type.name === fieldType) !== -1
+      && field !== "cartodb_id";
+
+    const isRelevant = (field: string) => dataset.relevantFields.length === 0
+      || dataset.relevantFields.indexOf(field) !== -1;
+
+    const getMetadata = (field: string): Dataset.Field['metadata'] | null => dataset.metadata.columns.find(column => column.columnName === field);
+
+    return Object.keys(fields)
+      .filter(field => isAllowed(field, fields[field]?.type) && isRelevant(field))
+      .map(field => ({
+        columnName: field,
+        type: ALLOWED_FIELD_TYPES.find(type => type.name === fields[field].type).type,
+        metadata: getMetadata(field)
+          ? {
+            alias: getMetadata(field).alias,
+            description: getMetadata(field).description,
+          }
+          : {},
+      }));
   }
 
   getName(): string {
     return 'rw-adapter';
   }
 
-  async getDataset() {
-    const { applications, env, locale } = this.config.getConfig();
+  async getDataset(datasetId: string): Promise<Dataset.Payload> {
+    const { endpoint, applications, env, locale } = this.config;
     const includes = "metadata,vocabulary,layer";
 
     const url = tags.oneLineTrim`
-      ${this.endpoint}
+      ${endpoint}
       /dataset/
-      ${this.datasetId}?
+      ${datasetId}?
       application=${applications.join(",")}
       &env=${env}
       &language=${locale}
@@ -112,223 +135,87 @@ export default class RwAdapter implements Adapter.Service {
       &page[size]=999
     `;
 
-    const { data: dataset } = await this.datasetService.fetchData(url);
+    const { data: { data: dataset } } = await this.fetch(url);
 
     if (!dataset) {
-      return {};
-    }
-
-    this.tableName = dataset?.attributes?.tableName || null;
-
-    // -- Serialize widgets
-    // -- We dont want to expose widgets where { published: true }
-    // -- These are user created widgets
-    const serializeDataset = {
-      ...dataset,
-      attributes: {
-        ...dataset?.attributes,
-      },
-    };
-
-    return serializeDataset;
-  }
-
-  async getFields() {
-    const url = tags.oneLineTrim`
-      ${this.endpoint}/fields/
-      ${this.datasetId}
-    `;
-
-    const { fields } = await this.datasetService.fetchData(url);
-    return fields;
-  }
-
-  handleDefaultWidgetConf(dataset: Dataset.Payload) {
-    return {
-      paramsConfig: {
-        visualizationType: "chart",
-        limit: 50,
-        orderBy: null,
-        aggregateFunction: null,
-        chartType: "bar",
-        filters: [],
-        areaIntersection: null,
-        band: null,
-        layer: null,
-        value: {
-          tableName: this.tableName,
-          datasetID: dataset.id,
-        },
-        category: {
-          tableName: this.tableName,
-          datasetID: dataset.id,
-        },
-      },
-    };
-  }
-
-  async abortRequests() {
-    this.isAborting = true;
-    this.requestQue.forEach(item => {
-      item.cancel();
-    })
-  }
-
-  async prepareRequest(url: string, options = {}) {
-    const self = this;
-    if (this.isAborting) {
       return null;
     }
-    const cancelToken = new axios.CancelToken(function executor(source) {
-      // An executor function receives a cancel function as a parameter
-      self.requestQue.push({
-        id: url,
-        cancel: source
-      });
-    });
 
-    const response = await this.requestHandler.get(url, {
-      cancelToken,
-      ...options,
-    });
-
-    this.requestQue = this.requestQue.filter(q => q.id !== url);
-
-    return response;
+    return this.parseDatasetPayload(dataset);
   }
 
-  async getWidget(dataset: Dataset.Payload, widgetId: Widget.Id) {
-    const { applications, env, locale } = this.config.getConfig();
-    const includes = "metadata";
+  async getDatasetFields(datasetId: string, dataset: Dataset.Payload): Promise<Dataset.Field[]> {
+    const url = tags.oneLineTrim`${this.config.endpoint}/fields/${datasetId}`;
+    const { data: { fields } } = await this.fetch<APIFieldsPayload>(url);
+    return this.parseFieldPayload(fields, dataset);
+  }
+
+  async getDatasetData(datasetId: string, sql: string, options?: { extraParams?: { geostore?: string; }; saveDataUrl?: boolean; }): Promise<Dataset.Data> {
+    const url = `${this.config.endpoint}/query/${datasetId}?sql=${sql}${options?.extraParams?.geostore !== undefined ? `&geostore=${options.extraParams.geostore}` : ''}`;
+
+    if (options?.saveDataUrl) {
+      this.dataUrl = url;
+    }
+
+    const { data: { data } } = await this.fetch<APIQueryPayload>(url);
+
+    return data;
+  }
+
+  getDataUrl(): string {
+    return this.dataUrl;
+  }
+
+  async getDatasetLayers(datasetId: string): Promise<Layer.Payload[]> {
+    const { endpoint, applications, env } = this.config;
+
+    const url = tags.oneLineTrim`
+      ${endpoint}
+      /dataset/
+      ${datasetId}/layer?
+      app=${applications.join(",")}
+      &env=${env}
+      &page[size]=9999
+    `;
+
+    const { data: { data } } = await this.fetch<APILayersPayload>(url);
+
+    return data.map(d => this.parseLayerPayload(d));
+  }
+
+  async getWidget(widgetId: string): Promise<Widget.Payload> {
+    const { endpoint, applications, env, locale } = this.config;
 
     if (!widgetId) {
       return null;
     }
 
     const url = tags.oneLineTrim`
-      ${this.endpoint}
+      ${endpoint}
       /widget/
       ${widgetId}?
       ${applications.join(",")}
       &env=${env}
       &language=${locale}
-      &includes=${includes}
+      &includes=metadata
       &page[size]=999
     `;
 
-    const { data: widget } = await this.widgetService.fetchWidget(url);
+    const { data: { data: widget } } = await this.fetch<APIWidgetPayload>(url);
 
-    return widget;
+    return this.parseWidgetPayload(widget);
   }
 
-  async getLayers() {
-    const { applications, env } = this.config.getConfig();
+  async getLayer(layerId: string): Promise<Layer.Payload> {
+    const url = `${this.config.endpoint}/layer/${layerId}`;
+    const { data: { data } } = await this.fetch<APILayerPayload>(url);
 
-    const url = tags.oneLineTrim`
-      ${this.endpoint}
-      /dataset/
-      ${this.datasetId}/layer?
-      app=${applications.join(",")}
-      &env=${env}
-      &page[size]=9999
-    `;
-
-    const { data } = await this.datasetService.fetchData(url);
-
-    return data;
+    return this.parseLayerPayload(data);
   }
 
-  async getLayer(layerId) {
-    const url = `${this.endpoint}/layer/${layerId}`;
-    const { data: { data } } = await this.prepareRequest(url);
-
-    return data;
-  }
-
-  /**
-   * Return the URL of the tiles of the layer
-   * @param layerId ID of the layer
-   * @param provider Provider of the layer
-   */
-  getLayerTileUrl(layerId, provider) {
-    // NOTE: this is only implemented for the providers nexgddp and gee
-    return `${this.endpoint}/layer/${layerId}/tile/${provider}/{z}/{x}/{y}`;
-  }
-
-  /**
-   * Return the result of the SQL query run against the dataset
-   * @param sql SQL query
-   */
-  async getDatasetData(sql) {
-    const url = `${this.endpoint}/query/${this.datasetId}?sql=${sql}`;
-    const { data: { data } } = await this.prepareRequest(url);
-
-    return data;
-  }
-
-  /**
-   * Return the URL of the widget's raw data
-   */
-  getDataUrl() {
-    return this.dataUrl;
-  }
-
-  async requestData(store: any) {
-    const filtersService = new FiltersService(store, this);
-
-    // We save the URL of the data so it is exposed by the public method getDataUrl
-    // This is the reason why we don't use getDatasetData to fetch the data
-    this.dataUrl = `${this.endpoint}/query/${this.datasetId}?sql=${filtersService.getQuery()}${filtersService.getAdditionalParams()}`;
-    const { data: { data } } = await this.prepareRequest(this.dataUrl);
-
-    return data
-  }
-
-  /**
-   * Return the serialized scheme (`config` object)
-   * @param scheme Scheme used by the widget
-   */
-  getSerializedScheme(scheme: Widget.Scheme): SerializedScheme {
-    return {
-      ...getDefaultTheme(),
-      name: scheme.name,
-      range: Object.assign({}, getDefaultTheme().range, {
-        category20: scheme.category
-      }),
-      mark: Object.assign({}, getDefaultTheme().mark, {
-        fill: scheme.mainColor
-      }),
-      symbol: Object.assign({}, getDefaultTheme().symbol, {
-        fill: scheme.mainColor
-      }),
-      rect: Object.assign({}, getDefaultTheme().rect, {
-        fill: scheme.mainColor
-      }),
-      line: Object.assign({}, getDefaultTheme().line, {
-        stroke: scheme.mainColor
-      })
-    };
-  }
-
-  /**
-   * Return the scheme from the `config` object
-   * @param config config object of the widget
-   */
-  getDeserializedScheme(config: SerializedScheme): Widget.Scheme {
-    if (!config?.range?.category20 || config.range.category20.length === 0) {
-      return null;
-    }
-
-    return {
-      name: config.name ?? 'user-custom',
-      mainColor: config.range.category20[0],
-      category: config.range.category20,
-    };
-  }
-
-  async getPredefinedAreas() {
-    const url = `${this.endpoint}/geostore/admin/list`;
-    const { data: { data } } = await this.prepareRequest(url);
+  async getPredefinedAreas(): Promise<Adapter.Area[]> {
+    const url = `${this.config.endpoint}/geostore/admin/list`;
+    const { data: { data } } = await this.fetch<APIGeostorePayload>(url);
 
     return data
       .filter(({ name }) => !!name)
@@ -339,20 +226,20 @@ export default class RwAdapter implements Adapter.Service {
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  async getUserAreas() {
-    const { env, applications, userToken } = this.config.getConfig();
+  async getUserAreas(): Promise<Adapter.Area[]> {
+    const { endpoint, env, applications, userToken } = this.config;
 
     if (!userToken) {
       return [];
     }
 
-    const url = `${this.endpoint}/area?application=${applications.join(",")}&env=${env}`;
+    const url = `${endpoint}/area?application=${applications.join(",")}&env=${env}`;
     const options = {
       headers: {
         Authorization: `Bearer ${userToken}`
       }
     };
-    const { data: { data } } = await this.prepareRequest(url, options);
+    const { data: { data } } = await this.fetch<APIAreaPayload>(url, options);
 
     return data
       .map(({ attributes: { geostore: id, name } }) => ({
@@ -360,5 +247,20 @@ export default class RwAdapter implements Adapter.Service {
         name,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  extendProperties(props: { [key: string]: unknown; }): void {
+    for (const key in props) {
+      if (this.config.hasOwnProperty(key)) {
+        this.config[key] = props[key];
+      } else {
+        throw new Error(`${this.getName()}: can't overwrite property ${key} because it does not exist.`);
+      }
+    }
+  }
+
+  abortRequests(): void {
+    this.isAbortingRequests = true;
+    this.requestsQueue.forEach(item => item.cancel());
   }
 }

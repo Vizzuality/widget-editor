@@ -1,38 +1,5 @@
 export const APP_NAMESPACE: string = "widgetEditor";
 
-export const ALLOWED_FIELD_TYPES = [
-  // --- NUMBER ----
-  { name: "esriFieldTypeSmallInteger", type: "number", provider: "esri" },
-  { name: "esriFieldTypeInteger", type: "number", provider: "esri" },
-  { name: "esriFieldTypeSingle", type: "number", provider: "esri" },
-  { name: "esriFieldTypeDouble", type: "number", provider: "esri" },
-  { name: "numeric", type: "number", provider: "psql" },
-  { name: "number", type: "number", provider: "carto" },
-  { name: "int", type: "number", provider: "psql" },
-  { name: "integer", type: "number", provider: "psql" },
-  { name: "float", type: "number", provider: "sql" },
-  { name: "long", type: "number", provider: "sql" },
-  { name: "double", type: "number", provider: "sql" },
-  { name: "real", type: "number", provider: "sql" },
-  { name: "decimal", type: "number", provider: "sql" },
-  // ----- TEXT -----
-  { name: "string", type: "string", provider: "sql" },
-  { name: "char", type: "string", provider: "sql" },
-  { name: "varchar", type: "string", provider: "sql" },
-  { name: "esriFieldTypeString", type: "string", provider: "esri" },
-  { name: "text", type: "string", provider: "elastic" },
-  // ----- DATE ----
-  { name: "esriFieldTypeDate", type: "date", provider: "esri" },
-  { name: "date", type: "date", provider: "sql" },
-  { name: "time", type: "date", provider: "sql" },
-  { name: "timestamp", type: "date", provider: "sql" },
-  { name: "interval", type: "date", provider: "sql" },
-  // ------ BOOLEAN -----
-  { name: "boolean", type: "boolean", provider: "sql" },
-  // ------ ARRAY -------
-  { name: "array", type: "array", provider: "sql" },
-];
-
 export const sagaEvents = {
   DATA_FLOW_STORE_ADAPTER_CONFIG: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/adapter_configuration`,
   DATA_FLOW_DATASET_WIDGET_READY: `${APP_NAMESPACE}/SAGAS/DATA_FLOW/dataset_widget_ready`,
@@ -75,7 +42,6 @@ export const MONTHS = [
 export default {
   MONTHS,
   APP_NAMESPACE,
-  ALLOWED_FIELD_TYPES,
   sagaEvents,
   reduxActions,
 };

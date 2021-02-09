@@ -1,10 +1,11 @@
-import { Vega } from "@widget-editor/types";
+import { Vega, Dataset } from "@widget-editor/types";
 import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks"
 import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
 import { selectEndUserFilters } from "@widget-editor/shared/lib/modules/end-user-filters/selectors";
 import { selectFields } from '@widget-editor/shared/lib/modules/editor/selectors';
 import * as constants from '../constants';
 import FieldsService from '../services/fields'
+import { getSerializedScheme } from '../helpers/scheme';
 
 export default class ChartCommon {
   protected schema: Vega.Schema;
@@ -37,12 +38,10 @@ export default class ChartCommon {
       fieldIdentifier = 'color';
     }
 
-    const fieldName = configuration[fieldIdentifier]?.name;
-    const field = editor.fields?.find(f => f.columnName === fieldName);
+    const fieldName: string = configuration[fieldIdentifier]?.name;
+    const field = (editor.fields as Dataset.Field[])?.find(f => f.columnName === fieldName);
 
-    const name = field?.metadata?.alias
-      ? field.metadata.alias
-      : fieldName;
+    const name = field?.metadata.alias ?? fieldName;
 
     if (axis === 'y' && configuration.aggregateFunction) {
       return `${name} (${configuration.aggregateFunction})`;
@@ -106,7 +105,7 @@ export default class ChartCommon {
 
   resolveScheme() {
     const scheme = selectScheme(this.store);
-    return getLocalCache().adapter.getSerializedScheme(scheme);
+    return getSerializedScheme(scheme);
   }
 
   async resolveSignals(): Promise<any[]> {
@@ -114,25 +113,23 @@ export default class ChartCommon {
     const { adapter } = getLocalCache();
 
     const endUserFilters: string[] = selectEndUserFilters(this.store);
-    const fields: any[] = selectFields(this.store);
+    const fields: Dataset.Field[] = selectFields(this.store);
 
     const fieldService = new FieldsService(adapter, dataset, fields);
 
     const promises = await endUserFilters.map(async (fieldName, index) => {
       const field = fields.find(f => f.columnName === fieldName);
-      const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
-        ?? 'string';
 
       const signal = {
         name: `endUserFilter${index}`,
         value: null,
         bind: {
-          name: field.metadata && field.metadata.alias ? field.metadata.alias : field.columnName,
+          name: field.metadata.alias ?? field.columnName,
         } as { [key: string]: any },
       };
 
-      switch (type) {
-        case 'string': {
+      switch (field.type) {
+        case Dataset.FieldType.String: {
           const options = await fieldService.getColumnValues(field);
           signal.value = options.length ? options[0] : null;
           signal.bind = {
@@ -143,7 +140,7 @@ export default class ChartCommon {
           break;
         }
 
-        case 'number': {
+        case Dataset.FieldType.Number: {
           const { min, max } = await fieldService.getColumnMinAndMax(field);
           signal.value = min;
           signal.bind = {
@@ -156,7 +153,7 @@ export default class ChartCommon {
           break;
         }
 
-        case 'date': {
+        case Dataset.FieldType.Date: {
           const { min, max } = await fieldService.getColumnMinAndMax(field);
           signal.value = new Date(min).toISOString().split('T')[0];
           signal.bind = {
@@ -177,7 +174,7 @@ export default class ChartCommon {
 
   resolveEndUserFiltersTransforms(): { [key: string]: any }[] {
     const endUserFilters: string[] = selectEndUserFilters(this.store);
-    const fields: any[] = selectFields(this.store);
+    const fields: Dataset.Field[] = selectFields(this.store);
 
     if (!endUserFilters.length) {
       return [];
@@ -189,10 +186,8 @@ export default class ChartCommon {
         expr: endUserFilters.reduce((res, fieldName, index) => {
           const field = fields.find(f => f.columnName === fieldName);
           const signal = `endUserFilter${index}`;
-          const type = constants.ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type
-            ?? 'string';
 
-          return `${res}${index > 0 ? ' && ' : ''}${type === 'date' ? `toDate(datum.${fieldName})` : `datum.${fieldName}`} === ${type === 'date' ? `toDate(${signal})` : signal}`;
+          return `${res}${index > 0 ? ' && ' : ''}${field.type === Dataset.FieldType.Date ? `toDate(datum.${fieldName})` : `datum.${fieldName}`} === ${field.type === Dataset.FieldType.Date ? `toDate(${signal})` : signal}`;
         }, ''),
       }
     ];
