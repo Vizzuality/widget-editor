@@ -12,15 +12,6 @@ export const StyledMapContainer = styled.div`
   }
 `;
 
-export const StyledCaption = styled.p`
-  position: absolute;
-  z-index: 2;
-  color: #fff;
-  font-size: 21px;
-  transform: translate(15px, 15px);
-  max-width: 85%;
-`;
-
 export const StyledLegend = styled.div`
   position: absolute;
   z-index: 2;

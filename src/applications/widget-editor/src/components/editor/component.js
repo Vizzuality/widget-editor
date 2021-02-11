@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
-import Renderer from '@widget-editor/renderer';
 import EditorOptions from 'components/editor-options';
 import Footer from 'components/footer';
+import Visualization from 'components/visualization';
 
 import { JSTypes } from '@widget-editor/types';
 import { DataService, getOutputPayload } from '@widget-editor/core';
@@ -13,7 +13,7 @@ import { constants } from '@widget-editor/core';
 import {
   StyledContainer,
   StyleEditorContainer,
-  StyledRendererContainer,
+  StyledVisualizationContainer,
   StyledOptionsContainer
 } from './style';
 
@@ -212,9 +212,9 @@ class Editor extends React.Component {
     return (
       <StyledContainer {...compact}>
         <StyleEditorContainer>
-          <StyledRendererContainer {...compact}>
-            <Renderer adapter={adapter} standalone={false} />
-          </StyledRendererContainer>
+          <StyledVisualizationContainer {...compact}>
+            <Visualization adapter={adapter} standalone={false} />
+          </StyledVisualizationContainer>
           <StyledOptionsContainer {...compact}>
             <EditorOptions dataService={this.dataService} />
           </StyledOptionsContainer>

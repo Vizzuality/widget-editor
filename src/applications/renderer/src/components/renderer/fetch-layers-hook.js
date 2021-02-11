@@ -4,7 +4,6 @@ const useLayerData = (adapter, layerId, isMap) => {
   const [layerData, setData] = useState(null);
 
   const [isLoadingLayers, setIsLoading] = useState(false);
-
   const [isErrorLayers, setIsError] = useState(false);
 
   const adapterInstance = useMemo(() => new adapter(), [adapter]);

@@ -1,28 +1,8 @@
-import styled, { css } from "styled-components";
-
-export const ChartNeedsOptions = styled.h4`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-57%, -50%);
-  color: #bdbdbd;
-`;
+import styled from "styled-components";
 
 export const StyledContainer = styled.div`
-  ${(props) => !props.standalone && css`
-    flex-grow: 1;
-    flex-shrink: 1;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 15px 10px 55px ${props.hasYAxis ? '60px' : '10px'};
-  `}
-
-  ${(props) => (props.standalone || props.thumbnail) && css`
-    width: 100%;
-    height: auto;
-  `}
+  width: 100%;
+  height: auto;
 
   .c-chart {
     flex-basis: 0;
