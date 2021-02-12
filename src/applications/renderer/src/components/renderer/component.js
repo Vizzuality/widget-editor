@@ -18,6 +18,8 @@ const Renderer = ({
     throw new Error("Renderer: Missing prop adapter and adapter needs to be of type Adapter");
   }
 
+  const adapterInstance = useMemo(() => new adapter(), [adapter]);
+
   const isMap = widgetConfig?.paramsConfig?.visualizationType === "map";
   const { layerData, isLoadingLayers, isErrorLayers } = useLayerData(
     adapter,
@@ -67,7 +69,7 @@ const Renderer = ({
       {isMap && (
         <Suspense>
           <Map
-            adapter={new adapter()}
+            adapter={adapterInstance}
             layerId={widgetConfig.paramsConfig?.layer}
             thumbnail={thumbnail}
             mapConfiguration={{

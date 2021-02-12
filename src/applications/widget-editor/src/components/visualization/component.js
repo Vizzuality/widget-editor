@@ -32,6 +32,8 @@ const Visualization = ({
 
   const isMap = configuration.visualizationType === "map";
 
+  const adapterInstance = useMemo(() => new adapter(), [adapter]);
+
   const chartDataAvailable = useMemo(
     () => advanced || (widgetData && widgetData.length > 0),
     [advanced, widgetData],
@@ -102,7 +104,7 @@ const Visualization = ({
         <StyledMapContainer>
           {!!configuration.title && <StyledMapTitle>{configuration.title}</StyledMapTitle>}
           <Map
-            adapter={new adapter()}
+            adapter={adapterInstance}
             layerId={configuration.layer}
             layers={editor.layers}
             mapConfiguration={configuration.map}
