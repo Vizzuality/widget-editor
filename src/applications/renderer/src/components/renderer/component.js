@@ -1,155 +1,96 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useMemo } from "react";
 import PropTypes from 'prop-types';
+import has from 'lodash/has';
+import { getDefaultTheme } from "@widget-editor/core";
+import Map from "@widget-editor/map";
 
-import { JSTypes } from "@widget-editor/types";
+import Legend from "components/legend";
+import Chart from "components/chart";
+import useLayerData from "./fetch-layers-hook";
 
-import {
-  StyledContainer,
-  RestoringWidget,
-  RestoringWidgetTitle,
-} from "./style";
-
-import ChartTitle from '../chart-title';
-
-// Lazy components
-const Chart = React.lazy(() => import("../chart"));
-const SelectChart = React.lazy(() => import("../select-chart"));
-const Legend = React.lazy(() => import("../legend"));
-const Standalone = React.lazy(() => import("../standalone"));
-const Map = React.lazy(() => import("@widget-editor/map"));
-
-// -- If a widget config is suplied, we are consuming the renderer outside of the editor
 const Renderer = ({
   adapter,
-  widget,
-  editor,
-  widgetConfig = null,
-  standalone = true,
-  theme = null,
+  widgetConfig,
   thumbnail = false,
-  configuration,
-  compact,
-  changeBbox,
   interactionEnabled = true,
-  widgetName
 }) => {
-  const { restoring, initialized } = editor;
-  const missingWidget =
-    initialized && !restoring && widget && Object.keys(widget).length === 0;
-
-  const isMap = configuration.visualizationType === "map";
-
   if (typeof adapter !== "function") {
     throw new Error("Renderer: Missing prop adapter and adapter needs to be of type Adapter");
   }
 
-  if (restoring) {
-    return (
-      <StyledContainer>
-        <RestoringWidget>
-          <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
-        </RestoringWidget>
-      </StyledContainer>
-    );
+  const isMap = widgetConfig?.paramsConfig?.visualizationType === "map";
+  const { layerData, isLoadingLayers, isErrorLayers } = useLayerData(
+    adapter,
+    widgetConfig?.paramsConfig?.layer,
+    isMap
+  );
+
+  const chartWidgetConfig = useMemo(() => {
+    const res = { ...widgetConfig };
+
+    res.autosize = {
+      type: "fit",
+      contains: "padding",
+    };
+
+    res.width = res.width || 400;
+    res.height = res.height || 500;
+
+    res.config = {
+      ...getDefaultTheme(),
+      ...(res.config ? res.config : {}),
+    };
+
+    return res;
+  }, [widgetConfig]);
+
+  const hasChartLegend = has(chartWidgetConfig, 'legend')
+    && chartWidgetConfig?.legend?.length > 0
+    && !thumbnail;
+
+  if (isLoadingLayers) {
+    return "Loading...";
   }
 
-  if (standalone) {
-    return (
-      <Suspense
-        fallback={
-          <RestoringWidget>
-            <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
-          </RestoringWidget>
-        }
-      >
-        <Standalone
-          adapter={adapter}
-          thumbnail={thumbnail}
-          widgetConfig={widgetConfig}
-          widgetName={widgetName}
-          theme={theme}
-          changeBbox={changeBbox}
-          interactionEnabled={interactionEnabled}
-        />
-      </Suspense>
-    );
+  if (isErrorLayers) {
+    return "Error loading widget...";
   }
 
   return (
-    <StyledContainer compact={compact}>
-      {!widgetConfig && initialized && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <SelectChart advanced={editor.advanced} />
+    <>
+      {!isMap && (
+        <Suspense>
+          {hasChartLegend && <Legend widgetConfig={chartWidgetConfig}/>}
+          <Chart widgetConfig={chartWidgetConfig} thumbnail={thumbnail} />
         </Suspense>
       )}
-
-      {initialized && !restoring && !isMap && (
-        <Suspense
-          fallback={
-            <RestoringWidget>
-              <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
-            </RestoringWidget>
-          }
-        >
-          <ChartTitle configuration={configuration} />
-          <Chart
-            advanced={editor.advanced}
-            compact={compact}
-            widgetConfig={widgetConfig}
+      {isMap && (
+        <Suspense>
+          <Map
+            adapter={new adapter()}
+            layerId={widgetConfig.paramsConfig?.layer}
+            thumbnail={thumbnail}
+            mapConfiguration={{
+              lat: widgetConfig.lat || 0,
+              lng: widgetConfig.lng || 0,
+              bbox: widgetConfig.bbox,
+              zoom: widgetConfig.zoom || 2,
+              basemap: widgetConfig.basemapLayers || null,
+            }}
+            layers={layerData ? [layerData] : []}
+            interactionEnabled={interactionEnabled}
           />
         </Suspense>
       )}
-
-      {initialized && !restoring && isMap && (
-        <Suspense fallback={<div>Loading...</div>}>
-          {!!editor.layers && (
-            <Map
-              adapter={new adapter()}
-              mapConfiguration={configuration.map}
-              caption={configuration.title}
-              layerId={configuration.layer}
-              interactionEnabled={interactionEnabled}
-              layers={editor.layers}
-              changeBbox={changeBbox}
-            />
-          )}
-        </Suspense>
-      )}
-
-      {!initialized && !missingWidget && (
-        <RestoringWidget>
-          <RestoringWidgetTitle>Loading widget...</RestoringWidgetTitle>
-        </RestoringWidget>
-      )}
-
-      {restoring && !missingWidget && (
-        <RestoringWidget>
-          <RestoringWidgetTitle>Building widget...</RestoringWidgetTitle>
-        </RestoringWidget>
-      )}
-
-      {!widgetConfig && !isMap && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Legend compact={compact} />
-        </Suspense>
-      )}
-    </StyledContainer>
+    </>
   );
 };
 
 Renderer.propTypes = {
-  widgetConfig: PropTypes.object,
-  widgetName: PropTypes.string,
-  interactionEnabled: PropTypes.bool,
-  changeBbox: PropTypes.bool,
-  compact: PropTypes.any,
-  standalone: PropTypes.bool,
-  thumbnail: PropTypes.bool,
-  theme: PropTypes.object,
   adapter: PropTypes.func.isRequired,
-  widget: JSTypes.widget,
-  editor: JSTypes.editor,
-  configuration: JSTypes.configuration
-}
+  widgetConfig: PropTypes.object.isRequired,
+  thumbnail: PropTypes.bool,
+  interactionEnabled: PropTypes.bool,
+};
 
 export default Renderer;

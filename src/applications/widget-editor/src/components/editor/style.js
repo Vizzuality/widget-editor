@@ -23,7 +23,7 @@ export const StyleEditorContainer = styled.div`
   height: 500px;
 `;
 
-export const StyledRendererContainer = styled.div`
+export const StyledVisualizationContainer = styled.div`
   flex-basis: 520px;
   max-width: ${props => props.isCompact || props.forceCompact ?'100%' : 'calc((100% - 20px) / 2)'};
   flex-shrink: 1;

@@ -1,7 +1,5 @@
 import React, { Fragment } from "react";
 
-import { redux } from "@widget-editor/shared";
-
 // Components
 import RendererComponent from "./component";
 
@@ -16,9 +14,4 @@ const Component = (props) => {
   );
 };
 
-export default redux.connectState((state) => ({
-  editor: state.editor,
-  widget: state.widgetConfig,
-  configuration: state.configuration,
-  compact: state.theme.compact.isCompact || state.theme.compact.forceCompact,
-}))(Component);
+export default Component;
