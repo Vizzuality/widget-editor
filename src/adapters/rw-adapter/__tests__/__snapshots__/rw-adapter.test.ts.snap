@@ -1497,7 +1497,14 @@ Object {
 
 exports[`RW Adapter tests Adapter getUserAreas returns expected result 1`] = `Array []`;
 
-exports[`RW Adapter tests Adapter getUserAreas returns expected result 2`] = `Array []`;
+exports[`RW Adapter tests Adapter getUserAreas returns expected result 2`] = `
+Array [
+  Object {
+    "id": "35a6d982388ee5c4e141c2bceac3fb72",
+    "name": "Some area",
+  },
+]
+`;
 
 exports[`RW Adapter tests Adapter getWidget returns expected result 1`] = `
 Object {

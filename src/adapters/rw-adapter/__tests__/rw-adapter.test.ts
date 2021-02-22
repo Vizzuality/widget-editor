@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import RwAdapter from "../src";
 import { ALLOWED_FIELD_TYPES } from '../src/constants';
 
@@ -54,6 +56,9 @@ describe('RW Adapter tests', () => {
 
   test("Adapter getUserAreas returns expected result", async () => {
     const adapter = new RwAdapter();
+    const withoutTokenResponse = await adapter.getUserAreas();
+    expect(withoutTokenResponse.length).toBe(0);
+    adapter.extendProperties({ userToken: process.env.USER_TOKEN });
     const payloadResponse = await adapter.getUserAreas();
     expect(payloadResponse).toMatchSnapshot();
   });
