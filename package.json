@@ -30,7 +30,7 @@
     "test:widget-editor": "cd src/playground/widget-editor && yarn test --watchAll=false",
     "test:packages": "jest --verbose ./src/packages",
     "test:adapters": "jest --verbose ./src/adapters",
-    "test": "npm-run-all --parallel test:*",
+    "test": "SKIP_PREFLIGHT_CHECK=true npm-run-all --parallel test:*",
     "lint:js": "eslint ./src -c .eslintrc.json --ext js,jsx",
     "lint:ts": "tslint -c tslint.json src/**/*.ts",
     "migrate": "node ./migrations/cli/index.js"
