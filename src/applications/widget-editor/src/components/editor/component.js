@@ -94,7 +94,8 @@ class Editor extends React.Component {
       widgetId: prevWidgetId,
       userPassedTheme: prevUserPassedTheme,
       schemes: prevSchemes,
-      areaIntersection: prevAreaIntersection
+      areaIntersection: prevAreaIntersection,
+      userPassedCompact: prevUserPassedCompact
     } = prevProps;
     const {
       datasetId,
@@ -103,6 +104,7 @@ class Editor extends React.Component {
       schemes,
       areaIntersection,
       initialized,
+      userPassedCompact
     } = this.props;
 
     // When datasetId changes, we need to restore the editor itself
@@ -120,7 +122,8 @@ class Editor extends React.Component {
       this.resolveAreaIntersection(areaIntersection);
     }
 
-    if (!isEqual(userPassedTheme, prevUserPassedTheme)) {
+    if (!isEqual(userPassedTheme, prevUserPassedTheme) ||
+      !isEqual(userPassedCompact, prevUserPassedCompact)) {
       this.resolveTheme(userPassedTheme);
     }
 
