@@ -1691,3 +1691,108 @@ Object {
   },
 }
 `;
+
+exports[`RW Adapter tests Allowed field type constants does not deviate 1`] = `
+Array [
+  Object {
+    "name": "esriFieldTypeSmallInteger",
+    "type": "number",
+  },
+  Object {
+    "name": "esriFieldTypeInteger",
+    "type": "number",
+  },
+  Object {
+    "name": "esriFieldTypeSingle",
+    "type": "number",
+  },
+  Object {
+    "name": "esriFieldTypeDouble",
+    "type": "number",
+  },
+  Object {
+    "name": "numeric",
+    "type": "number",
+  },
+  Object {
+    "name": "number",
+    "type": "number",
+  },
+  Object {
+    "name": "int",
+    "type": "number",
+  },
+  Object {
+    "name": "integer",
+    "type": "number",
+  },
+  Object {
+    "name": "float",
+    "type": "number",
+  },
+  Object {
+    "name": "long",
+    "type": "number",
+  },
+  Object {
+    "name": "double",
+    "type": "number",
+  },
+  Object {
+    "name": "real",
+    "type": "number",
+  },
+  Object {
+    "name": "decimal",
+    "type": "number",
+  },
+  Object {
+    "name": "string",
+    "type": "string",
+  },
+  Object {
+    "name": "char",
+    "type": "string",
+  },
+  Object {
+    "name": "varchar",
+    "type": "string",
+  },
+  Object {
+    "name": "esriFieldTypeString",
+    "type": "string",
+  },
+  Object {
+    "name": "text",
+    "type": "string",
+  },
+  Object {
+    "name": "esriFieldTypeDate",
+    "type": "date",
+  },
+  Object {
+    "name": "date",
+    "type": "date",
+  },
+  Object {
+    "name": "time",
+    "type": "date",
+  },
+  Object {
+    "name": "timestamp",
+    "type": "date",
+  },
+  Object {
+    "name": "interval",
+    "type": "date",
+  },
+  Object {
+    "name": "boolean",
+    "type": "boolean",
+  },
+  Object {
+    "name": "array",
+    "type": "array",
+  },
+]
+`;

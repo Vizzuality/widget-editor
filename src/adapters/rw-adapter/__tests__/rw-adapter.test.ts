@@ -1,4 +1,6 @@
 import RwAdapter from "../src";
+import { ALLOWED_FIELD_TYPES } from '../src/constants';
+
 describe('RW Adapter tests', () => {
   test("Adapter getWidget returns expected result", async () => {
     const adapter = new RwAdapter();
@@ -54,5 +56,9 @@ describe('RW Adapter tests', () => {
     const adapter = new RwAdapter();
     const payloadResponse = await adapter.getUserAreas();
     expect(payloadResponse).toMatchSnapshot();
+  });
+
+  test('Allowed field type constants does not deviate', () => {
+    expect(ALLOWED_FIELD_TYPES).toMatchSnapshot();
   });
 });
