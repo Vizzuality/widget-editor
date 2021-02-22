@@ -29,7 +29,7 @@
     "build:widget-editor": "cd src/playground/widget-editor && npm run build",
     "test:packages": "jest --verbose ./src/packages",
     "test:adapters": "jest --verbose ./src/adapters",
-    "pretest": "yarn build && jest --setupFiles dotenv/config",
+    "pretest": "yarn build",
     "test": "SKIP_PREFLIGHT_CHECK=true npm-run-all --parallel test:*",
     "lint:js": "eslint ./src -c .eslintrc.json --ext js,jsx",
     "lint:ts": "tslint -c tslint.json src/**/*.ts",

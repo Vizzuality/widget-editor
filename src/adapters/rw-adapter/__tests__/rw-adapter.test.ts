@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 require('dotenv').config();
 
 import RwAdapter from "../src";
