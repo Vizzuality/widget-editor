@@ -9,6 +9,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+      - name: create env file
+        run: |
+          touch .env
+          echo USER_TOKEN=${{ secrets.USER_TOKEN }} >> .env
       - name: Install dependence's 🛎️
         run: |
           yarn policies set-version
@@ -26,6 +30,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+      - name: create env file
+        run: |
+          touch .env
+          echo USER_TOKEN=${{ secrets.USER_TOKEN }} >> .env
       - name: Install dependence's 📦
         run: |
           yarn policies set-version
