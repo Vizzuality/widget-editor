@@ -12,7 +12,7 @@ jobs:
       - name: create env file
         run: |
           touch .env
-          echo USER_TOKEN=${{ secrets.USER_TOKEN }} >> .env
+          echo RW_USER_TOKEN=${{ secrets.RW_USER_TOKEN }} >> .env
       - name: Install dependence's 🛎️
         run: |
           yarn policies set-version
@@ -33,7 +33,7 @@ jobs:
       - name: create env file
         run: |
           touch .env
-          echo USER_TOKEN=${{ secrets.USER_TOKEN }} >> .env
+          echo RW_USER_TOKEN=${{ secrets.RW_USER_TOKEN }} >> .env
       - name: Install dependence's 📦
         run: |
           yarn policies set-version
@@ -52,7 +52,7 @@ jobs:
       - name: create env file
         run: |
           touch .env
-          echo USER_TOKEN=${{ secrets.USER_TOKEN }} >> .env
+          echo RW_USER_TOKEN=${{ secrets.RW_USER_TOKEN }} >> .env
       - name: Install dependence's 📦
         run: |
           yarn policies set-version
