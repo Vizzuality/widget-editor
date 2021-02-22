@@ -1,4 +1,4 @@
-/* eslint @typescript-eslint/no-var-requires: "off" */
+// tslint:disable-next-line
 require('dotenv').config();
 
 import RwAdapter from "../src";
