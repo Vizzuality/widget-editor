@@ -53,7 +53,7 @@ describe('RW Adapter tests', () => {
     const adapter = new RwAdapter();
     const withoutTokenResponse = await adapter.getUserAreas();
     expect(withoutTokenResponse.length).toBe(0);
-    adapter.extendProperties({ userToken: process.env.USER_TOKEN });
+    adapter.extendProperties({ userToken: process.env.RW_USER_TOKEN });
     const payloadResponse = await adapter.getUserAreas();
     expect(payloadResponse).toMatchSnapshot();
   });
