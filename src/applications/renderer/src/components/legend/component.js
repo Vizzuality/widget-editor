@@ -1,107 +1,114 @@
-import React, { useCallback } from "react";
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import styled, { css } from "styled-components";
 
-import { JSTypes } from "@widget-editor/types";
-import { utils } from '@widget-editor/core';
-import { Select } from "@widget-editor/shared";
+import SvgClose from './legend-close';
 
-import {
-  StyledContainer,
-  StyledColorsBoxContainer,
-  StyledColorsBox,
-  StyledColorDot,
-  StyledDropdownBox,
-  SelectStyles,
-} from "./style";
+const StyledLegend = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(-30px, 20px);
+  width: 200px;
+  border-radius: 4px;
+  padding: 0 15px;
+  max-height: 200px;
+  overflow: scroll;
 
-// XXX: Move me
-function resolveLabel(label, type) {
-  if (type === 'date') {
-    return utils.parseDate(label);
+  ${props => props.open && css`
+    box-shadow: 0 20px 30px 0 rgba(0,0,0,.1);
+    border: 1px solid rgba(26,28,34,.1);
+    background: #FFF;
+  `}
+
+`;
+
+const StyledLegendItem = styled.ul`
+  list-style: none;
+  padding: 15px 0;
+`;
+
+const StyledLegendValue = styled.li`
+  padding: 2px 0;
+  font-size: 14px;
+  color: #393f44;
+`;
+
+const StyledValueColor = styled.div`
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid rgba(26,28,34,.1);
+  margin: 0 10px 0 0;
+  ${props => props.color && css`
+    background: ${props.color};
+  `}
+`;
+
+const StyledClosedLegend = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 13px;
+  color: #717171;
+  cursor: pointer;
+`;
+
+const StyledClosedLegendInfo = styled.span`
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  border: 1px solid hsla(0,0%,43.9%,.2);
+  border-radius: 100%;
+  font-family: Georgia,serif;
+  font-style: italic;
+  color: #393f44;
+`
+
+const StyledCloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 10px;
+  outline: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  svg {
+    width: inherit;
+    height: inherit;
   }
+`;
 
-  return label;
+const Legend = ({ widgetConfig }) => {
+  const [open, setOpen] = useState(true);
+  return (<StyledLegend open={open}>
+    {open && <StyledCloseButton type="button" role="button" onClick={() => setOpen(!open)}>
+      <SvgClose />
+    </StyledCloseButton>}
+    {!open && <StyledClosedLegend onClick={() => setOpen(true)}><StyledClosedLegendInfo>i</StyledClosedLegendInfo>Legend</StyledClosedLegend>}
+    {open && widgetConfig.legend.map((leg, index) => (
+      <StyledLegendItem key={`legend-item-${index}`}>
+        {leg.values.map(legendValue => (
+          <StyledLegendValue key={legendValue.label}>
+            <StyledValueColor color={legendValue.value}/>
+            {legendValue.label}
+          </StyledLegendValue>
+        ))}
+      </StyledLegendItem>
+    ))}
+  </StyledLegend>);
 }
 
-const Legend = ({
-  widget,
-  advanced,
-  scheme,
-  selectedColumn,
-  columns,
-  configuration,
-  patchConfiguration,
-  compact,
-}) => {
-  const multipleItems = widget?.legend?.[0]?.values.length > 0;
-  const isPie = configuration.chartType === "pie";
-  const isDonut = configuration.chartType === "donut";
-
-  const handleChange = useCallback((option) => {
-    const newOption = option.value === "_single_color"
-      ? null
-      : {
-        name: option.value,
-        type: option.type,
-        alias: option.label !== option.value ? option.label : undefined,
-      };
-    if (isPie || isDonut) {
-      patchConfiguration({
-        category: newOption
-      });
-    } else {
-      patchConfiguration({
-        color: newOption
-      });
-    }
-  }, [isPie, isDonut, patchConfiguration]);
-
-  return (
-    <StyledContainer compact={compact}>
-      <StyledColorsBoxContainer alignCenter={!multipleItems}>
-          {!multipleItems && !advanced && (
-            <StyledColorsBox alignCenter={false}>
-              <StyledColorDot color={scheme.mainColor} />
-              Single color
-            </StyledColorsBox>
-          )}
-          {multipleItems && widget.legend[0].values.map((item, index) => (
-            <StyledColorsBox
-              title={resolveLabel(item.label, item.type) || '−'}
-              alignCenter={true}
-              key={`${item.label}-${index}`}
-            >
-              <StyledColorDot color={item.value} />
-              {resolveLabel(item.label, item.type) || '−'}
-            </StyledColorsBox>
-          ))}
-      </StyledColorsBoxContainer>
-      {!advanced && (
-        <StyledDropdownBox>
-          <Select
-            id="legend"
-            value={selectedColumn}
-            options={columns}
-            onChange={handleChange}
-            styles={SelectStyles}
-          />
-        </StyledDropdownBox>
-      )}
-    </StyledContainer>
-  );
-};
-
 Legend.propTypes = {
-  patchConfiguration: PropTypes.func,
-  configuration: JSTypes.configuration,
-  advanced: PropTypes.bool,
-  compact: PropTypes.any,
-  scheme: PropTypes.shape({
-    mainColor: PropTypes.string
-  }),
-  selectedColumn: JSTypes.select.value,
-  columns: JSTypes.select.options,
-  widget: JSTypes.widget
+  widgetConfig: PropTypes.shape({
+    legend: PropTypes.arrayOf(PropTypes.object)
+  })
 }
 
 export default Legend;

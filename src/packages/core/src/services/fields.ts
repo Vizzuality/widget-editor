@@ -1,15 +1,10 @@
-import { Generic, Adapter } from "@widget-editor/types";
-import { ALLOWED_FIELD_TYPES } from "../constants";
+import { Dataset, Adapter } from "@widget-editor/types";
 
 export default class FieldsService {
-  private static NUMERIC_TYPE = "number";
-  private static COLUMN_TYPE = "string";
-  private static DATE_TYPE = "date";
-
   constructor(
     private adapter: Adapter.Service,
-    private dataset: any,
-    private fields: Generic.Array
+    private dataset: Dataset.Payload,
+    private fields: Dataset.Field[]
   ) { }
 
   /**
@@ -17,14 +12,14 @@ export default class FieldsService {
    * @param sql SQL to execute
    */
   private async query(sql: string) {
-    return await this.adapter.getDatasetData(sql);
+    return await this.adapter.getDatasetData(this.dataset.id, sql);
   }
 
   /**
    * Return the table name of the dataset
    */
   private getTableName(): string {
-    return this.dataset.attributes.tableName;
+    return this.dataset.tableName;
   }
 
   /**
@@ -32,13 +27,14 @@ export default class FieldsService {
    * If the field is of type `date`, the values will be timestamps
    * @param field Field for which we want to get the minimum and maximum value
    */
-  public getColumnMinAndMax(field: any): Promise<{ min: number, max: number }> {
+  public getColumnMinAndMax(field: Dataset.Field): Promise<{ min: number, max: number }> {
     const { columnName } = field;
     const tableName = this.getTableName();
 
     const query = `SELECT MIN(${columnName}) AS min, MAX(${columnName}) AS max FROM ${tableName}`;
 
-    return this.query(query).then((data) => (data?.length ? data[0] : {})) as Promise<{ min: number, max: number }>;
+    return this.query(query)
+      .then((data) => (data?.length ? data[0] : {})) as Promise<{ min: number, max: number }>;
   }
 
   /**
@@ -46,7 +42,7 @@ export default class FieldsService {
    * @param field Field for which we want to get the values
    * @param uniq Whether duplicated values should be removed
    */
-  public getColumnValues(field: any, uniq = true): Promise<string[]> {
+  public getColumnValues(field: Dataset.Field, uniq = true): Promise<string[]> {
     const { columnName } = field;
     const tableName = this.getTableName();
 
@@ -55,7 +51,8 @@ export default class FieldsService {
     const query = `SELECT ${columnName} FROM ${tableName} ${uniqQueryPart} ORDER BY ${columnName}`;
 
     return this.query(query)
-      .then(data => (data ?? []).map(d => d[columnName]));
+      .then(data => (data ?? [])
+        .map(d => d[columnName])) as Promise<string[]>;
   }
 
   /**
@@ -70,14 +67,12 @@ export default class FieldsService {
       return null;
     }
 
-    const fieldType = ALLOWED_FIELD_TYPES.find(type => type.name === field.type)?.type ?? 'string';
-
-    if (fieldType === FieldsService.NUMERIC_TYPE || fieldType === FieldsService.DATE_TYPE) {
+    if (field.type === Dataset.FieldType.Number || field.type === Dataset.FieldType.Date) {
       const res = await this.getColumnMinAndMax(field);
       return res;
     }
 
-    if (fieldType === FieldsService.COLUMN_TYPE) {
+    if (field.type === Dataset.FieldType.String) {
       return {
         values: await this.getColumnValues(field)
       };

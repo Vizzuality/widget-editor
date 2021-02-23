@@ -13,7 +13,7 @@ export default {
     zoom: 2,
     lat: 0,
     lng: 0,
-    bbox: [0, 0, 0, 0],
+    bbox: null,
     basemap: null,
   },
   xAxisTitle: null,

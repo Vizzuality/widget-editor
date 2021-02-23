@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { getLocalCache } from "@widget-editor/widget-editor/lib/exposed-hooks";
 import { selectIsWidgetAdvanced } from "@widget-editor/shared/lib/modules/editor/selectors";
 import { selectScheme } from "@widget-editor/shared/lib/modules/theme/selectors";
+import { getSerializedScheme } from "@widget-editor/core";
 
 export const selectWidgetConfig = state => state.widgetConfig;
 
@@ -39,7 +40,7 @@ export const selectSerializedWidgetConfig = createSelector(
     }
 
     // We serialise the selected scheme
-    config.config = adapter.getSerializedScheme(scheme);
+    config.config = getSerializedScheme(scheme);
 
     return config;
   }

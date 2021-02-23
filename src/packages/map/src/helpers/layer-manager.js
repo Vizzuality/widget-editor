@@ -85,13 +85,13 @@ export default class LayerManager {
   }
 
   addNexGDDPLayer(layerData) {
-    const tileUrl = this.adapter.getLayerTileUrl(layerData.id, 'nexgddp');
+    const tileUrl = { layerData };
     const tileLayer = L.tileLayer(tileUrl).addTo(this.map);
     this.mapLayers[layerData.id] = tileLayer;
   }
 
   addGeeLayer(layerData) {
-    const tileUrl = this.adapter.getLayerTileUrl(layerData.id, 'gee');
+    const tileUrl = { layerData };
     const tileLayer = L.tileLayer(tileUrl).addTo(this.map);
     this.mapLayers[layerData.id] = tileLayer;
   }

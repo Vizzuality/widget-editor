@@ -8,7 +8,7 @@ export interface Service {
   prepareOrderBy(): void;
   prepareLimit(): void;
   getQuery(): string;
-  getAdditionalParams(): string;
+  getAdditionalParams(): { [key: string]: unknown };
 }
 
 type GenericFilter<T> = {

@@ -34,13 +34,10 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
-    "watch": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./babel.config.js --watch",
+    "start": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./.babelrc --watch",
+    "watch": "BABEL_ENV=development babel src --extensions .ts,.tsx,.js --out-dir lib --copy-files --config-file ./.babelrc --watch",
     "build": "NODE_ENV=production babel src --out-dir lib --copy-files",
     "publish-npm": "npm publish --access public"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [

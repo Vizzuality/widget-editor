@@ -1,10 +1,3 @@
-import { redux } from "@widget-editor/shared";
+import Component from "./component";
 
-// Components
-import ChartComponent from "./component";
-
-export default redux.connectState((state) => ({
-  editor: state.editor,
-  widget: state.widgetConfig,
-  configuration: state.configuration,
-}))(ChartComponent);
+export default Component;

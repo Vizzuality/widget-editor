@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { redux } from '@widget-editor/shared';
 import isEqual from 'lodash/isEqual';
 import has from 'lodash/has';
 import styled from 'styled-components';
 
 import { Icons } from 'vizzuality-components';
-
-import { editorSyncMap } from '@widget-editor/shared/lib/modules/editor/actions';
-import { patchConfiguration } from '@widget-editor/shared/lib/modules/configuration/actions';
 
 import LayerManager from 'helpers/layer-manager';
 
@@ -21,13 +17,13 @@ import { COLOR_WHITE } from '@widget-editor/shared/lib/styles/style-constants';
 
 import { Legend, LegendListItem, LegendItemTypes } from 'vizzuality-components';
 
-import { StyledMapContainer, StyledCaption } from './styles';
+import { StyledMapContainer } from './styles';
 
 const DEFAULT_MAP_PROPERTIES = {
   zoom: 2,
   lat: 0,
   lng: 0,
-  bbox: [0, 0, 0, 0],
+  bbox: undefined,
   basemap: {
     basemap: 'dark'
   }
@@ -56,8 +52,6 @@ class Map extends React.Component {
       legendOpen: true
     };
 
-    this.labels = props.labels || LABELS['none'];
-
     this.mapConfiguration = props?.mapConfiguration
       ? props.mapConfiguration
       : DEFAULT_MAP_PROPERTIES;
@@ -73,6 +67,8 @@ class Map extends React.Component {
 
     if (this.mapConfiguration.basemap?.labels) {
       this.labels = LABELS[this.mapConfiguration.basemap.labels];
+    } else {
+      this.labels = LABELS['none'];
     }
   }
 
@@ -80,14 +76,14 @@ class Map extends React.Component {
     if (!layers?.length) {
       return [];
     }
-    return layers.map(({ id, attributes }) => ({
-      dataset: attributes.dataset,
+    return layers.map(({ id, dataset, ...rest }) => ({
+      dataset,
       visible: true,
       layers: [
         {
-          id: id || attributes.layerConfig.id,
-          active: layerId ? id === layerId : attributes.default,
-          ...attributes
+          id,
+          active: layerId ? id === layerId : rest.default,
+          ...rest
         }
       ]
     }));
@@ -98,7 +94,7 @@ class Map extends React.Component {
       zoom: this.mapConfiguration.zoom || 2,
       lat: this.mapConfiguration.lat || 0,
       lng: this.mapConfiguration.lng || 0,
-      bbox: this.mapConfiguration.bbox || [0, 0, 0, 0]
+      bbox: this.mapConfiguration.bbox
     };
 
     const mapOptions = { ...FROM_PROPS, ...MAP_CONFIG };
@@ -112,30 +108,17 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    const { patchConfiguration, mapConfig } = this.props;
-
     this.hasBeenMounted = true;
     this.instantiateMap();
     const mapOptions = this.getMapOptions();
 
-    // If the bounds are not defined, we set them in the store
-    if (mapConfig?.bounds || !has(mapOptions, 'bbox')) {
+    if (!has(mapOptions, 'bbox')) {
       this.onMapChange();
-    }
-    // Ensure visualisation type is map
-    // this will be triggered fine in the editor itself
-    // but when used externally this might not be the case.
-    if (patchConfiguration) {
-      patchConfiguration({
-        visualizationType: 'map',
-        chartType: 'map'
-      });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const loadingChanged = this.state.loading !== nextState.loading;
-    const captionChanged = this.props.caption !== nextProps.caption;
     const legendToggleChanged = this.state.legendOpen !== nextState.legendOpen;
     const basemapChanged = !isEqual(
       nextProps.mapConfiguration.basemap,
@@ -146,16 +129,13 @@ class Map extends React.Component {
       this.props.mapConfiguration.bbox
     );
 
-    return (
-      loadingChanged ||
-      captionChanged ||
-      legendToggleChanged ||
-      basemapChanged ||
-      bboxChanged
-    );
+    return loadingChanged
+      || legendToggleChanged
+      || basemapChanged
+      || bboxChanged;
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.layerId !== this.props.layerId) {
       const expectedLayerGroups = this.createLayerGroups(
         nextProps.layers,
@@ -183,18 +163,6 @@ class Map extends React.Component {
       nextProps.mapConfiguration?.basemap?.boundaries
     ) {
       this.setBoundaries(nextProps.mapConfiguration.basemap.boundaries);
-    }
-
-    // Map bbox changed
-    if (!isEqual(nextProps.changeBbox, this.props.changeBbox)) {
-      const [b0, b1, b2, b3] = nextProps.changeBbox;
-      this.map.fitBounds(
-        [
-          [b1, b0],
-          [b3, b2]
-        ],
-        { animate: false }
-      );
     }
   }
 
@@ -265,17 +233,7 @@ class Map extends React.Component {
         ],
         { animate: false }
       );
-    } else if (this.props?.mapConfig?.bounds) {
-      // Legacy editor stores "bounds"
-      // Apply them instead if present
-      this.map.fitBounds(this.props.mapConfig.bounds, { animate: false });
     }
-
-    this.map.setZoom(mapOptions.zoom);
-
-    // We save the initial state of the map so if the user saves a restored widget without making
-    // any change, we save the correct info
-    this.onMapChange();
   }
 
   instantiateLayerManager() {
@@ -332,14 +290,15 @@ class Map extends React.Component {
   }
 
   onMapChange() {
-    const { editorSyncMap, patchConfiguration } = this.props;
-    if (editorSyncMap) {
+    const { onChange } = this.props;
+
+    if (onChange) {
       const mapParams = this.getMapParams();
       const { zoom } = mapParams;
       const { lat, lng } = mapParams.latLng;
       const [bbox1, bbox2] = mapParams.bounds;
 
-      editorSyncMap({
+      onChange({
         lat,
         lng,
         zoom,
@@ -347,8 +306,6 @@ class Map extends React.Component {
         bounds: mapParams.bounds,
         bbox: [...bbox1, ...bbox2]
       });
-
-      patchConfiguration();
     }
   }
 
@@ -392,11 +349,10 @@ class Map extends React.Component {
   }
 
   render() {
-    const { caption = null, thumbnail = false, layerId } = this.props;
+    const { thumbnail = false, layerId } = this.props;
     return (
       <StyledMapContainer>
         <Icons />
-        {caption && <StyledCaption>{caption}</StyledCaption>}
         {!thumbnail && (
           <StyledLegend>
             <Legend maxHeight={140} sortable={false}>
@@ -422,18 +378,11 @@ class Map extends React.Component {
 }
 
 Map.propTypes = {
-  patchConfiguration: PropTypes.func,
-  editorSyncMap: PropTypes.func,
   adapter: PropTypes.object.isRequired,
   interactionEnabled: PropTypes.bool,
   thumbnail: PropTypes.bool,
   layerId: PropTypes.string,
-  caption: PropTypes.string,
-  changeBbox: PropTypes.arrayOf(PropTypes.number),
-  mapConfig: PropTypes.shape({
-    bounds: PropTypes.any
-  }),
-  labels: PropTypes.any,
+  onChange: PropTypes.func,
   layers: PropTypes.any,
   mapConfiguration: PropTypes.shape({
     labels: PropTypes.any,
@@ -446,12 +395,4 @@ Map.propTypes = {
   })
 };
 
-export default redux.connectState(
-  state => ({
-    configuration: state.configuration
-  }),
-  {
-    editorSyncMap,
-    patchConfiguration
-  }
-)(Map);
+export default Map;
