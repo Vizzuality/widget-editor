@@ -13,7 +13,11 @@ export default {
     lat: 0,
     lng: 0,
     bbox: null,
-    basemap: null,
+    basemap: {
+      basemap: 'dark',
+      labels: 'light',
+      boundaries: false,
+    },
   },
   xAxisTitle: null,
   yAxisTitle: null,

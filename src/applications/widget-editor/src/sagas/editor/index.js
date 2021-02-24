@@ -174,6 +174,18 @@ function* preloadData() {
     }
 
     yield put(setConfiguration({ ...configuration, format }));
+  } else if (editor.dataset) {
+    // If the editor is restored with a dataset only (no widget)
+    const { dataset: { type } } = editor;
+
+    const isRaster = type === 'raster';
+
+    yield put(setConfiguration({
+      ...storeConfiguration,
+      // We make sure to switch to the map visualization if the dataset is a raster
+      chartType: isRaster ? 'map' : storeConfiguration.chartType,
+      visualizationType: isRaster ? 'map': storeConfiguration.visualizationType,
+    }));
   }
 }
 
