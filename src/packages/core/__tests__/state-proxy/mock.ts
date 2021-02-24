@@ -11,7 +11,6 @@ export const BASE_STATE = {
     caption: "",
     format: "",
     visualizationType: "chart",
-    rasterOnly: false,
     chartType: "bar",
     sliceCount: 6,
     donutRadius: 100,

@@ -22,6 +22,11 @@ export const selectFields = state => state.editor.fields;
 export const selectWidgetData = state => state.editor.widgetData;
 export const selectTableData = state => state.editor.tableData;
 
+export const selectDatasetIsRaster = createSelector(
+  [selectDataset],
+  dataset => dataset?.type === 'raster'
+);
+
 export const selectColumnOptions = createSelector(
   [selectFields],
   (fields) => {

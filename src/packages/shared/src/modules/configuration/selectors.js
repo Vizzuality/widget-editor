@@ -1,9 +1,12 @@
 import { createSelector } from "reselect";
 
-import { selectDisabledFeatures, selectColumnOptions } from "../editor/selectors";
+import {
+  selectDisabledFeatures,
+  selectColumnOptions,
+  selectDatasetIsRaster,
+} from "../editor/selectors";
 
 const selectAvailableCharts = state => state.configuration.availableCharts;
-const selectRasterOnly = state => state.configuration.rasterOnly;
 export const selectTitle = state => state.configuration.title;
 export const selectDescription = state => state.configuration.description;
 export const selectVisualizationType = state => state.configuration.visualizationType;
@@ -23,7 +26,7 @@ export const selectLayer = state => state.configuration.layer;
 export const selectCaption = state => state.configuration.caption;
 
 export const selectChartOptions = createSelector(
-  [selectAvailableCharts, selectRasterOnly, selectDisabledFeatures],
+  [selectAvailableCharts, selectDatasetIsRaster, selectDisabledFeatures],
   (availableCharts, isRaster, disabledFeatures) => {
     let res = availableCharts;
 

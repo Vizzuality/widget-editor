@@ -49,6 +49,7 @@ export default class RWAdapter implements Adapter.Service {
       name: dataset.attributes.name,
       tableName: dataset.attributes.tableName,
       provider: dataset.attributes.provider,
+      type: dataset.attributes.type === 'tabular' ? 'tabular' : 'raster',
       geoInfo: dataset.attributes.geoInfo,
       relevantFields: dataset.attributes.widgetRelevantProps,
       metadata: {

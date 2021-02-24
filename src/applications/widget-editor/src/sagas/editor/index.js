@@ -51,9 +51,10 @@ function* preloadData() {
     widgetEditor: { editor, configuration: storeConfiguration }
   } = yield select();
 
-  if (editor.widget) {
+  if (editor.dataset && editor.widget) {
     const {
-      widget: { name, metadata, description, widgetConfig }
+      widget: { name, metadata, description, widgetConfig },
+      dataset: { type },
     } = editor;
 
     const mapSpecifics = {
@@ -94,11 +95,8 @@ function* preloadData() {
 
     const caption = metadata?.caption ?? '';
 
-    const datasetType = editor?.dataset?.attributes?.type;
-    const rasterOnly = !!(datasetType && datasetType.match(/raster/));
-
     // If the dataset is raster, only maps can be done right now
-    const isMap = rasterOnly
+    const isMap = type === 'raster'
       || editor?.widget?.widgetConfig?.paramsConfig?.visualizationType === 'map';
 
     const paramsConfig = has(widgetConfig, 'paramsConfig')
@@ -155,7 +153,6 @@ function* preloadData() {
       caption,
       xAxisTitle,
       yAxisTitle,
-      rasterOnly,
       visualizationType: isMap ? 'map' : 'chart',
       ...(isMap ? { chartType: 'map' } : {}),
       map: mapSpecifics
