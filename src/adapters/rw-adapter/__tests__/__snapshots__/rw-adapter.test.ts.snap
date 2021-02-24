@@ -79,6 +79,7 @@ Object {
     "gross_value_added_contribution_to_gdp",
   ],
   "tableName": "for_020_forest_employment_gdp_edit",
+  "type": "tabular",
 }
 `;
 
