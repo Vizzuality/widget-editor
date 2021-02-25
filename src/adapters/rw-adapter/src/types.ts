@@ -7,6 +7,7 @@ export type APIDatasetPayload = {
       name: string,
       tableName: string,
       provider: string,
+      type: string,
       geoInfo: boolean,
       widgetRelevantProps: string[],
       metadata: {

@@ -184,12 +184,13 @@ export default class DataService {
   }
 
   async getFieldsAndLayers() {
-    const fields = await this.adapter.getDatasetFields(this.datasetId, this.dataset);
     const layers = await this.adapter.getDatasetLayers(this.datasetId);
-    this.fields = fields;
+    this.fields = this.dataset.type === 'raster'
+      ? []
+      : await this.adapter.getDatasetFields(this.datasetId, this.dataset);
 
     this.dispatch({ type: sagaEvents.DATA_FLOW_FIELDS_AND_LAYERS_READY });
-    this.setEditor({ layers, fields });
+    this.setEditor({ layers, fields: this.fields });
   }
 
   async requestWithFilters(store: any) {

@@ -5,6 +5,7 @@ import {
   selectDisabledFeatures,
   selectAdvanced,
   selectHasGeoInfo,
+  selectDatasetIsRaster,
 } from "@widget-editor/shared/lib/modules/editor/selectors";
 
 import EditorOptionsComponent from "./component";
@@ -15,7 +16,7 @@ export default connectState(
     advanced: selectAdvanced(state),
     initialized: state.editor.initialized,
     restoring: state.editor.restoring,
-    rasterOnly: state.configuration.rasterOnly,
+    rasterOnly: selectDatasetIsRaster(state),
     datasetId:
       state.editor.dataset && state.editor.dataset.id
         ? state.editor.dataset.id

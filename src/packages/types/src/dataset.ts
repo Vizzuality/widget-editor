@@ -5,6 +5,8 @@ export interface Payload {
   name: string;
   tableName: string;
   provider: string;
+  /** When type is raster, the core doesn't call the adapter's getDatasetFields */
+  type: 'tabular' | 'raster';
   geoInfo: boolean;
   relevantFields: string[];
   metadata: {
