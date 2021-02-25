@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/widget-editor",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -13,10 +13,10 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@widget-editor/core": "^2.6.0",
-    "@widget-editor/renderer": "^2.6.0",
-    "@widget-editor/shared": "^2.6.0",
-    "@widget-editor/types": "^2.6.0",
+    "@widget-editor/core": "^2.6.1",
+    "@widget-editor/renderer": "^2.6.1",
+    "@widget-editor/shared": "^2.6.1",
+    "@widget-editor/types": "^2.6.1",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "prismjs": "^1.20.0",
@@ -50,7 +50,7 @@
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
-    "@widget-editor/eslint-config": "^2.6.0",
+    "@widget-editor/eslint-config": "^2.6.1",
     "babel-plugin-module-resolver": "^4.0.0",
     "rollup-plugin-css-porter": "^1.0.2"
   },
