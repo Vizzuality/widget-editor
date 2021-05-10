@@ -80,8 +80,9 @@ export default class BarsHorizontal extends ChartsCommon implements Charts.Bars 
                   : "truncate(data('table')[datum.value - 1].x, 12)",
               },
               align: {
-                signal:
-                  "width < 300 || data('table')[0].count > 10 ? 'right' : 'center'",
+                // If the value isn't right, vega will display the marks on top of the axis. It
+                // seems to be a bug of the library, though I could not find an issue mentioning it.
+                value: "right",
               },
               baseline: {
                 signal:
