@@ -44,6 +44,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
   }
 
   interactionConfig() {
+    const { configuration } = this.store;
     return [
       {
         name: "tooltip",
@@ -53,7 +54,7 @@ export default class Pie extends ChartsCommon implements Charts.Pie {
               column: "value",
               property: this.resolveName('y'),
               type: "number",
-              format: '.2s',
+              format: configuration.format || '.2s',
             },
             {
               column: "pie_category",
