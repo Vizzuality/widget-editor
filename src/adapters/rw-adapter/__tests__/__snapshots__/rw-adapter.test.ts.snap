@@ -1500,7 +1500,35 @@ exports[`RW Adapter tests Adapter getUserAreas returns expected result 1`] = `
 Array [
   Object {
     "id": "35a6d982388ee5c4e141c2bceac3fb72",
+    "name": "area not updating from scratch",
+  },
+  Object {
+    "id": "a18a5c0f4c8aac9ddb72c245727b4439",
+    "name": "draw italy",
+  },
+  Object {
+    "id": "b827e69986481e129e41c29cac43986a",
+    "name": "I have no alerts",
+  },
+  Object {
+    "id": "fc90bed4bcae0cdbd9459e8b6e506e4f",
+    "name": "My custom area drawn",
+  },
+  Object {
+    "id": "35a6d982388ee5c4e141c2bceac3fb72",
     "name": "Some area",
+  },
+  Object {
+    "id": "f4caefe4c20e6d4b2e0a234b5f83869b",
+    "name": "Spain alerts",
+  },
+  Object {
+    "id": "1bed45edc75d0825a89a98d81962740e",
+    "name": "Sweden covered",
+  },
+  Object {
+    "id": "ab58f44d6c3d1c21104be496f298f601",
+    "name": "testing planet pulse",
   },
 ]
 `;
@@ -1579,7 +1607,7 @@ Object {
             "type": "joinaggregate",
           },
         ],
-        "url": "https://api.resourcewatch.org/v1/query/03bfb30e-829f-4299-bab9-b2be1b66b5d4?sql=SELECT country as x, employment_of_total_labour_force as y FROM for_020_forest_employment_gdp_edit   ORDER BY employment_of_total_labour_force desc LIMIT 50&rw=&env=production&language=en&page[size]=999",
+        "url": "https://api.resourcewatch.org/v1/query/03bfb30e-829f-4299-bab9-b2be1b66b5d4?sql=SELECT country as x, employment_of_total_labour_force as y FROM for_020_forest_employment_gdp_edit   ORDER BY employment_of_total_labour_force desc LIMIT 50&env=production&language=en&page[size]=999&rw=",
       },
     ],
     "interaction_config": Array [
