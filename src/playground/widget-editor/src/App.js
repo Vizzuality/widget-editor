@@ -8,6 +8,7 @@ import Editor from "./components/editor";
 import EditorForm from "components/editor-form";
 
 import "./App.scss";
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 function App() {
   const { store } = configureStore();

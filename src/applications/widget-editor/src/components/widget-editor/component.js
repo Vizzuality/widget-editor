@@ -14,6 +14,7 @@ const WidgetEditor = ({
   schemes,
   compact = false,
   areaIntersection,
+  mapboxToken
 }) => {
   if (typeof adapter !== "function") {
     throw new Error(
@@ -25,11 +26,16 @@ const WidgetEditor = ({
     throw new Error("Widget editor: Missing prop datasetId of type string");
   }
 
+  if (!mapboxToken) {
+    throw new Error("Widget editor: Missing prop mapboxToken");
+  }
+
   const adapterInstance = useMemo(() => new adapter(), [adapter]);
 
   return (
     <Editor
       disable={disable}
+      mapboxToken={mapboxToken}
       application={application}
       onSave={onSave}
       enableSave={enableSave}

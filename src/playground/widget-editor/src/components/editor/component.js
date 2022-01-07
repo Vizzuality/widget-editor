@@ -115,6 +115,7 @@ const Editor = () => {
           compact={compactMode}
           datasetId={dataset}
           widgetId={widget}
+          mapboxToken={process.env.REACT_APP_MAPBOX_TOKEN}
           onSave={handleOnSave}
           areaIntersection={areaIntersection}
           authenticated={true}

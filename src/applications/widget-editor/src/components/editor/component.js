@@ -211,12 +211,12 @@ class Editor extends React.Component {
   }
 
   render() {
-    const { adapter, theme: { compact } } = this.props;
+    const { adapter, theme: { compact }, mapboxToken } = this.props;
     return (
       <StyledContainer {...compact}>
         <StyleEditorContainer>
           <StyledVisualizationContainer {...compact}>
-            <Visualization adapter={adapter} standalone={false} />
+            <Visualization adapter={adapter} mapboxToken={mapboxToken} standalone={false} />
           </StyledVisualizationContainer>
           <StyledOptionsContainer {...compact}>
             <EditorOptions dataService={this.dataService} />
@@ -229,6 +229,7 @@ class Editor extends React.Component {
 }
 
 Editor.propTypes = {
+  mapboxToken: PropTypes.string.isRequired,
   userPassedCompact: PropTypes.bool,
   authenticated: PropTypes.bool,
   enableSave: PropTypes.bool,
