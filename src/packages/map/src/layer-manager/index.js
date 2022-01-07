@@ -1,41 +1,26 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { LayerManager as VizzLayerManager, Layer } from 'layer-manager/dist/components';
-import { PluginMapboxGl } from 'layer-manager';
+import React, { useMemo } from 'react';
+import { LayerManager as VizzLayerManager, Layer } from '@vizzuality/layer-manager-react';
+import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapboxgl';
 
-// TODO: The decoders should be passed into the editor???? i think so
-import CANVAS_DECODERS from './canvas-decoders';
+import { parseLayers } from './utils';
 
-class LayerManager extends PureComponent {
-  static propTypes = {
-    map: PropTypes.object.isRequired,
-    layers: PropTypes.array,
-  }
-
-  static defaultProps = { layers: [] }
-
-  render() {
-    const {
-      map,
-      layers,
-    } = this.props;
-
-    return (
-      <VizzLayerManager
-        map={map}
-        plugin={PluginMapboxGl}
-      >
-        {layers.map((_layer) => (
-          <Layer
-            key={_layer.id}
-            {..._layer}
-            {...(_layer?.layerConfig?.decoder && CANVAS_DECODERS[_layer.layerConfig.decoder])
-              && { decodeFunction: CANVAS_DECODERS[_layer.layerConfig.decoder] }}
-          />
-        ))}
-      </VizzLayerManager>
-    );
-  }
-}
+const LayerManager = ({ layers, map, providers }) => {
+  const parsedLayers = useMemo(() => parseLayers(layers), [layers]);
+  
+  return (
+    <VizzLayerManager map={map} plugin={PluginMapboxGl} providers={providers}>
+      {parsedLayers.map((_layer) => (
+        <Layer
+          key={_layer.id}
+          {..._layer}
+          // {...(_layer.decodeParams &&
+          //   CANVAS_DECODERS[_layer.layerConfig.decoder] && {
+          //     decodeFunction: CANVAS_DECODERS[_layer.layerConfig.decoder],
+          //   })}
+        />
+      ))}
+    </VizzLayerManager>
+  );
+};
 
 export default LayerManager;

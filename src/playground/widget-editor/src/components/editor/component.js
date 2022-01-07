@@ -6,6 +6,8 @@ import WidgetEditor from "@widget-editor/widget-editor";
 
 import PlaygroundRenderer from 'components/playground-renderer';
 
+import providers from './mapbox-providers';
+
 const SCHEMES = [
   {
     name: "default",
@@ -116,6 +118,7 @@ const Editor = () => {
           datasetId={dataset}
           widgetId={widget}
           mapboxToken={process.env.REACT_APP_MAPBOX_TOKEN}
+          providers={providers}
           onSave={handleOnSave}
           areaIntersection={areaIntersection}
           authenticated={true}

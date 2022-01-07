@@ -14,7 +14,8 @@ const WidgetEditor = ({
   schemes,
   compact = false,
   areaIntersection,
-  mapboxToken
+  mapboxToken,
+  providers
 }) => {
   if (typeof adapter !== "function") {
     throw new Error(
@@ -36,6 +37,7 @@ const WidgetEditor = ({
     <Editor
       disable={disable}
       mapboxToken={mapboxToken}
+      providers={providers}
       application={application}
       onSave={onSave}
       enableSave={enableSave}
@@ -52,6 +54,7 @@ const WidgetEditor = ({
 };
 
 WidgetEditor.propTypes = {
+  providers: PropTypes.object,
   application: PropTypes.string,
   onSave: PropTypes.func,
   datasetId: PropTypes.string,

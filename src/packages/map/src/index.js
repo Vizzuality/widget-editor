@@ -7,6 +7,8 @@ import isEmpty from 'lodash/isEmpty';
 
 import styled from 'styled-components';
 
+import LayerManager from './layer-manager';
+
 const StyledMap = styled.div`
   position: relative;
   width: 100%;
@@ -37,6 +39,9 @@ class Map extends PureComponent {
       bbox: PropTypes.array,
       options: PropTypes.shape({}),
     }),
+
+    /** Providers passed into widget editor, used for layer manager */
+    providers: PropTypes.object,
 
     /** An object that defines how fitting bounds behaves */
     fitBoundsOptions: PropTypes.object,
@@ -199,7 +204,7 @@ class Map extends PureComponent {
   setBasemap = () => {
     const { basemap } = this.props;
     const BASEMAP_GROUPS = ['basemap'];
-    const { layers, metadata } = this.map.current.getMap().getStyle();
+    const { layers, metadata } = this.map.getStyle();
 
     const basemapGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
       const { name } = metadata['mapbox:groups'][k];
@@ -228,9 +233,9 @@ class Map extends PureComponent {
     basemapLayers.forEach((_layer) => {
       const match = _layer.metadata['mapbox:group'] === basemapToDisplay.id;
       if (!match) {
-        this.map.current.getMap().setLayoutProperty(_layer.id, 'visibility', 'none');
+        this.map.setLayoutProperty(_layer.id, 'visibility', 'none');
       } else {
-        this.map.current.getMap().setLayoutProperty(_layer.id, 'visibility', 'visible');
+        this.map.setLayoutProperty(_layer.id, 'visibility', 'visible');
       }
     });
 
@@ -241,7 +246,7 @@ class Map extends PureComponent {
     const { labels } = this.props;
 
     const LABELS_GROUP = ['labels'];
-    const { layers, metadata } = this.map.current.getMap().getStyle();
+    const { layers, metadata } = this.map.getStyle();
 
     const labelGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
       const { name } = metadata['mapbox:groups'][k];
@@ -267,7 +272,7 @@ class Map extends PureComponent {
 
     labelLayers.forEach((_layer) => {
       const match = _layer.metadata['mapbox:group'] === labelsToDisplay.id;
-      this.map.current.getMap().setLayoutProperty(_layer.id, 'visibility', match ? 'visible' : 'none');
+      this.map.setLayoutProperty(_layer.id, 'visibility', match ? 'visible' : 'none');
     });
 
     return true;
@@ -276,7 +281,7 @@ class Map extends PureComponent {
   setBoundaries = () => {
     const { boundaries } = this.props;
     const LABELS_GROUP = ['boundaries'];
-    const { layers, metadata } = this.map.current.getMap().getStyle();
+    const { layers, metadata } = this.map.getStyle();
 
     const boundariesGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
       const { name } = metadata['mapbox:groups'][k];
@@ -295,7 +300,7 @@ class Map extends PureComponent {
     });
 
     boundariesLayers.forEach((l) => {
-      this.map.current.getMap().setLayoutProperty(l.id, 'visibility', boundaries ? 'visible' : 'none');
+      this.map.setLayoutProperty(l.id, 'visibility', boundaries ? 'visible' : 'none');
     });
   }
 
@@ -365,8 +370,10 @@ class Map extends PureComponent {
       disableEventsOnFly,
       onError,
       mapboxToken,
+      providers,
       ...mapboxProps
     } = this.props;
+
     const { viewport, flying, loaded } = this.state;
 
     return (
@@ -374,7 +381,9 @@ class Map extends PureComponent {
         ref={this.mapContainer}
       >
         <ReactMapGL
-          ref={this.map}
+          ref={(_map) => {
+            if (_map) this.map = _map.getMap();
+          }}
           mapboxApiAccessToken={mapboxToken}
           // CUSTOM PROPS FROM REACT MAPBOX API
           {...mapboxProps}
@@ -397,6 +406,11 @@ class Map extends PureComponent {
 
           transitionInterpolator={new FlyToInterpolator()}
         >
+          {loaded && !!this.map && <LayerManager 
+            map={this.map}
+            providers={providers}
+            layers={this.props.layers}
+          />}
           {loaded && !!this.map && typeof children === 'function' && children(this.map.current.getMap())}
         </ReactMapGL>
       </StyledMap>
