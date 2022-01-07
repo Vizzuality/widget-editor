@@ -1217,6 +1217,75 @@ Array [
         ],
       },
       "layerType": "vector",
+      "lmMetadata": Object {
+        "legacy-keys": Array [
+          "account",
+          "layerType",
+          "body",
+        ],
+        "version": "4.0",
+      },
+      "render": Object {
+        "layers": Array [
+          Object {
+            "filter": Array [
+              "all",
+            ],
+            "paint": Object {
+              "fill-color": Array [
+                "step",
+                Array [
+                  "to-number",
+                  Array [
+                    "get",
+                    "gross_value_added_total_for_the_forest_sector_us_million",
+                  ],
+                ],
+                "#f0f9e8",
+                100,
+                "#bae4bc",
+                1000,
+                "#7bccc4",
+                10000,
+                "#43a2ca",
+                100000,
+                "#0868ac",
+              ],
+              "fill-opacity": 1,
+            },
+            "source-layer": "layer0",
+            "type": "fill",
+          },
+          Object {
+            "filter": Array [
+              "all",
+            ],
+            "paint": Object {
+              "line-color": "#fff",
+              "line-opacity": 0.8,
+              "line-width": 0.5,
+            },
+            "source-layer": "layer0",
+            "type": "line",
+          },
+        ],
+      },
+      "source": Object {
+        "provider": Object {
+          "account": "wri-rw",
+          "layers": Array [
+            Object {
+              "options": Object {
+                "sql": "SELECT wri.cartodb_id, wri.the_geom_webmercator, data.rw_country_name, data.employment_total_for_the_forest_sector_1000, data.gross_value_added_total_for_the_forest_sector_us_million FROM for_020_forest_employment_gdp_edit data LEFT OUTER JOIN wri_countries_a wri ON wri.iso_a3=data.rw_country_code WHERE data.gross_value_added_total_for_the_forest_sector_us_million IS NOT NULL",
+                "type": "cartodb",
+              },
+            },
+          ],
+          "type": "carto",
+        },
+        "type": "vector",
+      },
+      "type": "vector",
     },
     "legendConfig": Object {
       "items": Array [
@@ -1336,6 +1405,75 @@ Array [
         ],
       },
       "layerType": "vector",
+      "lmMetadata": Object {
+        "legacy-keys": Array [
+          "account",
+          "layerType",
+          "body",
+        ],
+        "version": "4.0",
+      },
+      "render": Object {
+        "layers": Array [
+          Object {
+            "filter": Array [
+              "all",
+            ],
+            "paint": Object {
+              "fill-color": Array [
+                "step",
+                Array [
+                  "to-number",
+                  Array [
+                    "get",
+                    "employment_total_for_the_forest_sector_1000",
+                  ],
+                ],
+                "#f6eff7",
+                1,
+                "#bdc9e1",
+                10,
+                "#67a9cf",
+                100,
+                "#1c9099",
+                1000,
+                "#016c59",
+              ],
+              "fill-opacity": 1,
+            },
+            "source-layer": "layer0",
+            "type": "fill",
+          },
+          Object {
+            "filter": Array [
+              "all",
+            ],
+            "paint": Object {
+              "line-color": "#fff",
+              "line-opacity": 0.8,
+              "line-width": 0.5,
+            },
+            "source-layer": "layer0",
+            "type": "line",
+          },
+        ],
+      },
+      "source": Object {
+        "provider": Object {
+          "account": "wri-rw",
+          "layers": Array [
+            Object {
+              "options": Object {
+                "sql": "SELECT wri.cartodb_id, wri.the_geom_webmercator, data.rw_country_name, data.employment_total_for_the_forest_sector_1000, data.gross_value_added_total_for_the_forest_sector_us_million FROM for_020_forest_employment_gdp_edit data LEFT OUTER JOIN wri_countries_a wri ON wri.iso_a3=data.rw_country_code WHERE data.employment_total_for_the_forest_sector_1000 IS NOT NULL",
+                "type": "cartodb",
+              },
+            },
+          ],
+          "type": "carto",
+        },
+        "type": "vector",
+      },
+      "type": "vector",
     },
     "legendConfig": Object {
       "items": Array [
@@ -1459,6 +1597,75 @@ Object {
       ],
     },
     "layerType": "vector",
+    "lmMetadata": Object {
+      "legacy-keys": Array [
+        "account",
+        "layerType",
+        "body",
+      ],
+      "version": "4.0",
+    },
+    "render": Object {
+      "layers": Array [
+        Object {
+          "filter": Array [
+            "all",
+          ],
+          "paint": Object {
+            "fill-color": Array [
+              "step",
+              Array [
+                "to-number",
+                Array [
+                  "get",
+                  "employment_total_for_the_forest_sector_1000",
+                ],
+              ],
+              "#f6eff7",
+              1,
+              "#bdc9e1",
+              10,
+              "#67a9cf",
+              100,
+              "#1c9099",
+              1000,
+              "#016c59",
+            ],
+            "fill-opacity": 1,
+          },
+          "source-layer": "layer0",
+          "type": "fill",
+        },
+        Object {
+          "filter": Array [
+            "all",
+          ],
+          "paint": Object {
+            "line-color": "#fff",
+            "line-opacity": 0.8,
+            "line-width": 0.5,
+          },
+          "source-layer": "layer0",
+          "type": "line",
+        },
+      ],
+    },
+    "source": Object {
+      "provider": Object {
+        "account": "wri-rw",
+        "layers": Array [
+          Object {
+            "options": Object {
+              "sql": "SELECT wri.cartodb_id, wri.the_geom_webmercator, data.rw_country_name, data.employment_total_for_the_forest_sector_1000, data.gross_value_added_total_for_the_forest_sector_us_million FROM for_020_forest_employment_gdp_edit data LEFT OUTER JOIN wri_countries_a wri ON wri.iso_a3=data.rw_country_code WHERE data.employment_total_for_the_forest_sector_1000 IS NOT NULL",
+              "type": "cartodb",
+            },
+          },
+        ],
+        "type": "carto",
+      },
+      "type": "vector",
+    },
+    "type": "vector",
   },
   "legendConfig": Object {
     "items": Array [
