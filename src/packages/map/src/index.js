@@ -406,7 +406,6 @@ class Map extends PureComponent {
     const {
       className,
       style,
-      children,
       getCursor,
       dragPan,
       dragRotate,
@@ -420,7 +419,6 @@ class Map extends PureComponent {
       ...mapboxProps
     } = this.props;
     const { viewport, flying, loaded, layers } = this.state;
-
     return (
       <StyledMap ref={this.mapContainer}>
         <ReactMapGL
@@ -456,10 +454,6 @@ class Map extends PureComponent {
               layers={layers}
             />
           )}
-          {loaded &&
-            !!this.map &&
-            typeof children === "function" &&
-            children(this.map.current.getMap())}
         </ReactMapGL>
       </StyledMap>
     );
