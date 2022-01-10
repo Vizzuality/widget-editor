@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { LayerManager as VizzLayerManager, Layer } from '@vizzuality/layer-manager-react';
 import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapboxgl';
 
@@ -22,5 +23,17 @@ const LayerManager = ({ layers, map, providers }) => {
     </VizzLayerManager>
   );
 };
+
+LayerManager.propTypes = {
+  layers: PropTypes.array,
+  providers: PropTypes.shape({}),
+  map: PropTypes.shape({
+    MAPSTYLES: PropTypes.string,
+    VIEWPORT: PropTypes.object,
+    providers: PropTypes.object,
+    mapboxToken: PropTypes.string
+  })
+};
+
 
 export default LayerManager;

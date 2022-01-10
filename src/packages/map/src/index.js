@@ -32,11 +32,29 @@ class Map extends PureComponent {
      */
     viewport: PropTypes.shape({}),
 
+    layerId: PropTypes.string,
+
+    layers: PropTypes.array,
+
     map: PropTypes.shape({
+      viewport: PropTypes.shape({}),
       MAPSTYLES: PropTypes.string,
       VIEWPORT: PropTypes.object,
       providers: PropTypes.object,
       mapboxToken: PropTypes.string,
+    }),
+
+    mapConfiguration: PropTypes.shape({
+      lat: PropTypes.number,
+      lng: PropTypes.number,
+      bbox: PropTypes.array,
+      zoom: PropTypes.number,
+      basemap: PropTypes.shape({
+        basemap: PropTypes.string,
+        labels: PropTypes.string,
+        boundaries: PropTypes.bool
+      }),
+
     }),
 
     /** An object that defines how fitting bounds behaves */
@@ -60,6 +78,9 @@ class Map extends PureComponent {
     /** A boolean that allows double click zooming */
     doubleClickZoom: PropTypes.bool,
 
+    /** A boolean that disables flying */
+    disableEventsOnFly: PropTypes.bool,
+
     /** A function that exposes when the map is loaded.
      * It returns and object with the `this.map` and `this.mapContainer`
      * reference. */
@@ -73,6 +94,9 @@ class Map extends PureComponent {
 
     /** A function that exposes the viewport when the map fits bounds */
     onFitBoundsChange: PropTypes.func,
+
+    /** Called when map changes */
+    onChange: PropTypes.func,
 
     /** A function that exposes the viewport */
     getCursor: PropTypes.func,
