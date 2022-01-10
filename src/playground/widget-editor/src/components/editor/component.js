@@ -10,9 +10,6 @@ import providers from './mapbox-providers';
 
 import {
   MAPSTYLES,
-  BASEMAPS,
-  LABELS,
-  BOUNDARIES,
   VIEWPORT
 } from './map-config';
 
