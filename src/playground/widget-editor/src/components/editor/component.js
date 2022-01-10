@@ -127,9 +127,6 @@ const Editor = () => {
           widgetId={widget}
           map={{
             MAPSTYLES,
-            BASEMAPS,
-            LABELS,
-            BOUNDARIES,
             VIEWPORT,
             providers,
             mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN
