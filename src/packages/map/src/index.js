@@ -5,15 +5,15 @@ import WebMercatorViewport from "@math.gl/web-mercator";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 
-import styled from "styled-components";
+import {
+  Legend,
+  LegendListItem,
+  LegendItemTypes,
+} from 'vizzuality-components';
 
 import LayerManager from "./layer-manager";
 
-const StyledMap = styled.div`
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-`;
+import { StyledMap, StyledLegend } from "./styles";
 
 import { DEFAULT_VIEWPORT } from "./constants";
 
@@ -132,6 +132,7 @@ class Map extends PureComponent {
       ...this.props.map.viewport,
     },
     layers: [],
+    layerGroups: [],
     flying: false,
     loaded: false,
   };
@@ -143,7 +144,7 @@ class Map extends PureComponent {
       viewport: {
         ...DEFAULT_VIEWPORT,
         ...map.VIEWPORT,
-      },
+      }
     });
   }
 
@@ -328,6 +329,7 @@ class Map extends PureComponent {
     const activeLayers = layers.filter((l) => l.id === layerId);
     this.setState({
       layers: activeLayers,
+      layerGroups: this.createLayerGroups(activeLayers, layerId)
     });
   }
 
@@ -426,6 +428,23 @@ class Map extends PureComponent {
     }, currentViewport.transitionDuration || 0);
   };
 
+  createLayerGroups(layers, layerId) {
+    if (!layers?.length) {
+      return [];
+    }
+    return layers.map(({ id, dataset, ...rest }) => ({
+      dataset,
+      visible: true,
+      layers: [
+        {
+          id,
+          active: layerId ? id === layerId : rest.default,
+          ...rest
+        }
+      ]
+    }));
+  }
+
   render() {
     const {
       className,
@@ -439,12 +458,27 @@ class Map extends PureComponent {
       doubleClickZoom,
       disableEventsOnFly,
       onError,
+      layerId,
       map,
       ...mapboxProps
     } = this.props;
-    const { viewport, flying, loaded, layers } = this.state;
+    const { viewport, flying, loaded, layers, layerGroups } = this.state;
+
     return (
       <StyledMap ref={this.mapContainer}>
+        <StyledLegend>
+          <Legend maxHeight={140} sortable={false}>
+            {layerGroups.map((lg, i) => (
+              <LegendListItem
+                index={i}
+                key={lg.id}
+                layerGroup={lg}
+              >
+                <LegendItemTypes />
+              </LegendListItem>
+            ))}
+          </Legend>
+        </StyledLegend>
         <ReactMapGL
           ref={(_map) => {
             if (_map) this.map = _map.getMap();
