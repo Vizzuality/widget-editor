@@ -1,31 +1,6 @@
-const LABELS = {
-  none: {
-    id: 'none',
-    label: 'No labels',
-    value: 'none',
-  },
-  light: {
-    id: 'light',
-    label: 'Labels light',
-    value: 'light',
-  },
-  dark: {
-    id: 'dark',
-    label: 'Labels dark',
-    value: 'dark',
-  },
-};
+export const MAPSTYLES = 'mapbox://styles/resourcewatch/cjzmw480d00z41cp2x81gm90h';
 
-const BOUNDARIES = {
-  dark: {
-    id: "dark",
-    label: "Show boundaries",
-    value:
-      "https://api.mapbox.com/styles/v1/resourcewatch/cjgcf8qdaai1x2rn6w3j4q805/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoicmVzb3VyY2V3YXRjaCIsImEiOiJjajFlcXZhNzcwMDBqMzNzMTQ0bDN6Y3U4In0.FRcIP_yusVaAy0mwAX1B8w",
-  },
-};
-
-const BASEMAPS = {
+export const BASEMAPS = {
   dark: {
     id: 'dark',
     value: 'dark',
@@ -62,9 +37,44 @@ const BASEMAPS = {
         '<a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox</a> <a href="http://www.openstreetmap.org/about/" target="_blank">© OpenStreetMap</a>',
     },
   },
+  aqueduct: {
+    id: 'aqueduct',
+    value: 'aqueduct',
+    label: 'Hydrography',
+    options: {
+      attribution:
+        '<a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox</a> <a href="http://www.openstreetmap.org/about/" target="_blank">© OpenStreetMap</a>',
+    },
+  },
 };
 
-const DEFAULT_VIEWPORT = {
+export const LABELS = {
+  none: {
+    id: 'none',
+    label: 'No labels',
+    value: 'none',
+  },
+  light: {
+    id: 'light',
+    label: 'Labels light',
+    value: 'light',
+  },
+  dark: {
+    id: 'dark',
+    label: 'Labels dark',
+    value: 'dark',
+  },
+};
+
+export const BOUNDARIES = {
+  dark: {
+    id: 'dark',
+    label: 'Boundaries',
+    value: false,
+  },
+};
+
+export const VIEWPORT = {
   zoom: 2,
   latitude: 0,
   longitude: 0,
@@ -72,6 +82,3 @@ const DEFAULT_VIEWPORT = {
   bearing: 0,
   transitionDuration: 250,
 };
-
-export { DEFAULT_VIEWPORT, LABELS, BOUNDARIES, BASEMAPS };
-

@@ -14,8 +14,7 @@ const WidgetEditor = ({
   schemes,
   compact = false,
   areaIntersection,
-  mapboxToken,
-  providers
+  map,
 }) => {
   if (typeof adapter !== "function") {
     throw new Error(
@@ -27,17 +26,15 @@ const WidgetEditor = ({
     throw new Error("Widget editor: Missing prop datasetId of type string");
   }
 
-  if (!mapboxToken) {
-    throw new Error("Widget editor: Missing prop mapboxToken");
+  if (!map?.mapboxToken) {
+    throw new Error("Widget editor: Missing prop map.mapboxToken");
   }
-
+  
   const adapterInstance = useMemo(() => new adapter(), [adapter]);
 
   return (
     <Editor
       disable={disable}
-      mapboxToken={mapboxToken}
-      providers={providers}
       application={application}
       onSave={onSave}
       enableSave={enableSave}
@@ -49,6 +46,12 @@ const WidgetEditor = ({
       schemes={schemes}
       userPassedCompact={compact}
       userPassedTheme={theme}
+      map={{
+        ...map,
+        providers: map?.providers || {},
+        VIEWPORT: map?.VIEWPORT || {},
+        MAPSTYLES: map?.MAPSTYLES || '',
+      }}
     />
   );
 };
@@ -66,6 +69,12 @@ WidgetEditor.propTypes = {
   schemes: PropTypes.arrayOf(PropTypes.object),
   compact: PropTypes.any,
   areaIntersection: PropTypes.string,
+  map: PropTypes.shape({
+    MAPSTYLES: PropTypes.string,
+    VIEWPORT: PropTypes.object,
+    providers: PropTypes.object,
+    mapboxToken: PropTypes.string
+  })
 };
 
 WidgetEditor.defaultProps = {

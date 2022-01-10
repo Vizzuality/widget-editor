@@ -211,12 +211,16 @@ class Editor extends React.Component {
   }
 
   render() {
-    const { adapter, theme: { compact }, mapboxToken, providers } = this.props;
+    const { 
+      adapter, 
+      theme: { compact }, 
+      map,
+    } = this.props;
     return (
       <StyledContainer {...compact}>
         <StyleEditorContainer>
           <StyledVisualizationContainer {...compact}>
-            <Visualization adapter={adapter} mapboxToken={mapboxToken} providers={providers} standalone={false} />
+            <Visualization map={map} adapter={adapter} standalone={false} />
           </StyledVisualizationContainer>
           <StyledOptionsContainer {...compact}>
             <EditorOptions dataService={this.dataService} />
@@ -229,8 +233,6 @@ class Editor extends React.Component {
 }
 
 Editor.propTypes = {
-  providers: PropTypes.object,
-  mapboxToken: PropTypes.string.isRequired,
   userPassedCompact: PropTypes.bool,
   authenticated: PropTypes.bool,
   enableSave: PropTypes.bool,
@@ -257,6 +259,12 @@ Editor.propTypes = {
   setFilters: PropTypes.func.isRequired,
   hasGeoInfo: PropTypes.bool.isRequired,
   initialized: PropTypes.bool.isRequired,
+  map: PropTypes.shape({
+    MAPSTYLES: PropTypes.string,
+    VIEWPORT: PropTypes.object,
+    providers: PropTypes.object,
+    mapboxToken: PropTypes.string
+  })
 };
 
 Editor.defaultProps = {

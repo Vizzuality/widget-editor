@@ -16,8 +16,9 @@ const StyledMap = styled.div`
   z-index: 1;
 `;
 
-// constants
-import { DEFAULT_VIEWPORT } from './constants';
+import {
+  DEFAULT_VIEWPORT
+} from './constants';
 
 class Map extends PureComponent {
   static propTypes = {
@@ -38,6 +39,13 @@ class Map extends PureComponent {
     bounds: PropTypes.shape({
       bbox: PropTypes.array,
       options: PropTypes.shape({}),
+    }),
+
+    map: PropTypes.shape({
+      MAPSTYLES: PropTypes.string,
+      VIEWPORT: PropTypes.object,
+      providers: PropTypes.object,
+      mapboxToken: PropTypes.string
     }),
 
     /** Providers passed into widget editor, used for layer manager */
@@ -122,32 +130,55 @@ class Map extends PureComponent {
   state = {
     viewport: {
       ...DEFAULT_VIEWPORT,
-      ...this.props.viewport,
+      ...this.props.map.viewport,
     },
+    layers: [],
     flying: false,
     loaded: false,
   }
 
+  componentDidMount() {
+    const { map } = this.props;
+
+    this.setState({
+      viewport: {
+        ...DEFAULT_VIEWPORT,
+        ...map.VIEWPORT
+      }
+    })
+  }
+
   componentDidUpdate(prevProps) {
+
     const {
       viewport: prevViewport,
       bounds: prevBounds,
-      basemap: prevBasemap,
-      labels: prevLabels,
       boundaries: prevBoundaries,
+      layerId: prevLayerId,
+      mapConfiguration: prevMapConfiguration
     } = prevProps;
+
     const {
       viewport,
       bounds,
-      labels,
-      basemap,
       boundaries,
+      layerId,
+      layers,
+      mapConfiguration
     } = this.props;
+
     const { viewport: stateViewport } = this.state;
-    const basemapChanged = prevBasemap !== basemap;
-    const labelsChanged = prevLabels !== labels;
-    const boundariesChanged = prevBoundaries !== boundaries;
+    const basemapChanged = mapConfiguration.basemap.basemap !== prevMapConfiguration.basemap.basemap;
+    const labelsChanged = mapConfiguration.basemap.labels !== prevMapConfiguration.basemap.labels;
+    const boundariesChanged = mapConfiguration.basemap.boundaries !== prevMapConfiguration.basemap.boundaries;
     const boundsChanged = !isEqual(bounds, prevBounds);
+
+    if (!isEqual(layerId, prevLayerId) && this.map) {
+      const activeLayers = layers.filter(l => l.id === layerId);
+      this.setState({
+        layers: activeLayers
+      })
+    }
 
     if (!isEqual(viewport, prevViewport)) {
       this.setState({ // eslint-disable-line
@@ -158,9 +189,9 @@ class Map extends PureComponent {
       });
     }
 
-    if (basemapChanged) this.setBasemap();
-    if (labelsChanged) this.setLabels();
-    if (boundariesChanged) this.setBoundaries();
+    if (basemapChanged && this.map) this.setBasemap();
+    if (labelsChanged && this.map) this.setLabels();
+    if (boundariesChanged && this.map) this.setBoundaries();
     if (!isEmpty(bounds) && boundsChanged) this.fitBounds();
   }
 
@@ -177,7 +208,7 @@ class Map extends PureComponent {
     }
 
     onLoad({
-      map: this.map.current?.getMap(),
+      map: this.map,
       mapContainer: this.mapContainer.current,
     });
   }
@@ -202,10 +233,10 @@ class Map extends PureComponent {
   }
 
   setBasemap = () => {
-    const { basemap } = this.props;
+    const { basemap } = this.props.mapConfiguration.basemap;
     const BASEMAP_GROUPS = ['basemap'];
     const { layers, metadata } = this.map.getStyle();
-
+    
     const basemapGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
       const { name } = metadata['mapbox:groups'][k];
 
@@ -214,10 +245,11 @@ class Map extends PureComponent {
       return matchedGroups.some((bool) => bool);
     });
 
-    const basemapsWithMeta = basemapGroups.map((_groupId) => ({
-      ...metadata['mapbox:groups'][_groupId],
-      id: _groupId,
+    const basemapsWithMeta = basemapGroups.map((groupId) => ({
+      ...metadata['mapbox:groups'][groupId],
+      id: groupId,
     }));
+    
     const basemapToDisplay = basemapsWithMeta.find((_basemap) => _basemap.name.includes(basemap));
 
     const basemapLayers = layers.filter((l) => {
@@ -228,8 +260,6 @@ class Map extends PureComponent {
       return basemapGroups.includes(gr);
     });
 
-    if (!basemapToDisplay) return false;
-
     basemapLayers.forEach((_layer) => {
       const match = _layer.metadata['mapbox:group'] === basemapToDisplay.id;
       if (!match) {
@@ -238,12 +268,10 @@ class Map extends PureComponent {
         this.map.setLayoutProperty(_layer.id, 'visibility', 'visible');
       }
     });
-
-    return true;
   }
 
   setLabels = () => {
-    const { labels } = this.props;
+    const { labels } = this.props.mapConfiguration.basemap;
 
     const LABELS_GROUP = ['labels'];
     const { layers, metadata } = this.map.getStyle();
@@ -279,7 +307,8 @@ class Map extends PureComponent {
   }
 
   setBoundaries = () => {
-    const { boundaries } = this.props;
+    const { boundaries } = this.props.mapConfiguration.basemap;
+
     const LABELS_GROUP = ['boundaries'];
     const { layers, metadata } = this.map.getStyle();
 
@@ -369,12 +398,10 @@ class Map extends PureComponent {
       doubleClickZoom,
       disableEventsOnFly,
       onError,
-      mapboxToken,
-      providers,
+      map,
       ...mapboxProps
     } = this.props;
-
-    const { viewport, flying, loaded } = this.state;
+    const { viewport, flying, loaded, layers } = this.state;
 
     return (
       <StyledMap
@@ -384,7 +411,8 @@ class Map extends PureComponent {
           ref={(_map) => {
             if (_map) this.map = _map.getMap();
           }}
-          mapboxApiAccessToken={mapboxToken}
+          mapboxApiAccessToken={map.mapboxToken}
+          mapStyle={map.MAPSTYLES}
           // CUSTOM PROPS FROM REACT MAPBOX API
           {...mapboxProps}
           // VIEWPORT
@@ -408,8 +436,8 @@ class Map extends PureComponent {
         >
           {loaded && !!this.map && <LayerManager 
             map={this.map}
-            providers={providers}
-            layers={this.props.layers}
+            providers={map.providers}
+            layers={layers}
           />}
           {loaded && !!this.map && typeof children === 'function' && children(this.map.current.getMap())}
         </ReactMapGL>
