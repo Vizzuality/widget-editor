@@ -23,7 +23,6 @@
   },
   "peerDependencies": {
     "react-map-gl": "^5.0.7",
-    "react-fast-compare": "^3.2.0",
     "@math.gl/web-mercator": "^3.3.1",
     "viewport-mercator-project": "^6.1.1",
     "react": "^16.12.0",
