@@ -1,24 +1,21 @@
-import React, { PureComponent, createRef } from 'react';
-import PropTypes from 'prop-types';
-import ReactMapGL, { FlyToInterpolator } from 'react-map-gl';
-import WebMercatorViewport from '@math.gl/web-mercator';
-import isEqual from 'react-fast-compare';
-import isEmpty from 'lodash/isEmpty';
+import React, { PureComponent, createRef } from "react";
+import PropTypes from "prop-types";
+import ReactMapGL, { FlyToInterpolator } from "react-map-gl";
+import WebMercatorViewport from "@math.gl/web-mercator";
+import isEqual from "lodash/isEqual";
+import isEmpty from "lodash/isEmpty";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import LayerManager from './layer-manager';
+import LayerManager from "./layer-manager";
 
 const StyledMap = styled.div`
-  position: relative;
-  width: 100%;
   height: 100%;
+  width: 100%;
   z-index: 1;
 `;
 
-import {
-  DEFAULT_VIEWPORT
-} from './constants';
+import { DEFAULT_VIEWPORT } from "./constants";
 
 class Map extends PureComponent {
   static propTypes = {
@@ -32,36 +29,18 @@ class Map extends PureComponent {
 
     /** An object that defines the viewport
      * @see https://uber.github.io/react-map-gl/#/Documentation/api-reference/interactive-map?section=initialization
-    */
+     */
     viewport: PropTypes.shape({}),
-
-    /** An object that defines the bounds */
-    bounds: PropTypes.shape({
-      bbox: PropTypes.array,
-      options: PropTypes.shape({}),
-    }),
 
     map: PropTypes.shape({
       MAPSTYLES: PropTypes.string,
       VIEWPORT: PropTypes.object,
       providers: PropTypes.object,
-      mapboxToken: PropTypes.string
+      mapboxToken: PropTypes.string,
     }),
-
-    /** Providers passed into widget editor, used for layer manager */
-    providers: PropTypes.object,
 
     /** An object that defines how fitting bounds behaves */
     fitBoundsOptions: PropTypes.object,
-
-    /** A string that defines the basemap to display */
-    basemap: PropTypes.string,
-
-    /** A string that defines the type of label to display */
-    labels: PropTypes.string,
-
-    /** A string that defines if boundaries should be displayed */
-    boundaries: PropTypes.bool,
 
     /** A boolean that allows panning */
     dragPan: PropTypes.bool,
@@ -97,35 +76,31 @@ class Map extends PureComponent {
 
     /** A function that exposes the viewport */
     getCursor: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     children: null,
     className: null,
     style: {},
     viewport: DEFAULT_VIEWPORT,
-    basemap: null,
-    bounds: {},
-    labels: null,
-    boundaries: false,
     dragPan: true,
     dragRotate: true,
     scrollZoom: true,
     touchZoom: true,
     touchRotate: true,
     doubleClickZoom: true,
-    fitBoundsOptions: { transitionDuration: 1500 },
+    fitBoundsOptions: { transitionDuration: 250 },
 
     onViewportChange: () => {},
     onFitBoundsChange: () => {},
     onLoad: () => {},
     onError: null,
     getCursor: ({ isHovering, isDragging }) => {
-      if (isHovering) return 'pointer';
-      if (isDragging) return 'grabbing';
-      return 'grab';
+      if (isHovering) return "pointer";
+      if (isDragging) return "grabbing";
+      return "grab";
     },
-  }
+  };
 
   state = {
     viewport: {
@@ -135,7 +110,7 @@ class Map extends PureComponent {
     layers: [],
     flying: false,
     loaded: false,
-  }
+  };
 
   componentDidMount() {
     const { map } = this.props;
@@ -143,45 +118,38 @@ class Map extends PureComponent {
     this.setState({
       viewport: {
         ...DEFAULT_VIEWPORT,
-        ...map.VIEWPORT
-      }
-    })
+        ...map.VIEWPORT,
+      },
+    });
   }
 
   componentDidUpdate(prevProps) {
-
     const {
       viewport: prevViewport,
-      bounds: prevBounds,
-      boundaries: prevBoundaries,
       layerId: prevLayerId,
-      mapConfiguration: prevMapConfiguration
+      mapConfiguration: prevMapConfiguration,
     } = prevProps;
 
-    const {
-      viewport,
-      bounds,
-      boundaries,
-      layerId,
-      layers,
-      mapConfiguration
-    } = this.props;
+    const { viewport, layerId, mapConfiguration } = this.props;
 
     const { viewport: stateViewport } = this.state;
-    const basemapChanged = mapConfiguration.basemap.basemap !== prevMapConfiguration.basemap.basemap;
-    const labelsChanged = mapConfiguration.basemap.labels !== prevMapConfiguration.basemap.labels;
-    const boundariesChanged = mapConfiguration.basemap.boundaries !== prevMapConfiguration.basemap.boundaries;
-    const boundsChanged = !isEqual(bounds, prevBounds);
-
-    if (!isEqual(layerId, prevLayerId) && this.map) {
-      const activeLayers = layers.filter(l => l.id === layerId);
-      this.setState({
-        layers: activeLayers
-      })
-    }
+    const basemapChanged = !isEqual(
+      mapConfiguration.basemap.basemap,
+      prevMapConfiguration.basemap.basemap
+    );
+    const labelsChanged = !isEqual(
+      mapConfiguration.basemap.labels,
+      prevMapConfiguration.basemap.labels
+    );
+    const boundariesChanged = !isEqual(
+      mapConfiguration.basemap.boundaries,
+      prevMapConfiguration.basemap.boundaries
+    );
+    const layerChanged = !isEqual(layerId, prevLayerId) && this.map;
 
     if (!isEqual(viewport, prevViewport)) {
-      this.setState({ // eslint-disable-line
+      this.setState({
+        // eslint-disable-line
         viewport: {
           ...stateViewport,
           ...viewport,
@@ -192,18 +160,19 @@ class Map extends PureComponent {
     if (basemapChanged && this.map) this.setBasemap();
     if (labelsChanged && this.map) this.setLabels();
     if (boundariesChanged && this.map) this.setBoundaries();
-    if (!isEmpty(bounds) && boundsChanged) this.fitBounds();
+    if (layerChanged && this.map) this.setLayers();
   }
 
   onLoad = () => {
-    const { onLoad, bounds } = this.props;
+    const { onLoad, mapConfiguration } = this.props;
     this.setState({ loaded: true });
 
     this.setBasemap();
     this.setLabels();
     this.setBoundaries();
+    this.setLayers();
 
-    if (!isEmpty(bounds) && !!bounds.bbox) {
+    if (!isEmpty(mapConfiguration.bbox)) {
       this.fitBounds();
     }
 
@@ -211,14 +180,27 @@ class Map extends PureComponent {
       map: this.map,
       mapContainer: this.mapContainer.current,
     });
-  }
+  };
 
   onViewportChange = (_viewport) => {
-    const { onViewportChange } = this.props;
-
-    this.setState({ viewport: _viewport },
-      () => { onViewportChange(_viewport); });
-  }
+    const { onChange, mapConfiguration } = this.props;
+    this.setState({ viewport: _viewport }, () => {
+      if (onChange) {
+        const webMercatorViewport = new WebMercatorViewport(_viewport);
+        const bounds = webMercatorViewport.getBounds();
+        const { latitude, longitude, zoom } = _viewport;
+        const { basemap } = mapConfiguration;
+        onChange({
+          lat: latitude,
+          lng: longitude,
+          zoom,
+          basemap,
+          bounds: bounds,
+          bbox: bounds,
+        });
+      }
+    });
+  };
 
   onResize = (_viewport) => {
     const { onViewportChange } = this.props;
@@ -230,108 +212,135 @@ class Map extends PureComponent {
 
     this.setState({ viewport: newViewport });
     onViewportChange(newViewport);
-  }
+  };
 
   setBasemap = () => {
     const { basemap } = this.props.mapConfiguration.basemap;
-    const BASEMAP_GROUPS = ['basemap'];
+    const BASEMAP_GROUPS = ["basemap"];
     const { layers, metadata } = this.map.getStyle();
-    
-    const basemapGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
-      const { name } = metadata['mapbox:groups'][k];
 
-      const matchedGroups = BASEMAP_GROUPS.map((rgr) => name.toLowerCase().includes(rgr));
+    const basemapGroups = Object.keys(metadata["mapbox:groups"]).filter((k) => {
+      const { name } = metadata["mapbox:groups"][k];
+
+      const matchedGroups = BASEMAP_GROUPS.map((rgr) =>
+        name.toLowerCase().includes(rgr)
+      );
 
       return matchedGroups.some((bool) => bool);
     });
 
     const basemapsWithMeta = basemapGroups.map((groupId) => ({
-      ...metadata['mapbox:groups'][groupId],
+      ...metadata["mapbox:groups"][groupId],
       id: groupId,
     }));
-    
-    const basemapToDisplay = basemapsWithMeta.find((_basemap) => _basemap.name.includes(basemap));
+
+    const basemapToDisplay = basemapsWithMeta.find((_basemap) =>
+      _basemap.name.includes(basemap)
+    );
 
     const basemapLayers = layers.filter((l) => {
       const { metadata: layerMetadata } = l;
       if (!layerMetadata) return false;
 
-      const gr = layerMetadata['mapbox:group'];
+      const gr = layerMetadata["mapbox:group"];
       return basemapGroups.includes(gr);
     });
 
     basemapLayers.forEach((_layer) => {
-      const match = _layer.metadata['mapbox:group'] === basemapToDisplay.id;
+      const match = _layer.metadata["mapbox:group"] === basemapToDisplay.id;
       if (!match) {
-        this.map.setLayoutProperty(_layer.id, 'visibility', 'none');
+        this.map.setLayoutProperty(_layer.id, "visibility", "none");
       } else {
-        this.map.setLayoutProperty(_layer.id, 'visibility', 'visible');
+        this.map.setLayoutProperty(_layer.id, "visibility", "visible");
       }
     });
-  }
+  };
 
   setLabels = () => {
     const { labels } = this.props.mapConfiguration.basemap;
 
-    const LABELS_GROUP = ['labels'];
+    const LABELS_GROUP = ["labels"];
     const { layers, metadata } = this.map.getStyle();
 
-    const labelGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
-      const { name } = metadata['mapbox:groups'][k];
+    const labelGroups = Object.keys(metadata["mapbox:groups"]).filter((k) => {
+      const { name } = metadata["mapbox:groups"][k];
 
-      const matchedGroups = LABELS_GROUP.filter((rgr) => name.toLowerCase().includes(rgr));
+      const matchedGroups = LABELS_GROUP.filter((rgr) =>
+        name.toLowerCase().includes(rgr)
+      );
 
       return matchedGroups.some((bool) => bool);
     });
 
     const labelsWithMeta = labelGroups.map((_groupId) => ({
-      ...metadata['mapbox:groups'][_groupId],
+      ...metadata["mapbox:groups"][_groupId],
       id: _groupId,
     }));
-    const labelsToDisplay = labelsWithMeta.find((_basemap) => _basemap.name.includes(labels)) || {};
+    const labelsToDisplay =
+      labelsWithMeta.find((_basemap) => _basemap.name.includes(labels)) || {};
 
     const labelLayers = layers.filter((l) => {
       const { metadata: layerMetadata } = l;
       if (!layerMetadata) return false;
 
-      const gr = layerMetadata['mapbox:group'];
+      const gr = layerMetadata["mapbox:group"];
       return labelGroups.includes(gr);
     });
 
     labelLayers.forEach((_layer) => {
-      const match = _layer.metadata['mapbox:group'] === labelsToDisplay.id;
-      this.map.setLayoutProperty(_layer.id, 'visibility', match ? 'visible' : 'none');
+      const match = _layer.metadata["mapbox:group"] === labelsToDisplay.id;
+      this.map.setLayoutProperty(
+        _layer.id,
+        "visibility",
+        match ? "visible" : "none"
+      );
     });
 
     return true;
+  };
+
+  setLayers() {
+    const { layers, layerId } = this.props;
+    const activeLayers = layers.filter((l) => l.id === layerId);
+    this.setState({
+      layers: activeLayers,
+    });
   }
 
   setBoundaries = () => {
     const { boundaries } = this.props.mapConfiguration.basemap;
 
-    const LABELS_GROUP = ['boundaries'];
+    const LABELS_GROUP = ["boundaries"];
     const { layers, metadata } = this.map.getStyle();
 
-    const boundariesGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
-      const { name } = metadata['mapbox:groups'][k];
+    const boundariesGroups = Object.keys(metadata["mapbox:groups"]).filter(
+      (k) => {
+        const { name } = metadata["mapbox:groups"][k];
 
-      const labelsGroup = LABELS_GROUP.map((rgr) => name.toLowerCase().includes(rgr));
+        const labelsGroup = LABELS_GROUP.map((rgr) =>
+          name.toLowerCase().includes(rgr)
+        );
 
-      return labelsGroup.some((bool) => bool);
-    });
+        return labelsGroup.some((bool) => bool);
+      }
+    );
 
     const boundariesLayers = layers.filter((l) => {
       const { metadata: layerMetadata } = l;
       if (!layerMetadata) return false;
 
-      const gr = layerMetadata['mapbox:group'];
+      const gr = layerMetadata["mapbox:group"];
       return boundariesGroups.includes(gr);
     });
 
     boundariesLayers.forEach((l) => {
-      this.map.setLayoutProperty(l.id, 'visibility', boundaries ? 'visible' : 'none');
+      this.map.setLayoutProperty(
+        l.id,
+        "visibility",
+        boundaries ? "visible" : "none"
+      );
     });
-  }
+  };
 
   map = createRef();
 
@@ -340,25 +349,31 @@ class Map extends PureComponent {
   fitBounds = () => {
     const { viewport: currentViewport } = this.state;
     const {
-      bounds,
+      mapConfiguration,
       onViewportChange,
       onFitBoundsChange,
       fitBoundsOptions,
       onError,
     } = this.props;
-    const { bbox, options } = bounds;
+
+    const { bbox } = mapConfiguration;
 
     const viewport = {
+      ...mapConfiguration,
       width: this.mapContainer.current.offsetWidth,
       height: this.mapContainer.current.offsetHeight,
       ...currentViewport,
+      latitude: mapConfiguration.lat,
+      longitude: mapConfiguration.lng,
+      zoom: mapConfiguration.zoom,
     };
 
     try {
-      const { longitude, latitude, zoom } = new WebMercatorViewport(viewport).fitBounds(
-        [[bbox[0], bbox[1]], [bbox[2], bbox[3]]],
-        options,
-      );
+      const webMercatorViewport = new WebMercatorViewport(viewport);
+      // TODO: Do we need options?
+      webMercatorViewport.fitBounds(bbox);
+
+      const { longitude, latitude, zoom } = webMercatorViewport;
 
       const newViewport = {
         ...currentViewport,
@@ -376,7 +391,10 @@ class Map extends PureComponent {
       onFitBoundsChange(newViewport);
       onViewportChange(newViewport);
     } catch (e) {
-      if (onError) onError('There was an error fitting bounds. Please, check your bbox values.');
+      if (onError)
+        onError(
+          "There was an error fitting bounds. Please, check your bbox values."
+        );
     }
 
     window.setTimeout(() => {
@@ -404,9 +422,7 @@ class Map extends PureComponent {
     const { viewport, flying, loaded, layers } = this.state;
 
     return (
-      <StyledMap
-        ref={this.mapContainer}
-      >
+      <StyledMap ref={this.mapContainer}>
         <ReactMapGL
           ref={(_map) => {
             if (_map) this.map = _map.getMap();
@@ -431,15 +447,19 @@ class Map extends PureComponent {
           onViewportChange={this.onViewportChange}
           onResize={this.onResize}
           onLoad={this.onLoad}
-
           transitionInterpolator={new FlyToInterpolator()}
         >
-          {loaded && !!this.map && <LayerManager 
-            map={this.map}
-            providers={map.providers}
-            layers={layers}
-          />}
-          {loaded && !!this.map && typeof children === 'function' && children(this.map.current.getMap())}
+          {loaded && !!this.map && (
+            <LayerManager
+              map={this.map}
+              providers={map.providers}
+              layers={layers}
+            />
+          )}
+          {loaded &&
+            !!this.map &&
+            typeof children === "function" &&
+            children(this.map.current.getMap())}
         </ReactMapGL>
       </StyledMap>
     );

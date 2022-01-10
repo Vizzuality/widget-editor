@@ -118,6 +118,10 @@
   flex-grow: 1;
   width: calc(100vw - 100px);
   box-sizing: border-box;
+
+  > div {
+    height: auto;
+  }
 }
 
 .c-widget-block {

@@ -17,7 +17,7 @@ export const selectBasemap = state => state.editor.map?.basemap
     labels: state.editor.map.basemap.labels || null,
     boundaries: state.editor.map.basemap.boundaries || false,
   }
-  : null;
+  : { basemap: 'light', labels: 'dark', boundaries: false };
 export const selectFields = state => state.editor.fields;
 export const selectWidgetData = state => state.editor.widgetData;
 export const selectTableData = state => state.editor.tableData;

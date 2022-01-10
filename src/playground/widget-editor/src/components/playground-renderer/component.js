@@ -1,18 +1,24 @@
 import React from "react";
 import { useSelector } from 'react-redux'
+import { getOutputPayload } from '@widget-editor/core';
 
 import RwAdapter from "@widget-editor/rw-adapter";
 import Renderer from "@widget-editor/renderer";
 
-// eslint-disable-next-line
-import widgetTest from "./test-widget";
+import providers from '../editor/mapbox-providers';
+
+import {
+  MAPSTYLES,
+  VIEWPORT
+} from '../editor/map-config';
 
 const PlaygroundRenderer = () => {
-  const widget = useSelector(state => {
-    return state.widgetEditor.widgetConfig;
+  // Returns the currently modified widget in the renderer
+  const widgetConfig = useSelector(state => {
+    return getOutputPayload(state.widgetEditor, window.WE_adapter)?.widgetConfig;
   });
-
-  if (!widget) {
+  
+  if (!widgetConfig) {
     return (
       <div className="c-unmounted">
         <p>No modified styles found</p>
@@ -28,7 +34,13 @@ const PlaygroundRenderer = () => {
           <Renderer
             adapter={RwAdapter}
             thumbnail={false}
-            widgetConfig={widget}
+            widgetConfig={widgetConfig}
+            map={{
+              MAPSTYLES,
+              VIEWPORT,
+              providers,
+              mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN
+            }}
           />
         </div>
       </div>

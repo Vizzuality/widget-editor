@@ -32,6 +32,10 @@ const WidgetEditor = ({
   
   const adapterInstance = useMemo(() => new adapter(), [adapter]);
 
+  if (typeof window !== 'undefined') {
+    window.WE_adapter = adapterInstance;
+  }
+
   return (
     <Editor
       disable={disable}
