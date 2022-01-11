@@ -15,7 +15,7 @@ import {
 const PlaygroundRenderer = () => {
   // Returns the currently modified widget in the renderer
   const widgetConfig = useSelector(state => {
-    return getOutputPayload(state.widgetEditor, window.WE_adapter)?.widgetConfig;
+    return getOutputPayload(state.widgetEditor, new RwAdapter())?.widgetConfig;
   });
   
   if (!widgetConfig) {
