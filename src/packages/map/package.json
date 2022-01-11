@@ -13,9 +13,6 @@
   "private": false,
   "dependencies": {
     "axios": ">=0.21.1",
-    "chroma-js": "^2.1.0",
-    "deck.gl": "^7.1.10",
-    "luma.gl": "^7.1.1",
     "prop-types": "15.7.2",
     "@vizzuality/layer-manager": "^4.0.1",
     "@vizzuality/layer-manager-react": "^1.0.1",
