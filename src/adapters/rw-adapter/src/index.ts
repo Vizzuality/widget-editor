@@ -163,6 +163,10 @@ export default class RWAdapter implements Adapter.Service {
     return data;
   }
 
+  async rendererGetData(widget: { id: string }) {
+    return await this.getWidget(widget.id)
+  }
+
   getDataUrl(): string {
     return this.dataUrl;
   }

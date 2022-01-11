@@ -9,7 +9,7 @@ import widgetTest from "./test-widget";
 
 const PlaygroundRenderer = () => {
   const widget = useSelector(state => {
-    return state.widgetEditor.widgetConfig;
+    return state.widgetEditor;
   });
 
   if (!widget) {
@@ -28,7 +28,8 @@ const PlaygroundRenderer = () => {
           <Renderer
             adapter={RwAdapter}
             thumbnail={false}
-            widgetConfig={widget}
+            widgetConfig={widget.widgetConfig}
+            widget={widget.editor.widget}
           />
         </div>
       </div>

@@ -1,20 +1,39 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { FiltersService } from "@widget-editor/core";
 
-const useWidgetData = (widgetConfig, theme, isMap) => {
+const useWidgetData = (adapter, widget, isMap) => {
   const [data, setData] = useState(null);
-  const [dataURL, setDataURL] = useState(widgetConfig?.data?.[0]?.url);
+  const [dataIsEmpty, setDataIsEmpty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isErrorData, setIsErrorData] = useState(false);
+
+  const adapterInstance = useMemo(() => new adapter(), [adapter]);
+
   useEffect(() => {
     const fetchData = async () => {
-      setIsError(false);
+      setIsErrorData(false);
       setIsLoading(true);
       try {
-        const request = await fetch(dataURL);
-        const { data } = await request.json();
-        setData(data);
+        if (widget) {
+          const dataset = await adapterInstance.getDataset(widget?.datasetId);
+
+          // Just tmp, build store so our core filter service can generate widget SQL
+          const tmpStore = {
+            filters: widget?.widgetConfig?.paramsConfig?.filters,
+            configuration: widget?.widgetConfig?.paramsConfig,
+            editor: {
+              dataset,
+            },
+            endUserFilters: [] // TODO: Add this
+          }
+
+          const filtersService = new FiltersService(tmpStore, adapterInstance);
+          const data = await adapterInstance.getDatasetData(widget?.datasetId, filtersService.getQuery())
+          setDataIsEmpty(data?.length === 0)
+          setData(data);
+        }
       } catch (error) {
-        setIsError(true);
+        setIsErrorData(true);
       }
       setIsLoading(false);
     };
@@ -22,7 +41,7 @@ const useWidgetData = (widgetConfig, theme, isMap) => {
       fetchData();
     }
   }, []); // eslint-disable-line
-  return [{ data, isLoading, isError }, setDataURL];
+  return { data, dataIsEmpty, isLoading, isErrorData };
 };
 
 export default useWidgetData;

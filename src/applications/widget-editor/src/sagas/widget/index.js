@@ -5,26 +5,26 @@ import {
   put,
   call,
   cancel,
-  select
-} from 'redux-saga/effects';
+  select,
+} from "redux-saga/effects";
 
 // CORE SERVICES
-import { constants, VegaService, StateProxy } from '@widget-editor/core';
+import { constants, VegaService, StateProxy } from "@widget-editor/core";
 
 // SELECTORS
-import { isMap } from '@widget-editor/shared/lib/modules/configuration/selectors';
+import { isMap } from "@widget-editor/shared/lib/modules/configuration/selectors";
 
 // ACTIONS
 import {
   setEditor,
-  dataInitialized
-} from '@widget-editor/shared/lib/modules/editor/actions';
-import { setWidgetConfig } from '@widget-editor/shared/lib/modules/widget-config/actions';
+  dataInitialized,
+} from "@widget-editor/shared/lib/modules/editor/actions";
+import { setWidgetConfig } from "@widget-editor/shared/lib/modules/widget-config/actions";
 
-import getWidgetDataWithAdapter from './getWidgetData';
+import getWidgetDataWithAdapter from "./getWidgetData";
 
 // EXPOSED HOOKS
-import { localOnChangeState } from 'exposed-hooks';
+import { localOnChangeState } from "exposed-hooks";
 
 // Initialize state proxy so we can store the state of the editor
 const stateProxy = new StateProxy();
@@ -52,7 +52,11 @@ function* initializeData(props) {
   const widgetData = yield call(getWidgetDataWithAdapter, widgetEditor);
 
   if (widgetData) {
-    yield put(setEditor({ widgetData: widgetData }));
+    yield put(
+      setEditor({
+        widgetData: widgetData,
+      })
+    );
   }
 
   yield put(dataInitialized());
@@ -103,9 +107,9 @@ function* initializeVega() {
   if (advanced) {
     const ensureVegaProperties = {
       autosize: {
-        type: 'fit'
+        type: "fit",
       },
-      ...widgetConfig
+      ...widgetConfig,
     };
     yield put(setWidgetConfig(ensureVegaProperties));
   }
@@ -161,7 +165,7 @@ function* handleRestore() {
     yield cancel();
   }
 
-  if (widgetEditor.configuration.visualizationType !== 'map') {
+  if (widgetEditor.configuration.visualizationType !== "map") {
     yield call(initializeVega);
   }
 
@@ -173,11 +177,11 @@ function* handleRestore() {
 
 function* handleAreaIntersection({ payload }) {
   const {
-    widgetEditor: { filters: areaIntersection }
+    widgetEditor: { filters: areaIntersection },
   } = yield select();
 
   if (
-    'areaIntersection' in payload &&
+    "areaIntersection" in payload &&
     areaIntersection !== payload.areaIntersection
   ) {
     yield call(initializeData);
@@ -221,7 +225,7 @@ export default function* baseSaga() {
    * As this filter is not directly "patched" to configuration, the state proxy wont;
    * handle this when the areaIntersection prop changes on runtime
    */
-  yield takeLatest('widgetEditor/EDITOR/setFilters', handleAreaIntersection);
+  yield takeLatest("widgetEditor/EDITOR/setFilters", handleAreaIntersection);
 
   /**
    * Runs when app is active, on event sync editor

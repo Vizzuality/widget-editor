@@ -1,31 +1,38 @@
 import React, { Suspense, useMemo } from "react";
-import PropTypes from 'prop-types';
-import has from 'lodash/has';
+import PropTypes from "prop-types";
+import has from "lodash/has";
 import { getDefaultTheme } from "@widget-editor/core";
 import Map from "@widget-editor/map";
 
 import Legend from "components/legend";
 import Chart from "components/chart";
 import useLayerData from "./fetch-layers-hook";
+import useWidgetData from "./fetch-data-hook";
 
 const Renderer = ({
   adapter,
   widgetConfig,
   thumbnail = false,
   interactionEnabled = true,
+  widget,
 }) => {
   if (typeof adapter !== "function") {
-    throw new Error("Renderer: Missing prop adapter and adapter needs to be of type Adapter");
+    throw new Error(
+      "Renderer: Missing prop adapter and adapter needs to be of type Adapter"
+    );
   }
 
   const adapterInstance = useMemo(() => new adapter(), [adapter]);
-
   const isMap = widgetConfig?.paramsConfig?.visualizationType === "map";
+
   const { layerData, isLoadingLayers, isErrorLayers } = useLayerData(
     adapter,
     widgetConfig?.paramsConfig?.layer,
     isMap
   );
+
+  // WIP, handle no data case 
+  const { dataIsEmpty, isErrorData } = useWidgetData(adapter, widget, isMap);
 
   const chartWidgetConfig = useMemo(() => {
     const res = { ...widgetConfig };
@@ -46,15 +53,16 @@ const Renderer = ({
     return res;
   }, [widgetConfig]);
 
-  const hasChartLegend = has(chartWidgetConfig, 'legend')
-    && chartWidgetConfig?.legend?.length > 0
-    && !thumbnail;
+  const hasChartLegend =
+    has(chartWidgetConfig, "legend") &&
+    chartWidgetConfig?.legend?.length > 0 &&
+    !thumbnail;
 
   if (isLoadingLayers) {
     return "Loading...";
   }
 
-  if (isErrorLayers) {
+  if (isErrorLayers || isErrorData) {
     return "Error loading widget...";
   }
 
@@ -62,8 +70,13 @@ const Renderer = ({
     <>
       {!isMap && (
         <Suspense>
-          {hasChartLegend && <Legend widgetConfig={chartWidgetConfig}/>}
-          <Chart widgetConfig={chartWidgetConfig} thumbnail={thumbnail} />
+          {hasChartLegend && <Legend widgetConfig={chartWidgetConfig} />}
+          {dataIsEmpty && (
+             <p>No data available</p>
+          )}
+          {!dataIsEmpty && (
+            <Chart widgetConfig={chartWidgetConfig} thumbnail={thumbnail} />
+          )}
         </Suspense>
       )}
       {isMap && (
