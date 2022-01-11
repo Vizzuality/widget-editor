@@ -26,10 +26,6 @@ const WidgetEditor = ({
     throw new Error("Widget editor: Missing prop datasetId of type string");
   }
 
-  if (!map?.mapboxToken) {
-    throw new Error("Widget editor: Missing prop map.mapboxToken");
-  }
-  
   const adapterInstance = useMemo(() => new adapter(), [adapter]);
 
   return (
