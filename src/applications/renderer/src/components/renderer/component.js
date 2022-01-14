@@ -7,6 +7,7 @@ import Map from "@widget-editor/map";
 import Legend from "components/legend";
 import Chart from "components/chart";
 import useLayerData from "./fetch-layers-hook";
+import useWidgetData from "./fetch-data-hook";
 
 const Renderer = ({
   adapter,
@@ -27,6 +28,11 @@ const Renderer = ({
     isMap
   );
 
+  const { widgetData, dataURL, isErrorData } = useWidgetData(
+    widgetConfig,
+    isMap
+  );
+    
   const chartWidgetConfig = useMemo(() => {
     const res = { ...widgetConfig };
 
@@ -50,11 +56,13 @@ const Renderer = ({
     && chartWidgetConfig?.legend?.length > 0
     && !thumbnail;
 
+  const hasNoData = dataURL && widgetData?.length === 0;
+
   if (isLoadingLayers) {
     return "Loading...";
   }
 
-  if (isErrorLayers) {
+  if (isErrorLayers || isErrorData) {
     return "Error loading widget...";
   }
 
@@ -63,7 +71,13 @@ const Renderer = ({
       {!isMap && (
         <Suspense>
           {hasChartLegend && <Legend widgetConfig={chartWidgetConfig}/>}
-          <Chart widgetConfig={chartWidgetConfig} thumbnail={thumbnail} />
+          {!hasNoData && (
+            <Chart widgetConfig={chartWidgetConfig} thumbnail={thumbnail} />
+          )}
+          {/* TODO: Add styles for no data */}
+          {hasNoData && (
+            <p>No data present</p>
+          )}
         </Suspense>
       )}
       {isMap && (
