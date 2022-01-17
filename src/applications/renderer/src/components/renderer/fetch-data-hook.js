@@ -21,16 +21,14 @@ const useWidgetData = (widgetConfig, isMap) => {
         const { data } = await request.json();
         setData(data);
       } catch (error) {
-        if (dataURL) {
-          setIsError(true);
-        }
+        setIsError(true);
       }
       setIsLoading(false);
     };
-    if (!isMap) {
+    if (!isMap && dataURL) {
       fetchData();
     }
-  }, []); // eslint-disable-line
+  }, [dataURL, isMap]);
   return { widgetData, dataURL, isLoadingWidgetData, isErrorData };
 };
 
