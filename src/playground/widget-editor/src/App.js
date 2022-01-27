@@ -7,13 +7,17 @@ import Header from "components/header";
 import Editor from "./components/editor";
 import EditorForm from "components/editor-form";
 
+import { Icons } from 'vizzuality-components';
+
 import "./App.scss";
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 function App() {
   const { store } = configureStore();
 
   return (
     <Provider store={store}>
+      <Icons />
       <div className="App">
         <Header />
         <EditorForm />

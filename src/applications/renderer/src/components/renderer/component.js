@@ -11,6 +11,7 @@ import useWidgetData from "./fetch-data-hook";
 
 const Renderer = ({
   adapter,
+  map,
   widgetConfig,
   thumbnail = false,
   interactionEnabled = true,
@@ -82,20 +83,21 @@ const Renderer = ({
       )}
       {isMap && (
         <Suspense>
-          <Map
-            adapter={adapterInstance}
-            layerId={widgetConfig.paramsConfig?.layer}
-            thumbnail={thumbnail}
-            mapConfiguration={{
-              lat: widgetConfig.lat || 0,
-              lng: widgetConfig.lng || 0,
-              bbox: widgetConfig.bbox,
-              zoom: widgetConfig.zoom || 2,
-              basemap: widgetConfig.basemapLayers || null,
-            }}
-            layers={layerData ? [layerData] : []}
-            interactionEnabled={interactionEnabled}
-          />
+            <Map
+              adapter={adapterInstance}
+              layerId={widgetConfig.paramsConfig?.layer}
+              thumbnail={thumbnail}
+              mapConfiguration={{
+                lat: widgetConfig.lat || 0,
+                lng: widgetConfig.lng || 0,
+                bbox: widgetConfig.bbox,
+                zoom: widgetConfig.zoom || 2,
+                basemap: widgetConfig.basemapLayers || null,
+              }}
+              layers={layerData ? [layerData] : []}
+              interactionEnabled={interactionEnabled}
+              map={map}
+            />
         </Suspense>
       )}
     </>
@@ -107,6 +109,12 @@ Renderer.propTypes = {
   widgetConfig: PropTypes.object.isRequired,
   thumbnail: PropTypes.bool,
   interactionEnabled: PropTypes.bool,
+  map: PropTypes.shape({
+    MAPSTYLES: PropTypes.string,
+    VIEWPORT: PropTypes.object,
+    providers: PropTypes.object,
+    mapboxToken: PropTypes.string
+  })
 };
 
 export default Renderer;
