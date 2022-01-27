@@ -7,7 +7,7 @@ export default {
   areaIntersection: null,
   widget: null,
   theme: { color: "#C32D7B" },
-  dataset: 'a36bf77b-4d10-4855-8ef6-aece72e23971',
+  dataset: null,
   datasets: [
     { label: 'Forest Sector Economic Contribution', value: '03bfb30e-829f-4299-bab9-b2be1b66b5d4' },
     { label: 'MAP LAYER 1', value: '852f2275-91a8-4500-9f10-89880dc53f22' },
