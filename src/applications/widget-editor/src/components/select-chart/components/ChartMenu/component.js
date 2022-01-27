@@ -74,7 +74,7 @@ ChartList.propTypes = {
 ChartMenu.propTypes = {
   getValue: PropTypes.func,
   setValue: PropTypes.func,
-  innerRef: PropTypes.object,
+  innerRef: PropTypes.func,
   innerProps: PropTypes.object,
   options: PropTypes.arrayOf(PropTypes.shape({
     chartType: PropTypes.string

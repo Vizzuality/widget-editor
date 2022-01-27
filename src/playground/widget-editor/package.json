@@ -7,6 +7,12 @@
   "dependencies": {
     "@widget-editor/rw-adapter": "^2.6.2",
     "@widget-editor/widget-editor": "^2.6.2",
+    "@vizzuality/layer-manager-provider-carto": "^1.0.1",
+    "@vizzuality/layer-manager-utils": "^1.0.1",
+    "react-map-gl": "^5.0.7",
+    "react-fast-compare": "^3.2.0",
+    "@math.gl/web-mercator": "^3.3.1",
+    "viewport-mercator-project": "^6.1.1",
     "gh-pages": "^2.2.0",
     "react": "^16.12.0",
     "sass": "^1.46.0",

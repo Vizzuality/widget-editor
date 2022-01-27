@@ -1,5 +1,4 @@
-// TODO: Does not work???
-// @import '../../../node_modules/vizzuality-components/dist/bundle';
+@import '~vizzuality-components/dist/bundle';
 
 * {
   margin: 0;
@@ -118,6 +117,10 @@
   flex-grow: 1;
   width: calc(100vw - 100px);
   box-sizing: border-box;
+
+  > div {
+    height: auto;
+  }
 }
 
 .c-widget-block {

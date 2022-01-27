@@ -27,6 +27,7 @@ const Visualization = ({
   adapter,
   editorSyncMap,
   patchConfiguration,
+  map,
 }) => {
   const { advanced, widgetData, restoring, initialized } = editor;
 
@@ -109,6 +110,7 @@ const Visualization = ({
             layers={editor.layers}
             mapConfiguration={configuration.map}
             interactionEnabled
+            map={map}
             onChange={state => {
               editorSyncMap(state);
               patchConfiguration();
@@ -136,6 +138,12 @@ Visualization.propTypes = {
   adapter: PropTypes.func,
   editorSyncMap: PropTypes.func.isRequired,
   patchConfiguration: PropTypes.func.isRequired,
+  map: PropTypes.shape({
+    MAPSTYLES: PropTypes.string,
+    VIEWPORT: PropTypes.object,
+    providers: PropTypes.object,
+    mapboxToken: PropTypes.string
+  }),
 };
 
 export default Visualization;

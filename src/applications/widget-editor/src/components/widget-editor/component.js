@@ -14,6 +14,7 @@ const WidgetEditor = ({
   schemes,
   compact = false,
   areaIntersection,
+  map,
 }) => {
   if (typeof adapter !== "function") {
     throw new Error(
@@ -41,11 +42,18 @@ const WidgetEditor = ({
       schemes={schemes}
       userPassedCompact={compact}
       userPassedTheme={theme}
+      map={{
+        ...map,
+        providers: map?.providers || {},
+        VIEWPORT: map?.VIEWPORT || {},
+        MAPSTYLES: map?.MAPSTYLES || '',
+      }}
     />
   );
 };
 
 WidgetEditor.propTypes = {
+  providers: PropTypes.object,
   application: PropTypes.string,
   onSave: PropTypes.func,
   datasetId: PropTypes.string,
@@ -57,6 +65,12 @@ WidgetEditor.propTypes = {
   schemes: PropTypes.arrayOf(PropTypes.object),
   compact: PropTypes.any,
   areaIntersection: PropTypes.string,
+  map: PropTypes.shape({
+    MAPSTYLES: PropTypes.string,
+    VIEWPORT: PropTypes.object,
+    providers: PropTypes.object,
+    mapboxToken: PropTypes.string
+  })
 };
 
 WidgetEditor.defaultProps = {

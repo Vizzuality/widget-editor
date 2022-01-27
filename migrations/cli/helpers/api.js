@@ -15,9 +15,21 @@ module.exports = {
   },
 
   async getWidgetsToMigrate(apiService) {
-    const res = await fetch(`${apiService.baseUrl}/widget?${apiService.query}&page[size]=999999&time=${+(new Date())}`);
-    const { data } = await res.json();
-    return data.filter(widget => apiService.script.needsMigration(widget));
+    let widgets = [];
+    let stopped = false;
+    let page = 1;
+    // Run through each widget page untill we run out of widgets 
+    while (!stopped) {
+      const res = await fetch(`${apiService.baseUrl}/widget?${apiService.query}&page[size]=500&page[number]=${page}&time=${+(new Date())}`);
+      const { data, meta } = await res.json();
+      widgets = [
+        ...widgets,
+        ...data.filter(widget => apiService.script.needsMigration(widget))
+      ]
+      page += 1
+      stopped = data.length === 0 || page === meta['total-pages'];
+    }
+    return widgets;
   },
 
   async performDryRunMigration(apiService, progress) {

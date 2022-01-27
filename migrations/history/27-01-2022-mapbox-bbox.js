@@ -12,7 +12,7 @@ module.exports = [
       }
 
       const { we_meta, paramsConfig } = widgetConfig;
-      if (we_meta && paramsConfig?.visualizationType === 'map') {
+      if (we_meta && paramsConfig?.visualizationType === 'map' && widgetConfig?.bbox) {
         return true;
       }
 
