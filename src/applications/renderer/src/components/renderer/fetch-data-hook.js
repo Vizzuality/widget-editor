@@ -1,10 +1,17 @@
+import find from 'lodash/find';
 import { useState, useEffect } from "react";
 
-const useWidgetData = (widgetConfig, theme, isMap) => {
-  const [data, setData] = useState(null);
-  const [dataURL, setDataURL] = useState(widgetConfig?.data?.[0]?.url);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+function getDataUrl(data) {
+  if (!data) return null;
+  return find(data, 'url')?.url
+}
+
+const useWidgetData = (widgetConfig, isMap) => {
+  const [dataURL] = useState(getDataUrl(widgetConfig?.data));
+  const [widgetData, setData] = useState(null);
+  const [isLoadingWidgetData, setIsLoading] = useState(false);
+  const [isErrorData, setIsError] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       setIsError(false);
@@ -18,11 +25,11 @@ const useWidgetData = (widgetConfig, theme, isMap) => {
       }
       setIsLoading(false);
     };
-    if (!isMap) {
+    if (!isMap && dataURL) {
       fetchData();
     }
-  }, []); // eslint-disable-line
-  return [{ data, isLoading, isError }, setDataURL];
+  }, [dataURL, isMap]);
+  return { widgetData, dataURL, isLoadingWidgetData, isErrorData };
 };
 
 export default useWidgetData;
