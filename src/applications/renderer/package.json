@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/renderer",
-  "version": "2.6.2",
+  "version": "2.7.0",
   "licence": "MIT",
   "directories": {
     "lib": "lib",
@@ -13,10 +13,10 @@
   "private": false,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@widget-editor/core": "^2.6.2",
-    "@widget-editor/map": "^2.6.2",
-    "@widget-editor/shared": "^2.6.2",
-    "@widget-editor/types": "^2.6.2",
+    "@widget-editor/core": "^2.7.0",
+    "@widget-editor/map": "^2.7.0",
+    "@widget-editor/shared": "^2.7.0",
+    "@widget-editor/types": "^2.7.0",
     "babel-plugin-styled-components": "^1.10.6",
     "lodash": "^4.17.15",
     "prop-types": "15.7.2",
@@ -32,7 +32,7 @@
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
-    "@widget-editor/eslint-config": "^2.6.2",
+    "@widget-editor/eslint-config": "^2.7.0",
     "babel-plugin-module-resolver": "^4.0.0"
   },
   "scripts": {
