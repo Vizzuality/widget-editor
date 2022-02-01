@@ -67,7 +67,7 @@ const Renderer = ({
     && chartWidgetConfig?.legend?.length > 0
     && !thumbnail;
 
-  const hasNoData = dataURL && !widgetData || widgetData?.length === 0;
+  const hasNoData = dataURL && (!widgetData || widgetData?.length === 0);
 
   if (isLoadingLayers) {
     return "Loading...";
