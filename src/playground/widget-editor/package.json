@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/playground",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "licence": "MIT",
   "private": false,
   "homepage": "http://vizzuality.github.io/widget-editor",
@@ -8,8 +8,8 @@
     "@math.gl/web-mercator": "^3.3.1",
     "@vizzuality/layer-manager-provider-carto": "^1.0.1",
     "@vizzuality/layer-manager-utils": "^1.0.1",
-    "@widget-editor/rw-adapter": "^2.7.0",
-    "@widget-editor/widget-editor": "^2.7.0",
+    "@widget-editor/rw-adapter": "^2.7.1",
+    "@widget-editor/widget-editor": "^2.7.1",
     "gh-pages": "^2.2.0",
     "react": "^16.12.0",
     "react-app-rewired": "^2.1.5",

@@ -1,6 +1,6 @@
 {
   "name": "@widget-editor/types",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "licence": "MIT",
   "scripts": {
     "tsc": "tsc",
