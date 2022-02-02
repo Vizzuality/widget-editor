@@ -26,11 +26,11 @@ const useWidgetData = (widgetConfig, isMap) => {
       setIsLoading(true);
       try {
         const request = await fetch(dataURL);
-        const { data } = await request.json();
-        if (dataProperty && has(data, dataProperty)) {
-          setData(data[dataProperty]);
+        const resp = await request.json();
+        if (dataProperty && has(resp, dataProperty)) {
+          setData(resp[dataProperty]);
         } else {
-          setData(data);
+          setData(resp);
         }
       } catch (error) {
         setIsError(true);
