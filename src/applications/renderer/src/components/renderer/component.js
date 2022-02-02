@@ -39,7 +39,7 @@ const Renderer = ({
     isMap
   );
 
-  const { widgetData, dataURL, isErrorData } = useWidgetData(
+  const { widgetData, isLoadingWidgetData, dataURL, isErrorData } = useWidgetData(
     widgetConfig,
     isMap
   );
@@ -67,7 +67,7 @@ const Renderer = ({
     && chartWidgetConfig?.legend?.length > 0
     && !thumbnail;
 
-  const hasNoData = dataURL && (!widgetData || widgetData?.length === 0);
+  const hasNoData = dataURL && !isLoadingWidgetData && (!widgetData || widgetData?.length === 0);
 
   if (isLoadingLayers) {
     return "Loading...";

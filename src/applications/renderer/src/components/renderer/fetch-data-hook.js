@@ -1,4 +1,5 @@
 import find from 'lodash/find';
+import has from 'lodash/has';
 import { useState, useEffect } from "react";
 
 function getDataUrl(data) {
@@ -6,8 +7,15 @@ function getDataUrl(data) {
   return find(data, 'url')?.url
 }
 
+function getDataProperty(data) {
+  if (!data) return null;
+  return find(data, 'url')?.format?.property
+}
+
 const useWidgetData = (widgetConfig, isMap) => {
   const [dataURL] = useState(getDataUrl(widgetConfig?.data));
+  const [dataProperty] = useState(getDataProperty(widgetConfig?.data));
+
   const [widgetData, setData] = useState(null);
   const [isLoadingWidgetData, setIsLoading] = useState(false);
   const [isErrorData, setIsError] = useState(false);
@@ -19,7 +27,11 @@ const useWidgetData = (widgetConfig, isMap) => {
       try {
         const request = await fetch(dataURL);
         const { data } = await request.json();
-        setData(data);
+        if (dataProperty && has(data, dataProperty)) {
+          setData(data[dataProperty]);
+        } else {
+          setData(data);
+        }
       } catch (error) {
         setIsError(true);
       }
@@ -28,7 +40,7 @@ const useWidgetData = (widgetConfig, isMap) => {
     if (!isMap && dataURL) {
       fetchData();
     }
-  }, [dataURL, isMap]);
+  }, [dataURL, dataProperty, isMap]);
   return { widgetData, dataURL, isLoadingWidgetData, isErrorData };
 };
 
